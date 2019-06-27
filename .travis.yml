@@ -1,0 +1,21 @@
+dist: xenial
+
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+
+cache: pip
+
+install:
+  - pip install -r test_requirements.txt
+  - pip install -e .
+
+script: 
+  - flake8
+  - pytest
+
+branches:
+  only:
+    - master

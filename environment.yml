@@ -1,0 +1,13 @@
+# name of conda environment
+name: alignparse-environment
+
+# channels to install conda dependencies
+channels:
+  - conda-forge
+
+# conda dependencies
+dependencies:
+  - python==3.6
+  - pip
+  # list packages to install with pip, pinned to exact version
+  - pip:

@@ -1,0 +1,16 @@
+.*
+~*
+
+!.gitignore
+!.travis.yml
+!.flake8
+!.nojekyll
+
+*.pyc
+docs/alignparse.*
+docs/_build
+
+__pycache__
+build
+dist
+*.egg-info
