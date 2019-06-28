@@ -44,7 +44,10 @@ setup(
     long_description=readme,
     license='GPLv3',
     install_requires=[
-                      ],
+            'biopython>=1.73',
+            'dna_features_viewer>=1.0.0',
+            'matplotlib>=3.0.0',
+            ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],
     package_dir={'alignparse': 'alignparse'},
