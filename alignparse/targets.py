@@ -3,17 +3,18 @@
 targets
 =======
 
-Defines :class:`Targets`, which holds a several :class:`Target` objects that
-define the alignment targets. Each :class:`Target` in a collection of
-:class:`Targets` has some :class:`Feature` regions.
+Defines :class:`Targets`, which holds :class:`Target` objects that define
+alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 """
 
+import Bio.SeqIO
 
 import dna_features_viewer
 
 import matplotlib.cm
 import matplotlib.colors
+import matplotlib.pyplot as plt
 
 from alignparse.constants import CBPALETTE
 
@@ -252,11 +253,33 @@ class Targets:
 
     """
 
+    def __repr__(self):
+        """Get string representation."""
+        return f"{self.__class__.__name__}(targets={self.targets})"
+
     def __init__(self, *, seqsfile, req_features=frozenset(),
                  opt_features=frozenset(), allow_extra_features=False,
                  seqsfileformat='genbank'):
         """See main class docstring."""
-        raise RuntimeError('not yet implemented')
+        if isinstance(seqsfile, str):
+            seqsfile = [seqsfile]
+
+        seqrecords = []
+        for f in seqsfile:
+            seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
+
+        self.targets = []
+        self._target_dict = {}
+        for seqrecord in seqrecords:
+            target = Target(seqrecord=seqrecord,
+                            req_features=req_features,
+                            opt_features=opt_features,
+                            allow_extra_features=allow_extra_features,
+                            )
+            if target.name in self._target_dict:
+                raise ValueError(f"duplicate target name of {target.name}")
+            self.targets.append(target)
+            self._target_dict[target.name] = target
 
     def get_target(self, name):
         """Get :class:`Target` by name.
@@ -272,18 +295,63 @@ class Targets:
             Returns the target, or raises `ValueError` if no such target.
 
         """
-        raise RuntimeError('not yet implemented')
+        if name in self._target_dict:
+            return self._target_dict[name]
+        else:
+            raise ValueError(f"no target named {name}")
 
     def write_fasta(self, fastafile):
         """Write all targets to a FASTA file.
 
         Parameters
         ----------
-        filename : str or file-like object.
-            Name of created FASTA file, or file-like object to write to.
+        filename : str
+            Name of created FASTA file
 
         """
-        raise RuntimeError('not yet implemented')
+        with open(fastafile, 'w') as f:
+            for target in self.targets:
+                f.write(f">{target.name}\n{target.seq}\n")
+
+    def plot(self, *, sharex=True, ax_width=5, ax_height=3, **kwargs):
+        """Plot all the targets.
+
+        Note
+        ----
+        For more customizable plots, call :meth:`Target.image` for individual
+        targets.
+
+        Parameters
+        ----------
+        sharex : bool
+            Share x-axis among plots for each target?
+        ax_width : float
+            Width of each axis in inches.
+        ax_height : float
+            Height of each axis in inches.
+        **kwargs
+            Keyword arguments passed to :meth:`Target.image`.
+
+        Returns
+        -------
+        matplotlib.pyplot.figure
+            Figure showing all targets.
+
+        """
+        fig, axes = plt.subplots(nrows=len(self.targets),
+                                 ncols=1,
+                                 sharex=True,
+                                 squeeze=False,
+                                 gridspec_kw={'hspace': 0.3},
+                                 figsize=(ax_width,
+                                          len(self.targets) * ax_height),
+                                 )
+        for ax, target in zip(axes.ravel(), self.targets):
+            image = target.image(**kwargs)
+            image.plot(ax=ax)
+            ax.set_title(target.name)
+
+        return fig
 
 
 if __name__ == '__main__':
