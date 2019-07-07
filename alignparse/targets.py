@@ -165,7 +165,8 @@ class Target:
         else:
             raise ValueError(f"Target {self.name} has no feature {name}")
 
-    def image(self, *, color_map=None, feature_labels=None, first_index=1):
+    def image(self, *, color_map=None, feature_labels=None,
+              plots_indexing='genbank'):
         """Get image of the target.
 
         Parameters
@@ -176,9 +177,9 @@ class Target:
         feature_labels : None or dict
             Map feature names to text labels shown on plot. Otherwise
             features just labeled by name.
-        first_index : int
-            Number of first site in image. A :class:`Target` is often defined
-            in 0-based indexing, but you may want to plot in 1-based indexing.
+        plots_indexing : {'biopython', 'genbank'}
+            Does image use 0-based ('biopython') or 1-based ('genbank')
+            indexing of nucleotide sites?
 
         Returns
         -------
@@ -219,11 +220,12 @@ class Target:
                     strand=1,
                     )
                 )
+
         graph_record = dna_features_viewer.GraphicRecord(
                 sequence_length=self.length,
                 features=graph_features,
                 sequence=self.seq,
-                first_index=first_index,
+                plots_indexing=plots_indexing,
                 )
 
         return graph_record
@@ -329,7 +331,7 @@ class Targets:
             Width of each axis in inches.
         ax_height : float
             Height of each axis in inches.
-        **kwargs
+        ``**kwargs``
             Keyword arguments passed to :meth:`Target.image`.
 
         Returns
