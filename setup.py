@@ -47,6 +47,8 @@ setup(
             'biopython>=1.73',
             'dna_features_viewer>=1.0.0',
             'matplotlib>=3.0.0',
+            'pysam>=0.13',
+            'numpy>=0.13',
             ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],
