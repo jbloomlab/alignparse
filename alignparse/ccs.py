@@ -20,7 +20,11 @@ import numpy
 
 import pandas as pd
 
+import plotnine as p9
+
 import pysam
+
+from alignparse.constants import CBPALETTE
 
 
 class Summary:
@@ -122,6 +126,103 @@ class Summaries:
                         reportfile=getattr(tup, report_col)
                         )
                 )
+
+    def zmw_plot(self, *, minfrac=0.01):
+        """Plot of ZMW stats for each run.
+
+        Parameters
+        ----------
+        minfrac : float
+            Group failure categories with <= this fraction ZMWs for all runs.
+
+        Returns
+        -------
+        plotnine.ggplot.ggplot
+            Stacked bar graph of ZMW stats for each run.
+
+        """
+        df = self.zmw_stats(minfrac=minfrac)
+
+        p = (p9.ggplot(df, p9.aes(x='name', y='number', fill='status')) +
+             p9.geom_col(position=p9.position_stack(reverse=True), width=0.8) +
+             p9.theme(axis_text_x=p9.element_text(angle=90,
+                                                  vjust=1,
+                                                  hjust=0.5),
+                      figure_size=(0.4 * len(df['name'].unique()), 2.5)
+                      ) +
+             p9.ylab('number of ZMWs') +
+             p9.xlab('')
+             )
+
+        if len(df['status'].unique()) < len(CBPALETTE):
+            p = p + p9.scale_fill_manual(CBPALETTE[1:])
+
+        return p
+
+    def zmw_stats(self, *, minfrac=0.01):
+        """
+        Parameters
+        ----------
+        minfrac : float
+            Group failure categories with <= this fraction ZMWs for all runs.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Data frame with stats for all runs.
+
+        """
+        df = (pd.concat([summary.zmw_stats.assign(name=summary.name)
+                         for summary in self.summaries])
+              [['name', 'status', 'number', 'fraction']]
+              .assign(max_fraction=lambda x: (x.groupby('status')
+                                              ['fraction']
+                                              .transform(max)
+                                              ),
+                      failed=lambda x: x['status'].str.contains('Failed'),
+                      other=lambda x: (x['max_fraction'] < minfrac) & x.failed
+                      )
+              )
+
+        other_df = (df.query('other')
+                    .groupby('name')
+                    .aggregate({'number': sum, 'fraction': sum, 'failed': any})
+                    .assign(status='Failed -- Other reason')
+                    .reset_index()
+                    .assign(max_fraction=lambda x: (x.groupby('status')
+                                                    ['fraction']
+                                                    .transform(max)
+                                                    ))
+                    )
+
+        df = (df
+              .query('not other')
+              .drop(columns='other')
+              .merge(other_df, how='outer')
+              )
+
+        # order columns
+        names = [summary.name for summary in self.summaries]
+        statuses = (df
+                    .sort_values(['failed', 'max_fraction'],
+                                 ascending=[True, False])
+                    ['status']
+                    .unique()
+                    )
+        df = (df
+              .assign(name=lambda x: pd.Categorical(x['name'],
+                                                    names,
+                                                    ordered=True),
+                      status=lambda x: pd.Categorical(x['status'],
+                                                      statuses,
+                                                      ordered=True),
+                      )
+              .sort_values(['name', 'status'])
+              .drop(columns=['max_fraction', 'failed'])
+              .reset_index(drop=True)
+              )
+
+        return df
 
 
 def report_to_stats(reportfile, *, stat_type='zmw'):
