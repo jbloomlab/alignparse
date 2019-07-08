@@ -76,11 +76,13 @@ class Summary:
         self.quals = ccs_stats.quals
         self.lengths = ccs_stats.lengths
         assert len(self.passes) == len(self.quals) == len(self.lengths)
-        if len(self.passes) != (self.zmw_stats
-                                .set_index('status')
-                                .at['Success -- CCS generated', 'number']):
+        zmw_stats_nccs = (self.zmw_stats
+                          .set_index('status')
+                          .at['Success -- CCS generated', 'number'])
+        if len(self.passes) != zmw_stats_nccs:
             raise ValueError('`fastqfile` and `reportfile` differ on number '
-                             'of circular consensus sequences generated.')
+                             f"of CCSs.\n{fastqfile} has {len(self.passes)}\n"
+                             f"{reportfile} has {zmw_stats_nccs}")
 
 
 class Summaries:
@@ -212,7 +214,7 @@ class Summaries:
                                          variable: getattr(summary, attr)
                                          }))
 
-        return (pd.concat(df_list, sort=False)
+        return (pd.concat(df_list, sort=False, ignore_index=True)
                 .assign(name=lambda x: pd.Categorical(x['name'],
                                                       x['name'].unique(),
                                                       ordered=True))
@@ -265,7 +267,8 @@ class Summaries:
 
         """
         df = (pd.concat([summary.zmw_stats.assign(name=summary.name)
-                         for summary in self.summaries])
+                         for summary in self.summaries],
+                        sort=False, ignore_index=True)
               [['name', 'status', 'number', 'fraction']]
               .assign(max_fraction=lambda x: (x.groupby('status')
                                               ['fraction']
