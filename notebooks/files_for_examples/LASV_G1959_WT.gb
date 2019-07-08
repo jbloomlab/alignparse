@@ -9,8 +9,6 @@ COMMENT     There are single nucleotide tags in the 5' and 3' termini to measure
 FEATURES             Location/Qualifiers
      T2A             85..147
                      /label="T2A"
-     WPRE            1639..1730
-                     /label="WPRE"
      ZsGreen         15..84
                      /label="ZsGreen"
      termini3        1639..1730
@@ -21,11 +19,11 @@ FEATURES             Location/Qualifiers
                      /label="5' leader"
      termini5        1..147
                      /label="5'Termini"
-     variant_tag     34..34
+     variant_tag5    34..34
                      /variant_1=T
                      /variant_2=C
                      /label="5'VariantTag"
-     variant_tag     1702..1702
+     variant_tag3    1702..1702
                      /variant_1=G
                      /variant_2=A
                      /label="3'VariantTag"

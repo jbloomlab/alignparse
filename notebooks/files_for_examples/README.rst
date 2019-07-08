@@ -16,5 +16,8 @@ VEP data
 Data from Kate Dusenbury's initial pilot PacBio sequencing run of VEP constructs. 
 
     - `LASV_G1959_WT.gb <LASV_G1959_WT.gb>`_: PacBio amplicon of LASV GP from strain G1959, wildtype sequence.
+    - `LASV_G1959_OPT.gb <LASV_G1959_OPT.gb>`_: PacBio amplicon of LSAV GP fro strain G1959, codon optimized sequence.
     - `vep_pilot_2019-06-05_report.txt <vep_pilot_2019-06-05_report>`_: Report file for all CCSs from the VEP pilot PacBio sequencing. This contains info on all CCSs. 
     - `vep_pilot_test_reads.fastq <vep_pilot_test_reads.fastq>`_: FASTQ file containing the first 1000 CCSs from the VEP pilot PacBio sequencing run. This should contain ~100 reads matching the LASV G1959 WT sequence.
+    - `LASV_G1959_targets.fasta <LASV_G1959_targets.fasta>`_: FASTA file with the sequences for the LASV G1959 targets - wildtype and codon optimized sequences.
+    - `g1959_test_alignment.paf <g1959_test_alignment.paf>`_: PAF alignment output from aligning the G1959 targets with the `vep_pilot_test_reads`. Used minimap2 with `--cs=long` argument for alignment.
