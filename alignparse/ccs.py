@@ -11,6 +11,7 @@ https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md
 
 import collections
 import io
+import math
 import os
 import re
 import tempfile  # noqa: F401
@@ -127,8 +128,98 @@ class Summaries:
                         )
                 )
 
-    def zmw_plot(self, *, minfrac=0.01):
-        """Plot of ZMW stats for each run.
+    def plot_ccs_stats(self, variable, *,
+                       trim_frac=0.005, bins=25, histogram_stat='count',
+                       maxcol=None, panelsize=1.75):
+        """Plot histograms of CCS stats for all runs.
+
+        Parameters
+        ----------
+        variable : {'length', 'passes', 'quality'}
+            Variable for which we get stats.
+        trim_frac : float
+            Trim this amount of the bottom and top fraction from the
+            data before plotting. Useful if outliers greatly extend scale.
+        bins : int
+            Number of histogram binds
+        histogram_stat : {'count', 'density'}
+            Plot the count of CCSs or their density normalized for each run.
+        maxcol : None or int
+            Max number of columns in faceted plot.
+        panelsize : float
+            Size of each plot panel.
+
+        Returns
+        -------
+        plotnine.ggplot.ggplot
+            A panel of histograms.
+
+        """
+        df = (self.ccs_stats(variable)
+              .assign(lower=lambda x: x[variable].quantile(trim_frac),
+                      upper=lambda x: x[variable].quantile(1 - trim_frac),
+                      trim=lambda x: ((x[variable] > x['upper']) |
+                                      (x[variable] < x['lower']))
+                      )
+              .query('not trim')
+              )
+
+        npanels = len(df['name'].unique())
+        if maxcol is None:
+            ncol = npanels
+        else:
+            ncol = min(maxcol, npanels)
+        nrow = math.ceil(npanels / ncol)
+
+        p = (p9.ggplot(df, p9.aes(variable, y=f"..{histogram_stat}..")) +
+             p9.geom_histogram(bins=bins) +
+             p9.facet_wrap('~ name', ncol=ncol) +
+             p9.theme(figure_size=(panelsize * ncol, panelsize * nrow),
+                      axis_text_x=p9.element_text(angle=90,
+                                                  vjust=1,
+                                                  hjust=0.5)
+                      ) +
+             p9.ylab('number of CCSs')
+             )
+
+        return p
+
+    def ccs_stats(self, variable):
+        """Get CCS stats for all runs.
+
+        Parameters
+        ----------
+        variable : {'length', 'passes', 'quality'}
+            Variable for which we get stats.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Data frame with columns of 'name' (holding run name) and the value
+            of `variable` giving variable value for all CCSs.
+
+        """
+        try:
+            attr = {'length': 'lengths',
+                    'passes': 'passes',
+                    'quality': 'quals'}[variable]
+        except KeyError:
+            raise ValueError(f"invalid `variable` of {variable}")
+
+        df_list = []
+        for summary in self.summaries:
+            df_list.append(pd.DataFrame({'name': summary.name,
+                                         variable: getattr(summary, attr)
+                                         }))
+
+        return (pd.concat(df_list, sort=False)
+                .assign(name=lambda x: pd.Categorical(x['name'],
+                                                      x['name'].unique(),
+                                                      ordered=True))
+                )
+
+    def plot_zmw_stats(self, *, minfrac=0.01):
+        """Plot of ZMW stats for all runs.
 
         Parameters
         ----------
@@ -160,7 +251,8 @@ class Summaries:
         return p
 
     def zmw_stats(self, *, minfrac=0.01):
-        """
+        """Get ZMW stats for all runs.
+
         Parameters
         ----------
         minfrac : float
@@ -169,7 +261,7 @@ class Summaries:
         Returns
         -------
         pandas.DataFrame
-            Data frame with stats for all runs.
+            Data frame with stats on ZMW status for all runs.
 
         """
         df = (pd.concat([summary.zmw_stats.assign(name=summary.name)
