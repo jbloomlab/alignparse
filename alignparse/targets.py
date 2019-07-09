@@ -355,6 +355,67 @@ class Targets:
 
         return fig
 
+    def align(self, fastqfile, *, samfile, minimap2='minimap2',
+              align_params=None):
+        """Align sequences to targets.
+
+        Parameters
+        ----------
+        fastqfile : str
+            A FASTQ file with the alignment queries.
+        samfile : str
+            Name of created SAM file with with ``minimap2`` alignments with
+            ``cs`` tag.
+        minimap2 : str
+            Path to ``minimap2`` executable.
+        align_params : ?
+            ``minimap2`` alignment parameters.
+
+        """
+        raise RuntimeError('not yet implemented')
+
+    def parse_alignment(self, samfile, *, multi_align='primary'):
+        """Parse alignment of query to targets.
+
+        Note
+        ----
+        **Link to describe ``cs`` tag format.**
+
+        **Indels that occur at feature junctions are assigned as
+        part of first feature? Look to see how ``minimap2`` handles
+        indels in homopolymers.**
+
+        Parameters
+        ----------
+        samfile : str
+            SAM file with ``minimap2`` alignments with ``cs`` tag, typically
+            created by :meth:`Targets.align`.
+        multi_align : {'primary'}
+            How to handle multiple alignments. **Needs some thought**.
+            Maybe 'primary' = return only primary, etc...
+        **unaligned? How do we handle unaligned queries?**
+            Maybe either ignored or added to data frame with 'target'
+            as `None`.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Gives alignment for each feature in target. Columns are:
+                - 'query' : alignment query name
+                - 'target' : name of target to which query aligns.
+                - 'feature' : ``cs`` tag equivalent for that feature, or
+                  `None` if that feature not in that target.
+                - **potentially another column related to `multi_align`?**
+
+        """
+        # I would recommend writing a separate function that somehow does
+        # the splitting of the ``cs`` tags, perhaps in its own module. You
+        # can then have some simple doctests for that. This could probably
+        # go in its own module called `cs_tag` or something like that.
+        # For reading the SAM file, I recommend `pysam`.
+        # https://pysam.readthedocs.io/en/latest/usage.html#opening-a-file 
+        raise RuntimeError('not yet implemented')
+
 
 if __name__ == '__main__':
     import doctest
