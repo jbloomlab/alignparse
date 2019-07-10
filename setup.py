@@ -48,6 +48,7 @@ setup(
             'dna_features_viewer>=1.0.0',
             'matplotlib>=3.0.0',
             'numpy>=0.13',
+            'packaging',
             'plotnine>=0.5.1',
             'pysam>=0.13',
             ],
