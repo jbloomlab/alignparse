@@ -167,6 +167,7 @@ class Mapper:
         finally:
             err.close()
         sam.close()
+        assert os.path.isfile(samfile)
 
 
 if __name__ == '__main__':
