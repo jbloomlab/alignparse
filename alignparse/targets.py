@@ -8,6 +8,9 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 """
 
+
+import tempfile
+
 import Bio.SeqIO
 
 import dna_features_viewer
@@ -307,13 +310,18 @@ class Targets:
 
         Parameters
         ----------
-        filename : str
-            Name of created FASTA file
+        filename : str or writable file-like object
+            Write targets to this file.
 
         """
-        with open(fastafile, 'w') as f:
+        try:
             for target in self.targets:
-                f.write(f">{target.name}\n{target.seq}\n")
+                fastafile.write(f">{target.name}\n{target.seq}\n")
+            fastafile.flush()
+        except AttributeError:
+            with open(fastafile, 'w') as f:
+                for target in self.targets:
+                    f.write(f">{target.name}\n{target.seq}\n")
 
     def plot(self, *, sharex=True, ax_width=5, ax_height=3, **kwargs):
         """Plot all the targets.
@@ -355,24 +363,25 @@ class Targets:
 
         return fig
 
-    def align(self, fastqfile, *, samfile, minimap2='minimap2',
-              align_params=None):
-        """Align sequences to targets.
+    def align(self, queryfile, alignmentfile, mapper):
+        """Align query sequences to targets.
 
         Parameters
         ----------
-        fastqfile : str
-            A FASTQ file with the alignment queries.
-        samfile : str
-            Name of created SAM file with with ``minimap2`` alignments with
-            ``cs`` tag.
-        minimap2 : str
-            Path to ``minimap2`` executable.
-        align_params : ?
-            ``minimap2`` alignment parameters.
+        queryfile : str
+            The query sequences to align (FASTQ or FASTA, can be gzipped).
+        alignmentfile : str
+            SAM file created by `mapper` with alignments of queries to the
+            target sequences within this :class:`Targets` object. Include
+            suffix ``.gz`` if you want it to be gzipped.
+        mapper : :class:`alignparse.minimap2.Mapper`
+            Mapper that runs ``minimap2``. Alignment options set when creating
+            this mapper.
 
         """
-        raise RuntimeError('not yet implemented')
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.fa') as targetfile:
+            self.write_fasta(targetfile)
+            mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
     def parse_alignment(self, samfile, *, multi_align='primary'):
         """Parse alignment of query to targets.
@@ -413,7 +422,7 @@ class Targets:
         # can then have some simple doctests for that. This could probably
         # go in its own module called `cs_tag` or something like that.
         # For reading the SAM file, I recommend `pysam`.
-        # https://pysam.readthedocs.io/en/latest/usage.html#opening-a-file 
+        # https://pysam.readthedocs.io/en/latest/usage.html#opening-a-file
         raise RuntimeError('not yet implemented')
 
 
