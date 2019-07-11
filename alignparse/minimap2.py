@@ -23,7 +23,6 @@ OPTIONS_CODON_DMS = ('-A2',
                      '--end-bonus=13',
                      '--score-N=4',
                      '--secondary=no',
-                     '--sam-hit-only',
                      '--cs',
                      )
 """tuple: ``minimap2`` options for codon-mutant libraries.
@@ -41,7 +40,6 @@ Options have the following meaning / rationale:
   - ``--end-bonus=13`` : favor codon mutation over gap at termini.
   - ``--score-N=4`` : mismatch with ambiguous base as bad as other mismatches.
   - ``--secondary=no`` : do not output secondary alignments.
-  - ``--sam-hit-only`` : don't output unmapped reads
   - ``--cs`` : add short ``cs`` tag ((see https://github.com/lh3/minimap2#cs)
 
 """
@@ -55,7 +53,6 @@ OPTIONS_VIRUS_W_DEL = ('-xsplice',
                        '--end-seed-pen=2',
                        '--end-bonus=1',
                        '--secondary=no',
-                       '--sam-hit-only',
                        '--cs',
                        )
 """tuple: ``minimap2`` options for viral genes.
@@ -76,7 +73,6 @@ Options have the following meaning / rationale:
   - ``--end-seed-pen=2`` : described as helping avoid tiny terminal exons.
   - ``--end-bonus=1`` : bonus for extending to end of alignment.
   - ``--secondary=no`` : do not output secondary alignments.
-  - ``--sam-hit-only`` : don't output unmapped reads
   - ``--cs`` : add short ``cs`` tag ((see https://github.com/lh3/minimap2#cs)
 
 """
@@ -94,7 +90,7 @@ class Mapper:
         Path to ``minimap2`` executable.
     min_version : str
         Minimum version of ``minimap2``. :class:`Mapper` has only
-        been tested with versions >= 2.17.
+        been tested with versions >= 2.12.
     check_cs : bool
         Check that `options` includes ``--cs`` to output the short ``cs`` tag.
 
@@ -109,7 +105,7 @@ class Mapper:
 
     """
 
-    def __init__(self, options, *, prog='minimap2', min_version='2.17',
+    def __init__(self, options, *, prog='minimap2', min_version='2.12',
                  check_cs=True):
         """See main :class:`Mapper` doc string."""
         try:
