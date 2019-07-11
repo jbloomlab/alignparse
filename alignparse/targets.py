@@ -9,7 +9,6 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 """
 
 
-import io
 import tempfile
 
 import Bio.SeqIO
@@ -315,11 +314,11 @@ class Targets:
             Write targets to this file.
 
         """
-        if isinstance(fastafile, io.IOBase):
+        try:
             for target in self.targets:
                 fastafile.write(f">{target.name}\n{target.seq}\n")
             fastafile.flush()
-        else:
+        except AttributeError:
             with open(fastafile, 'w') as f:
                 for target in self.targets:
                     f.write(f">{target.name}\n{target.seq}\n")
@@ -380,7 +379,7 @@ class Targets:
             this mapper.
 
         """
-        with tempfile.NamedTemporaryFile(suffix='.fasta') as targetfile:
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.fa') as targetfile:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 

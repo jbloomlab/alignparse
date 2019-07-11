@@ -44,14 +44,15 @@ Options have the following meaning / rationale:
 
 """
 
-OPTIONS_VIRUS_W_DEL = ('-xsplice',
+OPTIONS_VIRUS_W_DEL = ('-xsplice:hq',
                        '-un',
                        '-C0',
+                       '--score-N=4',
                        '--splice-flank=no',
                        '-M=1',
                        '--for-only',
                        '--end-seed-pen=2',
-                       '--end-bonus=1',
+                       '--end-bonus=2',
                        '--secondary=no',
                        '--cs',
                        )
@@ -65,13 +66,14 @@ treat them like introns. This means that in the output, introns should be
 parsed like deletions.
 
 Options have the following meaning / rationale:
-  - ``-xsplice`` : pre-set options to long-read spliced alignment.
+  - ``-xsplice:hq`` : preset for long-read high-quality spliced alignment.
   - ``-un`` : do not try to find canonical splice sites.
   - ``-C0`` : no cost for non-canonical splice sites.
+  - ``--score-N=4`` : mismatch with ambiguous base as bad as other mismatches.
   - ``--splice-flank=no`` : no assumptions about base next to splice donor.
   - ``-M=1`` : mark secondary chain that overlaps with another by this much.
   - ``--end-seed-pen=2`` : described as helping avoid tiny terminal exons.
-  - ``--end-bonus=1`` : bonus for extending to end of alignment.
+  - ``--end-bonus=2`` : bonus for extending to end of alignment.
   - ``--secondary=no`` : do not output secondary alignments.
   - ``--cs`` : add short ``cs`` tag ((see https://github.com/lh3/minimap2#cs)
 
@@ -90,7 +92,7 @@ class Mapper:
         Path to ``minimap2`` executable.
     min_version : str
         Minimum version of ``minimap2``. :class:`Mapper` has only
-        been tested with versions >= 2.12.
+        been tested with versions >= 2.17.
     check_cs : bool
         Check that `options` includes ``--cs`` to output the short ``cs`` tag.
 
@@ -105,7 +107,7 @@ class Mapper:
 
     """
 
-    def __init__(self, options, *, prog='minimap2', min_version='2.12',
+    def __init__(self, options, *, prog='minimap2', min_version='2.17',
                  check_cs=True):
         """See main :class:`Mapper` doc string."""
         try:
@@ -140,7 +142,7 @@ class Mapper:
                 raise IOError(f"cannot find `{fname}file` {fname}")
 
         if not any('-a' == opt for opt in self.options):
-            options = self.options + '-a'
+            options = self.options + ['-a']
 
         cmds = [self.prog] + options + [targetfile, queryfile]
 

@@ -50,7 +50,7 @@ setup(
             'numpy>=0.13',
             'packaging',
             'plotnine>=0.5.1',
-            'pysam>=0.13',
+            'pysam>=0.14',
             ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],
