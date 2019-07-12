@@ -77,8 +77,10 @@ class Summary:
         self.lengths = ccs_stats.lengths
         assert len(self.passes) == len(self.quals) == len(self.lengths)
         zmw_stats_nccs = (self.zmw_stats
-                          .set_index('status')
-                          .at['Success -- CCS generated', 'number'])
+                          .query('status.str.match("^Success")')
+                          ['number']
+                          .sum()
+                          )
         if len(self.passes) != zmw_stats_nccs:
             raise ValueError('`fastqfile` and `reportfile` differ on number '
                              f"of CCSs.\n{fastqfile} has {len(self.passes)}\n"
@@ -220,13 +222,13 @@ class Summaries:
                                                       ordered=True))
                 )
 
-    def plot_zmw_stats(self, *, minfrac=0.01):
+    def plot_zmw_stats(self, **kwargs):
         """Plot of ZMW stats for all runs.
 
         Parameters
         ----------
-        minfrac : float
-            Group failure categories with <= this fraction ZMWs for all runs.
+        ``**kwargs`` : dict
+            Keyword arguments passed to :meth:`Summaries.zmw_stats`.
 
         Returns
         -------
@@ -234,7 +236,7 @@ class Summaries:
             Stacked bar graph of ZMW stats for each run.
 
         """
-        df = self.zmw_stats(minfrac=minfrac)
+        df = self.zmw_stats(**kwargs)
 
         p = (p9.ggplot(df, p9.aes(x='name', y='number', fill='status')) +
              p9.geom_col(position=p9.position_stack(reverse=True), width=0.8) +
@@ -252,13 +254,15 @@ class Summaries:
 
         return p
 
-    def zmw_stats(self, *, minfrac=0.01):
+    def zmw_stats(self, *, minfailfrac=0.01, groupsuccess=True):
         """Get ZMW stats for all runs.
 
         Parameters
         ----------
-        minfrac : float
+        minfailfrac : float
             Group failure categories with <= this fraction ZMWs for all runs.
+        groupsuccess : bool
+            Group all success categories into 'Success -- CCS generated'.
 
         Returns
         -------
@@ -275,7 +279,8 @@ class Summaries:
                                               .transform(max)
                                               ),
                       failed=lambda x: x['status'].str.contains('Failed'),
-                      other=lambda x: (x['max_fraction'] < minfrac) & x.failed
+                      other=lambda x: ((x['max_fraction'] < minfailfrac) &
+                                       x['failed'])
                       )
               )
 
@@ -295,6 +300,20 @@ class Summaries:
               .drop(columns='other')
               .merge(other_df, how='outer')
               )
+
+        if groupsuccess:
+            success_df = (df
+                          .query('status.str.match("^Success")')
+                          .groupby('name')
+                          .aggregate({'number': sum, 'fraction': sum,
+                                      'failed': any, 'max_fraction': max})
+                          .reset_index()
+                          .assign(status='Success -- CCS generated')
+                          )
+            df = (df
+                  .query('not status.str.match("^Success")')
+                  .merge(success_df, how='outer')
+                  )
 
         # order columns
         names = [summary.name for summary in self.summaries]
@@ -337,6 +356,7 @@ def report_to_stats(reportfile, *, stat_type='zmw'):
 
     Example
     -------
+    First an example of the ``ccs`` version 3.1.0 output:
 
     >>> reportfile = tempfile.NamedTemporaryFile(mode='w')
     >>> _ = reportfile.write(textwrap.dedent('''
@@ -379,9 +399,44 @@ def report_to_stats(reportfile, *, stat_type='zmw'):
     9       Failed -- Unknown error during processing       0   0.00%    0.0000
     >>> reportfile.close()
 
+    Now an example of the ``ccs`` version 3.4.1 output:
+
+    >>> reportfile = tempfile.NamedTemporaryFile(mode='w')
+    >>> _ = reportfile.write(textwrap.dedent('''
+    ...     ZMW Yield
+    ...     Success (without retry) -- CCS generated,202033,29.44%
+    ...     Success (with retry)    -- CCS generated,2,0.00%
+    ...     Failed -- Below SNR threshold,0,0.00%
+    ...     Failed -- No usable subreads,2093,0.31%
+    ...     Failed -- Insert size too long,10,0.01%
+    ...     Failed -- Insert size too small,79,0.01%
+    ...     Failed -- Not enough full passes,343876,50.12%
+    ...     Failed -- Too many unusable subreads,0,0.00%
+    ...     Failed -- CCS did not converge,0,0.00%
+    ...     Failed -- CCS below minimum predicted accuracy,138083,20.12%
+    ...     Failed -- Unknown error during processing,0,0.00%
+    ...
+    ...
+    ...     ''').lstrip())
+    >>> reportfile.flush()
+    >>> report_to_stats(reportfile.name)  # doctest: +NORMALIZE_WHITESPACE
+                                               status  number percent  fraction
+    0        Success (without retry) -- CCS generated  202033  29.44%    0.2944
+    1        Success (with retry)    -- CCS generated       2   0.00%    0.0000
+    2                   Failed -- Below SNR threshold       0   0.00%    0.0000
+    3                    Failed -- No usable subreads    2093   0.31%    0.0031
+    4                  Failed -- Insert size too long      10   0.01%    0.0001
+    5                 Failed -- Insert size too small      79   0.01%    0.0001
+    6                Failed -- Not enough full passes  343876  50.12%    0.5012
+    7            Failed -- Too many unusable subreads       0   0.00%    0.0000
+    8                  Failed -- CCS did not converge       0   0.00%    0.0000
+    9  Failed -- CCS below minimum predicted accuracy  138083  20.12%    0.2012
+    10      Failed -- Unknown error during processing       0   0.00%    0.0000
+    >>> reportfile.close()
+
     """
     reportmatch = re.compile('^ZMW Yield\n(?P<zmw>(.+\n)+)\n\n'
-                             'Subread Yield\n(?P<subread>(.+\n)+)$')
+                             '(?:Subread Yield\n(?P<subread>(.+\n)+))?$')
     with open(reportfile) as f:
         report = f.read()
     m = reportmatch.search(report)
