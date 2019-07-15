@@ -1,5 +1,6 @@
 ZMW Yield
-Success -- CCS generated,100,64.10%
+Success (without retry) -- CCS generated,100,64.10%
+Success (with retry)    -- CCS generated,0,0.00%
 Failed -- Below SNR threshold,0,0.00%
 Failed -- No usable subreads,0,0.00%
 Failed -- Insert size too long,0,0.00%
