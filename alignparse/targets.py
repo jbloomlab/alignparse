@@ -372,8 +372,7 @@ class Targets:
             The query sequences to align (FASTQ or FASTA, can be gzipped).
         alignmentfile : str
             SAM file created by `mapper` with alignments of queries to the
-            target sequences within this :class:`Targets` object. Include
-            suffix ``.gz`` if you want it to be gzipped.
+            target sequences within this :class:`Targets` object.
         mapper : :class:`alignparse.minimap2.Mapper`
             Mapper that runs ``minimap2``. Alignment options set when creating
             this mapper.
