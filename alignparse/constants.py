@@ -14,10 +14,3 @@ CBPALETTE = ('#999999', '#E69F00', '#56B4E9', '#009E73',
 
 From http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/
 """
-
-CS_OPERATORS = [':', '*', '+', '-', '~', '=']
-
-"""list: characters used as operators in the ``cs`` tag.
-
-From https://lh3.github.io/minimap2/minimap2.html#10
-"""

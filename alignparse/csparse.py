@@ -3,16 +3,23 @@
 csparse
 =======
 
-Parses ``cs`` tag from ``minimap2`` output. 
+Parses ``cs`` tag from ``minimap2`` output.
 """
 
 import re
-import alignparse.constants
+
+CS_OPERATORS = (':', '*', '+', '-', '~', '=')
+
+"""list: characters used as operators in the ``cs`` tag.
+
+From https://lh3.github.io/minimap2/minimap2.html#10
+
+"""
 
 
 def get_ambiguous(ambiguousDNA):
     """
-    Given a ``cs`` tag of ambiguous reference nucleotides aligned to 
+    Given a ``cs`` tag of ambiguous reference nucleotides aligned to
     the query sequence, return the query sequence.
 
     Parameters
@@ -31,10 +38,14 @@ def get_ambiguous(ambiguousDNA):
     >>> get_ambiguous('ctat')
     Traceback (most recent call last):
     ...
-    AssertionError: No ambiguous nucleotide
+    ValueError: No ambiguous nucleotide.
+
     """
-    assert '*n' == ambiguousDNA[:2], 'No ambiguous nucleotide'
-    return ambiguousDNA[2]
+    if '*n' == ambiguousDNA[:2]:
+        return ambiguousDNA[2]
+    else:
+        raise ValueError('No ambiguous nucleotide.')
+
 
 def cs_list(cs, cs_splits):
     """
@@ -45,14 +56,13 @@ def cs_list(cs, cs_splits):
     cs : str
         full ``cs`` tag string
     cs_splits : list
-        list of operators by which to split the ``cs`` tag into 
+        list of operators by which to split the ``cs`` tag into
         component tags
 
     Returns
     -------
-
     cs_list : list
-        ``cs`` tag in list format with each item corresponding to 
+        ``cs`` tag in list format with each item corresponding to
         one tag fragment (or chunk of DNA)
 
     """
@@ -69,6 +79,7 @@ def cs_list(cs, cs_splits):
             i += 1
         cs_list.append(split)
     return cs_list
+
 
 def convert_len(tag):
     """
@@ -99,27 +110,27 @@ def convert_len(tag):
     >>> convert_len(':8*ng')
     Traceback (most recent call last):
     ...
-    AssertionError: Tag :8*ng not supported
+    ValueError: Tag :8*ng not supported
+
     """
+    if sum(tag.count(x) for x in CS_OPERATORS) > 1:
+        raise ValueError(f'Tag {tag} not supported')
 
-    assert sum(tag.count(x) for x in alignparse.constants.CS_OPERATORS) <= 1, \
-            f'Tag {tag} not supported'
-
-    try:
-        if re.match(r'^:', tag):
-            return int(tag[1:])
-        elif re.match(r'^\*', tag):
-            return 1
-        elif re.match(r'^\+', tag):
-            return 0
-        elif re.match(r'^\-', tag):
-            return (len(tag)-1)
-        elif re.match(r'^\=', tag):
-            return(len(tag)-1)
-        elif re.match(r'^\~', tag):
-            raise RuntimeError('Handling splice sites not yet implemented.')
-    except:
+    if re.match(r'^:', tag):
+        return int(tag[1:])
+    elif re.match(r'^\*', tag):
+        return 1
+    elif re.match(r'^\+', tag):
+        return 0
+    elif re.match(r'^\-', tag):
+        return (len(tag)-1)
+    elif re.match(r'^\=', tag):
+        return(len(tag)-1)
+    elif re.match(r'^\~', tag):
+        raise RuntimeError('Handling splice sites not yet implemented.')
+    else:
         raise ValueError(f'Tag {tag} not supported.')
+
 
 def split(cs, alignstart, alignend, featstart, featend):
     """
@@ -137,16 +148,15 @@ def split(cs, alignstart, alignend, featstart, featend):
     Returns
     -------
     split_tag : str
-        ``cs`` tag for region specified by ref_indices 
-    """
+        ``cs`` tag for region specified by ref_indices
 
-    #return None if feature coordinates not in alignment
+    """
+    # return None if feature coordinates not in alignment
     if featstart <= alignstart and featend <= alignstart:
         return None
     elif featstart >= alignend and featend >= alignend:
         return None
-    #else:
-
+    # else:
 
 
 if __name__ == '__main__':
