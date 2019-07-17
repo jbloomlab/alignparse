@@ -27,11 +27,35 @@ def get_ambiguous(ambiguousDNA):
 
     >>> get_ambiguous('*ng')
     'g'
+
+    >>> get_ambiguous('ctat')
+    Traceback (most recent call last):
+    ...
+    AssertionError: No ambiguous nucleotide
     """
     assert '*n' == ambiguousDNA[:2], 'No ambiguous nucleotide'
     return ambiguousDNA[2]
 
 def cs_list(cs, cs_splits):
+    """
+    Turn a ``cs`` tag string into a list of component tags.
+
+    Parameters
+    ----------
+    cs : str
+        full ``cs`` tag string
+    cs_splits : list
+        list of operators by which to split the ``cs`` tag into 
+        component tags
+
+    Returns
+    -------
+
+    cs_list : list
+        ``cs`` tag in list format with each item corresponding to 
+        one tag fragment (or chunk of DNA)
+
+    """
     cs_list = []
     split = ''
     i = 0
@@ -96,26 +120,6 @@ def convert_len(tag):
             raise RuntimeError('Handling splice sites not yet implemented.')
     except:
         raise ValueError(f'Tag {tag} not supported.')
-
-def cs_list(cs, cs_splits):
-    """
-    
-    """
-
-    cs_list = []
-    split = ''
-    i = 0
-    while i < len(cs):
-        if cs[i] in cs_splits:
-            split = ''
-            split += cs[i]
-            i += 1
-        while i < len(cs) and cs[i] not in cs_splits:
-            split += cs[i]
-            i += 1
-        cs_list.append(split)
-    return cs_list
-
 
 def split(cs, alignstart, alignend, featstart, featend):
     """
