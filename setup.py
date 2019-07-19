@@ -51,6 +51,7 @@ setup(
             'packaging',
             'plotnine>=0.5.1',
             'pysam>=0.14',
+            'regex>=2.5.33',
             ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],
