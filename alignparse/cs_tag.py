@@ -163,6 +163,19 @@ class Alignment:
         else:
             raise ValueError(f"alignment {self.name} has no `cs` tag")
 
+        # build something that is self._cs_ops from split_cs
+
+        # build a numpy array of the length in reference of each cs_op,
+        # this could self._cs_op_lengths
+
+        # you should somehow be able to build self._cs_op_ends
+        # and self._cs_op_starts using reference start plus
+        # numpy.cumsum(self._cs_op_lengths)
+
+        assert len(self._cs_ops) == len(self._cs_op_lengths)
+        assert len(self._cs_ops) == len(self._cs_op_ends)
+        assert len(self._cs_ops) == len(self._cs_op_starts)
+
     def extract_cs(self, start, end, *,
                    max_clip5=0, max_clip3=0):
         """Extract ``cs`` tag corresponding to feature in target.
@@ -189,7 +202,11 @@ class Alignment:
             `max_clip3`), return `None`.
 
         """
+        # identify operations to include using numpy.argmin / argmax
+        # on self.cs_op_starts / self._cs_op_ends
         # make sure we have indexing correct (0- or 1-based)
+
+        # when you handle insertions on ends, document that
         raise RuntimeError('not yet implemented')
 
 
