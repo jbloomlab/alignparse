@@ -86,6 +86,136 @@ def process_mut_str(s):
             )
 
 
+def add_mut_info_cols(df,
+                      *,
+                      mutation_col='mutations',
+                      sub_str_col=None,
+                      del_str_col=None,
+                      ins_str_col=None,
+                      indel_str_col=None,
+                      n_sub_col=None,
+                      n_del_col=None,
+                      n_ins_col=None,
+                      n_indel_col=None,
+                      overwrite_cols=False,
+                      ):
+    """Expand information about mutations in a data frame.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Data frame with each row giving information about a variant.
+    mutation_col : str
+        Name of column in `df` with str containing space-delimited
+        list of mutations in format parseable by :func:`process_mut_str`.
+    sub_str_col : str or None
+        Name of added column with string giving substitutions.
+    del_str_col : str or None
+        Name of added column with string giving deletions.
+    ins_str_col : str or None
+        Name of added column with string giving insertions.
+    indel_str_col : str or None
+        Name of added column with string giving deletions and insertions.
+    n_sub_col : str or None
+        Name of added column with number of substitutions.
+    n_del_col : str or None
+        Name of added column with number of deletions.
+    n_ins_col : str or None
+        Name of added column with number of insertions.
+    n_indel_col : str or None
+        Name of added column with number of deletions and insertions.
+    overwrite_cols : bool
+        If column to be created is already in `df`, overwrite it?
+
+    Returns
+    -------
+    pandas.DataFrame
+        A **copy** of `df` with the indicated columns added.
+
+    Example
+    -------
+    Data frame for which we get mutation info:
+
+    >>> df = pd.DataFrame({
+    ...       'name': ['seq1', 'seq2', 'seq3'],
+    ...       'mutations': ['A6G del7to8 T3A', '', 'T5A ins5AAT del8to9'],
+    ...       })
+
+    Get info on substitutions:
+
+    >>> add_mut_info_cols(df, sub_str_col='subs', n_sub_col='nsubs')
+       name            mutations     subs  nsubs
+    0  seq1      A6G del7to8 T3A  T3A A6G      2
+    1  seq2                                    0
+    2  seq3  T5A ins5AAT del8to9      T5A      1
+
+    Get info on substitutions and indels:
+
+    >>> add_mut_info_cols(df, sub_str_col='subs', n_sub_col='nsubs',
+    ...                   indel_str_col='indels', n_indel_col='nindels')
+       name            mutations     subs           indels  nsubs  nindels
+    0  seq1      A6G del7to8 T3A  T3A A6G          del7to8      2        1
+    1  seq2                                                     0        0
+    2  seq3  T5A ins5AAT del8to9      T5A  del8to9 ins5AAT      1        2
+
+    Just get counts for all types of mutations:
+
+    >>> add_mut_info_cols(df, n_sub_col='nsubs', n_del_col='ndels',
+    ...                   n_ins_col='nins', n_indel_col='nindels')
+       name            mutations  nsubs  ndels  nins  nindels
+    0  seq1      A6G del7to8 T3A      2      1     0        1
+    1  seq2                           0      0     0        0
+    2  seq3  T5A ins5AAT del8to9      1      1     1        2
+
+    """
+    if mutation_col not in df.columns:
+        raise ValueError(f"`df` lacks `mutation_col` {mutation_col}")
+
+    new_cols = collections.OrderedDict(
+                [(key, val)
+                 for key, val in [('substitutions_str', sub_str_col),
+                                  ('deletions_str', del_str_col),
+                                  ('insertions_str', ins_str_col),
+                                  ('indel_str', indel_str_col),
+                                  ('substitutions_n', n_sub_col),
+                                  ('deletions_n', n_del_col),
+                                  ('insertions_n', n_ins_col),
+                                  ('indel_n', n_indel_col)]
+                 if val is not None])
+    if mutation_col in set(new_cols.values()):
+        raise ValueError('`mutation_col` also name of col to add')
+    already_has = set(new_cols.values()).intersection(set(df.columns))
+    if already_has and not overwrite_cols:
+        raise ValueError(f"`df` already has these columns: {already_has}")
+
+    def _mut_info(s):
+        m = process_mut_str(s)
+        returnlist = []
+        for col in new_cols.keys():
+            mut_type, col_type = col.split('_')
+            if mut_type == 'indel':
+                mlist = m.deletions + m.insertions
+            else:
+                mlist = getattr(m, mut_type)
+            if col_type == 'str':
+                returnlist.append(' '.join(mlist))
+            else:
+                assert col_type == 'n'
+                returnlist.append(len(mlist))
+        return returnlist
+
+    mut_info_df = (pd.DataFrame(
+                        [_mut_info(m) for m in df[mutation_col].values],
+                        columns=new_cols.values())
+                   .reindex(index=df.index)
+                   )
+
+    return (df
+            .drop(columns=new_cols.values(), errors='ignore')
+            .join(mut_info_df)
+            )
+
+
 def fracident(df,
               *,
               group_cols='barcode',
