@@ -86,6 +86,150 @@ def process_mut_str(s):
             )
 
 
+def fracident(df,
+              *,
+              group_cols='barcode',
+              upstream_group_cols='library',
+              mutation_col='mutations',
+              sort_mutations=True,
+              ):
+    """Fraction of sequences with identical mutations in group (i.e., barcode).
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Each row gives data for a different sequence.
+    group_cols : str or list
+        Column(s) in `df` indicating how we group sequences before computing
+        fraction within group that is identical.
+    upstream_group_cols : str or None or list
+        Column(s) in `df` that we use to group **before** doing the grouping
+        for computing fraction identical. So a different average fraction
+        will be returned for each of these upstream groups.
+    mutation_col : str
+        Column in `df` that we compare when determining if sequences are
+        identical.
+    sort_mutations : bool
+        Useful if you have strings of space-delimited mutations not guaranteed
+        to be consistently ordered. If `True`, sort such space-delimited
+        mutations.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Gives the fraction identical and implied accuracy of individual
+        sequences. The columns are all all columns in `upstream_group_cols`,
+        plus:
+
+         - 'fraction_identical': average fraction of pairs of sequences in
+           same group that are identical. This is the Simpson diversity index
+           without replacement: https://en.wikipedia.org/wiki/Diversity_index
+
+         - 'accuracy': the square root of the fraction identical, which is
+           the accuracy of each sequence under the assumption that errors
+           always make sequences different.
+
+    Example
+    -------
+    >>> df = pd.DataFrame({
+    ...         'barcode': ['AT', 'AT', 'TG', 'TA', 'TA', 'TA'],
+    ...         'mutations': ['A1G', 'A1G', '', 'T2A C6G', 'T5C', 'C6G T2A']})
+    >>> fracident(df, upstream_group_cols=None)
+       fraction_identical  accuracy
+    0                 0.5  0.707107
+
+    If we do the same without sorting the mutations, we get lower values
+    as 'T2A C6G' and 'C6G T2A' are then considered as different:
+
+    >>> fracident(df, upstream_group_cols=None, sort_mutations=False)
+       fraction_identical  accuracy
+    0                0.25       0.5
+
+    Now another example with two libraries and non-standard column
+    names. Note that we only get results for the two libraries
+    with barcodes found multiple times:
+
+    >>> df2 = pd.DataFrame({
+    ...     'bc'  :['AT', 'AT', 'TG', 'TA', 'TA', 'TA', 'TA'],
+    ...     'var' :['v1', 'v1', 'v2', 'v3', 'v4', 'v3', 'v3'],
+    ...     'lib' :['s1', 's1', 's2', 's3', 's3', 's3', 's4']})
+    >>> fracident(df2, upstream_group_cols='lib', group_cols='bc',
+    ...           mutation_col='var', sort_mutations=False)
+      lib  fraction_identical  accuracy
+    0  s1            1.000000   1.00000
+    1  s3            0.333333   0.57735
+
+    """
+    # column names used in calculations below
+    reserved_cols = ['_groupcounts', '_sequencecounts', '_npair',
+                     '_simpson_diversity', '_weight_diversity', '_dummy',
+                     'accuracy', 'fraction_identical']
+    for col in reserved_cols:
+        if col in df.columns:
+            raise ValueError(f"`df` cannot have column named {col}")
+
+    if isinstance(group_cols, str):
+        group_cols = [group_cols]
+
+    if (upstream_group_cols is None) or upstream_group_cols == []:
+        drop_upstream_col = True
+        upstream_group_cols = '_dummy'
+        df = df.assign(**{upstream_group_cols: 'dummy'})
+    else:
+        drop_upstream_col = False
+    if isinstance(upstream_group_cols, str):
+        upstream_group_cols = [upstream_group_cols]
+
+    cols = group_cols + upstream_group_cols
+    if len(set(cols)) != len(cols):
+        raise ValueError('duplicate in `group_cols` / `upstream_group_cols`')
+    if mutation_col in cols:
+        raise ValueError(f"`mutation_col` {mutation_col} also grouping column")
+    for col in cols + [mutation_col]:
+        if col not in df.columns:
+            raise ValueError(f"no column {col} in `df`: {list(df.columns)}")
+
+    result = (
+        df
+        # get just sequences that have a barcode found multiple times
+        .assign(_groupcounts=1)
+        .assign(_groupcounts=lambda x: x.groupby(cols).transform('count'))
+        .query('_groupcounts > 1')
+        # sort mutations
+        .assign(**{mutation_col: (lambda x:
+                                  x[mutation_col]
+                                  .map(lambda s: ' '.join(sorted(s.split())))
+                                  if sort_mutations else x[mutation_col]
+                                  )}
+                )
+        # within each barcode, count number of sequences of each mutation combo
+        .groupby(cols + ['_groupcounts', mutation_col])
+        .size()
+        .rename('_sequencecounts')
+        .reset_index()
+        # compute Simpson diversity without replacement for each barcode
+        .groupby(cols + ['_groupcounts'])
+        .apply(lambda x: ((x['_sequencecounts'] * (x['_sequencecounts'] - 1)) /
+                          (x['_groupcounts'] * (x['_groupcounts'] - 1))).sum())
+        .reset_index(name='_simpson_diversity')
+        # compute weighted average of fraction identical across all pairs
+        .assign(
+            _npair=lambda x: x['_groupcounts'] * (x['_groupcounts'] - 1) / 2,
+            _weight_diversity=lambda x: x['_npair'] * x['_simpson_diversity'])
+        .groupby(upstream_group_cols)
+        .apply(lambda x: x['_weight_diversity'].sum() / x['_npair'].sum())
+        .reset_index(name='fraction_identical')
+        # estimate accuracy as square root of fraction identical
+        .assign(accuracy=lambda x: numpy.sqrt(x['fraction_identical']))
+        )
+
+    if drop_upstream_col:
+        assert len(upstream_group_cols) == 1
+        result = result.drop(upstream_group_cols, axis='columns')
+
+    return result
+
+
 def simple_mutconsensus(df,
                         *,
                         group_cols=('library', 'barcode'),
