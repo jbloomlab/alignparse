@@ -116,7 +116,7 @@ def cs_op_type(cs_op, *, invalid='raise'):
         return m.lastgroup
 
 
-def cs_op_len(cs_op, *, invalid='raise'):
+def cs_op_len_target(cs_op, *, invalid='raise'):
     """Get length of valid ``cs`` operation.
 
     Parameters
@@ -130,37 +130,42 @@ def cs_op_len(cs_op, *, invalid='raise'):
     Returns
     -------
     int or None
-        Length of given cs_op. This length is based on the reference sequence,
+        Length of given cs_op. This length is based on the target sequence,
         so insertions in the query have length 0 and deletions are the length
-        of the reference sequence deleted from the query. 'None' if `cs_op`
+        of the target sequence deleted from the query. 'None' if `cs_op`
         is invalid and `invalid` is `ignore`.
 
     Example
     -------
-    >>> cs_op_len('*nt')
+    >>> cs_op_len_target('*nt')
     1
-    >>> cs_op_len(':45')
+    >>> cs_op_len_target(':45')
     45
-    >>> cs_op_len('-at')
+    >>> cs_op_len_target('-at')
     2
-    >>> cs_op_len('+gc')
+    >>> cs_op_len_target('+gc')
     0
-    >>> cs_op_len('*nt:45')
+    >>> cs_op_len_target('*nt:45')
     Traceback (most recent call last):
     ...
     ValueError: invalid `cs_op` of *nt:45
-    >>> cs_op_len('*nt:45', invalid='ignore') is None
+    >>> cs_op_len_target('*nt:45', invalid='ignore') is None
     True
 
     """
-    if cs_op_type(cs_op, invalid=invalid) == 'identity':
-        return int(regex.findall(r'[0-9]+', cs_op)[0])
-    elif cs_op_type(cs_op, invalid=invalid) == 'substitution':
+    op_type = cs_op_type(cs_op, invalid=invalid)
+    if op_type == 'identity':
+        return int(cs_op[1:])
+    elif op_type == 'substitution':
         return 1
-    elif cs_op_type(cs_op, invalid=invalid) == 'deletion':
-        return len(regex.findall(r'[acgtn]+', cs_op)[0])
-    elif cs_op_type(cs_op, invalid=invalid) == 'insertion':
+    elif op_type 'deletion':
+        return len(cs_op) - 1
+    elif op_type == 'insertion':
         return 0
+    elif op_type is None:
+        return None
+    else:
+        raise ValueError(f"invalid `op_type` of {op_type}")
 
 
 class Alignment:
