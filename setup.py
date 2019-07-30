@@ -49,6 +49,7 @@ setup(
             'matplotlib>=3.0.0',
             'numpy>=0.13',
             'packaging',
+            'pandas>=0.25',
             'plotnine>=0.5.1',
             'pysam>=0.14',
             ],
