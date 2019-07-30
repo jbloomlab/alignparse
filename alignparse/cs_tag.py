@@ -10,9 +10,9 @@ https://lh3.github.io/minimap2/minimap2.html
 
 """
 
+import numpy as np
 
 import regex
-
 
 _CS_OPS = {
     'identity': ':[0-9]+',
@@ -158,7 +158,7 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
         return int(cs_op[1:])
     elif op_type == 'substitution':
         return 1
-    elif op_type 'deletion':
+    elif op_type == 'deletion':
         return len(cs_op) - 1
     elif op_type == 'insertion':
         return 0
@@ -222,7 +222,7 @@ class Alignment:
         if sam_alignment.has_tag('cs'):
             self.cs = str(sam_alignment.get_tag('cs'))
         elif not sam_alignment.is_unmapped:
-            raise ValueError(f"alignment {self.query_name} is mapped, but"
+            raise ValueError(f"Query {self.query_name} is mapped, but"
                              "has no `cs` tag")
         else:
             self.cs = None
@@ -232,18 +232,32 @@ class Alignment:
         else:
             self._cs_ops = None
 
-        # self._cs_ops_lengths = array
+        if self._cs_ops is not None:
+            self._cs_ops_lengths_target = np.array([cs_op_len_target(op)
+                                                   for op in self._cs_ops])
+        else:
+            self._cs_ops_lengths_target = None
 
-        # build a numpy array of the length in reference of each cs_op,
-        # this could self._cs_op_lengths
+        # currently ends are 0-indexed and exclusive
+        if self._cs_ops_lengths_target is not None:
+            self._cs_ops_ends = self.target_clip5 + \
+                                np.cumsum(self._cs_ops_lengths_target)
+            self._cs_ops_starts = np.append(np.array(self.target_clip5),
+                                            self._cs_ops_ends[:-1])
+        else:
+            self._cs_ops_ends = None
+            self._cs_ops_starts = None
 
-        # you should somehow be able to build self._cs_op_ends
-        # and self._cs_op_starts using reference start plus
-        # numpy.cumsum(self._cs_op_lengths)
+        self._cs_array = np.array([self._cs_ops, self._cs_ops_lengths_target,
+                                   self._cs_ops_starts, self._cs_ops_ends])
 
-        # assert len(self._cs_ops) == len(self._cs_op_lengths)
+        # these assertion statments don't work with the carry through of
+        # `None` for unmapped alignments' cs features
+        # assert len(self._cs_ops) == len(self._cs_ops_lengths_target)
         # assert len(self._cs_ops) == len(self._cs_op_ends)
         # assert len(self._cs_ops) == len(self._cs_op_starts)
+        # assert (self._cs_ops_ends - self._cs_ops_starts).all() == \
+        #   self._cs_ops_lengths_target.all()
 
     def extract_cs(self, start, end, *,
                    max_clip5=0, max_clip3=0):
