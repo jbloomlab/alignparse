@@ -116,6 +116,53 @@ def cs_op_type(cs_op, *, invalid='raise'):
         return m.lastgroup
 
 
+def cs_op_len(cs_op, *, invalid='raise'):
+    """Get length of valid ``cs`` operation.
+
+    Parameters
+    ----------
+    cs_op : str
+        A **single** operation ina  short ``cs`` tag.
+    invalid : {'raise', 'ignore'}
+        If `cs_string` is not a valid string, raise an error or ignore it
+        and return `None`.
+
+    Returns
+    -------
+    int or None
+        Length of given cs_op. This length is based on the reference sequence,
+        so insertions in the query have length 0 and deletions are the length
+        of the reference sequence deleted from the query. 'None' if `cs_op`
+        is invalid and `invalid` is `ignore`.
+
+    Example
+    -------
+    >>> cs_op_len('*nt')
+    1
+    >>> cs_op_len(':45')
+    45
+    >>> cs_op_len('-at')
+    2
+    >>> cs_op_len('+gc')
+    0
+    >>> cs_op_len('*nt:45')
+    Traceback (most recent call last):
+    ...
+    ValueError: invalid `cs_op` of *nt:45
+    >>> cs_op_len('*nt:45', invalid='ignore') is None
+    True
+
+    """
+    if cs_op_type(cs_op, invalid=invalid) == 'identity':
+        return int(regex.findall(r'[0-9]+', cs_op)[0])
+    elif cs_op_type(cs_op, invalid=invalid) == 'substitution':
+        return 1
+    elif cs_op_type(cs_op, invalid=invalid) == 'deletion':
+        return len(regex.findall(r'[acgtn]+', cs_op)[0])
+    elif cs_op_type(cs_op, invalid=invalid) == 'insertion':
+        return 0
+
+
 class Alignment:
     """Process a SAM alignment with a ``cs`` tag to extract features.
 
@@ -132,8 +179,9 @@ class Alignment:
         Name of query in alignment.
     target_name : str
         Name of alignment target.
-    cs : str
+    cs : str or None
         The ``cs`` tag.
+        None if the query sequence is unmapped.
     query_clip5 : int
         Length at 5' end of query not in alignment.
     query_clip3 : int
@@ -142,6 +190,10 @@ class Alignment:
         Length at 5' end of target not in alignment.
     target_lastpos : int
         Last position of alignment in target (exclusive).
+    orientation : str
+        '+' if raw query sequence aligns to the reference directly.
+        '-' if raw query sequence aligns to the reverse complement.
+        'na' if raw query sequence does not align to reference.
 
     """
 
@@ -155,15 +207,27 @@ class Alignment:
         self.target_clip5 = sam_alignment.reference_start
         self.target_lastpos = sam_alignment.reference_end
 
-        if sam_alignment.is_reverse:
-            raise ValueError(f"alignment {self.name} is reverse orientation")
+        if sam_alignment.is_unmapped:
+            self.orientation = 'na'
+        elif sam_alignment.is_reverse:
+            self.orientation = '-'
+        else:
+            self.orientation = '+'
 
         if sam_alignment.has_tag('cs'):
-            self.cs = sam_alignment.get_tag('cs')
+            self.cs = str(sam_alignment.get_tag('cs'))
+        elif not sam_alignment.is_unmapped:
+            raise ValueError(f"alignment {self.query_name} is mapped, but"
+                             "has no `cs` tag")
         else:
-            raise ValueError(f"alignment {self.name} has no `cs` tag")
+            self.cs = None
 
-        # build something that is self._cs_ops from split_cs
+        if self.cs is not None:
+            self._cs_ops = split_cs(self.cs)
+        else:
+            self._cs_ops = None
+
+        # self._cs_ops_lengths = array
 
         # build a numpy array of the length in reference of each cs_op,
         # this could self._cs_op_lengths
@@ -172,9 +236,9 @@ class Alignment:
         # and self._cs_op_starts using reference start plus
         # numpy.cumsum(self._cs_op_lengths)
 
-        assert len(self._cs_ops) == len(self._cs_op_lengths)
-        assert len(self._cs_ops) == len(self._cs_op_ends)
-        assert len(self._cs_ops) == len(self._cs_op_starts)
+        # assert len(self._cs_ops) == len(self._cs_op_lengths)
+        # assert len(self._cs_ops) == len(self._cs_op_ends)
+        # assert len(self._cs_ops) == len(self._cs_op_starts)
 
     def extract_cs(self, start, end, *,
                    max_clip5=0, max_clip3=0):
