@@ -248,9 +248,6 @@ class Alignment:
             self._cs_ops_ends = None
             self._cs_ops_starts = None
 
-        self._cs_array = np.array([self._cs_ops, self._cs_ops_lengths_target,
-                                   self._cs_ops_starts, self._cs_ops_ends])
-
         # these assertion statments don't work with the carry through of
         # `None` for unmapped alignments' cs features
         # assert len(self._cs_ops) == len(self._cs_ops_lengths_target)
@@ -285,12 +282,32 @@ class Alignment:
             `max_clip3`), return `None`.
 
         """
+        # return `None` if alignment starts more than `maxclip5` from start
+        # of feature or ends more than `maxclip3` from end of feature
+        if np.amin(self._cs_ops_starts) > (start + max_clip5):
+            feature_cs = None
+        elif np.amax(self._cs_ops_ends) < (end - max_clip3):
+            feature_cs = None
+        else:
+            start_dif = np.abs(self._cs_ops_starts - start)
+            end_dif = np.abs(self._cs_ops_ends - end)
+            end_idx = end_dif.argmin()
+            if np.amin(start_dif) == 0 and np.amin(end_dif) == 0:
+                start_idx = start_dif.argmin()
+                end_idx = end_dif.argmin()
+            else:
+                raise RuntimeError("Splitting cs ops not yet implemented")
+            feature_cs = self._cs_ops[start_idx: end_idx + 1]
+        return feature_cs
+
         # identify operations to include using numpy.argmin / argmax
         # on self.cs_op_starts / self._cs_op_ends
         # make sure we have indexing correct (0- or 1-based)
 
+        # cs indexing is 0-based, but target sequence indexing is 1-based,
+        # so may need to convert somewhat to go to consensus form
+
         # when you handle insertions on ends, document that
-        raise RuntimeError('not yet implemented')
 
 
 if __name__ == '__main__':
