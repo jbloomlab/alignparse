@@ -291,7 +291,6 @@ class Alignment:
         else:
             start_dif = np.abs(self._cs_ops_starts - start)
             end_dif = np.abs(self._cs_ops_ends - end)
-            end_idx = end_dif.argmin()
             if np.amin(start_dif) == 0 and np.amin(end_dif) == 0:
                 start_idx = start_dif.argmin()
                 end_idx = end_dif.argmin()
