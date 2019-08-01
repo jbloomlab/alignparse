@@ -257,7 +257,7 @@ class Alignment:
         #   self._cs_ops_lengths_target.all()
 
     def extract_cs(self, start, end, *,
-                   max_clip5=0, max_clip3=0):
+                   maxclip5=0, maxclip3=0):
         """Extract ``cs`` tag corresponding to feature in target.
 
         Parameters
@@ -266,11 +266,11 @@ class Alignment:
             Start of feature in target in 0, 1, ... numbering.
         end : int
             End of feature in target (not inclusive of this site).
-        max_clip5 : int
+        maxclip5 : int
             If alignment does not fully cover 5' end of feature,
             add gaps to returned ``cs`` string for uncovered region
             up to this length.
-        max_clip3 : int
+        maxclip3 : int
             Like `max_clip5` but for 3' end of feature.
 
         Returns
@@ -282,21 +282,34 @@ class Alignment:
             `max_clip3`), return `None`.
 
         """
-        # return `None` if alignment starts more than `maxclip5` from start
-        # of feature or ends more than `maxclip3` from end of feature
-        if numpy.amin(self._cs_ops_starts) > (start + max_clip5):
-            feature_cs = None
-        elif numpy.amax(self._cs_ops_ends) < (end - max_clip3):
-            feature_cs = None
+        # if feature start in cs, get idx for start
+        if start in self._cs_ops_starts:
+            start_idx = int(numpy.asarray(start == self._cs_ops_starts).
+                            nonzero()[0])
+        # if feature start more than maxclip5 before start of cs, return None
+        elif start < (numpy.amin(self._cs_ops_starts) - maxclip5):
+            return None
+        # if feature start after cs, return None 
+        elif start > numpy.amax(self._cs_ops_ends):
+            return None
         else:
-            start_dif = numpy.abs(self._cs_ops_starts - start)
-            end_dif = numpy.abs(self._cs_ops_ends - end)
-            if numpy.amin(start_dif) == 0 and numpy.amin(end_dif) == 0:
-                start_idx = start_dif.argmin()
-                end_idx = end_dif.argmin()
-            else:
-                raise RuntimeError("Splitting cs ops not yet implemented")
-            feature_cs = self._cs_ops[start_idx: end_idx + 1]
+            raise RuntimeError('Splitting cs ops not yet implemented (starts)')
+
+        # if feature end in cs, get idx for end
+        if end in self._cs_ops_ends:
+            end_idx = int(numpy.asarray(end == self._cs_ops_starts).
+                          nonzero()[0])
+        # if feature end more than maxclip3 after end of cs, return None
+        elif end > (numpy.amax(self._cs_ops_ends) + maxclip3):
+            return None
+        # if feature end before cs, return None
+        elif end < numpy.amin(self._cs_ops_starts):
+            return None
+        else:
+            raise RuntimeError('Splitting cs ops not yet implemented (ends)')
+
+        feature_cs = self._cs_ops[start_idx: end_idx]
+
         return feature_cs
 
         # identify operations to include using numpy.argmin / argmax
