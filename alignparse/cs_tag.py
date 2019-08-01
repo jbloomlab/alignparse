@@ -257,7 +257,7 @@ class Alignment:
         #   self._cs_ops_lengths_target.all()
 
     def extract_cs(self, start, end, *,
-                   maxclip5=0, maxclip3=0):
+                   max_clip5=0, max_clip3=0):
         """Extract ``cs`` tag corresponding to feature in target.
 
         Parameters
@@ -266,11 +266,11 @@ class Alignment:
             Start of feature in target in 0, 1, ... numbering.
         end : int
             End of feature in target (not inclusive of this site).
-        maxclip5 : int
+        max_clip5 : int
             If alignment does not fully cover 5' end of feature,
             add gaps to returned ``cs`` string for uncovered region
             up to this length.
-        maxclip3 : int
+        max_clip3 : int
             Like `max_clip5` but for 3' end of feature.
 
         Returns
@@ -286,10 +286,10 @@ class Alignment:
         if start in self._cs_ops_starts:
             start_idx = int(numpy.asarray(start == self._cs_ops_starts).
                             nonzero()[0])
-        # if feature start more than maxclip5 before start of cs, return None
-        elif start < (numpy.amin(self._cs_ops_starts) - maxclip5):
+        # if feature start more than max_clip5 before start of cs, return None
+        elif start < (numpy.amin(self._cs_ops_starts) - max_clip5):
             return None
-        # if feature start after cs, return None 
+        # if feature start after cs, return None
         elif start > numpy.amax(self._cs_ops_ends):
             return None
         else:
@@ -299,8 +299,8 @@ class Alignment:
         if end in self._cs_ops_ends:
             end_idx = int(numpy.asarray(end == self._cs_ops_starts).
                           nonzero()[0])
-        # if feature end more than maxclip3 after end of cs, return None
-        elif end > (numpy.amax(self._cs_ops_ends) + maxclip3):
+        # if feature end more than max_clip3 after end of cs, return None
+        elif end > (numpy.amax(self._cs_ops_ends) + max_clip3):
             return None
         # if feature end before cs, return None
         elif end < numpy.amin(self._cs_ops_starts):
