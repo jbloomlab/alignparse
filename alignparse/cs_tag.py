@@ -10,7 +10,7 @@ https://lh3.github.io/minimap2/minimap2.html
 
 """
 
-import numpy as np
+import numpy
 
 import regex
 
@@ -233,17 +233,17 @@ class Alignment:
             self._cs_ops = None
 
         if self._cs_ops is not None:
-            self._cs_ops_lengths_target = np.array([cs_op_len_target(op)
-                                                   for op in self._cs_ops])
+            self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)
+                                                      for op in self._cs_ops])
         else:
             self._cs_ops_lengths_target = None
 
         # currently ends are 0-indexed and exclusive
         if self._cs_ops_lengths_target is not None:
             self._cs_ops_ends = self.target_clip5 + \
-                                np.cumsum(self._cs_ops_lengths_target)
-            self._cs_ops_starts = np.append(np.array(self.target_clip5),
-                                            self._cs_ops_ends[:-1])
+                                numpy.cumsum(self._cs_ops_lengths_target)
+            self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
+                                               self._cs_ops_ends[:-1])
         else:
             self._cs_ops_ends = None
             self._cs_ops_starts = None
@@ -284,14 +284,14 @@ class Alignment:
         """
         # return `None` if alignment starts more than `maxclip5` from start
         # of feature or ends more than `maxclip3` from end of feature
-        if np.amin(self._cs_ops_starts) > (start + max_clip5):
+        if numpy.amin(self._cs_ops_starts) > (start + max_clip5):
             feature_cs = None
-        elif np.amax(self._cs_ops_ends) < (end - max_clip3):
+        elif numpy.amax(self._cs_ops_ends) < (end - max_clip3):
             feature_cs = None
         else:
-            start_dif = np.abs(self._cs_ops_starts - start)
-            end_dif = np.abs(self._cs_ops_ends - end)
-            if np.amin(start_dif) == 0 and np.amin(end_dif) == 0:
+            start_dif = numpy.abs(self._cs_ops_starts - start)
+            end_dif = numpy.abs(self._cs_ops_ends - end)
+            if numpy.amin(start_dif) == 0 and numpy.amin(end_dif) == 0:
                 start_idx = start_dif.argmin()
                 end_idx = end_dif.argmin()
             else:
