@@ -275,13 +275,18 @@ class Alignment:
 
         Returns
         -------
-        str or `None`
+        list or `None`
             If region of target covered by feature is aligned, return
-            str with ``cs`` tag for this portion of alignment. If that region
+            list with ``cs`` tag for this portion of alignment. If that region
             is not covered (even adding any padding from `max_clip5` /
             `max_clip3`), return `None`.
 
         """
+        assert max_clip3 == 0 and max_clip5 == 0,\
+            'Clipping not yet implemented.'
+
+        split_start = False
+        split_end = False
         # if feature start in cs, get idx for start
         if start in self._cs_ops_starts:
             start_idx = int(numpy.asarray(start == self._cs_ops_starts).
@@ -293,11 +298,30 @@ class Alignment:
         elif start > numpy.amax(self._cs_ops_ends):
             return None
         else:
-            raise RuntimeError('Splitting cs ops not yet implemented (starts)')
+            split_start = True
+            feature_cs = []
+            start_idx = numpy.abs(start - self._cs_ops_starts).argmin()
+            start_overlap = start - self._cs_ops_starts[start_idx]
+            if start_overlap < 0:  # feat starts in cs_op prior to start_idx
+                start_idx = start_idx - 1
+                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                    feature_cs.append(f":{numpy.abs(start_overlap)}")
+                else:
+                    raise RuntimeError('Splitting insertions or deletions'
+                                       'not yet implemented.')
+            elif start_overlap > 0:  # feature starts in start_idx cs_op
+                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                    feature_cs.append(f":{self._cs_ops_lengths_target[start_idx] - start_overlap}")
+                else:
+                    raise RuntimeError('Splitting insertions or deletions'
+                                       'not yet implemented.')
+            else:
+                raise ValueError(f'Start overlap of {start_overlap} does not'
+                                 'require splitting.')
 
         # if feature end in cs, get idx for end
         if end in self._cs_ops_ends:
-            end_idx = int(numpy.asarray(end == self._cs_ops_starts).
+            end_idx = int(numpy.asarray(end == self._cs_ops_ends).
                           nonzero()[0])
         # if feature end more than max_clip3 after end of cs, return None
         elif end > (numpy.amax(self._cs_ops_ends) + max_clip3):
@@ -306,9 +330,43 @@ class Alignment:
         elif end < numpy.amin(self._cs_ops_starts):
             return None
         else:
-            raise RuntimeError('Splitting cs ops not yet implemented (ends)')
+            split_end = True
+            feat_cs_end = []
+            end_idx = numpy.abs(end - self._cs_ops_ends).argmin()
+            end_overlap = end - self._cs_ops_ends[end_idx]
+            if end_overlap > 0:  # feature ends in next cs_op
+                end_idx = end_idx + 1
+                if cs_op_type(self._cs_ops[end_idx]) == 'identity':
+                    feat_cs_end.append(f":{end_overlap}")
+                else:
+                    raise RuntimeError('Splitting insertions or deletions'
+                                       'not yet implemented.')
+            elif end_overlap < 0:  # feature ends in this cs_op
+                if cs_op_type(self._cs_ops[end_idx]) == 'identity':
+                    feat_cs_end.append(f":{self._cs_ops_lengths_target[end_idx] + end_overlap}")
+                else:
+                    raise RuntimeError('Splitting insertions or deletions'
+                                       'not yet implemented.')
 
-        feature_cs = self._cs_ops[start_idx: end_idx]
+        if not split_start and not split_end:
+            feature_cs = self._cs_ops[start_idx: end_idx + 1]
+        elif split_start and not split_end:
+            feature_cs.extend(self._cs_ops[start_idx + 1: end_idx + 1])
+        elif split_end and not split_start:
+            feature_cs = self._cs_ops[start_idx: end_idx]
+            feature_cs.extend(feat_cs_end)
+        elif split_start and split_end:
+            if start_idx == end_idx:
+                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                    feature_cs = [f":{end-start}"]
+                else:  # entire feature deleted in query
+                    return None
+            else:
+                feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
+                feature_cs.extend(feat_cs_end)
+        else:
+            raise RuntimeError("`cs` extraction did not work."
+                               "Split booleans invalid.")
 
         return feature_cs
 
