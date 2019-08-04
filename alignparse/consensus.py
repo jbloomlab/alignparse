@@ -20,6 +20,9 @@ import numpy
 
 import pandas as pd
 
+import scipy.optimize
+import scipy.special
+
 
 Mutations = collections.namedtuple(
                         'Mutations',
@@ -216,14 +219,142 @@ def add_mut_info_cols(df,
             )
 
 
-def fracident(df,
-              *,
-              group_cols='barcode',
-              upstream_group_cols='library',
-              mutation_col='mutations',
-              sort_mutations=True,
-              ):
-    """Fraction of sequences with identical mutations in group (i.e., barcode).
+class _LnL_error_rate:
+    """Log likelihood of sequences per group as function of error rate.
+
+    Note
+    ----
+    Used as utility function for computing the empirical accuracy by
+    :func:`empirical_accuracy`. See the docs for that function to understand
+    the notation / nomenclature used here.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        A different row for each group of sequences.
+    n_col : str
+        Column in `df` with number of sequences per group.
+    u_col : str
+        Column in `df` with number of unique sequences per group.
+    count_col : str
+        Column in `df` with number of groups with this value of :math:`n`
+        and :math:`u`.
+
+    Example
+    -------
+    >>> df = pd.DataFrame(
+    ...         [[4, 3, 1],
+    ...          [4, 2, 2],
+    ...          [4, 1, 1],
+    ...          ],
+    ...         columns=['n', 'u', 'count'],
+    ...         )
+    >>> lnl = _LnL_error_rate(df, n_col='n', u_col='u', count_col='count')
+    >>> round(lnl.maxlik_eps(), 3)
+    0.25
+
+    """
+
+    def __init__(self, df, *, n_col, u_col, count_col):
+        """See main class docstring."""
+        self._df = (
+            df
+            .assign(
+                n=lambda x: x[n_col],
+                u=lambda x: x[u_col],
+                count=lambda x: x[count_col],
+                binom=lambda x: scipy.special.binom(x['n'], x['u'] - 1),
+                delta_un=lambda x: (x['n'] == x['u']).astype(int),
+                )
+            )
+
+    def lnlik(self, eps):
+        """Log likelihood for error rate `eps`."""
+        return sum(self._df['count'] *
+                   numpy.log(self._df['binom'] *
+                             (1 - eps)**(self._df['n'] - self._df['u'] + 1) *
+                             eps**(self._df['u'] - 1) +
+                             self._df['delta_un'] * eps**self._df['n']
+                             )
+                   )
+
+    def neg_lnlik(self, eps):
+        """Negative log likelihood for error rate `epsilon`."""
+        return -self.lnlik(eps)
+
+    def maxlik_eps(self):
+        """Maximum likelihood value of error rate `epsilon`."""
+        res = scipy.optimize.minimize_scalar(self.neg_lnlik,
+                                             bounds=(1e-8, 1 - 1e-8),
+                                             method='bounded')
+        if not res.success:
+            raise RuntimeError(f"optimization failed:\n{res}")
+        return res.x
+
+
+def empirical_accuracy(df,
+                       *,
+                       group_cols='barcode',
+                       upstream_group_cols='library',
+                       mutation_col='mutations',
+                       accuracy_col='accuracy',
+                       sort_mutations=True,
+                       ):
+    r"""Accuracy from number of identical sequences in a group (i.e., barcode).
+
+    Note
+    ----
+    The accuracy :math:`1 - \epsilon` is calculated as follows:
+
+    Let :math:`\epsilon` be the probability a sequence has an error.
+    Consider a group of :math:`n` sequences that should be identical in
+    the absence of errors (i.e., they all have the same barcode), and
+    assume errors only make sequences **different** (the chance of two
+    sequences having the same error is very low). We would like to
+    calculate the probability of observing :math:`u` unique sequences in
+    the group given :math:`\epsilon` and :math:`n`.
+
+    First, consider the case where there are two sequences in the group
+    (:math:`n = 2`). The probability of having :math:`u = 1` unique
+    sequences in the group is the probability that neither have an error:
+
+    .. math::
+
+       \Pr\left(u=1 | n=2, \epsilon\right) = \left(1 - \epsilon\right)^2.
+
+    The probability of having :math:`u = 2` unique sequences is the
+    the probability that either one or both have errors:
+
+    .. math::
+
+       \Pr\left(u=2 | n=2, \epsilon\right) = 2\left(1 - \epsilon\right)\epsilon
+       + \epsilon^2.
+
+    Generalizing to arbitrary :math:`n`, we have:
+
+    .. math::
+
+       \Pr\left(u | n, \epsilon\right) = \binom{n}{u-1}
+       \left(1 - \epsilon\right)^{n - u + 1} \epsilon^{u - 1} +
+       \delta_{un} \epsilon^n
+
+    where :math:`\binom{n}{u-1}` is the binomial coefficient and
+    :math:`\delta_{un}` is the Kronecker delta.
+
+    Let there be :math:`G` groups of sequences, with the size and number
+    of unique sequences in group :math:`g` be :math:`n_g` and :math:`u_g`
+    (where :math:`g = 1, \ldots, G`).
+    The overall likelihood :math:`L` of the observed numbers of unique
+    sequences given the group sizes and error rate is:
+
+    .. math::
+
+       L &=& \Pr\left(\left\{u_g\right\}|\left\{n_g\right\},\epsilon\right) \\
+       &=& \prod_g \Pr\left(u_g | n_g, \epsilon\right).
+
+    To find the maximum likelihood of error rate, we simply use numerical
+    optimization to find the value of :math:`\epsilon` that maximizes
+    :math:`L`. In practice, we actually maximize :math:`\ln\left(L\right)`.
 
     Parameters
     ----------
@@ -238,7 +369,9 @@ def fracident(df,
         will be returned for each of these upstream groups.
     mutation_col : str
         Column in `df` that we compare when determining if sequences are
-        identical.
+        identical. Typically list of mutations or sequences themselves.
+    accuracy_col : str
+        Name of column in returned data frame that gives empirical accuracy.
     sort_mutations : bool
         Useful if you have strings of space-delimited mutations not guaranteed
         to be consistently ordered. If `True`, sort such space-delimited
@@ -247,33 +380,27 @@ def fracident(df,
     Returns
     -------
     pandas.DataFrame
-        Gives the fraction identical and implied accuracy of individual
-        sequences. The columns are all all columns in `upstream_group_cols`,
-        plus:
-
-         - 'fraction_identical': average fraction of pairs of sequences in
-           same group that are identical. This is the Simpson diversity index
-           without replacement: https://en.wikipedia.org/wiki/Diversity_index
-
-         - 'accuracy': the square root of the fraction identical, which is
-           the accuracy of each sequence under the assumption that errors
-           always make sequences different.
+        Has all columns in `upstream_group_cols` plus the new column with
+        name given by `accuracy_col`.
 
     Example
     -------
     >>> df = pd.DataFrame({
     ...         'barcode': ['AT', 'AT', 'TG', 'TA', 'TA', 'TA'],
     ...         'mutations': ['A1G', 'A1G', '', 'T2A C6G', 'T5C', 'C6G T2A']})
-    >>> fracident(df, upstream_group_cols=None)
-       fraction_identical  accuracy
-    0                 0.5  0.707107
+    >>> with pd.option_context('precision', 4):
+    ...     empirical_accuracy(df, upstream_group_cols=None)
+       accuracy
+    0    0.7692
 
     If we do the same without sorting the mutations, we get lower values
     as 'T2A C6G' and 'C6G T2A' are then considered as different:
 
-    >>> fracident(df, upstream_group_cols=None, sort_mutations=False)
-       fraction_identical  accuracy
-    0                0.25       0.5
+    >>> with pd.option_context('precision', 4):
+    ...     empirical_accuracy(df, upstream_group_cols=None,
+    ...                        sort_mutations=False)
+       accuracy
+    0    0.4766
 
     Now another example with two libraries and non-standard column
     names. Note that we only get results for the two libraries
@@ -283,24 +410,24 @@ def fracident(df,
     ...     'bc'  :['AT', 'AT', 'TG', 'TA', 'TA', 'TA', 'TA'],
     ...     'var' :['v1', 'v1', 'v2', 'v3', 'v4', 'v3', 'v3'],
     ...     'lib' :['s1', 's1', 's2', 's3', 's3', 's3', 's4']})
-    >>> fracident(df2, upstream_group_cols='lib', group_cols='bc',
-    ...           mutation_col='var', sort_mutations=False)
-      lib  fraction_identical  accuracy
-    0  s1            1.000000   1.00000
-    1  s3            0.333333   0.57735
+    >>> with pd.option_context('precision', 4):
+    ...     empirical_accuracy(df2, upstream_group_cols='lib', group_cols='bc',
+    ...                        mutation_col='var', sort_mutations=False)
+      lib  accuracy
+    0  s1    1.0000
+    1  s3    0.6667
 
     """
-    # column names used in calculations below
-    reserved_cols = ['_groupcounts', '_sequencecounts', '_npair',
-                     '_simpson_diversity', '_weight_diversity', '_dummy',
-                     'accuracy', 'fraction_identical']
+    reserved_cols = ['_n', '_u', '_ngroups', '_dummy']
     for col in reserved_cols:
         if col in df.columns:
             raise ValueError(f"`df` cannot have column named {col}")
 
+    if accuracy_col in df.columns:
+        raise ValueError(f"`df` has column `accuracy_col` {accuracy_col}")
+
     if isinstance(group_cols, str):
         group_cols = [group_cols]
-
     if (upstream_group_cols is None) or upstream_group_cols == []:
         drop_upstream_col = True
         upstream_group_cols = '_dummy'
@@ -321,10 +448,10 @@ def fracident(df,
 
     result = (
         df
-        # get just sequences that have a barcode found multiple times
-        .assign(_groupcounts=1)
-        .assign(_groupcounts=lambda x: x.groupby(cols).transform('count'))
-        .query('_groupcounts > 1')
+        # number of sequences in each group
+        .assign(_n=lambda x: x.groupby(cols)[mutation_col].transform('count'))
+        # only retain groups with >1 sequence
+        .query('_n > 1')
         # sort mutations
         .assign(**{mutation_col: (lambda x:
                                   x[mutation_col]
@@ -332,25 +459,25 @@ def fracident(df,
                                   if sort_mutations else x[mutation_col]
                                   )}
                 )
-        # within each barcode, count number of sequences of each mutation combo
-        .groupby(cols + ['_groupcounts', mutation_col])
+        # number of unique sequences in each group
+        .assign(_u=lambda x: (x.groupby(cols)[mutation_col]
+                              .transform('nunique'))
+                )
+        # number of groups with each combination of n and u
+        .groupby(upstream_group_cols + ['_n', '_u'])
         .size()
-        .rename('_sequencecounts')
+        .rename('_ngroups')
         .reset_index()
-        # compute Simpson diversity without replacement for each barcode
-        .groupby(cols + ['_groupcounts'])
-        .apply(lambda x: ((x['_sequencecounts'] * (x['_sequencecounts'] - 1)) /
-                          (x['_groupcounts'] * (x['_groupcounts'] - 1))).sum())
-        .reset_index(name='_simpson_diversity')
-        # compute weighted average of fraction identical across all pairs
-        .assign(
-            _npair=lambda x: x['_groupcounts'] * (x['_groupcounts'] - 1) / 2,
-            _weight_diversity=lambda x: x['_npair'] * x['_simpson_diversity'])
+        # get error rate
         .groupby(upstream_group_cols)
-        .apply(lambda x: x['_weight_diversity'].sum() / x['_npair'].sum())
-        .reset_index(name='fraction_identical')
-        # estimate accuracy as square root of fraction identical
-        .assign(accuracy=lambda x: numpy.sqrt(x['fraction_identical']))
+        .apply(lambda x: 1 - _LnL_error_rate(x,
+                                             n_col='_n',
+                                             u_col='_u',
+                                             count_col='_ngroups'
+                                             ).maxlik_eps()
+               )
+        .rename(accuracy_col)
+        .reset_index()
         )
 
     if drop_upstream_col:

@@ -52,6 +52,7 @@ setup(
             'pandas>=0.25',
             'plotnine>=0.5.1',
             'pysam>=0.14',
+            'scipy>=1.2',
             ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],
