@@ -10,9 +10,9 @@ https://lh3.github.io/minimap2/minimap2.html
 
 """
 
+import numpy
 
 import regex
-
 
 _CS_OPS = {
     'identity': ':[0-9]+',
@@ -116,6 +116,58 @@ def cs_op_type(cs_op, *, invalid='raise'):
         return m.lastgroup
 
 
+def cs_op_len_target(cs_op, *, invalid='raise'):
+    """Get length of valid ``cs`` operation.
+
+    Parameters
+    ----------
+    cs_op : str
+        A **single** operation ina  short ``cs`` tag.
+    invalid : {'raise', 'ignore'}
+        If `cs_string` is not a valid string, raise an error or ignore it
+        and return `None`.
+
+    Returns
+    -------
+    int or None
+        Length of given cs_op. This length is based on the target sequence,
+        so insertions in the query have length 0 and deletions are the length
+        of the target sequence deleted from the query. 'None' if `cs_op`
+        is invalid and `invalid` is `ignore`.
+
+    Example
+    -------
+    >>> cs_op_len_target('*nt')
+    1
+    >>> cs_op_len_target(':45')
+    45
+    >>> cs_op_len_target('-at')
+    2
+    >>> cs_op_len_target('+gc')
+    0
+    >>> cs_op_len_target('*nt:45')
+    Traceback (most recent call last):
+    ...
+    ValueError: invalid `cs_op` of *nt:45
+    >>> cs_op_len_target('*nt:45', invalid='ignore') is None
+    True
+
+    """
+    op_type = cs_op_type(cs_op, invalid=invalid)
+    if op_type == 'identity':
+        return int(cs_op[1:])
+    elif op_type == 'substitution':
+        return 1
+    elif op_type == 'deletion':
+        return len(cs_op) - 1
+    elif op_type == 'insertion':
+        return 0
+    elif op_type is None:
+        return None
+    else:
+        raise ValueError(f"invalid `op_type` of {op_type}")
+
+
 class Alignment:
     """Process a SAM alignment with a ``cs`` tag to extract features.
 
@@ -132,8 +184,9 @@ class Alignment:
         Name of query in alignment.
     target_name : str
         Name of alignment target.
-    cs : str
+    cs : str or None
         The ``cs`` tag.
+        None if the query sequence is unmapped.
     query_clip5 : int
         Length at 5' end of query not in alignment.
     query_clip3 : int
@@ -142,6 +195,10 @@ class Alignment:
         Length at 5' end of target not in alignment.
     target_lastpos : int
         Last position of alignment in target (exclusive).
+    orientation : str
+        '+' if raw query sequence aligns to the reference directly.
+        '-' if raw query sequence aligns to the reverse complement.
+        'na' if raw query sequence does not align to reference.
 
     """
 
@@ -155,26 +212,49 @@ class Alignment:
         self.target_clip5 = sam_alignment.reference_start
         self.target_lastpos = sam_alignment.reference_end
 
-        if sam_alignment.is_reverse:
-            raise ValueError(f"alignment {self.name} is reverse orientation")
+        if sam_alignment.is_unmapped:
+            self.orientation = 'na'
+        elif sam_alignment.is_reverse:
+            self.orientation = '-'
+        else:
+            self.orientation = '+'
 
         if sam_alignment.has_tag('cs'):
-            self.cs = sam_alignment.get_tag('cs')
+            self.cs = str(sam_alignment.get_tag('cs'))
+        elif not sam_alignment.is_unmapped:
+            raise ValueError(f"Query {self.query_name} is mapped, but"
+                             "has no `cs` tag")
         else:
-            raise ValueError(f"alignment {self.name} has no `cs` tag")
+            self.cs = None
 
-        # build something that is self._cs_ops from split_cs
+        if self.cs is not None:
+            self._cs_ops = split_cs(self.cs)
+        else:
+            self._cs_ops = None
 
-        # build a numpy array of the length in reference of each cs_op,
-        # this could self._cs_op_lengths
+        if self._cs_ops is not None:
+            self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)
+                                                      for op in self._cs_ops])
+        else:
+            self._cs_ops_lengths_target = None
 
-        # you should somehow be able to build self._cs_op_ends
-        # and self._cs_op_starts using reference start plus
-        # numpy.cumsum(self._cs_op_lengths)
+        # currently ends are 0-indexed and exclusive
+        if self._cs_ops_lengths_target is not None:
+            self._cs_ops_ends = self.target_clip5 + \
+                                numpy.cumsum(self._cs_ops_lengths_target)
+            self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
+                                               self._cs_ops_ends[:-1])
+        else:
+            self._cs_ops_ends = None
+            self._cs_ops_starts = None
 
-        assert len(self._cs_ops) == len(self._cs_op_lengths)
-        assert len(self._cs_ops) == len(self._cs_op_ends)
-        assert len(self._cs_ops) == len(self._cs_op_starts)
+        # these assertion statments don't work with the carry through of
+        # `None` for unmapped alignments' cs features
+        # assert len(self._cs_ops) == len(self._cs_ops_lengths_target)
+        # assert len(self._cs_ops) == len(self._cs_op_ends)
+        # assert len(self._cs_ops) == len(self._cs_op_starts)
+        # assert (self._cs_ops_ends - self._cs_ops_starts).all() == \
+        #   self._cs_ops_lengths_target.all()
 
     def extract_cs(self, start, end, *,
                    max_clip5=0, max_clip3=0):
@@ -195,19 +275,125 @@ class Alignment:
 
         Returns
         -------
-        str or `None`
+        list or `None`
             If region of target covered by feature is aligned, return
-            str with ``cs`` tag for this portion of alignment. If that region
+            list with ``cs`` tag for this portion of alignment. If that region
             is not covered (even adding any padding from `max_clip5` /
             `max_clip3`), return `None`.
 
         """
+        split_start = False
+        split_end = False
+        # if feature start in cs, get idx for start
+        if start in self._cs_ops_starts:
+            start_idx = int(numpy.asarray(start == self._cs_ops_starts).
+                            nonzero()[0])
+        # if feature start after cs, return None
+        elif start > numpy.amax(self._cs_ops_ends):
+            return None
+        else:
+            split_start = True
+            feature_cs = []
+            start_idx = numpy.abs(start - self._cs_ops_starts).argmin()
+            start_overlap = start - self._cs_ops_starts[start_idx]
+            if start_overlap < 0:  # feat starts in cs_op prior to start_idx
+                if start_idx == numpy.argmin(self._cs_ops_starts):
+                    # don't have target seq here, specify gaps at ends with 'n's
+                    if start >= (numpy.amin(self._cs_ops_starts) - max_clip5):
+                        feature_cs.append(f"-{'n'*(-start_overlap)}")
+                    else:
+                        return None
+                else:
+                    start_idx = start_idx - 1
+                    if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                        feature_cs.append(f":{numpy.abs(start_overlap)}")
+                    else:
+                        raise RuntimeError('Splitting insertions or deletions'
+                                           'not yet implemented.')
+            elif start_overlap > 0:  # feature starts in start_idx cs_op
+                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                    feature_cs.append(f":{self._cs_ops_lengths_target[start_idx] - start_overlap}")
+                else:
+                    raise RuntimeError('Splitting insertions or deletions'
+                                       'not yet implemented.')
+            else:
+                raise ValueError(f'Start overlap of {start_overlap} does not'
+                                 'require splitting.')
+
+        # if feature end in cs, get idx for end
+        if end in self._cs_ops_ends:
+            end_idx = int(numpy.asarray(end == self._cs_ops_ends).
+                          nonzero()[0])
+        # if feature end before cs, return None
+        elif end < numpy.amin(self._cs_ops_starts):
+            return None
+        else:
+            split_end = True
+            feat_cs_end = []
+            end_idx = numpy.abs(end - self._cs_ops_ends).argmin()
+            end_overlap = end - self._cs_ops_ends[end_idx]
+            if end_overlap > 0:  # feature ends in next cs_op
+                if end_idx == numpy.argmax(self._cs_ops_ends):
+                    if end <= (numpy.amax(self._cs_ops_ends) + max_clip3):
+                        # don't have target seq here, specify gaps at ends with number
+                        feat_cs_end.append(f"-{end_overlap}") 
+                    else:  # end of feature is beyond end of alignment + max_clip3
+                        return None
+                else:
+                    end_idx = end_idx + 1
+                    if cs_op_type(self._cs_ops[end_idx]) == 'identity':
+                        feat_cs_end.append(f":{end_overlap}")
+                    elif cs_op_type(self._cs_ops[end_idx]) == 'deletion':
+                        feat_cs_end.append(f"-{self._cs_ops[end_idx][0:end_overlap]}")
+                    elif cs_op_type(self._cs_ops[end_idx]) == 'insertion':
+                        raise RuntimeError("Splitting insertions not implemented.")
+                    else:
+                        raise ValueError(f"op_type {cs_op_type(self._cs_ops[end_idx])}"
+                                         "cannot be split.")
+            elif end_overlap < 0:  # feature ends in this cs_op
+                if cs_op_type(self._cs_ops[end_idx]) == 'identity':
+                    feat_cs_end.append(f":{self._cs_ops_lengths_target[end_idx] + end_overlap}")
+                elif cs_op_type(self._cs_ops[end_idx]) == 'deletion':
+                    feat_cs_end.append(f"-{self._cs_ops[end_idx][0:(self._cs_ops_lengths_target[end_idx]+end_overlap)]}")
+                elif cs_op_type(self._cs_ops[end_idx]) == 'insertion':
+                    raise RuntimeError("Splitting insertions not implemented.")
+                else:
+                    raise ValueError(f"op_type {cs_op_type(self._cs_ops[end_idx])}"
+                                         "cannot be split.")
+            else:
+                raise ValueError(f'End overlap of {end_overlap} does not'
+                                 'require splitting.')
+
+        if not split_start and not split_end:
+            feature_cs = self._cs_ops[start_idx: end_idx + 1]
+        elif split_start and not split_end:
+            feature_cs.extend(self._cs_ops[start_idx + 1: end_idx + 1])
+        elif split_end and not split_start:
+            feature_cs = self._cs_ops[start_idx: end_idx]
+            feature_cs.extend(feat_cs_end)
+        elif split_start and split_end:
+            if start_idx == end_idx:
+                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+                    feature_cs = [f":{end-start}"]
+                else:  # entire feature deleted in query
+                    return None
+            else:
+                feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
+                feature_cs.extend(feat_cs_end)
+        else:
+            raise RuntimeError("`cs` extraction did not work."
+                               "Split booleans invalid.")
+
+        return feature_cs
+
         # identify operations to include using numpy.argmin / argmax
         # on self.cs_op_starts / self._cs_op_ends
         # make sure we have indexing correct (0- or 1-based)
 
+        # cs indexing is 0-based, but target sequence indexing is 1-based,
+        # so may need to convert somewhat to go to consensus form
+
         # when you handle insertions on ends, document that
-        raise RuntimeError('not yet implemented')
 
 
 if __name__ == '__main__':
