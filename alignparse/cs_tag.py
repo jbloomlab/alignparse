@@ -122,7 +122,7 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
     Parameters
     ----------
     cs_op : str
-        A **single** operation ina  short ``cs`` tag.
+        A **single** operation in a short ``cs`` tag.
     invalid : {'raise', 'ignore'}
         If `cs_string` is not a valid string, raise an error or ignore it
         and return `None`.
@@ -176,7 +176,8 @@ class Alignment:
     sam_alignment : pysam.AlignedSegment
         Aligned segment from `pysam <https://pysam.readthedocs.io>`_,
         must have a short format ``cs`` tag (see
-        https://lh3.github.io/minimap2/minimap2.html).
+        https://lh3.github.io/minimap2/minimap2.html). This must be
+        a mapped read, you will get an error if unmapped.
 
     Attributes
     ----------
@@ -184,9 +185,8 @@ class Alignment:
         Name of query in alignment.
     target_name : str
         Name of alignment target.
-    cs : str or None
+    cs : str
         The ``cs`` tag.
-        None if the query sequence is unmapped.
     query_clip5 : int
         Length at 5' end of query not in alignment.
     query_clip3 : int
@@ -195,15 +195,17 @@ class Alignment:
         Length at 5' end of target not in alignment.
     target_lastpos : int
         Last position of alignment in target (exclusive).
-    orientation : str
-        '+' if raw query sequence aligns to the reference directly.
-        '-' if raw query sequence aligns to the reverse complement.
-        'na' if raw query sequence does not align to reference.
+    orientation :  {'+', '-'}
+        Does query align to the reference (+) or reverse complement (-).
 
     """
 
     def __init__(self, sam_alignment):
         """See main class docstring."""
+        if sam_alignment.is_unmapped:
+            raise ValueError(f"`sam_alignment` {sam_alignment.query_name} "
+                             'is unmapped')
+
         self.query_name = sam_alignment.query_name
         self.target_name = sam_alignment.reference_name
         self.query_clip5 = sam_alignment.query_alignment_start
@@ -211,50 +213,28 @@ class Alignment:
                             sam_alignment.query_alignment_end)
         self.target_clip5 = sam_alignment.reference_start
         self.target_lastpos = sam_alignment.reference_end
-
-        if sam_alignment.is_unmapped:
-            self.orientation = 'na'
-        elif sam_alignment.is_reverse:
+        if sam_alignment.is_reverse:
             self.orientation = '-'
         else:
             self.orientation = '+'
+        self.cs = str(sam_alignment.get_tag('cs'))
 
-        if sam_alignment.has_tag('cs'):
-            self.cs = str(sam_alignment.get_tag('cs'))
-        elif not sam_alignment.is_unmapped:
-            raise ValueError(f"Query {self.query_name} is mapped, but"
-                             "has no `cs` tag")
-        else:
-            self.cs = None
+        self._cs_ops = split_cs(self.cs)
+        self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)
+                                                   for op in self._cs_ops])
 
-        if self.cs is not None:
-            self._cs_ops = split_cs(self.cs)
-        else:
-            self._cs_ops = None
+        # sites are 0-indexed and exclusive
+        self._cs_ops_ends = (self.target_clip5 +
+                             numpy.cumsum(self._cs_ops_lengths_target))
+        self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
+                                           self._cs_ops_ends[:-1])
 
-        if self._cs_ops is not None:
-            self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)
-                                                      for op in self._cs_ops])
-        else:
-            self._cs_ops_lengths_target = None
-
-        # currently ends are 0-indexed and exclusive
-        if self._cs_ops_lengths_target is not None:
-            self._cs_ops_ends = self.target_clip5 + \
-                                numpy.cumsum(self._cs_ops_lengths_target)
-            self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
-                                               self._cs_ops_ends[:-1])
-        else:
-            self._cs_ops_ends = None
-            self._cs_ops_starts = None
-
-        # these assertion statments don't work with the carry through of
-        # `None` for unmapped alignments' cs features
-        # assert len(self._cs_ops) == len(self._cs_ops_lengths_target)
-        # assert len(self._cs_ops) == len(self._cs_op_ends)
-        # assert len(self._cs_ops) == len(self._cs_op_starts)
-        # assert (self._cs_ops_ends - self._cs_ops_starts).all() == \
-        #   self._cs_ops_lengths_target.all()
+        nops = len(self._cs_ops)
+        assert nops == len(self._cs_ops_lengths_target)
+        assert nops == len(self._cs_ops_ends)
+        assert nops == len(self._cs_ops_starts)
+        assert (self._cs_ops_ends - self._cs_ops_starts ==
+                self._cs_ops_lengths_target).all()
 
     def extract_cs(self, start, end, *,
                    max_clip5=0, max_clip3=0):
