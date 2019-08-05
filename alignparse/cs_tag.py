@@ -196,7 +196,7 @@ class Alignment:
     target_lastpos : int
         Last position of alignment in target (exclusive).
     orientation :  {'+', '-'}
-        Does query align to the reference (+) or reverse complement (-).
+        Does query align to the target (+) or reverse complement (-).
 
     """
 
@@ -256,114 +256,70 @@ class Alignment:
             get to that alignment.
 
         """
-        if start > numpy.amax(self._cs_ops_ends):
-            # feature start is after last cs op
+        if start >= numpy.amax(self._cs_ops_ends):
+            # feature starts at or after end of last cs op
             return None
+        
+        if end <= numpy.amin(self._cs_ops_starts):
+            # feature ends at or before beginning of first cs op
+            return None
+
+        clip5 = 0
+        clip3 = 0
 
         # Get `start_idx` as index of cs op that contains feature start, and
         # add to `feature_cs` any partial first cs op.
-        start_idx = (numpy.abs(start - self._cs_ops_starts)).argmin()
+        start_idx = numpy.searchsorted(self._cs_ops_ends, start)
         feature_cs = []
-        start_overlap = start - self._cs_ops_starts[start_idx]
-        if start_overlap < 0:  # feat starts in cs_op prior to start_idx
-            if start_idx == numpy.argmin(self._cs_ops_starts):
-                # don't have target seq here, specify gaps at ends with 'n's
-                if start >= (numpy.amin(self._cs_ops_starts) - max_clip5):
-                    feature_cs.append(f"-{'n'*(-start_overlap)}")
-                else:
-                    return None
-            else:
-                start_idx = start_idx - 1
-                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
-                    feature_cs.append(f":{numpy.abs(start_overlap)}")
-                else:
-                    raise RuntimeError('Splitting insertions or deletions'
-                                        'not yet implemented.')
-        elif start_overlap > 0:  # feature starts in start_idx cs_op
+        start_overlap = self._cs_ops_ends[start_idx] - start
+        if self._cs_ops_starts[start_idx] > start:
+            assert start_idx == 0, "5' clip not at 5' end."
+            clip5 = self._cs_ops_starts[start_idx] - start
+            feature_cs.append(self._cs_ops[start_idx])
+        elif self._cs_ops_starts[start_idx] == start:
+            feature_cs.append(self._cs_ops[start_idx])
+        elif cs_op_type(self._cs_ops[start_idx]) == 'identity':
+            feature_cs.append(f":{start_overlap}")
+        elif cs_op_type(self._cs_ops[start_idx]) == 'deletion':
+            feature_cs.append(f"-{self._cs_ops[start_idx][-start_overlap:]}")
+        elif cs_op_type(self._cs_ops[start_idx]) == 'insertion':
+            raise RuntimeError('Splitting insertions not implemented.')
+        else:
+            raise RuntimeError('Getting `cs` start failed.')
+
+        # Get `end_idx` as index of cs op that contains feature end, and
+        # add set as `feat_cs_end`
+        end_idx = numpy.searchsorted(self._cs_ops_ends, end)
+        feat_cs_end = []
+        end_overlap = end - self._cs_ops_ends[end_idx-1]
+        if end > numpy.amax(self._cs_ops_ends):
+            assert end_idx == len(self._cs_ops_ends), "3' clip, not at 3' end"
+            clip3 = end - numpy.amax(self._cs_ops_ends)
+        elif self._cs_ops_ends[end_idx] == end:
+            feat_cs_end.append(self._cs_ops[end_idx])
+        elif cs_op_type(self._cs_ops[end_idx]) == 'identity':
+            feat_cs_end.append(f":{end_overlap}")
+        elif cs_op_type(self._cs_ops[end_idx]) == 'deletion':
+            feat_cs_end.append(f"-{self._cs_ops[end_idx][:end_overlap]}")
+        elif cs_op_type(self._cs_ops[end_idx]) == 'insertion':
+            raise RuntimeError('Splitting insertions not implemented.')
+        else:
+            raise RuntimeError('Getting `cs` end failed.')
+
+        if start_idx == end_idx:
             if cs_op_type(self._cs_ops[start_idx]) == 'identity':
-                feature_cs.append(f":{self._cs_ops_lengths_target[start_idx] - start_overlap}")
-            else:
-                raise RuntimeError('Splitting insertions or deletions'
-                                    'not yet implemented.')
-        else:
-            pass  # start overlap is start of cs
-
-        # if feature end in cs, get idx for end
-        if end in self._cs_ops_ends:
-            end_idx = int(numpy.asarray(end == self._cs_ops_ends).
-                          nonzero()[0])
-        # if feature end before cs, return None
-        elif end < numpy.amin(self._cs_ops_starts):
-            return None
-        else:
-            split_end = True
-            feat_cs_end = []
-            end_idx = numpy.abs(end - self._cs_ops_ends).argmin()
-            end_overlap = end - self._cs_ops_ends[end_idx]
-            if end_overlap > 0:  # feature ends in next cs_op
-                if end_idx == numpy.argmax(self._cs_ops_ends):
-                    if end <= (numpy.amax(self._cs_ops_ends) + max_clip3):
-                        # don't have target seq here, specify gaps at ends with number
-                        feat_cs_end.append(f"-{end_overlap}") 
-                    else:  # end of feature is beyond end of alignment + max_clip3
-                        return None
-                else:
-                    end_idx = end_idx + 1
-                    if cs_op_type(self._cs_ops[end_idx]) == 'identity':
-                        feat_cs_end.append(f":{end_overlap}")
-                    elif cs_op_type(self._cs_ops[end_idx]) == 'deletion':
-                        feat_cs_end.append(f"-{self._cs_ops[end_idx][0:end_overlap]}")
-                    elif cs_op_type(self._cs_ops[end_idx]) == 'insertion':
-                        raise RuntimeError("Splitting insertions not implemented.")
-                    else:
-                        raise ValueError(f"op_type {cs_op_type(self._cs_ops[end_idx])}"
-                                         "cannot be split.")
-            elif end_overlap < 0:  # feature ends in this cs_op
-                if cs_op_type(self._cs_ops[end_idx]) == 'identity':
-                    feat_cs_end.append(f":{self._cs_ops_lengths_target[end_idx] + end_overlap}")
-                elif cs_op_type(self._cs_ops[end_idx]) == 'deletion':
-                    feat_cs_end.append(f"-{self._cs_ops[end_idx][0:(self._cs_ops_lengths_target[end_idx]+end_overlap)]}")
-                elif cs_op_type(self._cs_ops[end_idx]) == 'insertion':
-                    raise RuntimeError("Splitting insertions not implemented.")
-                else:
-                    raise ValueError(f"op_type {cs_op_type(self._cs_ops[end_idx])}"
-                                         "cannot be split.")
-            else:
-                raise ValueError(f'End overlap of {end_overlap} does not'
-                                 'require splitting.')
-
-        if split_start and split_end:
-            feature_cs = self._cs_ops[start_idx: end_idx + 1]
-        elif split_start and not split_end:
-            feature_cs.extend(self._cs_ops[start_idx + 1: end_idx + 1])
-        elif split_end and not split_start:
-            feature_cs = self._cs_ops[start_idx: end_idx]
+                feature_cs = [f":{end-start}"]
+            else:  # entire feature deleted in query
+                return None
+        elif end_idx - start_idx == 1:
             feature_cs.extend(feat_cs_end)
-        elif split_start and split_end:
-            if start_idx == end_idx:
-                if cs_op_type(self._cs_ops[start_idx]) == 'identity':
-                    feature_cs = [f":{end-start}"]
-                else:  # entire feature deleted in query
-                    return None
-            else:
-                feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
-                feature_cs.extend(feat_cs_end)
         else:
-            raise RuntimeError("`cs` extraction did not work."
-                               "Split booleans invalid.")
+            feature_cs.extend(self._cs_ops[start_idx+1: end_idx])
+            feature_cs.extend(feat_cs_end)
 
-        return feature_cs
+        return (''.join(feature_cs), clip5, clip3)
 
-        # identify operations to include using numpy.argmin / argmax
-        # on self.cs_op_starts / self._cs_op_ends
-        # make sure we have indexing correct (0- or 1-based)
-
-        # cs indexing is 0-based, but target sequence indexing is 1-based,
-        # so may need to convert somewhat to go to consensus form
-
-        # when you handle insertions on ends, document that
-
-
+    
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
