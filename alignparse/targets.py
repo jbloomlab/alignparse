@@ -93,7 +93,7 @@ class Target:
 
     def __repr__(self):
         """Get string representation."""
-        return (f"{self.__class__.__name__}(name={self.name}, seq{self.seq}, "
+        return (f"{self.__class__.__name__}(name={self.name}, seq={self.seq}, "
                 f"features={self.features})")
 
     def __init__(self, *, seqrecord, req_features=frozenset(),
