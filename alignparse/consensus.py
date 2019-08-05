@@ -509,10 +509,10 @@ def simple_mutconsensus(df,
         Column in `df` with mutations in form that can be processed by
         :func:`processe_mut_str`.
     max_sub_diffs : int
-        Drop any group where any variant differs from all other variants
+        Drop groups where any variant differs from all other variants
         by more than this many substitution (point mutation) differences.
     max_indel_diffs : int
-        Drop any group where any variant differs from all other variants
+        Drop groups where any variant differs from all other variants
         by more than this many indel differences.
     max_minor_sub_frac : float
         Drop groups with a minor (non-consensus) substitution in more than the
@@ -528,10 +528,11 @@ def simple_mutconsensus(df,
     ----
     The rationale behind this consensus calling scheme is that we want
     to build a consensus except in the following two cases, each of which
-    indicate a likely problem **beyond** simple rare sequencing errors:
+    indicate a likely problem **beyond** simple rare sequencing errors (such
+    as strand exchange or barcode collisions):
 
-      1. Any two sequences within the group differ by too much
-         (given by `max_sub_diffs` and `max_indel_diffs`).
+      1. A sequence within the group differs by too much from others in
+         group (given by `max_sub_diffs` and `max_indel_diffs`).
 
       2. There are "minor" (non-consensus) mutations present at too high
          frequency (given by `max_minor_indel_frac` and `max_minor_sub_frac`).
@@ -564,6 +565,7 @@ def simple_mutconsensus(df,
     ...        lib_2,TA,C5A T6C
     ...        lib_2,TA,ins5len1 T6C
     ...        lib_2,TA,T6C
+    ...        lib_2,TA,A4G T6C
     ...        lib_2,TG,T6A
     ...        lib_2,TG,A2G
     ...        lib_2,GG,del1to4
@@ -590,7 +592,7 @@ def simple_mutconsensus(df,
     0   lib_1      AG           A2C                     2
     1   lib_1      TA  G3A ins4len3                     1
     2   lib_2      GG                                   2
-    3   lib_2      TA           T6C                     3
+    3   lib_2      TA           T6C                     4
     >>> dropped
       library barcode              drop_reason  nseqs
     0   lib_2      AA  minor subs too frequent      4
@@ -639,12 +641,15 @@ def simple_mutconsensus(df,
                         ]:
 
             # are max_sub_diffs and max_indel_diffs satisfied?
-            for m1set, m2set in itertools.combinations(mutlists[mtype], 2):
+            ndiffs_by_seq = collections.defaultdict(list)
+            for (i1, m1set), (i2, m2set) in itertools.combinations(
+                        enumerate(mutlists[mtype]), 2):
                 ndiffs = len(numpy.setxor1d(m1set, m2set, assume_unique=True))
-                if ndiffs > maxd:
-                    drop_reason = f"{mtype} diff too large"
-                    break
-            if drop_reason is not None:
+                ndiffs_by_seq[i1].append(ndiffs)
+                ndiffs_by_seq[i2].append(ndiffs)
+            if any(min(ndifflist) > maxd for ndifflist
+                   in ndiffs_by_seq.values()):
+                drop_reason = f"{mtype} diff too large"
                 break
 
             # see if max_minor_mut_frac is satisfied
