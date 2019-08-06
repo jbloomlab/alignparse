@@ -229,10 +229,10 @@ class Alignment:
         self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
                                            self._cs_ops_ends[:-1])
 
-        nops = len(self._cs_ops)
-        assert nops == len(self._cs_ops_lengths_target)
-        assert nops == len(self._cs_ops_ends)
-        assert nops == len(self._cs_ops_starts)
+        self._nops = len(self._cs_ops)
+        assert self._nops == len(self._cs_ops_lengths_target)
+        assert self._nops == len(self._cs_ops_ends)
+        assert self._nops == len(self._cs_ops_starts)
         assert (self._cs_ops_ends - self._cs_ops_starts ==
                 self._cs_ops_lengths_target).all()
 
@@ -256,6 +256,10 @@ class Alignment:
             get to that alignment.
 
         """
+        if start < 0:
+            raise ValueError(f"invalid `start` of {start}")
+        if end <= start:
+            raise ValueError(f"`end` {end} not > `start` {start}")
         if start >= numpy.amax(self._cs_ops_ends):
             # feature starts at or after end of last cs op
             return None
@@ -272,7 +276,7 @@ class Alignment:
         start_op_start = self._cs_ops_starts[start_idx]
         start_op_end = self._cs_ops_ends[start_idx]
         start_op = self._cs_ops[start_idx]
-        assert start_idx < len(self._cs_ops)
+        assert start_idx < self._nops
         assert start < start_op_end
         feature_cs = []
         if start_op_start > start:
@@ -306,40 +310,26 @@ class Alignment:
 
         # Get `end_idx` as index of cs op that contains feature end, and
         # make `feat_cs_end` the overlapping part of this last cs op
-        end_idx = max((numpy.searchsorted(self._cs_ops_ends, end,
-                                         side='right') - 1), 0)
-        end_alignment = numpy.amax(self._cs_ops_ends)
+        end_idx = max(0, numpy.searchsorted(self._cs_ops_ends, end,
+                                            side='right') - 1)
+        while ((end > self._cs_ops_ends[end_idx]) and
+               (end_idx + 1 < self._nops)):
+            end_idx += 1
         end_op_start = self._cs_ops_starts[end_idx]
         end_op_end = self._cs_ops_ends[end_idx]
         end_op = self._cs_ops[end_idx]
-        # assert start_idx <= end_idx <= len(self._cs_ops) # not true with '- 1'
-        # assert end >= end_op_end  # this is not true with side = 'right'
+        assert start_idx <= end_idx <= self._nops
+        assert end <= end_op_end or end_idx == self._nops - 1
         assert end > end_op_start
-
         if end > end_op_end:
-            # feature ends beyond specific cs_op
-            if end > end_alignment:
-                assert end_idx == len(self._cs_ops_ends) - 1, 'clip3 not at end'
-                clip3 = end - end_op_end
-                if start_idx < end_idx:
-                    # all of final cs_op in feature
-                    feat_cs_end = end_op
-                else:
-                    # portion of final cs_op in feature handled in start
-                    feat_cs_end = ''
+            assert end_idx == self._nops - 1, 'clip3 not at end'
+            clip3 = end - end_op_end
+            if start_idx < end_idx:
+                # all of final cs_op in feature
+                feat_cs_end = end_op
             else:
-                end_overlap = end - end_op_end
-                assert end_overlap > 0
-                end_idx += 1
-                end_op_type = cs_op_type(self._cs_ops[end_idx])
-                if end_op_type == 'identity':
-                    feat_cs_end = f":{end_overlap}"
-                elif end_op_type == 'deletion':
-                    feat_cs_end = end_op[: end_overlap + 1]
-                elif end_op_type == 'insertion':
-                    raise RuntimeError('insertion should not be feature end')
-                else:
-                    raise RuntimeError(f"unrecognized op type of {end_op_type}")                
+                # portion of final cs_op in feature handled in start
+                feat_cs_end = ''
         elif end == end_op_end:
             # feature ends at a specific cs op
             feat_cs_end = end_op
@@ -349,12 +339,11 @@ class Alignment:
             assert end_overlap > 0
             end_op_type = cs_op_type(end_op)
             if end_op_type == 'identity':
-                print('here')
                 feat_cs_end = f":{end_overlap}"
             elif end_op_type == 'deletion':
                 feat_cs_end = end_op[: end_overlap + 1]
             elif end_op_type == 'insertion':
-                raise RuntimeError('insertion should not be feature end')
+                raise RuntimeError('should not get here as end == end_op_end')
             else:
                 raise RuntimeError(f"unrecognized op type of {end_op_type}")
 
@@ -363,10 +352,13 @@ class Alignment:
             feature_cs.append(feat_cs_end)
             feature_cs = ''.join(feature_cs)
         elif clip5 != 0:  # feature within one `cs_op`. If clip5, take end.
-            feature_cs = feat_cs_end
+            feature_cs = feature_cs.append(feat_cs_end)
         else:
             feature_cs = ''.join(feature_cs)
 
+        # this next assert might be costly, so maybe remove eventually
+        assert (sum(cs_op_len_target(op) for op in split_cs(feature_cs)) +
+                clip5 + clip3 == end - start)
 
         return (feature_cs, clip5, clip3)
 
