@@ -268,7 +268,6 @@ class Alignment:
             return None
 
         clip5 = clip3 = 0
-        feat_length = end - start
 
         # Get `start_idx` as index of cs op that contains feature start
         # add to `feature_cs` overlapping part of first cs op
@@ -292,17 +291,9 @@ class Alignment:
             if start_op_start == start and end >= start_op_end:
                 feature_cs.append(start_op)
             elif start_op_type == 'identity':
-                if start_overlap > feat_length:
-                    # entire feature contained in cs op
-                    feature_cs.append(f":{feat_length}")
-                else:
-                    feature_cs.append(f":{start_overlap}")
+                feature_cs.append(f":{start_overlap}")
             elif start_op_type == 'deletion':
-                if start_overlap > feat_length:
-                    # entire feature contained in cs op
-                    feature_cs.append(f"-{start_op[-feat_length:]}")
-                else:
-                    feature_cs.append(f"-{start_op[-start_overlap:]}")
+                feature_cs.append(f"-{start_op[-start_overlap:]}")
             elif start_op_type == 'insertion':
                 raise RuntimeError('insertion should not be feature start')
             else:
@@ -324,12 +315,7 @@ class Alignment:
         if end > end_op_end:
             assert end_idx == self._nops - 1, 'clip3 not at end'
             clip3 = end - end_op_end
-            if start_idx < end_idx:
-                # all of final cs_op in feature
-                feat_cs_end = end_op
-            else:
-                # portion of final cs_op in feature handled in start
-                feat_cs_end = ''
+            feat_cs_end = end_op
         elif end == end_op_end:
             # feature ends at a specific cs op
             feat_cs_end = end_op
@@ -347,18 +333,29 @@ class Alignment:
             else:
                 raise RuntimeError(f"unrecognized op type of {end_op_type}")
 
-        if start_idx != end_idx:
+        if start_idx == end_idx:
+            # avoid double-counting feature, clip properly
+            assert start_op == end_op
+            op_type = cs_op_type(start_op)
+            if op_type == 'identity':
+                feature_cs = f":{end - start - clip5 - clip3}"
+            elif op_type == 'substitution':
+                feature_cs = end_op
+            elif op_type == 'deletion':
+                feature_cs = '-' + end_op[max(0, start_op_start - start):
+                                          -min(0, end_op_end - end)]
+            elif op_type == 'insertion':
+                raise RuntimeError('start_idx != end_idx for insertion')
+            else:
+                raise RuntimeError(f"unrecognized op type of {op_type}")
+        else:
             feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
             feature_cs.append(feat_cs_end)
-            feature_cs = ''.join(feature_cs)
-        elif clip5 != 0:  # feature within one `cs_op`. If clip5, take end.
-            feature_cs = feature_cs.append(feat_cs_end)
-        else:
             feature_cs = ''.join(feature_cs)
 
         # this next assert might be costly, so maybe remove eventually
         assert (sum(cs_op_len_target(op) for op in split_cs(feature_cs)) +
-                clip5 + clip3 == end - start)
+                clip5 + clip3 == end - start), f"{feature_cs},{clip5},{clip3}"
 
         return (feature_cs, clip5, clip3)
 
