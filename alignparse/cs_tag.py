@@ -264,22 +264,23 @@ class Alignment:
             return None
 
         clip5 = clip3 = 0
+        feat_length = end - start
 
         # Get `start_idx` as index of cs op that contains feature start
         # add to `feature_cs` overlapping part of first cs op
-        start_idx = numpy.searchsorted(self._cs_ops_ends, start)
+        start_idx = numpy.searchsorted(self._cs_ops_ends, start, side='right')
         start_op_start = self._cs_ops_starts[start_idx]
         start_op_end = self._cs_ops_ends[start_idx]
         start_op = self._cs_ops[start_idx]
         assert start_idx < len(self._cs_ops)
-        assert start < start_op_end  # can probably remove
+        assert start < start_op_end
         feature_cs = []
         if start_op_start > start:
             # feature starts before first cs op
             assert start_idx == 0, "5' clip not at 5' end."
             clip5 = start_op_start - start
             feature_cs.append(start_op)
-        elif start_op_start == start:
+        elif start_op_start == start: 
             # feature starts at a specific cs op
             feature_cs.append(start_op)
         else:
@@ -287,9 +288,15 @@ class Alignment:
             start_overlap = start_op_end - start
             start_op_type = cs_op_type(start_op)
             if start_op_type == 'identity':
-                feature_cs.append(f":{start_overlap}")
+                if start_overlap > feat_length:
+                    feature_cs.append(f":{feat_length}")
+                else:
+                    feature_cs.append(f":{start_overlap}")
             elif start_op_type == 'deletion':
-                feature_cs.append(f"-{start_op[-start_overlap:]}")
+                if start_overlap > feat_length:
+                    feature_cs.append(f"-{start_op[-feat_length:]}")
+                else:
+                    feature_cs.append(f"-{start_op[-start_overlap:]}")
             elif start_op_type == 'insertion':
                 raise RuntimeError('insertion should not be feature start')
             else:
@@ -298,16 +305,24 @@ class Alignment:
         # Get `end_idx` as index of cs op that contains feature end, and
         # make `feat_cs_end` the overlapping part of this last cs op
         end_idx = numpy.searchsorted(self._cs_ops_ends, end, side='right') - 1
+        end_alignment = numpy.amax(self._cs_ops_ends)
         end_op_start = self._cs_ops_starts[end_idx]
         end_op_end = self._cs_ops_ends[end_idx]
         end_op = self._cs_ops[end_idx]
         assert start_idx <= end_idx <= len(self._cs_ops)
-        assert end >= end_op_end  # can probably remove
+        assert end >= end_op_end  # is this true?
+        
+        # THIS IS BROKEN. IT CAN'T DEAL WITH SPLITTING INTERNAL OPS
+
         if end > end_op_end:
-            # feature ends after last cs op
-            assert end_idx == len(self._cs_ops_ends) - 1, "3' clip, not 3' end"
-            clip3 = end - end_op_end
-        elif self._cs_ops_ends[end_idx] == end:
+            # feature ends beyond specific cs_op
+            assert end_idx == len(self._cs_ops_ends) - 1, 'clip3 not at end'
+            clip3 = end - end_alignment
+            if start_idx < end_idx:
+                feat_cs_end = end_op
+            else:
+                feat_cs_end = ''
+        elif end_op_end == end:
             # feature ends at a specific cs op
             feat_cs_end = end_op
         else:
@@ -315,24 +330,29 @@ class Alignment:
             end_overlap = end - end_op_start
             end_op_type = cs_op_type(end_op)
             if end_op_type == 'identity':
-                feat_cs_end = ":{end_overlap}"
+                feat_cs_end = f":{end_overlap}"
             elif end_op_type == 'deletion':
                 feat_cs_end = end_op[: end_overlap + 1]
             elif end_op_type == 'insertion':
                 raise RuntimeError('insertion should not be feature end')
             else:
-                raise RuntimeError(f"unrecognized op type of {start_op_type}")
+                raise RuntimeError(f"unrecognized op type of {end_op_type}")
 
-        if start_idx == end_idx:
-            raise RuntimeError('can this happen with insertions / deletions?')
-            if cs_op_type(self._cs_ops[start_idx]) == 'identity':
-                feature_cs = f":{end - start}"
-            else:  # entire feature deleted in query
-                raise RuntimeError("not correct, as it's in the alignment")
-        else:
+        if start_idx != end_idx:
+        #     if cs_op_type(self._cs_ops[start_idx]) == 'identity':
+        #         feature_cs = f":{end - start}"
+        #     else:  # entire feature deleted in query
+        #         raise RuntimeError('can this happen with insertions / deletions?')
+        #         raise RuntimeError("not correct, as it's in the alignment")
+        # else:
             feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
             feature_cs.append(feat_cs_end)
             feature_cs = ''.join(feature_cs)
+        elif clip5 != 0:  # feature within one `cs_op`. If clip5, take end.
+            feature_cs = feat_cs_end
+        else:
+            feature_cs = ''.join(feature_cs)
+
 
         return (feature_cs, clip5, clip3)
 
