@@ -289,11 +289,13 @@ class Alignment:
             start_op_type = cs_op_type(start_op)
             if start_op_type == 'identity':
                 if start_overlap > feat_length:
+                    # entire feature contained in cs op
                     feature_cs.append(f":{feat_length}")
                 else:
                     feature_cs.append(f":{start_overlap}")
             elif start_op_type == 'deletion':
                 if start_overlap > feat_length:
+                    # entire feature contained in cs op
                     feature_cs.append(f"-{start_op[-feat_length:]}")
                 else:
                     feature_cs.append(f"-{start_op[-start_overlap:]}")
@@ -309,19 +311,32 @@ class Alignment:
         end_op_start = self._cs_ops_starts[end_idx]
         end_op_end = self._cs_ops_ends[end_idx]
         end_op = self._cs_ops[end_idx]
-        assert start_idx <= end_idx <= len(self._cs_ops)
-        assert end >= end_op_end  # is this true?
+        # assert start_idx <= end_idx <= len(self._cs_ops) # not true with '- 1'
+        # assert end >= end_op_end  # this is not ture with side = 'right'
         
-        # THIS IS BROKEN. IT CAN'T DEAL WITH SPLITTING INTERNAL OPS
-
         if end > end_op_end:
             # feature ends beyond specific cs_op
-            assert end_idx == len(self._cs_ops_ends) - 1, 'clip3 not at end'
-            clip3 = end - end_alignment
-            if start_idx < end_idx:
-                feat_cs_end = end_op
+            if end > end_alignment:
+                assert end_idx == len(self._cs_ops_ends) - 1, 'clip3 not at end'
+                clip3 = end - end_op_end
+                if start_idx < end_idx:
+                    # all of final cs_op in feature
+                    feat_cs_end = end_op
+                else:
+                    # portion of final cs_op in feature handled in start
+                    feat_cs_end = ''
             else:
-                feat_cs_end = ''
+                end_overlap = end - end_op_end
+                end_idx += 1
+                end_op_type = cs_op_type(self._cs_ops[end_idx])
+                if end_op_type == 'identity':
+                    feat_cs_end = f":{end_overlap}"
+                elif end_op_type == 'deletion':
+                    feat_cs_end = end_op[: end_overlap + 1]
+                elif end_op_type == 'insertion':
+                    raise RuntimeError('insertion should not be feature end')
+                else:
+                    raise RuntimeError(f"unrecognized op type of {end_op_type}")                
         elif end_op_end == end:
             # feature ends at a specific cs op
             feat_cs_end = end_op
@@ -339,12 +354,6 @@ class Alignment:
                 raise RuntimeError(f"unrecognized op type of {end_op_type}")
 
         if start_idx != end_idx:
-        #     if cs_op_type(self._cs_ops[start_idx]) == 'identity':
-        #         feature_cs = f":{end - start}"
-        #     else:  # entire feature deleted in query
-        #         raise RuntimeError('can this happen with insertions / deletions?')
-        #         raise RuntimeError("not correct, as it's in the alignment")
-        # else:
             feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
             feature_cs.append(feat_cs_end)
             feature_cs = ''.join(feature_cs)
