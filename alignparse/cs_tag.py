@@ -311,7 +311,7 @@ class Alignment:
         end_op = self._cs_ops[end_idx]
         assert start_idx <= end_idx <= self._nops
         assert end <= end_op_end or end_idx == self._nops - 1
-        assert end > end_op_start
+        assert end >= end_op_start
         if end > end_op_end:
             assert end_idx == self._nops - 1, 'clip3 not at end'
             clip3 = end - end_op_end
