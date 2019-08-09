@@ -343,8 +343,8 @@ class Alignment:
                 feature_cs = end_op
             elif op_type == 'deletion':
                 del_start = max(0, start - start_op_start)
-                feature_cs = '-' + end_op[del_start + 1:
-                                          del_start + (end - start) + 1]
+                del_end = end_op_end - end_op_start - max(0, end_op_end - end)
+                feature_cs = '-' + end_op[del_start + 1: del_end + 1]
             elif op_type == 'insertion':
                 raise RuntimeError('start_idx != end_idx for insertion')
             else:
