@@ -255,6 +255,8 @@ class Targets:
     ----------
     targets : list
         List of all :class:`Target` objects.
+    target_names : list
+        List of names of all targets.
 
     """
 
@@ -274,6 +276,7 @@ class Targets:
             seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
 
         self.targets = []
+        self.target_names = []
         self._target_dict = {}
         for seqrecord in seqrecords:
             target = Target(seqrecord=seqrecord,
@@ -283,6 +286,7 @@ class Targets:
                             )
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
+            self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
 
@@ -382,16 +386,14 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment(self, samfile, *, multi_align='primary'):
-        """Parse alignment of query to targets.
+    def parse_alignment_(self, samfile, *, multi_align='primary'):
+        """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
         ----
         **Link to describe ``cs`` tag format.**
 
-        **Indels that occur at feature junctions are assigned as
-        part of first feature? Look to see how ``minimap2`` handles
-        indels in homopolymers.**
+        **Explain how indels at feature junctions are assigned**
 
         Parameters
         ----------
@@ -399,29 +401,54 @@ class Targets:
             SAM file with ``minimap2`` alignments with ``cs`` tag, typically
             created by :meth:`Targets.align`.
         multi_align : {'primary'}
-            How to handle multiple alignments. **Needs some thought**.
-            Maybe 'primary' = return only primary, etc...
-        **unaligned? How do we handle unaligned queries?**
-            Maybe either ignored or added to data frame with 'target'
-            as `None`.
+            How to handle multiple alignments. Currently only option is
+            'primary', which indicates that we only retain primary alignments
+            and ignore all secondary alignment.
 
         Returns
         -------
-        pandas.DataFrame
-            Gives alignment for each feature in target. Columns are:
-                - 'query' : alignment query name
-                - 'target' : name of target to which query aligns.
-                - 'feature' : ``cs`` tag equivalent for that feature, or
-                  `None` if that feature not in that target.
-                - **potentially another column related to `multi_align`?**
+        dict
+            Keyed be each target name. If there are no alignments for
+            that target, value is `None`. Otherwise, value is a pandas
+            DataFrame with a row for each feature in each query. The
+            columns in this data frame are:
+
+                - 'query_name' : name of query in `samfile`
+
+                - 'query_clip5' : length at 5' end of query not in alignment
+
+                - 'query_clip3' : length at 3' end of query not in alignment
+
+                - 'target_clip5' : length at 5' end of target not in alignment
+
+                - 'target_clip3' : length at 3' end of target not in alignment
+
+                - a column with the name of each feature in the target giving
+                  the ``cs`` string for that feature's alignment. If feature's
+                  alignment is clipped (incomplete), this is indicated by
+                  adding '<clipN>' (where 'N' is the amount of clipping) to the
+                  ``cs`` string. For instance: '<clip7>:5*cg:3<clip2>'
+                  indicates 7 nucleotides clipped at 5' end, 2 nucleotides at
+                  3' end, and a ``cs`` string of ':5*cg:3' for aligned portion.
+
+            The returned dict also has a key 'unmapped' which gives
+            the number of unmapped reads.
 
         """
-        # I would recommend writing a separate function that somehow does
-        # the splitting of the ``cs`` tags, perhaps in its own module. You
-        # can then have some simple doctests for that. This could probably
-        # go in its own module called `cs_tag` or something like that.
-        # For reading the SAM file, I recommend `pysam`.
-        # https://pysam.readthedocs.io/en/latest/usage.html#opening-a-file
+        d = {target: None for target in self.target_names}
+        if 'unmapped' in self.target_names:
+            raise ValueError('cannot have a target named "unmapped"')
+        else:
+            d['unmapped'] = 0
+
+        # iterate over `samfile`, for each aligned segment check if mapped,
+        # if not increment d['unmapped'] and continue. Otherwise, get
+        # the alignment and the target name. Then iterate over all the
+        # features for that target.
+
+        for a in pysam.AlignmentFile(samfile):  # this may not be quite right
+            pass
+
         raise RuntimeError('not yet implemented')
 
 
