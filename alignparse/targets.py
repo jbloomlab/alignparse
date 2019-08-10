@@ -10,7 +10,6 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 
 import tempfile
-from collections import defaultdict
 
 import Bio.SeqIO
 
@@ -451,6 +450,16 @@ class Targets:
         else:
             d['unmapped'] = 0
 
+        # columns we always add to returned data frames
+        cols = ['query_name', 'query_clip5', 'query_clip3',
+                'target_clip5', 'target_clip3']
+
+        # we cannot have feature names the same as other column names
+        for target in self.targets:
+            for feature in target.features:
+                if feature.name in cols:
+                    raise ValueError(f"cannot have a feature {feature.name}")
+
         for a in pysam.AlignmentFile(samfile):
             if a.is_unmapped:
                 d['unmapped'] += 1
@@ -460,7 +469,8 @@ class Targets:
                 aligned_target = self.get_target(tname)
                 features = aligned_target.features
                 if d[tname] is None:
-                    d[tname] = defaultdict(list)
+                    d[tname] = {col: [] for col in
+                                cols + aligned_target.feature_names}
 
                 d[tname]['query_name'].append(aligned_seg.query_name)
                 d[tname]['query_clip5'].append(aligned_seg.query_clip5)
