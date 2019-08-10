@@ -19,7 +19,12 @@ import matplotlib.cm
 import matplotlib.colors
 import matplotlib.pyplot as plt
 
+import pandas as pd
+
+import pysam
+
 from alignparse.constants import CBPALETTE
+from alignparse.cs_tag import Alignment
 
 
 class Feature:
@@ -88,6 +93,8 @@ class Target:
         Length of sequence.
     features : list
         List of all features as :class:`Feature` objects.
+    feature_names : list
+        List of names of all features.
 
     """
 
@@ -110,6 +117,7 @@ class Target:
 
         self._features_dict = {}
         self.features = []
+        self.feature_names = []
         for bio_feature in seqrecord.features:
             feature_name = bio_feature.type
             if feature_name in self._features_dict:
@@ -127,6 +135,7 @@ class Target:
                               end=bio_feature.location.end,
                               )
             self.features.append(feature)
+            self.feature_names.append(feature_name)
             self._features_dict[feature_name] = feature
 
         missing_features = set(req_features) - set(self._features_dict)
@@ -386,7 +395,7 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment_(self, samfile, *, multi_align='primary'):
+    def parse_alignment_cs(self, samfile, *, multi_align='primary'):
         """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
@@ -441,15 +450,66 @@ class Targets:
         else:
             d['unmapped'] = 0
 
-        # iterate over `samfile`, for each aligned segment check if mapped,
-        # if not increment d['unmapped'] and continue. Otherwise, get
-        # the alignment and the target name. Then iterate over all the
-        # features for that target.
+        for a in pysam.AlignmentFile(samfile):
+            if a.is_unmapped:
+                d['unmapped'] += 1
+            else:
+                aligned_seg = Alignment(a)
+                tname = aligned_seg.target_name
+                aligned_target = self.get_target(tname)
+                features = aligned_target.features
+                if d[tname] is None:
+                    d[tname] = {}
+                    d[tname]['query_name'] = [aligned_seg.query_name]
+                    d[tname]['query_clip5'] = [aligned_seg.query_clip5]
+                    d[tname]['query_clip3'] = [aligned_seg.query_clip3]
+                    d[tname]['target_clip5'] = [aligned_seg.target_clip5]
+                    d[tname]['target_clip3'] = [aligned_target.length -
+                                                aligned_seg.target_lastpos]
 
-        for a in pysam.AlignmentFile(samfile):  # this may not be quite right
-            pass
+                    for feature in features:
+                        feat_info = aligned_seg.extract_cs(feature.start,
+                                                           feature.end)
+                        if feat_info is None:
+                            d[tname][feature.name] = [feat_info]
+                        else:
+                            feat_cs, clip5, clip3 = feat_info
+                            if clip5 != 0:
+                                feat_cs = f"<clip{clip5}>" + feat_cs
 
-        raise RuntimeError('not yet implemented')
+                            if clip3 != 0:
+                                feat_cs = feat_cs + f"<clip{clip3}>"
+
+                            d[tname][feature.name] = [feat_cs]
+                else:
+                    d[tname]['query_name'].append(aligned_seg.query_name)
+                    d[tname]['query_clip5'].append(aligned_seg.query_clip5)
+                    d[tname]['query_clip3'].append(aligned_seg.query_clip3)
+                    d[tname]['target_clip5'].append(aligned_seg.target_clip5)
+                    d[tname]['target_clip3'].append(aligned_target.length -
+                                                    aligned_seg.target_lastpos)
+
+                    for feature in features:
+                        feat_info = aligned_seg.extract_cs(feature.start,
+                                                           feature.end)
+                        if feat_info is None:
+                            d[tname][feature.name].append(feat_info)
+                        else:
+                            feat_cs, clip5, clip3 = feat_info
+                            if clip5 != 0:
+                                feat_cs = f"<clip{clip5}>" + feat_cs
+
+                            if clip3 != 0:
+                                feat_cs = feat_cs + f"<clip{clip3}>"
+
+                            d[tname][feature.name].append(feat_cs)
+
+        for target in d:
+            if target != 'unmapped':
+                if d[target] is not None:
+                    d[target] = pd.DataFrame.from_dict(d[target])
+
+        return d
 
 
 if __name__ == '__main__':
