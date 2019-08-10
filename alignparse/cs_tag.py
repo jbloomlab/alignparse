@@ -255,6 +255,11 @@ class Alignment:
             the lengths that must be clipped off the end of the feature to
             get to that alignment.
 
+        Note
+        ----
+        If an insertion is at the boundary of two features, it is assigned
+        as being at the end of the first feature.
+
         """
         if start < 0:
             raise ValueError(f"invalid `start` of {start}")

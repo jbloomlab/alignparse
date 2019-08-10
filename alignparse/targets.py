@@ -400,9 +400,11 @@ class Targets:
 
         Note
         ----
-        **Link to describe ``cs`` tag format.**
+        The ``cs`` tags are in the short format returned by ``minimap2``;
+        see here for details: https://lh3.github.io/minimap2/minimap2.html
 
-        **Explain how indels at feature junctions are assigned**
+        When an insertion occurs between two features, it is assigned to the
+        end of the first feature.
 
         Parameters
         ----------
