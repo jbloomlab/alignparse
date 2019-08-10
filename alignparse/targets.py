@@ -10,6 +10,7 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 
 import tempfile
+from collections import defaultdict
 
 import Bio.SeqIO
 
@@ -459,52 +460,31 @@ class Targets:
                 aligned_target = self.get_target(tname)
                 features = aligned_target.features
                 if d[tname] is None:
-                    d[tname] = {}
-                    d[tname]['query_name'] = [aligned_seg.query_name]
-                    d[tname]['query_clip5'] = [aligned_seg.query_clip5]
-                    d[tname]['query_clip3'] = [aligned_seg.query_clip3]
-                    d[tname]['target_clip5'] = [aligned_seg.target_clip5]
-                    d[tname]['target_clip3'] = [aligned_target.length -
-                                                aligned_seg.target_lastpos]
+                    d[tname] = defaultdict(list)
 
-                    for feature in features:
-                        feat_info = aligned_seg.extract_cs(feature.start,
-                                                           feature.end)
-                        if feat_info is None:
-                            d[tname][feature.name] = [feat_info]
-                        else:
-                            feat_cs, clip5, clip3 = feat_info
-                            if clip5 != 0:
-                                feat_cs = f"<clip{clip5}>" + feat_cs
+                d[tname]['query_name'].append(aligned_seg.query_name)
+                d[tname]['query_clip5'].append(aligned_seg.query_clip5)
+                d[tname]['query_clip3'].append(aligned_seg.query_clip3)
+                d[tname]['target_clip5'].append(aligned_seg.target_clip5)
+                d[tname]['target_clip3'].append(aligned_target.length -
+                                                aligned_seg.target_lastpos)
 
-                            if clip3 != 0:
-                                feat_cs = feat_cs + f"<clip{clip3}>"
+                for feature in features:
+                    feat_info = aligned_seg.extract_cs(feature.start,
+                                                       feature.end)
+                    if feat_info is None:
+                        d[tname][feature.name].append(feat_info)
+                    else:
+                        feat_cs, clip5, clip3 = feat_info
+                        if clip5 != 0:
+                            feat_cs = f"<clip{clip5}>{feat_cs}"
 
-                            d[tname][feature.name] = [feat_cs]
-                else:
-                    d[tname]['query_name'].append(aligned_seg.query_name)
-                    d[tname]['query_clip5'].append(aligned_seg.query_clip5)
-                    d[tname]['query_clip3'].append(aligned_seg.query_clip3)
-                    d[tname]['target_clip5'].append(aligned_seg.target_clip5)
-                    d[tname]['target_clip3'].append(aligned_target.length -
-                                                    aligned_seg.target_lastpos)
+                        if clip3 != 0:
+                            feat_cs = f"{feat_cs}<clip{clip3}>"
 
-                    for feature in features:
-                        feat_info = aligned_seg.extract_cs(feature.start,
-                                                           feature.end)
-                        if feat_info is None:
-                            d[tname][feature.name].append(feat_info)
-                        else:
-                            feat_cs, clip5, clip3 = feat_info
-                            if clip5 != 0:
-                                feat_cs = f"<clip{clip5}>" + feat_cs
+                        d[tname][feature.name].append(feat_cs)
 
-                            if clip3 != 0:
-                                feat_cs = feat_cs + f"<clip{clip3}>"
-
-                            d[tname][feature.name].append(feat_cs)
-
-        for target in d:
+        for target in d.keys():
             if target != 'unmapped':
                 if d[target] is not None:
                     d[target] = pd.DataFrame.from_dict(d[target])
