@@ -9,6 +9,7 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 """
 
 
+import copy
 import tempfile
 
 import Bio.SeqIO
@@ -106,10 +107,10 @@ class Target:
     def __init__(self, *, seqrecord, req_features=frozenset(),
                  opt_features=frozenset(), allow_extra_features=False):
         """See main class docstring."""
-        for attr in ['name', 'seq']:
-            if not hasattr(seqrecord, attr):
-                raise ValueError(f"`seqrecord` does not define a {attr}")
-            setattr(self, attr, str(getattr(seqrecord, attr)))
+        self.name = self.get_name(seqrecord)
+        if not hasattr(seqrecord, 'seq'):
+            raise ValueError(f"`seqrecord` does not define a seq")
+        self.seq = str(seqrecord.seq)
 
         self.length = len(self.seq)
 
@@ -141,6 +142,25 @@ class Target:
         missing_features = set(req_features) - set(self._features_dict)
         if missing_features:
             raise ValueError(f"{self.name} lacks features: {missing_features}")
+
+    @classmethod
+    def get_name(cls, seqrecord):
+        """Get name of target from sequence record.
+
+        Parameters
+        ----------
+        seqrecord : Bio.SeqRecord.SeqRecord
+            Sequence record as passed to :class:`Target`.
+
+        Returns
+        -------
+        Name parsed from `seqrecord`.
+
+        """
+        if not hasattr(seqrecord, 'name'):
+            raise ValueError(f"`seqrecord` does not define a name")
+        else:
+            return seqrecord.name
 
     def has_feature(self, name):
         """Check if a feature is defined for this target.
@@ -251,12 +271,26 @@ class Targets:
     seqsfile : str or list
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
-    req_features : set or other iterable
-        Required features for each target in `seqsfile`.
-    opt_features: set of other iterable
-        Optional features for each target in `seqsfile`.
+    feature_parse_specs : dict
+        Keyed by name of each target in `seqsfile`, values are dicts
+        keyed by feature names with the value indicating what
+        :meth:`Targets.parse_alignment` returns for this feature. Can be
+        one of the following strings or a list of them:
+
+           - 'sequence' : full sequence of feature with clipping indicated
+             as a deletion.
+
+           - 'mutation_str' : space-delimited str of mutations with clipping
+             indicated as a deletion.
+
+           - 'mutation_count' : number of mutated nucleotides (so a deletion
+             or insertion counts equal to its length) **not** counting
+             clipping.
+
+           - 'clip_count' : number of clipped nucleotides at either termini.
+
     allow_extra_features : bool
-        Can targets have features not in `req_features` or `opt_features`?
+        Can targets have features not in `feature_parse_specs`?
     seqsfileformat : {'genbank'}
         Format of `seqsfile`.
 
@@ -273,9 +307,8 @@ class Targets:
         """Get string representation."""
         return f"{self.__class__.__name__}(targets={self.targets})"
 
-    def __init__(self, *, seqsfile, req_features=frozenset(),
-                 opt_features=frozenset(), allow_extra_features=False,
-                 seqsfileformat='genbank'):
+    def __init__(self, *, seqsfile, feature_parse_specs,
+                 allow_extra_features=False, seqsfileformat='genbank'):
         """See main class docstring."""
         if isinstance(seqsfile, str):
             seqsfile = [seqsfile]
@@ -284,15 +317,22 @@ class Targets:
         for f in seqsfile:
             seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
 
+        self.feature_parse_specs = copy.deepcopy(feature_parse_specs)
+
         self.targets = []
         self.target_names = []
         self._target_dict = {}
         for seqrecord in seqrecords:
+            targetname = Target.get_name(seqrecord)
+            if targetname not in self.feature_parse_specs:
+                raise ValueError(f"target {targetname} not in "
+                                 '`feature_parse_specs`')
             target = Target(seqrecord=seqrecord,
-                            req_features=req_features,
-                            opt_features=opt_features,
+                            req_features=list(self.feature_parse_specs
+                                              [targetname].keys()),
                             allow_extra_features=allow_extra_features,
                             )
+            assert target.name == targetname
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
             self.target_names.append(target.name)
@@ -394,6 +434,10 @@ class Targets:
         with tempfile.NamedTemporaryFile(mode='w', suffix='.fa') as targetfile:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
+
+    def parse_alignment(self, samfile, *, multi_align='primary'):
+        """**Docs in progress.**"""
+        raise RuntimeError('not yet implemented')
 
     def parse_alignment_cs(self, samfile, *, multi_align='primary'):
         """Parse alignment feature ``cs`` strings for aligned queries.
