@@ -19,7 +19,12 @@ import matplotlib.cm
 import matplotlib.colors
 import matplotlib.pyplot as plt
 
+import pandas as pd
+
+import pysam
+
 from alignparse.constants import CBPALETTE
+from alignparse.cs_tag import Alignment
 
 
 class Feature:
@@ -88,6 +93,8 @@ class Target:
         Length of sequence.
     features : list
         List of all features as :class:`Feature` objects.
+    feature_names : list
+        List of names of all features.
 
     """
 
@@ -110,6 +117,7 @@ class Target:
 
         self._features_dict = {}
         self.features = []
+        self.feature_names = []
         for bio_feature in seqrecord.features:
             feature_name = bio_feature.type
             if feature_name in self._features_dict:
@@ -127,6 +135,7 @@ class Target:
                               end=bio_feature.location.end,
                               )
             self.features.append(feature)
+            self.feature_names.append(feature_name)
             self._features_dict[feature_name] = feature
 
         missing_features = set(req_features) - set(self._features_dict)
@@ -255,6 +264,8 @@ class Targets:
     ----------
     targets : list
         List of all :class:`Target` objects.
+    target_names : list
+        List of names of all targets.
 
     """
 
@@ -274,6 +285,7 @@ class Targets:
             seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
 
         self.targets = []
+        self.target_names = []
         self._target_dict = {}
         for seqrecord in seqrecords:
             target = Target(seqrecord=seqrecord,
@@ -283,6 +295,7 @@ class Targets:
                             )
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
+            self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
 
@@ -382,16 +395,16 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment(self, samfile, *, multi_align='primary'):
-        """Parse alignment of query to targets.
+    def parse_alignment_cs(self, samfile, *, multi_align='primary'):
+        """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
         ----
-        **Link to describe ``cs`` tag format.**
+        The ``cs`` tags are in the short format returned by ``minimap2``;
+        see here for details: https://lh3.github.io/minimap2/minimap2.html
 
-        **Indels that occur at feature junctions are assigned as
-        part of first feature? Look to see how ``minimap2`` handles
-        indels in homopolymers.**
+        When an insertion occurs between two features, it is assigned to the
+        end of the first feature.
 
         Parameters
         ----------
@@ -399,30 +412,96 @@ class Targets:
             SAM file with ``minimap2`` alignments with ``cs`` tag, typically
             created by :meth:`Targets.align`.
         multi_align : {'primary'}
-            How to handle multiple alignments. **Needs some thought**.
-            Maybe 'primary' = return only primary, etc...
-        **unaligned? How do we handle unaligned queries?**
-            Maybe either ignored or added to data frame with 'target'
-            as `None`.
+            How to handle multiple alignments. Currently only option is
+            'primary', which indicates that we only retain primary alignments
+            and ignore all secondary alignment.
 
         Returns
         -------
-        pandas.DataFrame
-            Gives alignment for each feature in target. Columns are:
-                - 'query' : alignment query name
-                - 'target' : name of target to which query aligns.
-                - 'feature' : ``cs`` tag equivalent for that feature, or
-                  `None` if that feature not in that target.
-                - **potentially another column related to `multi_align`?**
+        dict
+            Keyed be each target name. If there are no alignments for
+            that target, value is `None`. Otherwise, value is a pandas
+            DataFrame with a row for each feature in each query. The
+            columns in this data frame are:
+
+                - 'query_name' : name of query in `samfile`
+
+                - 'query_clip5' : length at 5' end of query not in alignment
+
+                - 'query_clip3' : length at 3' end of query not in alignment
+
+                - 'target_clip5' : length at 5' end of target not in alignment
+
+                - 'target_clip3' : length at 3' end of target not in alignment
+
+                - a column with the name of each feature in the target giving
+                  the ``cs`` string for that feature's alignment. If feature's
+                  alignment is clipped (incomplete), this is indicated by
+                  adding '<clipN>' (where 'N' is the amount of clipping) to the
+                  ``cs`` string. For instance: '<clip7>:5*cg:3<clip2>'
+                  indicates 7 nucleotides clipped at 5' end, 2 nucleotides at
+                  3' end, and a ``cs`` string of ':5*cg:3' for aligned portion.
+
+            The returned dict also has a key 'unmapped' which gives
+            the number of unmapped reads.
 
         """
-        # I would recommend writing a separate function that somehow does
-        # the splitting of the ``cs`` tags, perhaps in its own module. You
-        # can then have some simple doctests for that. This could probably
-        # go in its own module called `cs_tag` or something like that.
-        # For reading the SAM file, I recommend `pysam`.
-        # https://pysam.readthedocs.io/en/latest/usage.html#opening-a-file
-        raise RuntimeError('not yet implemented')
+        d = {target: None for target in self.target_names}
+        if 'unmapped' in self.target_names:
+            raise ValueError('cannot have a target named "unmapped"')
+        else:
+            d['unmapped'] = 0
+
+        # columns we always add to returned data frames
+        cols = ['query_name', 'query_clip5', 'query_clip3',
+                'target_clip5', 'target_clip3']
+
+        # we cannot have feature names the same as other column names
+        for target in self.targets:
+            for feature in target.features:
+                if feature.name in cols:
+                    raise ValueError(f"cannot have a feature {feature.name}")
+
+        for a in pysam.AlignmentFile(samfile):
+            if a.is_unmapped:
+                d['unmapped'] += 1
+            else:
+                aligned_seg = Alignment(a)
+                tname = aligned_seg.target_name
+                aligned_target = self.get_target(tname)
+                features = aligned_target.features
+                if d[tname] is None:
+                    d[tname] = {col: [] for col in
+                                cols + aligned_target.feature_names}
+
+                d[tname]['query_name'].append(aligned_seg.query_name)
+                d[tname]['query_clip5'].append(aligned_seg.query_clip5)
+                d[tname]['query_clip3'].append(aligned_seg.query_clip3)
+                d[tname]['target_clip5'].append(aligned_seg.target_clip5)
+                d[tname]['target_clip3'].append(aligned_target.length -
+                                                aligned_seg.target_lastpos)
+
+                for feature in features:
+                    feat_info = aligned_seg.extract_cs(feature.start,
+                                                       feature.end)
+                    if feat_info is None:
+                        d[tname][feature.name].append(feat_info)
+                    else:
+                        feat_cs, clip5, clip3 = feat_info
+                        if clip5 != 0:
+                            feat_cs = f"<clip{clip5}>{feat_cs}"
+
+                        if clip3 != 0:
+                            feat_cs = f"{feat_cs}<clip{clip3}>"
+
+                        d[tname][feature.name].append(feat_cs)
+
+        for target in d.keys():
+            if target != 'unmapped':
+                if d[target] is not None:
+                    d[target] = pd.DataFrame.from_dict(d[target])
+
+        return d
 
 
 if __name__ == '__main__':

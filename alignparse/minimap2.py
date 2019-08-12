@@ -98,7 +98,7 @@ class Mapper:
         been tested with versions >= 2.17.
     check_cs : bool
         Check that `options` includes ``--cs`` to output the short ``cs`` tag.
-    retain_tags : None or array-like (e.g., tuple)
+    retain_tags : None or list
         Retain these tags in query sequences in output alignments.
 
     Attributes
@@ -127,7 +127,7 @@ class Mapper:
         samtools bam2fq -T np,rq {bamfile} > {fastqfile}
 
     then the FASTQ file will have these tags and you can retain them in the SAM
-    alignment from :meth:`Mapper.map_to_sam` with `retain_tags=('np', 'rq')`.
+    alignment from :meth:`Mapper.map_to_sam` with `retain_tags=['np', 'rq']`.
 
     Examples
     --------
@@ -189,7 +189,7 @@ class Mapper:
     """
 
     def __init__(self, options, *, prog='minimap2', min_version='2.17',
-                 check_cs=True, retain_tags=('rq', 'np')):
+                 check_cs=True, retain_tags=None):
         """See main :class:`Mapper` doc string."""
         try:
             version = subprocess.check_output([prog, '--version'])
@@ -281,6 +281,10 @@ class Mapper:
                         try:
                             while query.name != name:
                                 query = next(queries)
+                            if self.retain_tags and not query.comment:
+                                raise ValueError('specified `retain_tags` but '
+                                                 'no tags in `queryfile` '
+                                                 f"{queryfile}")
                             for tag in self.retain_tags:
                                 m = matchers[tag].search(query.comment)
                                 if not m:
