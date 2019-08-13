@@ -54,6 +54,7 @@ setup(
             'pysam>=0.14',
             'regex>=2.5.33',
             'scipy>=1.2',
+            'pyyaml>=3.13',
             ],
     platforms='Linux and Mac OS X.',
     packages=['alignparse'],

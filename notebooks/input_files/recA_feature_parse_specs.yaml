@@ -1,0 +1,23 @@
+RecA_PacBio_amplicon:
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    clip_count: 4
+    mutation_count: 1
+  gene:
+    mutation_count: 30
+    mutations: null
+  spacer:
+    mutation_count: 1
+  barcode:
+    mutation_count: 0
+    sequence: null
+  termini3:
+    clip_count: 4
+    mutation_count: 1
+  variant_tag5:
+    mutation_count: 0
+    sequence: null
+  variant_tag3:
+    mutation_count: 0
+    sequence: null

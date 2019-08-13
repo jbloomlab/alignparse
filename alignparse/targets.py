@@ -272,22 +272,41 @@ class Targets:
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
     feature_parse_specs : dict
-        Keyed by name of each target in `seqsfile`, values are dicts
-        keyed by feature names with the value indicating what
-        :meth:`Targets.parse_alignment` returns for this feature. Can be
-        one of the following strings or a list of them:
+        Keyed by name of each target in `seqsfile`, values target-level dicts
+        keyed by feature names with values feature-level dicts keyed by feature
+        names indicating what :meth:`Targets.parse_alignment` filters for and
+        and returns for each feature. These feature-level dicts can be keyed
+        by any of the following:
 
-           - 'sequence' : full sequence of feature with clipping indicated
-             as a deletion.
+           - 'sequence' : sequence of feature, clipping indicated as deletion
 
-           - 'mutation_str' : space-delimited str of mutations with clipping
-             indicated as a deletion.
+           - 'mutations' : string of mutations, clipping indicated as deletion
 
-           - 'mutation_count' : number of mutated nucleotides (so a deletion
-             or insertion counts equal to its length) **not** counting
-             clipping.
+           - 'mutation_count' : number mutated nucleotides excluding clipping
 
-           - 'clip_count' : number of clipped nucleotides at either termini.
+           - 'clip_count' : number of clipped nucleotides, total both termini
+
+        The values for 'sequence' and 'mutations' are ignored; the values for
+        'mutation_count' and 'clip_count' give the max allowable count before
+        alignment is filtered (filtered if value > this).
+
+        In addition, target-level dicts can optionally have the following keys
+        that give the maximum amount that can be clipped from target or query
+        sequence prior to the aligned region:
+
+            - 'query_clip5' : amount query extends 5' of alignment
+
+            - 'query_clip3' : amount query extends 3' of alignment
+
+            - 'target_clip5' : amount target extends 5' of alignment;
+              equivalent information can be represented by 'clip_count'
+              for the 5' feature(s)
+
+            - 'target_clip3' : amount target extends 3' of alignment;
+              equivalent information can be represented by 'clip_count'
+              for the 3' feature(s)
+
+        See :meth:`Targets.parse_alignment` for some additional details.
 
     allow_extra_features : bool
         Can targets have features not in `feature_parse_specs`?
@@ -300,6 +319,8 @@ class Targets:
         List of all :class:`Target` objects.
     target_names : list
         List of names of all targets.
+    feature_parse_specs : dict
+        A copy of the parameter of the same name.
 
     """
 
@@ -319,6 +340,13 @@ class Targets:
 
         self.feature_parse_specs = copy.deepcopy(feature_parse_specs)
 
+        # name of columns with alignment clipping
+        self._clip_cols = ['query_clip5', 'query_clip3',
+                           'target_clip5', 'target_clip3']
+
+        # reserved columns for parsing, cannot be name of a feature
+        self._reserved_cols = ['query_name'] + self._clip_cols
+
         self.targets = []
         self.target_names = []
         self._target_dict = {}
@@ -328,8 +356,9 @@ class Targets:
                 raise ValueError(f"target {targetname} not in "
                                  '`feature_parse_specs`')
             target = Target(seqrecord=seqrecord,
-                            req_features=list(self.feature_parse_specs
-                                              [targetname].keys()),
+                            req_features=(set(self.feature_parse_specs
+                                              [targetname].keys()) -
+                                          set(self._reserved_cols)),
                             allow_extra_features=allow_extra_features,
                             )
             assert target.name == targetname
@@ -338,6 +367,27 @@ class Targets:
             self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
+            # we cannot have feature names that match reserved names
+            for feature in target.features:
+                if feature.name in self._reserved_cols:
+                    raise ValueError(f"cannot have a feature {feature.name}")
+
+        extra_targets = set(self.feature_parse_specs) - set(self.target_names)
+        if extra_targets:
+            raise ValueError('`feature_parse_specs` includes non-existent '
+                             f"targets {extra_targets}")
+
+        for targetname, targetspecs in self.feature_parse_specs.items():
+            if targetname not in self.target_names:
+                raise ValueError('`feature_parse_specs` includes non-existent '
+                                 f"target {targetname}")
+            extrafeatures = (set(targetspecs) -
+                             set(self._clip_cols)
+                             .union(self.get_target(targetname).feature_names)
+                             )
+            if extrafeatures:
+                raise ValueError(f"`feature_parse_specs` for {targetname} has "
+                                 f"specs for unknown features {extrafeatures}")
 
     def get_target(self, name):
         """Get :class:`Target` by name.
@@ -496,16 +546,6 @@ class Targets:
         else:
             d['unmapped'] = 0
 
-        # columns we always add to returned data frames
-        cols = ['query_name', 'query_clip5', 'query_clip3',
-                'target_clip5', 'target_clip3']
-
-        # we cannot have feature names the same as other column names
-        for target in self.targets:
-            for feature in target.features:
-                if feature.name in cols:
-                    raise ValueError(f"cannot have a feature {feature.name}")
-
         for a in pysam.AlignmentFile(samfile):
             if a.is_unmapped:
                 d['unmapped'] += 1
@@ -515,8 +555,8 @@ class Targets:
                 aligned_target = self.get_target(tname)
                 features = aligned_target.features
                 if d[tname] is None:
-                    d[tname] = {col: [] for col in
-                                cols + aligned_target.feature_names}
+                    d[tname] = {col: [] for col in self._reserved_cols +
+                                aligned_target.feature_names}
 
                 d[tname]['query_name'].append(aligned_seg.query_name)
                 d[tname]['query_clip5'].append(aligned_seg.query_clip5)
