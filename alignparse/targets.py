@@ -24,6 +24,8 @@ import pandas as pd
 
 import pysam
 
+import yaml
+
 from alignparse.constants import CBPALETTE
 from alignparse.cs_tag import Alignment
 
@@ -271,7 +273,8 @@ class Targets:
     seqsfile : str or list
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
-    feature_parse_specs : dict
+    feature_parse_specs : dict or str
+        Should specify either a dict or a YAML file giving a dict.
         Keyed by name of each target in `seqsfile`, values target-level dicts
         keyed by feature names with values feature-level dicts keyed by feature
         names indicating what :meth:`Targets.parse_alignment` filters for and
@@ -319,8 +322,6 @@ class Targets:
         List of all :class:`Target` objects.
     target_names : list
         List of names of all targets.
-    feature_parse_specs : dict
-        A copy of the parameter of the same name.
 
     """
 
@@ -338,7 +339,11 @@ class Targets:
         for f in seqsfile:
             seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
 
-        self.feature_parse_specs = copy.deepcopy(feature_parse_specs)
+        if isinstance(feature_parse_specs, str):
+            with open(feature_parse_specs) as f:
+                self._feature_parse_specs = yaml.safe_load(f)
+        else:
+            self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
 
         # name of columns with alignment clipping
         self._clip_cols = ['query_clip5', 'query_clip3',
@@ -352,11 +357,11 @@ class Targets:
         self._target_dict = {}
         for seqrecord in seqrecords:
             targetname = Target.get_name(seqrecord)
-            if targetname not in self.feature_parse_specs:
+            if targetname not in self._feature_parse_specs:
                 raise ValueError(f"target {targetname} not in "
                                  '`feature_parse_specs`')
             target = Target(seqrecord=seqrecord,
-                            req_features=(set(self.feature_parse_specs
+                            req_features=(set(self._feature_parse_specs
                                               [targetname].keys()) -
                                           set(self._reserved_cols)),
                             allow_extra_features=allow_extra_features,
@@ -372,12 +377,12 @@ class Targets:
                 if feature.name in self._reserved_cols:
                     raise ValueError(f"cannot have a feature {feature.name}")
 
-        extra_targets = set(self.feature_parse_specs) - set(self.target_names)
+        extra_targets = set(self._feature_parse_specs) - set(self.target_names)
         if extra_targets:
             raise ValueError('`feature_parse_specs` includes non-existent '
                              f"targets {extra_targets}")
 
-        for targetname, targetspecs in self.feature_parse_specs.items():
+        for targetname, targetspecs in self._feature_parse_specs.items():
             if targetname not in self.target_names:
                 raise ValueError('`feature_parse_specs` includes non-existent '
                                  f"target {targetname}")
@@ -388,6 +393,29 @@ class Targets:
             if extrafeatures:
                 raise ValueError(f"`feature_parse_specs` for {targetname} has "
                                  f"specs for unknown features {extrafeatures}")
+
+    def feature_parse_specs(self, returntype):
+        """Get the feature parsing specs.
+
+        Parameter
+        ---------
+        returntype : {'dict', 'yaml'}
+            Return a Python `dict` or a YAML string representation.
+
+        Returns
+        -------
+        The feature parsing specs set by the `feature_parse_specs` at
+        :class:`Targets` initialization.
+
+        """
+        if returntype == 'dict':
+            return copy.deepcopy(self._feature_parse_specs)
+        elif returntype == 'yaml':
+            return yaml.dump(self._feature_parse_specs,
+                             default_flow_style=False,
+                             sort_keys=False)
+        else:
+            raise ValueError(f"invalid `returntype` of {returntype}")
 
     def get_target(self, name):
         """Get :class:`Target` by name.
