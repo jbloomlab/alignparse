@@ -403,6 +403,15 @@ class Targets:
                 raise ValueError(f"`feature_parse_specs` for {targetname} has "
                                  f"specs for unknown features {extrafeatures}")
 
+        # features to parse for each target
+        self._features_to_parse = {}
+        for tname in self.target_names:
+            features_to_parse = self._feature_parse_specs[tname]
+            target = self.get_target(tname)
+            self._features_to_parse[tname] = [target.get_feature(fname) for
+                                              fname in target.feature_names
+                                              if fname in features_to_parse]
+
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
 
@@ -565,7 +574,8 @@ class Targets:
 
                 - 'target_clip3' : length at 3' end of target not in alignment
 
-                - for each feature in the target, columns with the name of the
+                - for each feature listed for that target in
+                  :meth:`Target.feature_parse_specs`, columns with name of the
                   feature and the following suffixes:
 
                     - '_cs' : the ``cs`` string for the aligned portion
@@ -599,10 +609,11 @@ class Targets:
                 aligned_seg = Alignment(a)
                 tname = aligned_seg.target_name
                 aligned_target = self.get_target(tname)
-                features = aligned_target.features
+                features = self._features_to_parse[tname]
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
-                    for fname in aligned_target.feature_names:
+                    for feature in features:
+                        fname = feature.name
                         for suffix in self._parse_alignment_cs_suffixes:
                             d[tname][fname + suffix] = []
 
