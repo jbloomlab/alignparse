@@ -383,8 +383,32 @@ def cs_to_sequence(cs, seq):
     sequence : str
         Nucleotide sequence for specified feature in the query.
 
+    Example
+    -------
+    >>> cs_to_sequence(':4*nt-tc:2+g:2', 'CGGANTCCAAT')
+    'CGGATCAGAT'
+
     """
-    raise RuntimeError('not yet implemented')
+    cs_list = split_cs(cs)
+    seq_loc = 0
+    seq_list = []
+    for cs_op in cs_list:
+        op_type = cs_op_type(cs_op)
+        if op_type == 'identity':
+            seq_list.append(seq[seq_loc: seq_loc +
+                                cs_op_len_target(cs_op)].upper())
+            seq_loc += cs_op_len_target(cs_op)
+        elif op_type == 'substitution':
+            seq_list.append(cs_op[2].upper())
+            seq_loc += 1
+        elif op_type == 'insertion':
+            seq_list.append(cs_op[1:].upper())
+        elif op_type == 'deletion':
+            seq_loc += len(cs_op) - 1
+        else:
+            raise ValueError(f"Invalid cs `op_type` of {op_type}")
+
+    return ''.join(seq_list)
 
 
 def cs_to_mutation_str(cs):
@@ -456,6 +480,8 @@ def cs_to_nt_mutation_count(cs):
     Example
     -------
     >>> cs_to_nt_mutation_count(':4*nt-tc:2+g')
+    3
+    >>> cs_to_nt_mutation_count(':4*gt-tc:2+g')
     4
 
     """
@@ -464,7 +490,10 @@ def cs_to_nt_mutation_count(cs):
     for cs_op in cs_list:
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
-            nt_mut_count += 1
+            if cs_op[1].upper() != 'N':
+                nt_mut_count += 1
+            else:
+                nt_mut_count += 0
         elif op_type == 'insertion' or op_type == 'deletion':
             nt_mut_count += len(cs_op) - 1
         elif op_type == 'identity':
@@ -492,6 +521,8 @@ def cs_to_op_mutation_count(cs):
     Example
     -------
     >>> cs_to_op_mutation_count(':4*nt-tc:2+g')
+    2
+    >>> cs_to_op_mutation_count(':4*gt-tc:2+g')
     3
 
     """
@@ -499,10 +530,17 @@ def cs_to_op_mutation_count(cs):
     cs_list = split_cs(cs)
     for cs_op in cs_list:
         op_type = cs_op_type(cs_op)
-        if op_type != 'identity':
+        if op_type == 'substitution':
+            if cs_op[1].upper() != 'N':
+                op_mut_count += 1
+            else:
+                op_mut_count += 0
+        elif op_type == 'insertion' or op_type == 'deletion':
             op_mut_count += 1
-        else:
+        elif op_type == 'identity':
             op_mut_count += 0
+        else:
+            raise ValueError(f'Invalid cs `op_type` of {op_type}.')
 
     return op_mut_count
 
