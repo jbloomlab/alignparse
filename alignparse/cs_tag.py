@@ -373,9 +373,8 @@ def cs_to_sequence(cs, seq):
 
     Parameters
     ----------
-    cs : str or tuple
-        `cs` string or tuple for feature. If there was clipping, this is a
-        tuple of (cs string, clip5, clip3).
+    cs : str
+        `cs` string
     seq : str
         Sequence of target for region corresponding to `cs` string.
 
@@ -388,101 +387,124 @@ def cs_to_sequence(cs, seq):
     raise RuntimeError('not yet implemented')
 
 
-def cs_to_mutation_str(cs, seq):
+def cs_to_mutation_str(cs):
     """Convert `cs` string for a feature in `feat_seq` to mutation string.
 
     Parameters
     ----------
-    cs : str or tuple
-        `cs` string or tuple for feature. If there was clipping, this is a
-        tuple of (cs string, clip5, clip3).
-    seq : str
-        Sequence of target for region corresponding to `cs` string.
+    cs : str
+        `cs` string
 
     Returns
     -------
     mut_str : str
-        Mutation string of form 'A56T G86A' for all mutations in the feature
+        Mutation string of form 'A5T G86A ins7ACG del19to24' for all mutations
         in the query compared to the target sequence.
 
+    Example
+    -------
+    >>> cs_to_mutation_str(':4*nt-tc:2+g:6')
+    'N5T del6to7 ins10G'
+
+    Note
+    ----
+    Mutation strings use "human readable" indexing, so the first nucleotide of
+    the sequence is 1 and deletions are inclusive of the last number.
+
     """
-    raise RuntimeError('not yet implemented')
+    cs_list = split_cs(cs)
+    seq_loc = 1
+    mut_strs_list = []
+    for cs_op in cs_list:
+        op_type = cs_op_type(cs_op)
+        if op_type == 'identity':
+            seq_loc += cs_op_len_target(cs_op)
+        elif op_type == 'substitution':
+            sub = ''.join([cs_op[1].upper(), str(seq_loc),
+                           cs_op[2].upper()])
+            mut_strs_list.append(sub)
+            seq_loc += 1
+        elif op_type == 'insertion':
+            ins = ''.join(['ins', str(seq_loc), cs_op[1:].upper()])
+            mut_strs_list.append(ins)
+        elif op_type == 'deletion':
+            deletion = ''.join(['del', str(seq_loc), 'to',
+                                str(seq_loc+len(cs_op)-2)])
+            mut_strs_list.append(deletion)
+            seq_loc += len(cs_op) - 1
+        else:
+            raise ValueError(f"Invalid cs `op_type` of {op_type}")
+
+    return ' '.join(mut_strs_list)
 
 
-def cs_to_mutation_count(cs):
+def cs_to_nt_mutation_count(cs):
     """Count the number of nucleotide mutations in `cs` string.
 
     Parameters
     ----------
-    cs : str or tuple
-        `cs` string or tuple for feature. If there was clipping, this is a
-        tuple of (cs string, clip5, clip3).
+    cs : str
+        `cs` string
 
     Returns
     -------
-    mut_count : int
+    nt_mut_count : int
         Number of nucleotides that are mutated in the query sequence. All
         substituted, inserted, or deleted nucleotides are counted. Clipped
         nucelotides are not included.
 
     Example
     -------
-    >>> cs_to_mutation_count(':4*nt-tc:2+g')
-    4
-    >>> cs_to_mutation_count((':4*nt-tc:2+g', 4, 8))
+    >>> cs_to_nt_mutation_count(':4*nt-tc:2+g')
     4
 
     """
-    if type(cs) is tuple:
-        if len(cs) != 3:
-            raise ValueError(f"Invalid `cs` tuple of {cs}")
-        cs = cs[0]
-
-    mut_count = 0
+    nt_mut_count = 0
     cs_list = split_cs(cs)
     for cs_op in cs_list:
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
-            mut_count += 1
+            nt_mut_count += 1
         elif op_type == 'insertion' or op_type == 'deletion':
-            mut_count += len(cs_op) - 1
+            nt_mut_count += len(cs_op) - 1
+        elif op_type == 'identity':
+            nt_mut_count += 0
         else:
-            mut_count += 0
+            raise ValueError(f'Invalid cs `op_type` of {op_type}.')
 
-    return mut_count
+    return nt_mut_count
 
 
-def cs_to_clip_count(cs):
-    """Count the number of clipped nucleotides in `cs` string.
+def cs_to_op_mutation_count(cs):
+    """Count the number of mutation operations in `cs` string.
 
     Parameters
     ----------
-    cs : str or tuple
-        `cs` string or tuple for feature. If there was clipping, this is a
-        tuple of (cs string, clip5, clip3).
+    cs : str
+        `cs` string
 
     Returns
     -------
-    clip_count : int
-        Number of nucleotides that are clipped from either or both ends of the
-        feature in the query sequence.
+    op_mut_count : int
+        Number of mutation operations in the query sequence. Each indel or
+        substitution is counted as a single mutation operation.
 
     Example
     -------
-    >>> cs_to_clip_count((':4*nt-tc:2+g', 4, 8))
-    12
-    >>> cs_to_clip_count(':4*nt-tc:2+g')
-    0
+    >>> cs_to_op_mutation_count(':4*nt-tc:2+g')
+    3
 
     """
-    if type(cs) is tuple:
-        if len(cs) != 3:
-            raise ValueError(f"Invalid `cs` tuple of {cs}")
-        clip_count = cs[1] + cs[2]
-    else:
-        clip_count = 0
+    op_mut_count = 0
+    cs_list = split_cs(cs)
+    for cs_op in cs_list:
+        op_type = cs_op_type(cs_op)
+        if op_type != 'identity':
+            op_mut_count += 1
+        else:
+            op_mut_count += 0
 
-    return clip_count
+    return op_mut_count
 
 
 if __name__ == '__main__':
