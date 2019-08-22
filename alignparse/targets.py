@@ -302,14 +302,6 @@ class Targets:
 
             - 'query_clip3' : amount query extends 3' of alignment
 
-            - 'target_clip5' : amount target extends 5' of alignment;
-              equivalent information can be represented by 'clip_count'
-              for the 5' feature(s)
-
-            - 'target_clip3' : amount target extends 3' of alignment;
-              equivalent information can be represented by 'clip_count'
-              for the 3' feature(s)
-
         See :meth:`Targets.parse_alignment` for some additional details.
 
     allow_extra_features : bool
@@ -347,8 +339,7 @@ class Targets:
             self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
 
         # name of columns with alignment clipping
-        self._clip_cols = ['query_clip5', 'query_clip3',
-                           'target_clip5', 'target_clip3']
+        self._clip_cols = ['query_clip5', 'query_clip3']
 
         # reserved columns for parsing, cannot be name of a feature
         self._reserved_cols = ['query_name'] + self._clip_cols
@@ -570,10 +561,6 @@ class Targets:
 
                 - 'query_clip3' : length at 3' end of query not in alignment
 
-                - 'target_clip5' : length at 5' end of target not in alignment
-
-                - 'target_clip3' : length at 3' end of target not in alignment
-
                 - for each feature listed for that target in
                   :meth:`Target.feature_parse_specs`, columns with name of the
                   feature and the following suffixes:
@@ -608,7 +595,6 @@ class Targets:
             else:
                 aligned_seg = Alignment(a)
                 tname = aligned_seg.target_name
-                aligned_target = self.get_target(tname)
                 features = self._features_to_parse[tname]
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
@@ -620,9 +606,6 @@ class Targets:
                 d[tname]['query_name'].append(aligned_seg.query_name)
                 d[tname]['query_clip5'].append(aligned_seg.query_clip5)
                 d[tname]['query_clip3'].append(aligned_seg.query_clip3)
-                d[tname]['target_clip5'].append(aligned_seg.target_clip5)
-                d[tname]['target_clip3'].append(aligned_target.length -
-                                                aligned_seg.target_lastpos)
 
                 for feature in features:
                     feat_info = aligned_seg.extract_cs(feature.start,
