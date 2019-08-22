@@ -1,0 +1,49 @@
+LASV_G1959_WT:
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    clip_count: 4
+    mutation_count: 1
+  T2A:
+    mutation_count: 5
+  gene:
+    mutation_count: 30
+    mutations: null
+  spacer:
+    mutation_count: 1
+  index:
+    mutation_count: 3
+    sequence: null
+  termini3:
+    clip_count: 4
+    mutation_count: 1
+  variant_tag5:
+    mutation_count: 0
+    sequence: null
+  variant_tag3:
+    mutation_count: 0
+    sequence: null
+
+LASV_G1959_OPT:
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    clip_count: 4
+    mutation_count: 1
+  gene:
+    mutation_count: 30
+    mutations: null
+  spacer:
+    mutation_count: 1
+  index:
+    mutation_count: 3
+    sequence: null
+  termini3:
+    clip_count: 4
+    mutation_count: 1
+  variant_tag5:
+    mutation_count: 0
+    sequence: null
+  variant_tag3:
+    mutation_count: 0
+    sequence: null
