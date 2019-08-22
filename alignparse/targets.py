@@ -558,9 +558,9 @@ class Targets:
 
                 - a column with the name of each feature in the target giving
                   the ``cs`` string for that feature's alignment. If feature's
-                  alignment is clipped (incomplete), this is indicated by
-                  adding '<clipN>' (where 'N' is the amount of clipping) to the
-                  ``cs`` string. For instance: '<clip7>:5*cg:3<clip2>'
+                  alignment is clipped (incomplete), this column gives a tuple
+                  of (cs, clip5, clip3). This is the same format as the
+                  output from `extract_cs`. For instance: (':5*cg:3', 7, 2)
                   indicates 7 nucleotides clipped at 5' end, 2 nucleotides at
                   3' end, and a ``cs`` string of ':5*cg:3' for aligned portion.
 
@@ -601,10 +601,10 @@ class Targets:
                     else:
                         feat_cs, clip5, clip3 = feat_info
                         if clip5 != 0:
-                            feat_cs = f"<clip{clip5}>{feat_cs}"
+                            feat_cs = feat_info
 
                         if clip3 != 0:
-                            feat_cs = f"{feat_cs}<clip{clip3}>"
+                            feat_cs = feat_info
 
                         d[tname][feature.name].append(feat_cs)
 
