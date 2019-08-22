@@ -19,6 +19,7 @@ _CS_OPS = {
     'substitution': r'\*[acgtn][acgtn]',
     'insertion': r'\+[acgtn]+',
     'deletion': r'\-[acgtn]+',
+    'clip': '<clip[0-9]+>'
     }
 """dict: Short ``cs`` tag operation regular expression matches."""
 
@@ -51,6 +52,9 @@ def split_cs(cs_string, *, invalid='raise'):
     -------
     >>> split_cs(':32*nt*na:10-gga:5+aaa:10')
     [':32', '*nt', '*na', ':10', '-gga', ':5', '+aaa', ':10']
+
+    >>> split_cs('<clip8>:32*nt*na:10-gga:5')
+    ['<clip8>', ':32', '*nt', '*na', ':10', '-gga', ':5']
 
     >>> split_cs('bad:32*nt*na:10-gga:5', invalid='ignore') is None
     True
@@ -96,6 +100,8 @@ def cs_op_type(cs_op, *, invalid='raise'):
     'substitution'
     >>> cs_op_type(':45')
     'identity'
+    >>> cs_op_type('<clip8>')
+    'clip'
     >>> cs_op_type('*nt:45')
     Traceback (most recent call last):
     ...
@@ -145,6 +151,10 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
     2
     >>> cs_op_len_target('+gc')
     0
+    >>> cs_op_len_target('<clip8>')
+    8
+    >>> cs_op_len_target('<clip46>')
+    46
     >>> cs_op_len_target('*nt:45')
     Traceback (most recent call last):
     ...
@@ -162,6 +172,8 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
         return len(cs_op) - 1
     elif op_type == 'insertion':
         return 0
+    elif op_type == 'clip':
+        return int(regex.findall(r'\d+', cs_op)[0])
     elif op_type is None:
         return None
     else:
@@ -365,6 +377,110 @@ class Alignment:
 
         return (feature_cs, clip5, clip3)
 
+def cs_to_sequence(cs, feat_name, feat_seq, *, custom_cs=False):
+    """Convert `cs` string for a feature in `feat_seq` to nt sequence.
+
+    Paramters
+    ---------
+    cs : str
+        `cs` string for feature
+    feat_name : str
+        Name of feature for which the cs string is being converted to seq.
+    custom_cs : bool
+        If `True`, will process custom `cs` strings that include clip amounts
+        on the 5' and/or 3' ends. Default is False to require users to
+        to consider if they want to process `cs` strings with clipping.
+
+    Returns
+    -------
+    sequence : str
+        Nucleotide sequence for specified feature in the query.
+    """
+    raise RuntimeError('not yet implemented')
+
+def cs_to_mutation_str(cs, feat_name, *, custom_cs=False):
+    """Convert `cs` string for a feature in `feat_seq` to mutation string.
+    
+    Paramters
+    ---------
+    cs : str
+        `cs` string for feature
+    feat_name : str
+        Name of feature for which the cs string is being converted to a
+        mutation string.
+    custom_cs : bool
+        If `True`, will process custom `cs` strings that include clip amounts
+        on the 5' and/or 3' ends. Default is False to require users to
+        to consider if they want to process `cs` strings with clipping.
+
+    Returns
+    -------
+    mut_str : str
+        Mutation string of form 'A56T G86A' for all mutations in the feature
+        in the query compared to the target sequence.
+    """
+    raise RuntimeError('not yet implemented')
+
+def cs_to_mutation_count(cs):
+    """Count the number of nucleotide mutations in `cs` string.
+    
+    Paramters
+    ---------
+    cs : str
+        `cs` string for feature
+
+    There is no `custom_cs` parameter becuase this function does ignores
+    clipping.
+
+    Returns
+    -------
+    mut_count : int
+        Number of nucleotides that are mutated in the query sequence. All
+        substituted, inserted, or deleted nucleotides are counted. Clipped
+        nucelotides are not included.
+
+    Example
+    -------
+    >>> cs_to_mutation_count(':4*nt-tc:2+g')
+    4
+
+    >>> cs_to_mutation_count('<clip4>:4*nt-tc:2+g')
+    4
+    """
+    mut_count = 0
+    cs_list = split_cs(cs)
+    for cs_op in cs_list:
+        op_type = cs_op_type(cs_op)
+        if op_type == 'substitution':
+            mut_count += 1
+        elif op_type == 'insertion' or op_type == 'deletion':
+            mut_count += len(cs_op) - 1
+        else:
+            mut_count += 0
+
+    return mut_count
+
+
+def cs_to_clip_count(cs, *, custom_cs=True):
+    """Count the number of clipped nucleotides in `cs` string.
+    
+    Paramters
+    ---------
+    cs : str
+        `cs` string for feature
+    custom_cs : bool
+        If `True`, will process custom `cs` strings that include clip amounts
+        on the 5' and/or 3' ends. Default is `True` as this function uses the
+        information specified in the custom `cs` strings that specify 5' and/
+        or 3' clipping.
+
+    Returns
+    -------
+    clip_count : int
+        Number of nucleotides that are clipped from either or both ends of the
+        feature in the query sequence.
+    """
+    raise RuntimeError('not yet implemented')
 
 if __name__ == '__main__':
     import doctest
