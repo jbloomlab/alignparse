@@ -10,6 +10,7 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 
 import copy
+import re
 import tempfile
 
 import Bio.SeqIO
@@ -352,6 +353,9 @@ class Targets:
         # reserved columns for parsing, cannot be name of a feature
         self._reserved_cols = ['query_name'] + self._clip_cols
 
+        # reserved suffixes, cannot be end of target name
+        self._parse_alignment_cs_suffixes = ['_cs', '_clip5', '_clip3']
+
         self.targets = []
         self.target_names = []
         self._target_dict = {}
@@ -369,6 +373,11 @@ class Targets:
             assert target.name == targetname
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
+            elif re.search('|'.join(s + '$' for s in
+                                    self._parse_alignment_cs_suffixes),
+                           target.name):
+                raise ValueError('target name cannot end in any of:\n' +
+                                 '\n'.join(self._parse_alignment_cs_suffixes))
             self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
@@ -556,13 +565,22 @@ class Targets:
 
                 - 'target_clip3' : length at 3' end of target not in alignment
 
-                - a column with the name of each feature in the target giving
-                  the ``cs`` string for that feature's alignment. If feature's
-                  alignment is clipped (incomplete), this column gives a tuple
-                  of (cs, clip5, clip3). This is the same format as the
-                  output from `extract_cs`. For instance: (':5*cg:3', 7, 2)
-                  indicates 7 nucleotides clipped at 5' end, 2 nucleotides at
-                  3' end, and a ``cs`` string of ':5*cg:3' for aligned portion.
+                - for each feature in the target, columns with the name of the
+                  feature and the following suffixes:
+
+                    - '_cs' : the ``cs`` string for the aligned portion
+                      of the target.
+
+                    - '_clip5' : number of nucleotides clipped from 5' end
+                      of feature in alignment.
+
+                    - '_clip3' : number of nucleotides clipped from 3' end
+                      of feature in alignment.
+
+                  If the feature is not aligned at all, then the '_cs' suffix
+                  column is an empty str, and either '_clip5' or '_clip3' will
+                  be the whole length of feature depending on if feature is
+                  upstream or downstream of aligned region.
 
             The returned dict also has a key 'unmapped' which gives
             the number of unmapped reads.
@@ -583,8 +601,10 @@ class Targets:
                 aligned_target = self.get_target(tname)
                 features = aligned_target.features
                 if d[tname] is None:
-                    d[tname] = {col: [] for col in self._reserved_cols +
-                                aligned_target.feature_names}
+                    d[tname] = {col: [] for col in self._reserved_cols}
+                    for fname in aligned_target.feature_names:
+                        for suffix in self._parse_alignment_cs_suffixes:
+                            d[tname][fname + suffix] = []
 
                 d[tname]['query_name'].append(aligned_seg.query_name)
                 d[tname]['query_clip5'].append(aligned_seg.query_clip5)
@@ -596,17 +616,26 @@ class Targets:
                 for feature in features:
                     feat_info = aligned_seg.extract_cs(feature.start,
                                                        feature.end)
+                    fname = feature.name
                     if feat_info is None:
-                        d[tname][feature.name].append(feat_info)
+                        d[tname][fname + '_cs'].append('')
+                        if aligned_seg.target_clip5 >= feature.end:
+                            d[tname][fname + '_clip5'].append(feature.length)
+                            d[tname][fname + '_clip3'].append(0)
+                        elif aligned_seg.target_lastpos <= feature.start:
+                            d[tname][fname + '_clip5'].append(0)
+                            d[tname][fname + '_clip3'].append(feature.length)
+                        else:
+                            raise ValueError(
+                                f"Should never get here for target {tname}:\n"
+                                f"feature = {feature}\n"
+                                f"target_clip5 = {aligned_seg.target_clip5}\n"
+                                f"lastpos = {aligned_seg.target_lastpos}\n"
+                                )
                     else:
-                        feat_cs, clip5, clip3 = feat_info
-                        if clip5 != 0:
-                            feat_cs = feat_info
-
-                        if clip3 != 0:
-                            feat_cs = feat_info
-
-                        d[tname][feature.name].append(feat_cs)
+                        d[tname][fname + '_cs'].append(feat_info[0])
+                        d[tname][fname + '_clip5'].append(feat_info[1])
+                        d[tname][fname + '_clip3'].append(feat_info[2])
 
         for target in d.keys():
             if target != 'unmapped':
