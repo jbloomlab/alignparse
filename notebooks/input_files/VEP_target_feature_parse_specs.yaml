@@ -1,49 +1,35 @@
-LASV_G1959_WT:
+LASV_G1959_WT: &VEP_target_parse_specs
   query_clip5: 4
   query_clip3: 4
   termini5:
-    clip_count: 4
-    mutation_count: 1
+    filter:
+      clip_count: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
   T2A:
-    mutation_count: 5
+    filter:
+      mutation_nt_count: 5
+      mutation_op_count: null
   gene:
-    mutation_count: 30
-    mutations: null
+    filter:
+      mutation_nt_count: 30
+    return: mutations
   spacer:
-    mutation_count: 1
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
   index:
-    mutation_count: 3
-    sequence: null
+    filter:
+      clip_count: 3
+    return: sequence
   termini3:
-    clip_count: 4
-    mutation_count: 1
+    filter:
+      clip_count: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
   variant_tag5:
-    mutation_count: 0
-    sequence: null
+    return: sequence
   variant_tag3:
-    mutation_count: 0
-    sequence: null
+    return: sequence
 
-LASV_G1959_OPT:
-  query_clip5: 4
-  query_clip3: 4
-  termini5:
-    clip_count: 4
-    mutation_count: 1
-  gene:
-    mutation_count: 30
-    mutations: null
-  spacer:
-    mutation_count: 1
-  index:
-    mutation_count: 3
-    sequence: null
-  termini3:
-    clip_count: 4
-    mutation_count: 1
-  variant_tag5:
-    mutation_count: 0
-    sequence: null
-  variant_tag3:
-    mutation_count: 0
-    sequence: null
+LASV_G1959_OPT: *VEP_target_parse_specs
