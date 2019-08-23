@@ -631,7 +631,8 @@ class Targets:
                     ('query_clip5', parse_specs['query_clip5']),
                     ('query_clip3', parse_specs['query_clip3'])]:
                 if clip_max is not None:
-                    filtered_queries = (target_df
+                    filtered_queries = (
+                        target_df
                         .query(f"{clip_name} > {clip_max}")
                         ['query_name']
                         .tolist()
@@ -639,13 +640,29 @@ class Targets:
                     filtered_dict['query_name'] += filtered_queries
                     n = len(filtered_queries)
                     filtered_dict['filter_reason'] += [clip_name] * n
-                target_df = target_df.query(f"{clip_name} <= {clip_max}")
+                    target_df = target_df.query(f"{clip_name} <= {clip_max}")
 
             # now get parse specs without query clipping
             parse_specs = {key: val for key, val in parse_specs.items()
                            if key not in {'query_clip5', 'query_clip3'}}
 
             # Filter on feature clipping
+            for feature in parse_specs:
+                feat_clip_max = parse_specs[feature]['filter']['clip_count']
+                if feat_clip_max is not None:
+                    filtered_queries = (
+                        target_df
+                        .assign(clip_count=lambda x: x[f"{feature}_clip5"] + x[f"{feature}_clip3"])
+                        .query(f"clip_count > {feat_clip_max}")
+                        .tolist()
+                        )
+                    filtered_dict['query_name'] += filtered_queries
+                    n = len(filtered_queries)
+                    filtered_dict['filter_reason'] += [f"{feature}_clip_count"] * n
+                    # not sure if assigning from above stays. I don't think so.
+                    target_df = target_df
+                                .assign(clip_count=lambda x: x[f"{feature}_clip5"] + x[f"{feature}_clip3"])
+                                .query(f"clip_count <= {feat_clip_max}")       
 
             # Filter on mutation_nt_count / mutation_op_count and
             # get alignments.
