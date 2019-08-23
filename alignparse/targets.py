@@ -288,9 +288,11 @@ class Targets:
             is `None` ('null' in YAML notation), then no filter is applied.
 
           - 'return': a str or list of strings indicating what we return
-            for this feature. Can be 'sequence' or 'mutations'. If 'returns'
-            is absent or the value is `None` ('null' in YAML notation),
-            nothing is returned for this feature.
+            for this feature. If 'returns' is absent or the value is `None`
+            `None` ('null' in YAML notation), nothing is returned for this
+            feature. Otherwise, list one or more of 'sequence', 'mutations',
+            'cs', 'clip5', and 'clip3' to get the sequence, mutation string,
+            ``cs`` tag, or number of clipped nucleotides from each end.
 
         In addition, target-level dicts should have keys 'query_clip5' and
         'query_clip3' which give the max amount that can be clipped from
@@ -340,7 +342,8 @@ class Targets:
 
         # reserved suffixes, cannot be end of target name
         self._parse_alignment_cs_suffixes = ['_cs', '_clip5', '_clip3']
-        self._parse_alignment_suffixes = ['_mutations', '_sequence']
+        self._parse_alignment_suffixes = ['_mutations', '_sequence', '_cs',
+                                          '_clip5', '_clip3']
 
         self.targets = []
         self.target_names = []
@@ -416,7 +419,8 @@ class Targets:
                     if isinstance(fdict['return'], str):
                         fdict['return'] = [fdict['return']]
                     for returnval in fdict['return']:
-                        if returnval not in {'sequence', 'mutations'}:
+                        if returnval not in [suffix[1:] for suffix in 
+                                             self._parse_alignment_suffixes]:
                             raise ValueError(
                                     f"`feature_parse_specs` for {targetname} "
                                     f"{fname} has invalid return type "
@@ -554,10 +558,105 @@ class Targets:
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
     def parse_alignment(self, samfile, *, multi_align='primary'):
-        """**Docs in progress.**"""
-        raise RuntimeError('not yet implemented')
+        """Parse alignment features as specified in `feature_parse_specs`.
+        
+        Parameters
+        ----------
+        samfile : str
+            SAM file with ``minimap2`` alignments with ``cs`` tag, typically
+            created by :meth:`Targets.align`.
+        multi_align : {'primary'}
+            How to handle multiple alignments. Currently only option is
+            'primary', which indicates that we only retain primary alignments
+            and ignore all secondary alignment.
 
-    def parse_alignment_cs(self, samfile, *, multi_align='primary'):
+        Returns
+        -------
+        dict
+            Keyed by the name of each target, values are 2-tuples of
+            pandas data frames: `(alignments, filtered)`. Each aligned
+            query in `samfile` that passes the filtering in
+            `feature_parse_specs` is a row in `alignments` with columns
+            the information to reaturn for that feature (these are columns
+            with names equal to the feature suffixed by '_sequence', 
+            '_mutations', '_cs', '_clip5', '_clip3'). Each aligned query
+            that fails filtering is in a row in `filtered`, and a column named
+            'filter_reason' describes why it was filtered.
+
+            There is also a key 'unmapped' in the dict that gives the
+            number of unmapped reads in `samfile`.
+
+            If there are no aligned reads or no filtered reads
+            then `alignments` or `filtered` are `None`.
+
+        Note
+        ----
+        The returned sequences, mutation strings, and ``cs`` tags
+        are only for the portion of the feature that aligns, and do
+        **not** include or indicate clipping. The returned sequences
+        are simply the sequence aligned to that feature, indels / mutations
+        are not indicated. The mutation string are space-delimited with the
+        following operations in **1-based** (1, 2, ...) numbering from start
+        of the feature:
+          
+          - 'A2G' : substitution at site 2 from A to G
+
+          - 'ins5TAA' : insertion of 'TAA' starting at site 5
+
+          - 'del5to6' : deletion of sites 5 to 6, inclusive
+
+        The returned clipping information is simply integers giving the
+        number of clipped nucleotides.
+
+        """
+        cs_dict = self._parse_alignment_cs(samfile=samfile,
+                                          multi_align=multi_align)
+
+        return_dict = {}
+        for targetname, target_df in cs_dict.items():
+
+            if targetname == 'unmapped':
+                return_dict[target] = target_df
+                continue
+
+            if target_df is None:
+                return_dict[targetname] = (None, None)
+
+            parse_specs = self._feature_parse_specs[targetname]
+            target = self.get_target(targetname)
+
+            filtered_dict = {'query_name': [], 'filter_reason': []}
+            # Filter on query clipping
+            for clip_name, clip_max in [
+                    ('query_clip5', parse_specs['query_clip5']),
+                    ('query_clip3', parse_specs['query_clip3'])]:
+                if clip_max is not None:
+                    filtered_queries = (target_df
+                        .query(f"{clip_name} > {clip_max}")
+                        ['query_name']
+                        .tolist()
+                        )
+                    filtered_dict['query_name'] += filtered_queries
+                    n = len(filtered_queries)
+                    filtered_dict['filter_reason'] += [clip_name] * n
+                target_df = target_df.query(f"{clip_name} <= {clip_max}")
+
+            # now get parse specs without query clipping
+            parse_specs = {key: val for key, val in parse_specs.items()
+                           if key not in {'query_clip5', 'query_clip3'}}
+
+            # Filter on feature clipping
+
+            # Filter on mutation_nt_count / mutation_op_count and
+            # get alignments.
+
+            # firstbuild the alignment and filtered data frames
+
+            return_dict[target] = (alignment_df, filtered_df)
+
+        return return_dict
+
+    def _parse_alignment_cs(self, samfile, *, multi_align='primary'):
         """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
@@ -570,13 +669,7 @@ class Targets:
 
         Parameters
         ----------
-        samfile : str
-            SAM file with ``minimap2`` alignments with ``cs`` tag, typically
-            created by :meth:`Targets.align`.
-        multi_align : {'primary'}
-            How to handle multiple alignments. Currently only option is
-            'primary', which indicates that we only retain primary alignments
-            and ignore all secondary alignment.
+        See parameter definitions in :meth:`Targets.parse_alignment`.
 
         Returns
         -------
