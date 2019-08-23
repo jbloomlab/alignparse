@@ -275,34 +275,27 @@ class Targets:
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
     feature_parse_specs : dict or str
-        Should specify either a dict or a YAML file giving a dict.
-        Keyed by name of each target in `seqsfile`, values target-level dicts
-        keyed by feature names with values feature-level dicts keyed by feature
-        names indicating what :meth:`Targets.parse_alignment` filters for and
-        and returns for each feature. These feature-level dicts can be keyed
-        by any of the following:
+        Indicates how :meth:`Targets.parse_alignment` parses the alignments.
+        Should specify a dict or YAML file giving a dict. Keyed by name of
+        of each target, values are target-level dicts keyed by feature names.
+        These feature-level dicts can have two keys:
 
-           - 'sequence' : sequence of feature, clipping indicated as deletion
+          - 'filter': a dict keyed by any of 'clip_count', 'mutation_nt_count',
+            and 'mutation_op_count' which give the maximal clipping, number
+            of nucleotide mutations, and number of ``cs`` tag mutation
+            operations allowed for the feature. If 'filter' itself or any of
+            the keys are missing, the value is set to zero. If the value
+            is `None` ('null' in YAML notation), then no filter is applied.
 
-           - 'mutations' : string of mutations, clipping indicated as deletion
+          - 'return': a str or list of strings indicating what we return
+            for this feature. Can be 'sequence' or 'mutations'. If 'returns'
+            is absent or the value is `None` ('null' in YAML notation),
+            nothing is returned for this feature.
 
-           - 'mutation_count' : number mutated nucleotides excluding clipping
-
-           - 'clip_count' : number of clipped nucleotides, total both termini
-
-        The values for 'sequence' and 'mutations' are ignored; the values for
-        'mutation_count' and 'clip_count' give the max allowable count before
-        alignment is filtered (filtered if value > this).
-
-        In addition, target-level dicts can optionally have the following keys
-        that give the maximum amount that can be clipped from target or query
-        sequence prior to the aligned region:
-
-            - 'query_clip5' : amount query extends 5' of alignment
-
-            - 'query_clip3' : amount query extends 3' of alignment
-
-        See :meth:`Targets.parse_alignment` for some additional details.
+        In addition, target-level dicts should have keys 'query_clip5' and
+        'query_clip3' which give the max amount that can be clipped from
+        each end of the query prior to the alignment. Use a value of
+        `None` ('null' in YAML notation) to have no filter on this clipping.
 
     allow_extra_features : bool
         Can targets have features not in `feature_parse_specs`?
@@ -332,20 +325,22 @@ class Targets:
         for f in seqsfile:
             seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
 
+        # name of columns with alignment clipping
+        self._clip_cols = ['query_clip5', 'query_clip3']
+
+        # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
             with open(feature_parse_specs) as f:
                 self._feature_parse_specs = yaml.safe_load(f)
         else:
             self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
 
-        # name of columns with alignment clipping
-        self._clip_cols = ['query_clip5', 'query_clip3']
-
         # reserved columns for parsing, cannot be name of a feature
         self._reserved_cols = ['query_name'] + self._clip_cols
 
         # reserved suffixes, cannot be end of target name
         self._parse_alignment_cs_suffixes = ['_cs', '_clip5', '_clip3']
+        self._parse_alignment_suffixes = ['_mutations', '_sequence']
 
         self.targets = []
         self.target_names = []
@@ -358,17 +353,12 @@ class Targets:
             target = Target(seqrecord=seqrecord,
                             req_features=(set(self._feature_parse_specs
                                               [targetname].keys()) -
-                                          set(self._reserved_cols)),
+                                          set(self._clip_cols)),
                             allow_extra_features=allow_extra_features,
                             )
             assert target.name == targetname
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
-            elif re.search('|'.join(s + '$' for s in
-                                    self._parse_alignment_cs_suffixes),
-                           target.name):
-                raise ValueError('target name cannot end in any of:\n' +
-                                 '\n'.join(self._parse_alignment_cs_suffixes))
             self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
@@ -376,32 +366,72 @@ class Targets:
             for feature in target.features:
                 if feature.name in self._reserved_cols:
                     raise ValueError(f"cannot have a feature {feature.name}")
+                if re.search('|'.join(s + '$' for s in
+                                      self._parse_alignment_cs_suffixes),
+                             feature.name):
+                    raise ValueError(
+                            'feature name cannot end in :\n' +
+                            '\n'.join(self._parse_alignment_cs_suffixes))
+                if re.search('|'.join(s + '$' for s in
+                                      self._parse_alignment_suffixes),
+                             feature.name):
+                    raise ValueError('feature name cannot end in :\n' +
+                                     '\n'.join(self._parse_alignment_suffixes))
 
         extra_targets = set(self._feature_parse_specs) - set(self.target_names)
         if extra_targets:
             raise ValueError('`feature_parse_specs` includes non-existent '
                              f"targets {extra_targets}")
 
+        # check and set defaults in feature_parse_specs
+        self._features_to_parse = {}  # features to parse for each target
         for targetname, targetspecs in self._feature_parse_specs.items():
+            target = self.get_target(targetname)
             if targetname not in self.target_names:
                 raise ValueError('`feature_parse_specs` includes non-existent '
                                  f"target {targetname}")
             extrafeatures = (set(targetspecs) -
                              set(self._clip_cols)
-                             .union(self.get_target(targetname).feature_names)
+                             .union(target.feature_names)
                              )
             if extrafeatures:
                 raise ValueError(f"`feature_parse_specs` for {targetname} has "
                                  f"specs for unknown features {extrafeatures}")
-
-        # features to parse for each target
-        self._features_to_parse = {}
-        for tname in self.target_names:
-            features_to_parse = self._feature_parse_specs[tname]
-            target = self.get_target(tname)
-            self._features_to_parse[tname] = [target.get_feature(fname) for
-                                              fname in target.feature_names
-                                              if fname in features_to_parse]
+            if set(self._clip_cols) - set(targetspecs):
+                raise ValueError(f"`feature_parse_specs` for {targetname} "
+                                 f"lacks {self._clip_cols}")
+            self._features_to_parse[targetname] = []
+            for fname, fdict in targetspecs.items():
+                if fname in self._clip_cols:
+                    continue
+                feature = target.get_feature(fname)
+                self._features_to_parse[targetname].append(feature)
+                if set(fdict.keys()) - {'return', 'filter'}:
+                    raise ValueError(f"`feature_parse_specs` for {targetname} "
+                                     f"{fname} has extra keys: only 'return' "
+                                     "and 'filter' are allowed.")
+                if 'return' not in fdict:
+                    fdict['return'] = []
+                else:
+                    if isinstance(fdict['return'], str):
+                        fdict['return'] = [fdict['return']]
+                    for returnval in fdict['return']:
+                        if returnval not in {'sequence', 'mutations'}:
+                            raise ValueError(
+                                    f"`feature_parse_specs` for {targetname} "
+                                    f"{fname} has invalid return type "
+                                    f"{returnval}")
+                if 'filter' not in fdict:
+                    fdict['filter'] = {}
+                filterkeys = ['clip_count', 'mutation_nt_count',
+                              'mutation_op_count']
+                if set(fdict['filter'].keys()) - set(filterkeys):
+                    raise ValueError(f"`feature_parse_specs` for {targetname} "
+                                     f"{fname} has invalid filter type. Only "
+                                     f"{filterkeys} are allowed.")
+                for filterkey in filterkeys:
+                    if filterkey not in fdict['filter']:
+                        fdict['filter'][filterkey] = 0
 
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
@@ -414,7 +444,8 @@ class Targets:
         Returns
         -------
         The feature parsing specs set by the `feature_parse_specs` at
-        :class:`Targets` initialization.
+        :class:`Targets` initialization, but with any missing default
+        values explicitly filled in.
 
         """
         if returntype == 'dict':
