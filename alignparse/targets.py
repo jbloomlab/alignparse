@@ -419,7 +419,7 @@ class Targets:
                     if isinstance(fdict['return'], str):
                         fdict['return'] = [fdict['return']]
                     for returnval in fdict['return']:
-                        if returnval not in [suffix[1:] for suffix in 
+                        if returnval not in [suffix[1:] for suffix in
                                              self._parse_alignment_suffixes]:
                             raise ValueError(
                                     f"`feature_parse_specs` for {targetname} "
@@ -559,7 +559,7 @@ class Targets:
 
     def parse_alignment(self, samfile, *, multi_align='primary'):
         """Parse alignment features as specified in `feature_parse_specs`.
-        
+
         Parameters
         ----------
         samfile : str
@@ -578,7 +578,7 @@ class Targets:
             query in `samfile` that passes the filtering in
             `feature_parse_specs` is a row in `alignments` with columns
             the information to reaturn for that feature (these are columns
-            with names equal to the feature suffixed by '_sequence', 
+            with names equal to the feature suffixed by '_sequence',
             '_mutations', '_cs', '_clip5', '_clip3'). Each aligned query
             that fails filtering is in a row in `filtered`, and a column named
             'filter_reason' describes why it was filtered.
@@ -598,7 +598,7 @@ class Targets:
         are not indicated. The mutation string are space-delimited with the
         following operations in **1-based** (1, 2, ...) numbering from start
         of the feature:
-          
+
           - 'A2G' : substitution at site 2 from A to G
 
           - 'ins5TAA' : insertion of 'TAA' starting at site 5
@@ -609,7 +609,7 @@ class Targets:
         number of clipped nucleotides.
 
         """
-        cs_dict = self._parse_alignment_cs(samfile=samfile,
+        cs_dict = self.parse_alignment_cs(samfile=samfile,
                                           multi_align=multi_align)
 
         return_dict = {}
@@ -652,7 +652,8 @@ class Targets:
                 if feat_clip_max is not None:
                     filtered_queries = (
                         target_df
-                        .assign(clip_count=lambda x: x[f"{feature}_clip5"] + x[f"{feature}_clip3"])
+                        .assign(clip_count=lambda x: (x[f"{feature}_clip5"] +
+                                                      x[f"{feature}_clip3"]))
                         .query(f"clip_count > {feat_clip_max}")
                         .tolist()
                         )
@@ -660,9 +661,11 @@ class Targets:
                     n = len(filtered_queries)
                     filtered_dict['filter_reason'] += [f"{feature}_clip_count"] * n
                     # not sure if assigning from above stays. I don't think so.
-                    target_df = target_df
-                                .assign(clip_count=lambda x: x[f"{feature}_clip5"] + x[f"{feature}_clip3"])
+                    target_df = (target_df
+                                .assign(clip_count=lambda x: (x[f"{feature}_clip5"] +
+                                                              x[f"{feature}_clip3"]))
                                 .query(f"clip_count <= {feat_clip_max}")       
+                                )
 
             # Filter on mutation_nt_count / mutation_op_count and
             # get alignments.
@@ -673,7 +676,7 @@ class Targets:
 
         return return_dict
 
-    def _parse_alignment_cs(self, samfile, *, multi_align='primary'):
+    def parse_alignment_cs(self, samfile, *, multi_align='primary'):
         """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
