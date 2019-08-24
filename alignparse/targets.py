@@ -320,16 +320,6 @@ class Targets:
     def __init__(self, *, seqsfile, feature_parse_specs,
                  allow_extra_features=False, seqsfileformat='genbank'):
         """See main class docstring."""
-        if isinstance(seqsfile, str):
-            seqsfile = [seqsfile]
-
-        seqrecords = []
-        for f in seqsfile:
-            seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
-
-        # name of columns with alignment clipping
-        self._clip_cols = ['query_clip5', 'query_clip3']
-
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
             with open(feature_parse_specs) as f:
@@ -337,80 +327,74 @@ class Targets:
         else:
             self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
 
+        # names of parse alignment columns with clipping
+        self._clip_cols = ['query_clip5', 'query_clip3']
+
         # reserved columns for parsing, cannot be name of a feature
         self._reserved_cols = ['query_name'] + self._clip_cols
 
-        # reserved suffixes, cannot be end of target name
-        self._parse_alignment_cs_suffixes = ['_cs', '_clip5', '_clip3']
-        self._parse_alignment_suffixes = ['_mutations', '_sequence', '_cs',
-                                          '_clip5', '_clip3']
+        # suffixes in feature columns returned parse_alignment
+        self._return_suffixes = ['_mutations', '_sequence', '_cs',
+                                 '_clip5', '_clip3']
+        # suffixes returned in by parse_alignment_cs
+        self._parse_alignment_cs_suffixes = self._return_suffixes[2: ]
 
+        # valid filtering keys
+        self._filterkeys = ['clip_count', 'mutation_nt_count',
+                            'mutation_op_count']
+
+        # get targets from seqsfile
+        if isinstance(seqsfile, str):
+            seqrecords = list(Bio.SeqIO.parse(seqsfile, format=seqsfileformat))
+        else:
+            seqrecords = []
+            for f in seqsfile:
+                seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
         self.targets = []
-        self.target_names = []
         self._target_dict = {}
         for seqrecord in seqrecords:
-            targetname = Target.get_name(seqrecord)
-            if targetname not in self._feature_parse_specs:
-                raise ValueError(f"target {targetname} not in "
-                                 '`feature_parse_specs`')
+            tname = Target.get_name(seqrecord)
             target = Target(seqrecord=seqrecord,
-                            req_features=(set(self._feature_parse_specs
-                                              [targetname].keys()) -
-                                          set(self._clip_cols)),
+                            req_features=self.features_to_parse(tname, 'name'),
                             allow_extra_features=allow_extra_features,
                             )
-            assert target.name == targetname
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
-            self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
-            # we cannot have feature names that match reserved names
+            # ensure feature names are not reserved or have reserved suffix
             for feature in target.features:
                 if feature.name in self._reserved_cols:
-                    raise ValueError(f"cannot have a feature {feature.name}")
-                if re.search('|'.join(s + '$' for s in
-                                      self._parse_alignment_cs_suffixes),
+                    raise ValueError(f"feature cannot be named {feature.name}")
+                if re.search('|'.join(s + '$' for s in self._return_suffixes),
                              feature.name):
-                    raise ValueError(
-                            'feature name cannot end in :\n' +
-                            '\n'.join(self._parse_alignment_cs_suffixes))
-                if re.search('|'.join(s + '$' for s in
-                                      self._parse_alignment_suffixes),
-                             feature.name):
-                    raise ValueError('feature name cannot end in :\n' +
-                                     '\n'.join(self._parse_alignment_suffixes))
+                    raise ValueError('feature name cannot end in ' +
+                                     str(self._return_suffixes))
+        self.target_names = [target.name for target in self.targets]
 
+        # make sure we have all targets to parse
         extra_targets = set(self._feature_parse_specs) - set(self.target_names)
         if extra_targets:
             raise ValueError('`feature_parse_specs` includes non-existent '
                              f"targets {extra_targets}")
 
-        # check and set defaults in feature_parse_specs
-        self._features_to_parse = {}  # features to parse for each target
-        for targetname, targetspecs in self._feature_parse_specs.items():
-            target = self.get_target(targetname)
-            if targetname not in self.target_names:
-                raise ValueError('`feature_parse_specs` includes non-existent '
-                                 f"target {targetname}")
-            extrafeatures = (set(targetspecs) -
-                             set(self._clip_cols)
-                             .union(target.feature_names)
-                             )
-            if extrafeatures:
-                raise ValueError(f"`feature_parse_specs` for {targetname} has "
-                                 f"specs for unknown features {extrafeatures}")
-            if set(self._clip_cols) - set(targetspecs):
-                raise ValueError(f"`feature_parse_specs` for {targetname} "
+        self._set_feature_parse_specs_defaults()
+
+    def _set_feature_parse_specs_defaults(self):
+        """Set missing values in `feature_parse_specs` to defaults.
+
+        These defaults are described in the main :class:`Targets` docs.
+
+        """
+        for tname, tspecs in self._feature_parse_specs.items():
+            if set(self._clip_cols) - set(tspecs):
+                raise ValueError(f"`feature_parse_specs` for {tname} "
                                  f"lacks {self._clip_cols}")
-            self._features_to_parse[targetname] = []
-            for fname, fdict in targetspecs.items():
+            for fname, fdict in tspecs.items():
                 if fname in self._clip_cols:
                     continue
-                feature = target.get_feature(fname)
-                self._features_to_parse[targetname].append(feature)
                 if set(fdict.keys()) - {'return', 'filter'}:
-                    raise ValueError(f"`feature_parse_specs` for {targetname} "
+                    raise ValueError(f"`feature_parse_specs` for {tname} "
                                      f"{fname} has extra keys: only 'return' "
                                      "and 'filter' are allowed.")
                 if 'return' not in fdict:
@@ -420,22 +404,63 @@ class Targets:
                         fdict['return'] = [fdict['return']]
                     for returnval in fdict['return']:
                         if returnval not in [suffix[1:] for suffix in
-                                             self._parse_alignment_suffixes]:
+                                             self._return_suffixes]:
                             raise ValueError(
-                                    f"`feature_parse_specs` for {targetname} "
-                                    f"{fname} has invalid return type "
-                                    f"{returnval}")
+                                    f"`feature_parse_specs` of {tname} {fname}"
+                                    f" has invalid return type {returnval}")
                 if 'filter' not in fdict:
                     fdict['filter'] = {}
-                filterkeys = ['clip_count', 'mutation_nt_count',
-                              'mutation_op_count']
-                if set(fdict['filter'].keys()) - set(filterkeys):
-                    raise ValueError(f"`feature_parse_specs` for {targetname} "
+                if set(fdict['filter'].keys()) - set(self._filterkeys):
+                    raise ValueError(f"`feature_parse_specs` for {tname} "
                                      f"{fname} has invalid filter type. Only "
-                                     f"{filterkeys} are allowed.")
-                for filterkey in filterkeys:
+                                     f"{self._filterkeys} are allowed.")
+                for filterkey in self._filterkeys:
                     if filterkey not in fdict['filter']:
                         fdict['filter'][filterkey] = 0
+
+    def features_to_parse(self, targetname, feature_or_name='feature'):
+        """Features to parse for a target.
+
+        Parameter
+        ---------
+        targetname : str
+            Name of target.
+        feature_or_name : {'feature', 'name'}
+            Get the :class:`Feature` objects themselves or their names.
+
+        Returns
+        -------
+        list
+            Features to parse for this target, as specified in
+            :meth:`Targets.feature_parse_specs`.
+
+        """
+        if feature_or_name == 'name':
+            if not hasattr(self, '_fnames_to_parse'):
+                self._fnames_to_parse = {}
+                for tname, tdict in self._feature_parse_specs.items():
+                    self._fnames_to_parse[tname] = [f for f in tdict if
+                                                    f not in self._clip_cols]
+            try:
+                return self._fnames_to_parse[targetname]
+            except KeyError:
+                raise ValueError(f"target {targetname} not in "
+                                 '`feature_parse_specs`')
+        elif feature_or_name == 'feature':
+            if not hasattr(self, '_features_to_parse'):
+                self._features_to_parse = {}
+                for tname, tdict in self._feature_parse_specs.items():
+                    target = self.get_target(tname)
+                    self._features_to_parse[tname] = [target.get_feature(f)
+                                                      for f in tdict if
+                                                      f not in self._clip_cols]
+            try:
+                return self._features_to_parse[targetname]
+            except KeyError:
+                raise ValueError(f"target {targetname} not in "
+                                 '`feature_parse_specs`')
+        else:
+            raise ValueError(f"invalid `feature_or_name` {feature_or_name}")
 
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
@@ -616,7 +641,7 @@ class Targets:
         for targetname, target_df in cs_dict.items():
 
             if targetname == 'unmapped':
-                return_dict[target] = target_df
+                return_dict[targetname] = target_df
                 continue
 
             if target_df is None:
@@ -739,10 +764,9 @@ class Targets:
             else:
                 aligned_seg = Alignment(a)
                 tname = aligned_seg.target_name
-                features = self._features_to_parse[tname]
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
-                    for feature in features:
+                    for feature in self.features_to_parse(tname):
                         fname = feature.name
                         for suffix in self._parse_alignment_cs_suffixes:
                             d[tname][fname + suffix] = []
@@ -751,7 +775,7 @@ class Targets:
                 d[tname]['query_clip5'].append(aligned_seg.query_clip5)
                 d[tname]['query_clip3'].append(aligned_seg.query_clip3)
 
-                for feature in features:
+                for feature in self.features_to_parse(tname):
                     feat_info = aligned_seg.extract_cs(feature.start,
                                                        feature.end)
                     fname = feature.name
