@@ -3,7 +3,7 @@ RecA_PacBio_amplicon:
   query_clip3: 4
   termini5:
     filter:
-      clip_count: 4
+      clip5: 4
       mutation_nt_count: 1
       mutation_op_count: null
   gene:
@@ -22,7 +22,7 @@ RecA_PacBio_amplicon:
     return: sequence
   termini3:
     filter:
-      clip_count: 4
+      clip3: 4
       mutation_nt_count: 1
       mutation_op_count: null
   variant_tag5:

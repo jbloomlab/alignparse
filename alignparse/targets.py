@@ -275,15 +275,14 @@ class Targets:
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
     feature_parse_specs : dict or str
-        Indicates how :meth:`Targets.parse_alignment` parses the alignments.
-        Should specify a dict or YAML file giving a dict. Keyed by name of
-        of each target, values are target-level dicts keyed by feature names.
-        These feature-level dicts can have two keys:
+        How :meth:`Targets.parse_alignment` parses alignments. Specify dict
+        or name of YAML file. Keyed by names of targets, values target-level
+        dicts keyed by feature names. The feature-level dicts have two keys:
 
-          - 'filter': a dict keyed by any of 'clip_count', 'mutation_nt_count',
-            and 'mutation_op_count' which give the maximal clipping, number
+          - 'filter': dict keyed by 'clip5', 'clip3', 'mutation_nt_count',
+            and 'mutation_op_count' giving max clipping at each end, number
             of nucleotide mutations, and number of ``cs`` tag mutation
-            operations allowed for the feature. If 'filter' itself or any of
+            operations allowed for feature. If 'filter' itself or any of
             the keys are missing, the value is set to zero. If the value
             is `None` ('null' in YAML notation), then no filter is applied.
 
@@ -340,7 +339,7 @@ class Targets:
         self._parse_alignment_cs_suffixes = self._return_suffixes[2: ]
 
         # valid filtering keys
-        self._filterkeys = ['clip_count', 'mutation_nt_count',
+        self._filterkeys = ['clip5', 'clip3', 'mutation_nt_count',
                             'mutation_op_count']
 
         # get targets from seqsfile
@@ -371,6 +370,12 @@ class Targets:
                     raise ValueError('feature name cannot end in ' +
                                      str(self._return_suffixes))
         self.target_names = [target.name for target in self.targets]
+
+        # check needed for `to_csv` option of `parse_alignments`.
+        if len(self.target_names) != len({tname.replace(' ', '_') for
+                                         tname in self.target_names}):
+            raise ValueError('target names must be unique even after '
+                             'replacing spaces with underscores.')
 
         # make sure we have all targets to parse
         extra_targets = set(self._feature_parse_specs) - set(self.target_names)
@@ -582,7 +587,8 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment(self, samfile, *, multi_align='primary'):
+    def parse_alignment(self, samfile, *, multi_align='primary',
+                        to_csv=False, csv_dir=None, overwrite_csv=False):
         """Parse alignment features as specified in `feature_parse_specs`.
 
         Parameters
@@ -594,44 +600,64 @@ class Targets:
             How to handle multiple alignments. Currently only option is
             'primary', which indicates that we only retain primary alignments
             and ignore all secondary alignment.
+        to_csv : bool
+            Write CSV files rather than return data frames. Useful to
+            avoid reading large data frames into memory.
+        csv_dir : None or str
+            If `to_csv` is `True`, name of directory to which we
+            write CSV files (created if needed). If `None`, write
+            to current directory.
+        overwrite_csv : bool
+            If using `to_csv` is `True`, do we overwrite existing CSV
+            files or raise an error if they already exist?
 
         Returns
         -------
-        dict
-            Keyed by the name of each target, values are 2-tuples of
-            pandas data frames: `(alignments, filtered)`. Each aligned
-            query in `samfile` that passes the filtering in
-            `feature_parse_specs` is a row in `alignments` with columns
-            the information to reaturn for that feature (these are columns
-            with names equal to the feature suffixed by '_sequence',
-            '_mutations', '_cs', '_clip5', '_clip3'). Each aligned query
-            that fails filtering is in a row in `filtered`, and a column named
-            'filter_reason' describes why it was filtered.
+        tuple
+            The returned 3-tuple is `(readstats, alignments, filtered)`.
 
-            There is also a key 'unmapped' in the dict that gives the
-            number of unmapped reads in `samfile`.
+              - `readstats` is a `pandas.DataFrame` with numbers of unmapped
+                reads, of mapped reads for each target that fail filters in
+                `feature_parse_specs`, and validly aligned reads for each
+                target (pass the filters).
 
-            If there are no aligned reads or no filtered reads
-            then `alignments` or `filtered` are `None`.
+              - `alignments` is a dict keyed by name of each target. Entries
+                are `pandas.DataFrame` with rows for each validly aligned read.
+                Each row gives the query name, the query clipping at each
+                end of alignment, and any feature-level information specified
+                for return in `feature_parse_specs` in columns with names equal
+                to feature suffixed by '_sequence', '_mutations', '_cs', '_clip5',
+                and '_clip3'.
+
+              - 'filtered' is a dict keyed by name of each target. Entries are
+                `pandas.DataFrame` with a row for each filtered aligned read
+                giving the query name and the reason it was filtered.
+
+            If `to_csv` is `False`, then `alignments` and `filtered` give
+            names of CSV files holding data frames rather than data frames
+            themselves. These files are in location specified by `csv_dir`.
 
         Note
         ----
-        The returned sequences, mutation strings, and ``cs`` tags
-        are only for the portion of the feature that aligns, and do
-        **not** include or indicate clipping. The returned sequences
-        are simply the sequence aligned to that feature, indels / mutations
-        are not indicated. The mutation string are space-delimited with the
-        following operations in **1-based** (1, 2, ...) numbering from start
-        of the feature:
+        The ``cs`` tags are in the short format returned by ``minimap2``;
+        see here for details: https://lh3.github.io/minimap2/minimap2.html
+
+        When parsing features, if an insertion occurs between two features,
+        it is assigned to the end of the first feature.
+
+        Returned sequences, mutation strings, and ``cs`` tags are only for
+        for the portion of the feature that aligns, and do **not** indicate
+        indicate clipping, which you instead get in the '_clip*' columns.
+        The sequences are simply what the ``cs`` tag implies, indels /
+        mutations are not indicated in this column. Mutation strings are
+        space-delimited with these operations in **1-based** (1, 2, ...)
+        numbering from start of the feature:
 
           - 'A2G' : substitution at site 2 from A to G
 
           - 'ins5TAA' : insertion of 'TAA' starting at site 5
 
           - 'del5to6' : deletion of sites 5 to 6, inclusive
-
-        The returned clipping information is simply integers giving the
-        number of clipped nucleotides.
 
         """
         cs_dict = self.parse_alignment_cs(samfile=samfile,
