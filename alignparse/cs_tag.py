@@ -22,7 +22,7 @@ _CS_OPS = {
     }
 """dict: Short ``cs`` tag operation regular expression matches."""
 
-_CS_STR_REGEX = regex.compile('(' + '|'.join(list(_CS_OPS.values())) + ')+')
+_CS_STR_REGEX = regex.compile('(' + '|'.join(list(_CS_OPS.values())) + ')*')
 """regex.Regex: matches full-length short ``cs`` tags."""
 
 _CS_OP_REGEX = regex.compile('|'.join(f"(?P<{op_name}>{op_str})" for
@@ -409,13 +409,15 @@ def cs_to_sequence(cs, seq):
     return ''.join(seq_list).upper()
 
 
-def cs_to_mutation_str(cs):
+def cs_to_mutation_str(cs, offset=0):
     """Convert ``cs`` tag to a descriptive string of mutations.
 
     Parameters
     ----------
     cs : str
         A ``cs`` tag.
+    offset : int
+        Mutations are numbered in 1, ... numbering **plus** this offset.
 
     Returns
     -------
@@ -429,6 +431,8 @@ def cs_to_mutation_str(cs):
     'del6to7 ins10GA'
     >>> cs_to_mutation_str(':4*at-tc:2+ga:6')
     'A5T del6to7 ins10GA'
+    >>> cs_to_mutation_str(':4*at-tc:2+ga:6', offset=2)
+    'A7T del8to9 ins12GA'
     >>> cs_to_mutation_str(':45')
     ''
 
@@ -442,7 +446,7 @@ def cs_to_mutation_str(cs):
 
     """
     cs_list = split_cs(cs)
-    seq_loc = 1
+    seq_loc = 1 + offset
     mut_strs_list = []
     for cs_op in cs_list:
         op_type = cs_op_type(cs_op)
