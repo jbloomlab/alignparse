@@ -9,7 +9,9 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 """
 
 
+import contextlib
 import copy
+import os
 import re
 import tempfile
 
@@ -59,6 +61,8 @@ class Feature:
     def __init__(self, *, name, seq, start, end):
         """See main class docstring."""
         self.name = name
+        if ',' in self.name:
+            raise ValueError(f"comma not allowed in feature name: {self.name}")
         self.seq = seq
         if end - start != len(seq):
             raise ValueError('length of `seq` not equal to `end` - `start`')
@@ -111,6 +115,8 @@ class Target:
                  opt_features=frozenset(), allow_extra_features=False):
         """See main class docstring."""
         self.name = self.get_name(seqrecord)
+        if ',' in self.name:
+            raise ValueError(f"comma not allowed in target name: {self.name}")
         if not hasattr(seqrecord, 'seq'):
             raise ValueError(f"`seqrecord` does not define a seq")
         self.seq = str(seqrecord.seq)
@@ -336,7 +342,7 @@ class Targets:
         self._return_suffixes = ['_mutations', '_sequence', '_cs',
                                  '_clip5', '_clip3']
         # suffixes returned in by parse_alignment_cs
-        self._parse_alignment_cs_suffixes = self._return_suffixes[2: ]
+        self._parse_alignment_cs_suffixes = self._return_suffixes[2:]
 
         # valid filtering keys
         self._filterkeys = ['clip5', 'clip3', 'mutation_nt_count',
@@ -371,7 +377,7 @@ class Targets:
                                      str(self._return_suffixes))
         self.target_names = [target.name for target in self.targets]
 
-        # check needed for `to_csv` option of `parse_alignments`.
+        # check needed for `to_csv` option of `parse_alignment`.
         if len(self.target_names) != len({tname.replace(' ', '_') for
                                          tname in self.target_names}):
             raise ValueError('target names must be unique even after '
@@ -613,26 +619,26 @@ class Targets:
         Returns
         -------
         tuple
-            The returned 3-tuple is `(readstats, alignments, filtered)`.
+            The returned 3-tuple is `(readstats, aligned, filtered)`.
 
               - `readstats` is a `pandas.DataFrame` with numbers of unmapped
                 reads, of mapped reads for each target that fail filters in
                 `feature_parse_specs`, and validly aligned reads for each
                 target (pass the filters).
 
-              - `alignments` is a dict keyed by name of each target. Entries
+              - `aligned` is a dict keyed by name of each target. Entries
                 are `pandas.DataFrame` with rows for each validly aligned read.
-                Each row gives the query name, the query clipping at each
-                end of alignment, and any feature-level information specified
-                for return in `feature_parse_specs` in columns with names equal
-                to feature suffixed by '_sequence', '_mutations', '_cs', '_clip5',
+                Rows give the query name, the query clipping at each end of
+                alignment, and any feature-level information specified for
+                return in `feature_parse_specs` in columns with names equal to
+                feature suffixed by '_sequence', '_mutations', '_cs', '_clip5',
                 and '_clip3'.
 
               - 'filtered' is a dict keyed by name of each target. Entries are
                 `pandas.DataFrame` with a row for each filtered aligned read
                 giving the query name and the reason it was filtered.
 
-            If `to_csv` is `False`, then `alignments` and `filtered` give
+            If `to_csv` is `False`, then `aligned` and `filtered` give
             names of CSV files holding data frames rather than data frames
             themselves. These files are in location specified by `csv_dir`.
 
@@ -659,72 +665,156 @@ class Targets:
           - 'del5to6' : deletion of sites 5 to 6, inclusive
 
         """
-        cs_dict = self.parse_alignment_cs(samfile=samfile,
-                                          multi_align=multi_align)
+        if multi_align == 'primary':
+            primary_only = True
+        else:
+            raise ValueError(f"invalid `multi_align` {multi_align}")
 
-        return_dict = {}
-        for targetname, target_df in cs_dict.items():
+        if csv_dir is None:
+            csv_dir = ''
+        elif csv_dir:
+            os.makedirs(csv_dir, exist_ok=True)
 
-            if targetname == 'unmapped':
-                return_dict[targetname] = target_df
-                continue
+        unmapped = 0
+        read_stats = {t: {'filtered': 0, 'valid alignment': 0}
+                      for t in self.target_names}
 
-            if target_df is None:
-                return_dict[targetname] = (None, None)
+        filtered_cols = ['query_name', 'filter_reason']
+        if to_csv:
+            filtered = {t: os.path.join(csv_dir, t.replace(' ', '_') +
+                                        '_filtered.csv')
+                        for t in self.target_names}
+            aligned = {t: os.path.join(csv_dir, t.replace(' ', '_') +
+                                       '_aligned.csv')
+                       for t in self.target_names}
+            filenames = list(filtered.values()) + list(aligned.values())
+            if (not overwrite_csv) and any(map(os.path.isfile, filenames)):
+                raise ValueError(f"existing file with name in: {filenames}")
+        else:
+            filtered = {t: [] for t in self.target_names}
+            aligned = {t: [] for t in self.target_names}
 
-            parse_specs = self._feature_parse_specs[targetname]
-            target = self.get_target(targetname)
+        # Iterate samfile in contextlib so can handle files if using `to_csv`.
+        with contextlib.ExitStack() as stack:
 
-            filtered_dict = {'query_name': [], 'filter_reason': []}
-            # Filter on query clipping
-            for clip_name, clip_max in [
-                    ('query_clip5', parse_specs['query_clip5']),
-                    ('query_clip3', parse_specs['query_clip3'])]:
-                if clip_max is not None:
-                    filtered_queries = (
-                        target_df
-                        .query(f"{clip_name} > {clip_max}")
-                        ['query_name']
-                        .tolist()
-                        )
-                    filtered_dict['query_name'] += filtered_queries
-                    n = len(filtered_queries)
-                    filtered_dict['filter_reason'] += [clip_name] * n
-                    target_df = target_df.query(f"{clip_name} <= {clip_max}")
+            # Define callback to delete CSV files on error. See here:
+            # https://docs.python.org/3/library/contextlib.html#replacing-any-use-of-try-finally-and-flag-variables
+            @stack.callback
+            def delete_files_on_err():
+                if to_csv:
+                    for fname in filenames:
+                        if os.path.isfile(fname):
+                            os.remove(fname)
 
-            # now get parse specs without query clipping
-            parse_specs = {key: val for key, val in parse_specs.items()
-                           if key not in {'query_clip5', 'query_clip3'}}
+            if to_csv:
+                # add files to stack so they are closed at end:
+                # https://stackoverflow.com/a/19412700
+                filtered_files = {t: stack.enter_context(open(f, 'w'))
+                                  for t, f in filtered.items()}
+                for f in filtered_files.values():
+                    f.write(','.join(filtered_cols) + '\n')
+                aligned_files = {t: stack.enter_context(open(f, 'w'))
+                                 for t, f in aligned.items()}
+                for t, f in aligned_files.items():
+                    f.write(','.join(self._parse_returnvals(t)) + '\n')
 
-            # Filter on feature clipping
-            for feature in parse_specs:
-                feat_clip_max = parse_specs[feature]['filter']['clip_count']
-                if feat_clip_max is not None:
-                    filtered_queries = (
-                        target_df
-                        .assign(clip_count=lambda x: (x[f"{feature}_clip5"] +
-                                                      x[f"{feature}_clip3"]))
-                        .query(f"clip_count > {feat_clip_max}")
-                        .tolist()
-                        )
-                    filtered_dict['query_name'] += filtered_queries
-                    n = len(filtered_queries)
-                    filtered_dict['filter_reason'] += [f"{feature}_clip_count"] * n
-                    # not sure if assigning from above stays. I don't think so.
-                    target_df = (target_df
-                                .assign(clip_count=lambda x: (x[f"{feature}_clip5"] +
-                                                              x[f"{feature}_clip3"]))
-                                .query(f"clip_count <= {feat_clip_max}")       
-                                )
+            # iterate over samfile and process each alignment
+            for aligned_seg in pysam.AlignmentFile(samfile):
 
-            # Filter on mutation_nt_count / mutation_op_count and
-            # get alignments.
+                if aligned_seg.is_unmapped:
+                    unmapped += 1
+                    continue
 
-            # firstbuild the alignment and filtered data frames
+                if aligned_seg.is_secondary and primary_only:
+                    continue
 
-            return_dict[target] = (alignment_df, filtered_df)
+                a = Alignment(aligned_seg)
+                tname = a.target_name
 
-        return return_dict
+                is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
+
+                if is_filtered:
+                    read_stats[tname]['filtered'] += 1
+                    if to_csv:
+                        filtered_files[tname].write(','.join(parse_tup))
+                        filtered_files[tname].write('\n')
+                    else:
+                        filtered[tname].append(parse_tup)
+
+                else:
+                    read_stats[tname]['valid alignment'] += 1
+                    if to_csv:
+                        aligned_files[tname].write(','.join(parse_tup))
+                        aligned_files[tname].write('\n')
+                    else:
+                        aligned[tname].append(parse_tup)
+
+            # Done iterating over `samfile`, get values ready to return
+            read_stats = (pd.DataFrame(read_stats)
+                          .reset_index()
+                          .melt(id_vars='index', value_name='count')
+                          .assign(category=lambda x: (x['index'] + ' ' +
+                                                      x['variable']))
+                          [['category', 'count']]
+                          .append({'category': 'unmapped', 'count': unmapped},
+                                  ignore_index=True)
+                          )
+            if to_csv:
+                filtered = {t: pd.DataFrame(tlist, columns=filtered_cols)
+                            for t, tlist in filtered.items()}
+                aligned = {t: pd.DataFrame(tlist,
+                                           columns=self._parse_returnvals(t))
+                           for t, tlist in aligned.items()}
+
+            stack.pop_all()  # no callback to delete CSV files if reached here
+
+        return read_stats, aligned, filtered
+
+    def _parse_returnvals(self, targetname, featurename=None):
+        """Values to return when parsing alignment.
+
+        Parameters
+        ----------
+        targetname : str
+        featurename : str or None
+
+        Returns
+        -------
+        list
+            If `featurename` is not `None`, gets list of all values
+            to return for this feature and targets from `feature_parse_specs`.
+            If `featurename` is `None`, gets list of all values for all
+            features in target, prefixing with the feature name.
+
+        """
+        if targetname is None:
+            returnlist = []
+            for featurename in self.features_to_parse(targetname, 'name'):
+                for val in self._parse_returnvals(targetname, featurename):
+                    returnlist.append(f"{featurename}_{val}")
+            return returnlist
+        else:
+            return self._feature_parse_specs[targetname][featurename]['return']
+
+    def _parse_single_Alignment(self, a, targetname):
+        """Parse a single alignment.
+
+        Parameters
+        ----------
+        a : :class:`alignparse.cs_tag.Alignment`
+        targetname : str
+
+        Returns
+        --------
+        2-tuple
+            Tuple `(is_filtered, parse_tup)` where `is_filtered` is bool
+            indicating if alignment fails `feature_parse_specs` filters.
+            If it fails, `parse_tup` is 2-tuple `(query_name, filter_reason)`.
+            If it passes, `parse_tup` is tuple giving values specified
+            by :meth:`_parse_returnvals` for `targetname`.
+
+        """
+        raise RuntimeError('not yet implemented')
 
     def parse_alignment_cs(self, samfile, *, multi_align='primary'):
         """Parse alignment feature ``cs`` strings for aligned queries.
