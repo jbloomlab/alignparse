@@ -598,8 +598,7 @@ class Targets:
             created by :meth:`Targets.align`.
         multi_align : {'primary'}
             How to handle multiple alignments. Currently only option is
-            'primary', which indicates that we only retain primary alignments
-            and ignore all secondary alignment.
+            'primary', which ignores all secondary alignments.
         to_csv : bool
             Write CSV files rather than return data frames. Useful to
             avoid reading large data frames into memory.
@@ -784,12 +783,19 @@ class Targets:
         else:
             d['unmapped'] = 0
 
-        for a in pysam.AlignmentFile(samfile):
-            if a.is_unmapped:
+        if multi_align == 'primary':
+            primary_only = True
+        else:
+            raise ValueError(f"invalid `multi_align` {multi_align}")
+
+        for aligned_seg in pysam.AlignmentFile(samfile):
+            if aligned_seg.is_unmapped:
                 d['unmapped'] += 1
             else:
-                aligned_seg = Alignment(a)
-                tname = aligned_seg.target_name
+                if primary_only and aligned_seg.is_secondary:
+                    continue
+                a = Alignment(aligned_seg)
+                tname = a.target_name
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
                     for feature in self.features_to_parse(tname):
@@ -797,28 +803,27 @@ class Targets:
                         for suffix in self._parse_alignment_cs_suffixes:
                             d[tname][fname + suffix] = []
 
-                d[tname]['query_name'].append(aligned_seg.query_name)
-                d[tname]['query_clip5'].append(aligned_seg.query_clip5)
-                d[tname]['query_clip3'].append(aligned_seg.query_clip3)
+                d[tname]['query_name'].append(a.query_name)
+                d[tname]['query_clip5'].append(a.query_clip5)
+                d[tname]['query_clip3'].append(a.query_clip3)
 
                 for feature in self.features_to_parse(tname):
-                    feat_info = aligned_seg.extract_cs(feature.start,
-                                                       feature.end)
+                    feat_info = a.extract_cs(feature.start, feature.end)
                     fname = feature.name
                     if feat_info is None:
                         d[tname][fname + '_cs'].append('')
-                        if aligned_seg.target_clip5 >= feature.end:
+                        if a.target_clip5 >= feature.end:
                             d[tname][fname + '_clip5'].append(feature.length)
                             d[tname][fname + '_clip3'].append(0)
-                        elif aligned_seg.target_lastpos <= feature.start:
+                        elif a.target_lastpos <= feature.start:
                             d[tname][fname + '_clip5'].append(0)
                             d[tname][fname + '_clip3'].append(feature.length)
                         else:
                             raise ValueError(
                                 f"Should never get here for target {tname}:\n"
                                 f"feature = {feature}\n"
-                                f"target_clip5 = {aligned_seg.target_clip5}\n"
-                                f"lastpos = {aligned_seg.target_lastpos}\n"
+                                f"target_clip5 = {a.target_clip5}\n"
+                                f"lastpos = {a.target_lastpos}\n"
                                 )
                     else:
                         d[tname][fname + '_cs'].append(feat_info[0])
