@@ -9,6 +9,10 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 """
 
 
+import contextlib
+import copy
+import os
+import re
 import tempfile
 
 import Bio.SeqIO
@@ -23,8 +27,15 @@ import pandas as pd
 
 import pysam
 
+import yaml
+
 from alignparse.constants import CBPALETTE
-from alignparse.cs_tag import Alignment
+from alignparse.cs_tag import (Alignment,
+                               cs_to_mutation_str,
+                               cs_to_nt_mutation_count,
+                               cs_to_op_mutation_count,
+                               cs_to_sequence,
+                               )
 
 
 class Feature:
@@ -33,9 +44,13 @@ class Feature:
     Parameters
     ----------
     name : str
+        Name of feature.
     seq : str
+        Sequence of feature.
     start: int
+        Feature start in :class:`Target`, using Python-like 0, ... numbering.
     end : int
+        Feature end in :class:`Target` using Python-like 0, ... numbering.
 
     Attributes
     ----------
@@ -55,6 +70,8 @@ class Feature:
     def __init__(self, *, name, seq, start, end):
         """See main class docstring."""
         self.name = name
+        if ',' in self.name:
+            raise ValueError(f"comma not allowed in feature name: {self.name}")
         self.seq = seq
         if end - start != len(seq):
             raise ValueError('length of `seq` not equal to `end` - `start`')
@@ -106,10 +123,12 @@ class Target:
     def __init__(self, *, seqrecord, req_features=frozenset(),
                  opt_features=frozenset(), allow_extra_features=False):
         """See main class docstring."""
-        for attr in ['name', 'seq']:
-            if not hasattr(seqrecord, attr):
-                raise ValueError(f"`seqrecord` does not define a {attr}")
-            setattr(self, attr, str(getattr(seqrecord, attr)))
+        self.name = self.get_name(seqrecord)
+        if ',' in self.name:
+            raise ValueError(f"comma not allowed in target name: {self.name}")
+        if not hasattr(seqrecord, 'seq'):
+            raise ValueError(f"`seqrecord` does not define a seq")
+        self.seq = str(seqrecord.seq)
 
         self.length = len(self.seq)
 
@@ -141,6 +160,26 @@ class Target:
         missing_features = set(req_features) - set(self._features_dict)
         if missing_features:
             raise ValueError(f"{self.name} lacks features: {missing_features}")
+
+    @classmethod
+    def get_name(cls, seqrecord):
+        """Get name of target from sequence record.
+
+        Parameters
+        ----------
+        seqrecord : Bio.SeqRecord.SeqRecord
+            Sequence record as passed to :class:`Target`.
+
+        Returns
+        -------
+        str
+            Name parsed from `seqrecord`.
+
+        """
+        if not hasattr(seqrecord, 'name'):
+            raise ValueError(f"`seqrecord` does not define a name")
+        else:
+            return seqrecord.name
 
     def has_feature(self, name):
         """Check if a feature is defined for this target.
@@ -251,14 +290,42 @@ class Targets:
     seqsfile : str or list
         Name of file specifying the targets, or list of such files. So
         if multiple targets they can all be in one file or in separate files.
-    req_features : set or other iterable
-        Required features for each target in `seqsfile`.
-    opt_features: set of other iterable
-        Optional features for each target in `seqsfile`.
+    feature_parse_specs : dict or str
+        How :meth:`Targets.parse_alignment` parses alignments. Specify dict
+        or name of YAML file. Keyed by names of targets, values target-level
+        dicts keyed by feature names. The feature-level dicts have two keys:
+
+          - 'filter': dict keyed by 'clip5', 'clip3', 'mutation_nt_count',
+            and 'mutation_op_count' giving max clipping at each end, number
+            of nucleotide mutations, and number of ``cs`` tag mutation
+            operations allowed for feature. If 'filter' itself or any of
+            the keys are missing, the value is set to zero. If the value
+            is `None` ('null' in YAML notation), then no filter is applied.
+
+          - 'return': a str or list of strings indicating what we return
+            for this feature. If 'returns' is absent or the value is `None`
+            `None` ('null' in YAML notation), nothing is returned for this
+            feature. Otherwise, list one or more of 'sequence', 'mutations',
+            'cs', 'clip5', and 'clip3' to get the sequence, mutation string,
+            ``cs`` tag, or number of clipped nucleotides from each end.
+
+        In addition, target-level dicts should have keys 'query_clip5' and
+        'query_clip3' which give the max amount that can be clipped from
+        each end of the query prior to the alignment. Use a value of
+        `None` ('null' in YAML notation) to have no filter on this clipping.
+
     allow_extra_features : bool
-        Can targets have features not in `req_features` or `opt_features`?
+        Can targets have features not in `feature_parse_specs`?
     seqsfileformat : {'genbank'}
         Format of `seqsfile`.
+    allow_clipped_muts_seqs : bool
+        Returning sequence or mutations for features where non-zero
+        clipping is allowed is dangerous, since as described in
+        :meth:`Targets.parse_alignment` these will only be for unclipped
+        region and so are easy to mis-interpret. So you must explicitly
+        set this option to `True` in order to allow return of mutations /
+        sequences for features with clipping allowed; otherwise you'll get
+        an error if you try to recover such sequences / mutations.
 
     Attributes
     ----------
@@ -273,31 +340,223 @@ class Targets:
         """Get string representation."""
         return f"{self.__class__.__name__}(targets={self.targets})"
 
-    def __init__(self, *, seqsfile, req_features=frozenset(),
-                 opt_features=frozenset(), allow_extra_features=False,
-                 seqsfileformat='genbank'):
+    def __init__(self, *, seqsfile, feature_parse_specs,
+                 allow_extra_features=False, seqsfileformat='genbank',
+                 allow_clipped_muts_seqs=False):
         """See main class docstring."""
+        # read feature_parse_specs
+        if isinstance(feature_parse_specs, str):
+            with open(feature_parse_specs) as f:
+                self._feature_parse_specs = yaml.safe_load(f)
+        else:
+            self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
+
+        # names of parse alignment columns with clipping
+        self._clip_cols = ['query_clip5', 'query_clip3']
+
+        # reserved columns for parsing, cannot be name of a feature
+        self._reserved_cols = ['query_name'] + self._clip_cols
+
+        # suffixes in feature columns returned parse_alignment
+        self._return_suffixes = ['_mutations', '_sequence', '_cs',
+                                 '_clip5', '_clip3']
+
+        # valid filtering keys
+        self._filterkeys = ['clip5', 'clip3', 'mutation_nt_count',
+                            'mutation_op_count']
+
+        # get targets from seqsfile
         if isinstance(seqsfile, str):
-            seqsfile = [seqsfile]
-
-        seqrecords = []
-        for f in seqsfile:
-            seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
-
+            seqrecords = list(Bio.SeqIO.parse(seqsfile, format=seqsfileformat))
+        else:
+            seqrecords = []
+            for f in seqsfile:
+                seqrecords += list(Bio.SeqIO.parse(f, format=seqsfileformat))
         self.targets = []
-        self.target_names = []
         self._target_dict = {}
         for seqrecord in seqrecords:
+            tname = Target.get_name(seqrecord)
             target = Target(seqrecord=seqrecord,
-                            req_features=req_features,
-                            opt_features=opt_features,
+                            req_features=self.features_to_parse(tname, 'name'),
                             allow_extra_features=allow_extra_features,
                             )
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
-            self.target_names.append(target.name)
             self.targets.append(target)
             self._target_dict[target.name] = target
+            # ensure feature names are not reserved or have reserved suffix
+            for feature in target.features:
+                if feature.name in self._reserved_cols:
+                    raise ValueError(f"feature cannot be named {feature.name}")
+                if re.search('|'.join(s + '$' for s in self._return_suffixes),
+                             feature.name):
+                    raise ValueError('feature name cannot end in ' +
+                                     str(self._return_suffixes))
+        self.target_names = [target.name for target in self.targets]
+
+        # check needed for `to_csv` option of `parse_alignment`.
+        if len(self.target_names) != len({tname.replace(' ', '_') for
+                                         tname in self.target_names}):
+            raise ValueError('target names must be unique even after '
+                             'replacing spaces with underscores.')
+
+        # make sure we have all targets to parse
+        extra_targets = set(self._feature_parse_specs) - set(self.target_names)
+        if extra_targets:
+            raise ValueError('`feature_parse_specs` includes non-existent '
+                             f"targets {extra_targets}")
+
+        self._set_feature_parse_specs_defaults()
+
+        self._set_parse_filters()
+
+        # check we are not set to return sequence / mutations for clipped
+        # features unless flag to do this explicitly set
+        if not allow_clipped_muts_seqs:
+            for t in self.target_names:
+                for f in self.features_to_parse(tname, 'name'):
+                    for return_name in ['sequence', 'mutations']:
+                        if return_name in self._parse_returnvals(t, f):
+                            filt = self._parse_filters[t][f]
+                            if any(map(lambda c: c not in filt or filt[c] > 0,
+                                       ['clip5', 'clip3'])):
+                                raise ValueError(
+                                        f"You asked to return {return_name} "
+                                        f"for {t}, {f}, but clipping is not "
+                                        '0 for this feature. To do this, set'
+                                        '`allow_clipped_muts_seqs` to `True`')
+
+    def _set_parse_filters(self):
+        """Set `_parse_filters` attribute.
+
+        This is dict keyed by targetname, then keyed by feature name,
+        then keyed by each parameter to filter on with value being
+        max allowed. If the value is `None` (no filter), it is not in dict.
+
+        This is a simpler-to-access version of information in
+        `feature_parse_specs`.
+
+        """
+        self._parse_filters = {}
+        for tname in self.target_names:
+            self._parse_filters[tname] = {}
+            for fname in self.features_to_parse(tname, 'name'):
+                self._parse_filters[tname][fname] = {}
+                filterspecs = self._feature_parse_specs[tname][fname]['filter']
+                for k, v in filterspecs.items():
+                    if v is not None:
+                        if not isinstance(v, int):
+                            raise ValueError('`feature_parse_spec` filter for'
+                                             f" {tname}, {fname}, {k} is not "
+                                             f"`None` or an integer: {v}")
+                        self._parse_filters[tname][fname][k] = v
+
+    def _set_feature_parse_specs_defaults(self):
+        """Set missing values in `feature_parse_specs` to defaults.
+
+        These defaults are described in the main :class:`Targets` docs.
+
+        """
+        for tname, tspecs in self._feature_parse_specs.items():
+            if set(self._clip_cols) - set(tspecs):
+                raise ValueError(f"`feature_parse_specs` for {tname} "
+                                 f"lacks {self._clip_cols}")
+            for fname, fdict in tspecs.items():
+                if fname in self._clip_cols:
+                    continue
+                if set(fdict.keys()) - {'return', 'filter'}:
+                    raise ValueError(f"`feature_parse_specs` for {tname} "
+                                     f"{fname} has extra keys: only 'return' "
+                                     "and 'filter' are allowed.")
+                if 'return' not in fdict:
+                    fdict['return'] = []
+                else:
+                    if isinstance(fdict['return'], str):
+                        fdict['return'] = [fdict['return']]
+                    for returnval in fdict['return']:
+                        if returnval not in [suffix[1:] for suffix in
+                                             self._return_suffixes]:
+                            raise ValueError(
+                                    f"`feature_parse_specs` of {tname} {fname}"
+                                    f" has invalid return type {returnval}")
+                if 'filter' not in fdict:
+                    fdict['filter'] = {}
+                if set(fdict['filter'].keys()) - set(self._filterkeys):
+                    raise ValueError(f"`feature_parse_specs` for {tname} "
+                                     f"{fname} has invalid filter type. Only "
+                                     f"{self._filterkeys} are allowed.")
+                for filterkey in self._filterkeys:
+                    if filterkey not in fdict['filter']:
+                        fdict['filter'][filterkey] = 0
+
+    def features_to_parse(self, targetname, feature_or_name='feature'):
+        """Features to parse for a target.
+
+        Parameters
+        ----------
+        targetname : str
+            Name of target.
+        feature_or_name : {'feature', 'name'}
+            Get the :class:`Feature` objects themselves or their names.
+
+        Returns
+        -------
+        list
+            Features to parse for this target, as specified in
+            :meth:`Targets.feature_parse_specs`.
+
+        """
+        if feature_or_name == 'name':
+            if not hasattr(self, '_fnames_to_parse'):
+                self._fnames_to_parse = {}
+                for tname, tdict in self._feature_parse_specs.items():
+                    self._fnames_to_parse[tname] = [f for f in tdict if
+                                                    f not in self._clip_cols]
+            try:
+                return self._fnames_to_parse[targetname]
+            except KeyError:
+                raise ValueError(f"target {targetname} not in "
+                                 '`feature_parse_specs`')
+        elif feature_or_name == 'feature':
+            if not hasattr(self, '_features_to_parse'):
+                self._features_to_parse = {}
+                for tname, tdict in self._feature_parse_specs.items():
+                    target = self.get_target(tname)
+                    self._features_to_parse[tname] = [target.get_feature(f)
+                                                      for f in tdict if
+                                                      f not in self._clip_cols]
+            try:
+                return self._features_to_parse[targetname]
+            except KeyError:
+                raise ValueError(f"target {targetname} not in "
+                                 '`feature_parse_specs`')
+        else:
+            raise ValueError(f"invalid `feature_or_name` {feature_or_name}")
+
+    def feature_parse_specs(self, returntype):
+        """Get the feature parsing specs.
+
+        Parameters
+        ----------
+        returntype : {'dict', 'yaml'}
+            Return a Python `dict` or a YAML string representation.
+
+        Returns
+        -------
+        dict or str
+            The feature parsing specs set by the `feature_parse_specs` at
+            :class:`Targets` initialization, but with any missing default
+            values explicitly filled in.
+
+        """
+        if returntype == 'dict':
+            return copy.deepcopy(self._feature_parse_specs)
+        elif returntype == 'yaml':
+            return yaml.dump(self._feature_parse_specs,
+                             default_flow_style=False,
+                             sort_keys=False)
+        else:
+            raise ValueError(f"invalid `returntype` of {returntype}")
 
     def get_target(self, name):
         """Get :class:`Target` by name.
@@ -395,16 +654,9 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment_cs(self, samfile, *, multi_align='primary'):
-        """Parse alignment feature ``cs`` strings for aligned queries.
-
-        Note
-        ----
-        The ``cs`` tags are in the short format returned by ``minimap2``;
-        see here for details: https://lh3.github.io/minimap2/minimap2.html
-
-        When an insertion occurs between two features, it is assigned to the
-        end of the first feature.
+    def parse_alignment(self, samfile, *, multi_align='primary',
+                        to_csv=False, csv_dir=None, overwrite_csv=False):
+        """Parse alignment features as specified in `feature_parse_specs`.
 
         Parameters
         ----------
@@ -413,8 +665,297 @@ class Targets:
             created by :meth:`Targets.align`.
         multi_align : {'primary'}
             How to handle multiple alignments. Currently only option is
-            'primary', which indicates that we only retain primary alignments
-            and ignore all secondary alignment.
+            'primary', which ignores all secondary alignments.
+        to_csv : bool
+            Write CSV files rather than return data frames. Useful to
+            avoid reading large data frames into memory.
+        csv_dir : None or str
+            If `to_csv` is `True`, name of directory to which we
+            write CSV files (created if needed). If `None`, write
+            to current directory.
+        overwrite_csv : bool
+            If using `to_csv`, do we overwrite existing CSV files or
+            raise an error if they already exist?
+
+        Returns
+        -------
+        (readstats, aligned, filtered) : tuple
+
+            - `readstats` is `pandas.DataFrame` with numbers of unmapped reads,
+              and for each target the number of mapped reads that are validly
+              aligned and that fail filters in `feature_parse_specs`.
+
+            - `aligned` is a dict keyed by name of each target. Entries are
+              `pandas.DataFrame` with rows for each validly aligned read. Rows
+              give query name, query clipping at each end of alignment, and any
+              feature-level info specified for return in `feature_parse_specs`
+              in columns with names equal to feature suffixed by
+              '_sequence', '_mutations', '_cs', '_clip5', and '_clip3'.
+              and '_clip3'.
+
+            - 'filtered' is a dict keyed by name of each target. Entries are
+              `pandas.DataFrame` with a row for each filtered aligned read
+              giving the query name and the reason it was filtered.
+
+            If `to_csv` is `True`, then `aligned` and `filtered` give
+            names of CSV files holding data frames.
+
+        Note
+        ----
+        The ``cs`` tags are in the short format returned by ``minimap2``;
+        see here for details: https://lh3.github.io/minimap2/minimap2.html
+
+        When parsing features, if an insertion occurs between two features,
+        it is assigned to the end of the first feature.
+
+        Returned sequences, mutation strings, and ``cs`` tags are only for
+        for the portion of the feature that aligns, and do **not** indicate
+        clipping, which you instead get in the '_clip*' columns. The
+        sequences are simply what the ``cs`` tag implies, indels / mutations
+        are not indicated in this column. Mutation strings are space-delimited
+        with these operations in **1-based** (1, 2, ...) numbering from start
+        of the feature:
+
+          - 'A2G' : substitution at site 2 from A to G
+
+          - 'ins5TAA' : insertion of 'TAA' starting at site 5
+
+          - 'del5to6' : deletion of sites 5 to 6, inclusive
+
+        """
+        if multi_align == 'primary':
+            primary_only = True
+        else:
+            raise ValueError(f"invalid `multi_align` {multi_align}")
+
+        if csv_dir is None:
+            csv_dir = ''
+        elif csv_dir:
+            os.makedirs(csv_dir, exist_ok=True)
+
+        unmapped = 0
+        readstats = {t: {'filtered': 0, 'aligned': 0}
+                     for t in self.target_names}
+
+        filtered_cols = ['query_name', 'filter_reason']
+        if to_csv:
+            filtered = {t: os.path.join(csv_dir, t.replace(' ', '_') +
+                                        '_filtered.csv')
+                        for t in self.target_names}
+            aligned = {t: os.path.join(csv_dir, t.replace(' ', '_') +
+                                       '_aligned.csv')
+                       for t in self.target_names}
+            filenames = list(filtered.values()) + list(aligned.values())
+            if (not overwrite_csv) and any(map(os.path.isfile, filenames)):
+                raise ValueError(f"existing file with name in: {filenames}")
+        else:
+            filtered = {t: [] for t in self.target_names}
+            aligned = {t: [] for t in self.target_names}
+
+        # Iterate samfile in contextlib so can handle files if using `to_csv`.
+        with contextlib.ExitStack() as stack:
+
+            # Define callback to delete CSV files on error. See here:
+            # https://docs.python.org/3/library/contextlib.html#replacing-any-use-of-try-finally-and-flag-variables
+            @stack.callback
+            def delete_files_on_err():
+                if to_csv:
+                    for fname in filenames:
+                        if os.path.isfile(fname):
+                            os.remove(fname)
+
+            if to_csv:
+                # add files to stack so they are closed at end:
+                # https://stackoverflow.com/a/19412700
+                filtered_files = {t: stack.enter_context(open(f, 'w'))
+                                  for t, f in filtered.items()}
+                for f in filtered_files.values():
+                    f.write(','.join(filtered_cols) + '\n')
+                aligned_files = {t: stack.enter_context(open(f, 'w'))
+                                 for t, f in aligned.items()}
+                for t, f in aligned_files.items():
+                    f.write(','.join(self._parse_returnvals(t)) + '\n')
+
+            # iterate over samfile and process each alignment
+            for aligned_seg in pysam.AlignmentFile(samfile):
+
+                if aligned_seg.is_unmapped:
+                    unmapped += 1
+                    continue
+
+                if aligned_seg.is_secondary and primary_only:
+                    continue
+
+                a = Alignment(aligned_seg)
+                tname = a.target_name
+
+                is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
+
+                if is_filtered:
+                    readstats[tname]['filtered'] += 1
+                    if to_csv:
+                        filtered_files[tname].write(','.join(map(str,
+                                                                 parse_tup)))
+                        filtered_files[tname].write('\n')
+                    else:
+                        filtered[tname].append(parse_tup)
+
+                else:
+                    readstats[tname]['aligned'] += 1
+                    if to_csv:
+                        aligned_files[tname].write(','.join(map(str,
+                                                                parse_tup)))
+                        aligned_files[tname].write('\n')
+                    else:
+                        aligned[tname].append(parse_tup)
+
+            # Done iterating over `samfile`, get values ready to return
+            readstats = (pd.DataFrame(readstats)
+                         .reset_index()
+                         .melt(id_vars='index', value_name='count')
+                         .assign(category=lambda x: (x['index'] + ' ' +
+                                                     x['variable']))
+                         [['category', 'count']]
+                         .append({'category': 'unmapped', 'count': unmapped},
+                                 ignore_index=True)
+                         )
+            if not to_csv:
+                filtered = {t: pd.DataFrame(tlist, columns=filtered_cols)
+                            for t, tlist in filtered.items()}
+                aligned = {t: pd.DataFrame(tlist,
+                                           columns=self._parse_returnvals(t))
+                           for t, tlist in aligned.items()}
+
+            stack.pop_all()  # no callback to delete CSV files if reached here
+
+        return readstats, aligned, filtered
+
+    def _parse_returnvals(self, targetname, featurename=None):
+        """Values to return when parsing alignment.
+
+        Parameters
+        ----------
+        targetname : str
+        featurename : str or None
+
+        Returns
+        -------
+        list
+            If `featurename` is not `None`, gets list of all values
+            to return for this feature and targets from `feature_parse_specs`.
+            If `featurename` is `None`, gets list of all values for all
+            features in target, prefixing with the feature name.
+
+        """
+        if featurename is None:
+            returnlist = ['query_name', 'query_clip5', 'query_clip3']
+            for featurename in self.features_to_parse(targetname, 'name'):
+                for val in self._parse_returnvals(targetname, featurename):
+                    returnlist.append(f"{featurename}_{val}")
+            return returnlist
+        else:
+            return self._feature_parse_specs[targetname][featurename]['return']
+
+    def _parse_single_Alignment(self, a, targetname):
+        """Parse a single alignment.
+
+        Parameters
+        ----------
+        a : :class:`alignparse.cs_tag.Alignment`
+        targetname : str
+
+        Returns
+        --------
+        2-tuple
+            Tuple `(is_filtered, parse_tup)` where `is_filtered` is bool
+            indicating if alignment fails `feature_parse_specs` filters.
+            If it fails, `parse_tup` is 2-tuple `(query_name, filter_reason)`.
+            If it passes, `parse_tup` is list giving values specified
+            by :meth:`_parse_returnvals` for `targetname`.
+
+        """
+        query_name = a.query_name
+        parse_tup = [query_name]
+
+        # get and filter on query clipping
+        for clip in ['query_clip5', 'query_clip3']:
+            clipval = getattr(a, clip)
+            clipmax = self._feature_parse_specs[targetname][clip]
+            if (clipmax is None) or clipval <= clipmax:
+                parse_tup.append(clipval)
+            else:
+                return True, (query_name, clip)
+
+        # get and filter on features
+        target_parse_filters = self._parse_filters[targetname]
+        for feature in self.features_to_parse(targetname):
+            feat_info = a.extract_cs(feature.start, feature.end)
+            if feat_info is None:
+                # feature is full clipped, determine which end
+                if a.target_clip5 >= feature.end:
+                    clip5 = feature.length
+                    clip3 = 0
+                    cs = ''
+                elif a.target_lastpos <= feature.start:
+                    clip5 = 0
+                    clip3 = feature.length
+                    cs = ''
+                else:
+                    raise ValueError(
+                            f"Should not get here:\ntarget = {targetname}:\n"
+                            f"feature = {feature}\n"
+                            f"target_clip5 = {a.target_clip5}\n"
+                            f"lastpos = {a.target_lastpos}\n"
+                            )
+            else:
+                cs, clip5, clip3 = feat_info
+
+            # apply filters
+            featurename = feature.name
+            filter_vals = {'clip5': clip5,
+                           'clip3': clip3,
+                           'mutation_nt_count': cs_to_nt_mutation_count(cs),
+                           'mutation_op_count': cs_to_op_mutation_count(cs),
+                           }
+            for key, valmax in target_parse_filters[featurename].items():
+                if filter_vals[key] > valmax:
+                    return True, (query_name, f"{featurename} {key}")
+
+            # get return values
+            for return_name in self._parse_returnvals(targetname, featurename):
+                if return_name == 'clip5':
+                    parse_tup.append(clip5)
+                elif return_name == 'clip3':
+                    parse_tup.append(clip3)
+                elif return_name == 'mutations':
+                    parse_tup.append(cs_to_mutation_str(cs, clip5))
+                elif return_name == 'cs':
+                    parse_tup.append(cs)
+                elif return_name == 'sequence':
+                    clippedseq = feature.seq[clip5: feature.length - clip3]
+                    parse_tup.append(cs_to_sequence(cs, clippedseq))
+                else:
+                    allowednames = [name[1:] for name in self._return_suffixes]
+                    raise ValueError(f"invalid `return_name` {return_name}, "
+                                     f"should be one of {allowednames}")
+
+        # if here, alignment not filtered: return it
+        return False, parse_tup
+
+    def _parse_alignment_cs(self, samfile, *, multi_align='primary'):
+        """Parse alignment feature ``cs`` strings for aligned queries.
+
+        Note
+        ----
+        This method returns the same information that can be better
+        obtained via :meth:`Targets.parse_alignments` by setting
+        to return 'cs', 'clip5', 'clip3' for every feature. It is
+        currently retained only for debugging / testing purposes,
+        and may eventually be removed.
+
+        Parameters
+        ----------
+        See parameter definitions in :meth:`Targets.parse_alignment`.
 
         Returns
         -------
@@ -430,71 +971,81 @@ class Targets:
 
                 - 'query_clip3' : length at 3' end of query not in alignment
 
-                - 'target_clip5' : length at 5' end of target not in alignment
+                - for each feature listed for that target in
+                  :meth:`Target.feature_parse_specs`, columns with name of the
+                  feature and the following suffixes:
 
-                - 'target_clip3' : length at 3' end of target not in alignment
+                    - '_cs' : the ``cs`` string for the aligned portion
+                      of the target.
 
-                - a column with the name of each feature in the target giving
-                  the ``cs`` string for that feature's alignment. If feature's
-                  alignment is clipped (incomplete), this is indicated by
-                  adding '<clipN>' (where 'N' is the amount of clipping) to the
-                  ``cs`` string. For instance: '<clip7>:5*cg:3<clip2>'
-                  indicates 7 nucleotides clipped at 5' end, 2 nucleotides at
-                  3' end, and a ``cs`` string of ':5*cg:3' for aligned portion.
+                    - '_clip5' : number of nucleotides clipped from 5' end
+                      of feature in alignment.
+
+                    - '_clip3' : number of nucleotides clipped from 3' end
+                      of feature in alignment.
+
+                  If the feature is not aligned at all, then the '_cs' suffix
+                  column is an empty str, and either '_clip5' or '_clip3' will
+                  be the whole length of feature depending on if feature is
+                  upstream or downstream of aligned region.
 
             The returned dict also has a key 'unmapped' which gives
             the number of unmapped reads.
 
         """
+        suffixes = self._return_suffixes[2:]
         d = {target: None for target in self.target_names}
         if 'unmapped' in self.target_names:
             raise ValueError('cannot have a target named "unmapped"')
         else:
             d['unmapped'] = 0
 
-        # columns we always add to returned data frames
-        cols = ['query_name', 'query_clip5', 'query_clip3',
-                'target_clip5', 'target_clip3']
+        if multi_align == 'primary':
+            primary_only = True
+        else:
+            raise ValueError(f"invalid `multi_align` {multi_align}")
 
-        # we cannot have feature names the same as other column names
-        for target in self.targets:
-            for feature in target.features:
-                if feature.name in cols:
-                    raise ValueError(f"cannot have a feature {feature.name}")
-
-        for a in pysam.AlignmentFile(samfile):
-            if a.is_unmapped:
+        for aligned_seg in pysam.AlignmentFile(samfile):
+            if aligned_seg.is_unmapped:
                 d['unmapped'] += 1
             else:
-                aligned_seg = Alignment(a)
-                tname = aligned_seg.target_name
-                aligned_target = self.get_target(tname)
-                features = aligned_target.features
+                if primary_only and aligned_seg.is_secondary:
+                    continue
+                a = Alignment(aligned_seg)
+                tname = a.target_name
                 if d[tname] is None:
-                    d[tname] = {col: [] for col in
-                                cols + aligned_target.feature_names}
+                    d[tname] = {col: [] for col in self._reserved_cols}
+                    for feature in self.features_to_parse(tname):
+                        fname = feature.name
+                        for suffix in suffixes:
+                            d[tname][fname + suffix] = []
 
-                d[tname]['query_name'].append(aligned_seg.query_name)
-                d[tname]['query_clip5'].append(aligned_seg.query_clip5)
-                d[tname]['query_clip3'].append(aligned_seg.query_clip3)
-                d[tname]['target_clip5'].append(aligned_seg.target_clip5)
-                d[tname]['target_clip3'].append(aligned_target.length -
-                                                aligned_seg.target_lastpos)
+                d[tname]['query_name'].append(a.query_name)
+                d[tname]['query_clip5'].append(a.query_clip5)
+                d[tname]['query_clip3'].append(a.query_clip3)
 
-                for feature in features:
-                    feat_info = aligned_seg.extract_cs(feature.start,
-                                                       feature.end)
+                for feature in self.features_to_parse(tname):
+                    feat_info = a.extract_cs(feature.start, feature.end)
+                    fname = feature.name
                     if feat_info is None:
-                        d[tname][feature.name].append(feat_info)
+                        d[tname][fname + '_cs'].append('')
+                        if a.target_clip5 >= feature.end:
+                            d[tname][fname + '_clip5'].append(feature.length)
+                            d[tname][fname + '_clip3'].append(0)
+                        elif a.target_lastpos <= feature.start:
+                            d[tname][fname + '_clip5'].append(0)
+                            d[tname][fname + '_clip3'].append(feature.length)
+                        else:
+                            raise ValueError(
+                                f"Should never get here for target {tname}:\n"
+                                f"feature = {feature}\n"
+                                f"target_clip5 = {a.target_clip5}\n"
+                                f"lastpos = {a.target_lastpos}\n"
+                                )
                     else:
-                        feat_cs, clip5, clip3 = feat_info
-                        if clip5 != 0:
-                            feat_cs = f"<clip{clip5}>{feat_cs}"
-
-                        if clip3 != 0:
-                            feat_cs = f"{feat_cs}<clip{clip3}>"
-
-                        d[tname][feature.name].append(feat_cs)
+                        d[tname][fname + '_cs'].append(feat_info[0])
+                        d[tname][fname + '_clip5'].append(feat_info[1])
+                        d[tname][fname + '_clip3'].append(feat_info[2])
 
         for target in d.keys():
             if target != 'unmapped':
