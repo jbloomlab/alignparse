@@ -697,7 +697,7 @@ class Targets:
               `pandas.DataFrame` with a row for each filtered aligned read
               giving the query name and the reason it was filtered.
 
-            If `to_csv` is `False`, then `aligned` and `filtered` give
+            If `to_csv` is `True`, then `aligned` and `filtered` give
             names of CSV files holding data frames.
 
         Note
