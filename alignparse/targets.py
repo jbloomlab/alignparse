@@ -44,9 +44,13 @@ class Feature:
     Parameters
     ----------
     name : str
+        Name of feature.
     seq : str
+        Sequence of feature.
     start: int
+        Feature start in :class:`Target`, using Python-like 0, ... numbering.
     end : int
+        Feature end in :class:`Target` using Python-like 0, ... numbering.
 
     Attributes
     ----------
@@ -168,7 +172,8 @@ class Target:
 
         Returns
         -------
-        Name parsed from `seqrecord`.
+        str
+            Name parsed from `seqrecord`.
 
         """
         if not hasattr(seqrecord, 'name'):
@@ -313,13 +318,14 @@ class Targets:
         Can targets have features not in `feature_parse_specs`?
     seqsfileformat : {'genbank'}
         Format of `seqsfile`.
-    return_clipped_muts_seqs : bool
-        Returning the sequence or mutations for features where non-zero
+    allow_clipped_muts_seqs : bool
+        Returning sequence or mutations for features where non-zero
         clipping is allowed is dangerous, since as described in
         :meth:`Targets.parse_alignment` these will only be for unclipped
         region and so are easy to mis-interpret. So you must explicitly
         set this option to `True` in order to allow return of mutations /
-        sequences for features with clipping allowed.
+        sequences for features with clipping allowed; otherwise you'll get
+        an error if you try to recover such sequences / mutations.
 
     Attributes
     ----------
@@ -336,7 +342,7 @@ class Targets:
 
     def __init__(self, *, seqsfile, feature_parse_specs,
                  allow_extra_features=False, seqsfileformat='genbank',
-                 return_clipped_muts_seqs=False):
+                 allow_clipped_muts_seqs=False):
         """See main class docstring."""
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
@@ -406,7 +412,7 @@ class Targets:
 
         # check we are not set to return sequence / mutations for clipped
         # features unless flag to do this explicitly set
-        if not return_clipped_muts_seqs:
+        if not allow_clipped_muts_seqs:
             for t in self.target_names:
                 for f in self.features_to_parse(tname, 'name'):
                     for return_name in ['sequence', 'mutations']:
@@ -418,7 +424,7 @@ class Targets:
                                         f"You asked to return {return_name} "
                                         f"for {t}, {f}, but clipping is not "
                                         '0 for this feature. To do this, set'
-                                        '`return_clipped_muts_seqs` to `True`')
+                                        '`allow_clipped_muts_seqs` to `True`')
 
     def _set_parse_filters(self):
         """Set `_parse_filters` attribute.
@@ -486,8 +492,8 @@ class Targets:
     def features_to_parse(self, targetname, feature_or_name='feature'):
         """Features to parse for a target.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         targetname : str
             Name of target.
         feature_or_name : {'feature', 'name'}
@@ -530,16 +536,17 @@ class Targets:
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
 
-        Parameter
-        ---------
+        Parameters
+        ----------
         returntype : {'dict', 'yaml'}
             Return a Python `dict` or a YAML string representation.
 
         Returns
         -------
-        The feature parsing specs set by the `feature_parse_specs` at
-        :class:`Targets` initialization, but with any missing default
-        values explicitly filled in.
+        dict or str
+            The feature parsing specs set by the `feature_parse_specs` at
+            :class:`Targets` initialization, but with any missing default
+            values explicitly filled in.
 
         """
         if returntype == 'dict':
@@ -667,34 +674,31 @@ class Targets:
             write CSV files (created if needed). If `None`, write
             to current directory.
         overwrite_csv : bool
-            If using `to_csv` is `True`, do we overwrite existing CSV
-            files or raise an error if they already exist?
+            If using `to_csv`, do we overwrite existing CSV files or
+            raise an error if they already exist?
 
         Returns
         -------
-        tuple
-            The returned 3-tuple is `(readstats, aligned, filtered)`.
+        (readstats, aligned, filtered) : tuple
 
-              - `readstats` is a `pandas.DataFrame` with numbers of unmapped
-                reads, of mapped reads for each target that fail filters in
-                `feature_parse_specs`, and validly aligned reads for each
-                target (pass the filters).
+            - `readstats` is `pandas.DataFrame` with numbers of unmapped reads,
+              and for each target the number of mapped reads that are validly
+              aligned and that fail filters in `feature_parse_specs`.
 
-              - `aligned` is a dict keyed by name of each target. Entries
-                are `pandas.DataFrame` with rows for each validly aligned read.
-                Rows give the query name, the query clipping at each end of
-                alignment, and any feature-level information specified for
-                return in `feature_parse_specs` in columns with names equal to
-                feature suffixed by '_sequence', '_mutations', '_cs', '_clip5',
-                and '_clip3'.
+            - `aligned` is a dict keyed by name of each target. Entries are
+              `pandas.DataFrame` with rows for each validly aligned read. Rows
+              give query name, query clipping at each end of alignment, and any
+              feature-level info specified for return in `feature_parse_specs`
+              in columns with names equal to feature suffixed by
+              '_sequence', '_mutations', '_cs', '_clip5', and '_clip3'.
+              and '_clip3'.
 
-              - 'filtered' is a dict keyed by name of each target. Entries are
-                `pandas.DataFrame` with a row for each filtered aligned read
-                giving the query name and the reason it was filtered.
+            - 'filtered' is a dict keyed by name of each target. Entries are
+              `pandas.DataFrame` with a row for each filtered aligned read
+              giving the query name and the reason it was filtered.
 
             If `to_csv` is `False`, then `aligned` and `filtered` give
-            names of CSV files holding data frames rather than data frames
-            themselves. These files are in location specified by `csv_dir`.
+            names of CSV files holding data frames.
 
         Note
         ----
@@ -730,8 +734,8 @@ class Targets:
             os.makedirs(csv_dir, exist_ok=True)
 
         unmapped = 0
-        read_stats = {t: {'filtered': 0, 'aligned': 0}
-                      for t in self.target_names}
+        readstats = {t: {'filtered': 0, 'aligned': 0}
+                     for t in self.target_names}
 
         filtered_cols = ['query_name', 'filter_reason']
         if to_csv:
@@ -788,7 +792,7 @@ class Targets:
                 is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
 
                 if is_filtered:
-                    read_stats[tname]['filtered'] += 1
+                    readstats[tname]['filtered'] += 1
                     if to_csv:
                         filtered_files[tname].write(','.join(map(str,
                                                                  parse_tup)))
@@ -797,7 +801,7 @@ class Targets:
                         filtered[tname].append(parse_tup)
 
                 else:
-                    read_stats[tname]['aligned'] += 1
+                    readstats[tname]['aligned'] += 1
                     if to_csv:
                         aligned_files[tname].write(','.join(map(str,
                                                                 parse_tup)))
@@ -806,15 +810,15 @@ class Targets:
                         aligned[tname].append(parse_tup)
 
             # Done iterating over `samfile`, get values ready to return
-            read_stats = (pd.DataFrame(read_stats)
-                          .reset_index()
-                          .melt(id_vars='index', value_name='count')
-                          .assign(category=lambda x: (x['index'] + ' ' +
-                                                      x['variable']))
-                          [['category', 'count']]
-                          .append({'category': 'unmapped', 'count': unmapped},
-                                  ignore_index=True)
-                          )
+            readstats = (pd.DataFrame(readstats)
+                         .reset_index()
+                         .melt(id_vars='index', value_name='count')
+                         .assign(category=lambda x: (x['index'] + ' ' +
+                                                     x['variable']))
+                         [['category', 'count']]
+                         .append({'category': 'unmapped', 'count': unmapped},
+                                 ignore_index=True)
+                         )
             if not to_csv:
                 filtered = {t: pd.DataFrame(tlist, columns=filtered_cols)
                             for t, tlist in filtered.items()}
@@ -824,7 +828,7 @@ class Targets:
 
             stack.pop_all()  # no callback to delete CSV files if reached here
 
-        return read_stats, aligned, filtered
+        return readstats, aligned, filtered
 
     def _parse_returnvals(self, targetname, featurename=None):
         """Values to return when parsing alignment.
