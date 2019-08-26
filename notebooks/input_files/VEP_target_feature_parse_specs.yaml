@@ -1,9 +1,9 @@
 LASV_G1959_WT: &VEP_target_parse_specs
-  query_clip5: 4
-  query_clip3: 4
+  query_clip5: 10
+  query_clip3: 10
   termini5:
     filter:
-      clip5: 4
+      clip5: 10
       mutation_nt_count: 1
       mutation_op_count: null
   T2A:
@@ -13,6 +13,7 @@ LASV_G1959_WT: &VEP_target_parse_specs
   gene:
     filter:
       mutation_nt_count: 30
+      mutation_op_count: null
     return: mutations
   spacer:
     filter:
@@ -20,7 +21,7 @@ LASV_G1959_WT: &VEP_target_parse_specs
       mutation_op_count: null
   index:
     filter:
-      clip3: 3
+      clip5: 3
     return: sequence
   termini3:
     filter:
