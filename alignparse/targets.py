@@ -710,11 +710,11 @@ class Targets:
 
         Returned sequences, mutation strings, and ``cs`` tags are only for
         for the portion of the feature that aligns, and do **not** indicate
-        indicate clipping, which you instead get in the '_clip*' columns.
-        The sequences are simply what the ``cs`` tag implies, indels /
-        mutations are not indicated in this column. Mutation strings are
-        space-delimited with these operations in **1-based** (1, 2, ...)
-        numbering from start of the feature:
+        clipping, which you instead get in the '_clip*' columns. The
+        sequences are simply what the ``cs`` tag implies, indels / mutations
+        are not indicated in this column. Mutation strings are space-delimited
+        with these operations in **1-based** (1, 2, ...) numbering from start
+        of the feature:
 
           - 'A2G' : substitution at site 2 from A to G
 
@@ -947,7 +947,7 @@ class Targets:
 
         Note
         ----
-        This method returns the same information that can better
+        This method returns the same information that can be better
         obtained via :meth:`Targets.parse_alignments` by setting
         to return 'cs', 'clip5', 'clip3' for every feature. It is
         currently retained only for debugging / testing purposes,
