@@ -10,6 +10,9 @@ https://lh3.github.io/minimap2/minimap2.html
 
 """
 
+
+import functools
+
 import numpy
 
 import regex
@@ -30,6 +33,7 @@ _CS_OP_REGEX = regex.compile('|'.join(f"(?P<{op_name}>{op_str})" for
 """regex.Regex: matches single ``cs`` operation, group name is operation."""
 
 
+@functools.lru_cache(maxsize=16384)
 def split_cs(cs_string, *, invalid='raise'):
     """Split a short ``cs`` tag into its constituent operations.
 
@@ -73,6 +77,7 @@ def split_cs(cs_string, *, invalid='raise'):
         return m.captures(1)
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_op_type(cs_op, *, invalid='raise'):
     """Get type of ``cs`` operation.
 
@@ -116,6 +121,7 @@ def cs_op_type(cs_op, *, invalid='raise'):
         return m.lastgroup
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_op_len_target(cs_op, *, invalid='raise'):
     """Get length of valid ``cs`` operation.
 
@@ -366,6 +372,7 @@ class Alignment:
         return (feature_cs, clip5, clip3)
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_sequence(cs, seq):
     """Convert ``cs`` tag to a sequence.
 
@@ -409,6 +416,7 @@ def cs_to_sequence(cs, seq):
     return ''.join(seq_list).upper()
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_mutation_str(cs, offset=0):
     """Convert ``cs`` tag to a descriptive string of mutations.
 
@@ -471,6 +479,7 @@ def cs_to_mutation_str(cs, offset=0):
     return ' '.join(mut_strs_list)
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_nt_mutation_count(cs):
     """Count the number of nucleotide mutations in ``cs`` tag.
 
@@ -510,6 +519,7 @@ def cs_to_nt_mutation_count(cs):
     return nt_mut_count
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_op_mutation_count(cs):
     """Count the number of mutation operations in ``cs`` tag.
 
