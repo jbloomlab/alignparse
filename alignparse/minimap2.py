@@ -149,10 +149,10 @@ class Mapper:
     ...         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...         ''').strip())
 
-    Now map **not** retaining tags in the FASTQ:
+    Now map **not** retaining tags from the FASTQ (this is default behavior):
 
     >>> samfile = os.path.join(tempdir.name, 'alignments.sam')
-    >>> mapper = Mapper(OPTIONS_CODON_DMS, retain_tags=None)
+    >>> mapper = Mapper(OPTIONS_CODON_DMS)
     >>> mapper.map_to_sam(targetfile, queryfile, samfile)
     >>> for a in pysam.AlignmentFile(samfile):
     ...     tag_names = [tup[0] for tup in a.get_tags()]
@@ -198,7 +198,8 @@ class Mapper:
         self.version = version.strip().decode('utf-8')
         min_version = packaging.version.parse(min_version)
         if packaging.version.parse(self.version) < min_version:
-            raise ValueError(f"You have `minimap2` version {0}, need >= {1}")
+            raise ValueError(f"You have `minimap2` version {self.version}, "
+                             f"but need >= {min_version}")
         self.prog = prog
         self.options = list(options)
         if check_cs and not any('--cs' == opt for opt in self.options):
