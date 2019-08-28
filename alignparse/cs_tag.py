@@ -284,10 +284,8 @@ class Alignment:
         # add to `feature_cs` overlapping part of first cs op
         start_idx = numpy.searchsorted(self._cs_ops_ends, start, side='right')
         start_op_start = self._cs_ops_starts[start_idx]
-        start_op_end = self._cs_ops_ends[start_idx]
         start_op = self._cs_ops[start_idx]
         assert start_idx < self._nops
-        assert start < start_op_end
         feature_cs = []
         if start_op_start > start:
             # feature starts before first cs op
@@ -296,15 +294,15 @@ class Alignment:
             feature_cs.append(start_op)
         else:
             # feature starts at or within specific cs op
-            start_overlap = start_op_end - start
-            assert start_overlap >= 0
+            start_op_end = self._cs_ops_ends[start_idx]
+            assert start < start_op_end
             start_op_type = cs_op_type(start_op)
             if start_op_start == start and end >= start_op_end:
                 feature_cs.append(start_op)
             elif start_op_type == 'identity':
-                feature_cs.append(f":{start_overlap}")
+                feature_cs.append(f":{start_op_end - start}")
             elif start_op_type == 'deletion':
-                feature_cs.append(f"-{start_op[-start_overlap:]}")
+                feature_cs.append(f"-{start_op[start - start_op_end:]}")
             elif start_op_type == 'insertion':
                 raise RuntimeError('insertion should not be feature start')
             else:
@@ -333,7 +331,6 @@ class Alignment:
         else:
             # feature ends within specific cs op
             end_overlap = end - end_op_start
-            assert end_overlap > 0
             end_op_type = cs_op_type(end_op)
             if end_op_type == 'identity':
                 feat_cs_end = f":{end_overlap}"
