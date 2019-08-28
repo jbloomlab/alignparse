@@ -198,7 +198,8 @@ class Mapper:
         self.version = version.strip().decode('utf-8')
         min_version = packaging.version.parse(min_version)
         if packaging.version.parse(self.version) < min_version:
-            raise ValueError(f"You have `minimap2` version {0}, need >= {1}")
+            raise ValueError(f"You have `minimap2` version {self.version}, "
+                             f"but need >= {min_version}")
         self.prog = prog
         self.options = list(options)
         if check_cs and not any('--cs' == opt for opt in self.options):
