@@ -149,10 +149,10 @@ class Mapper:
     ...         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ...         ''').strip())
 
-    Now map **not** retaining tags in the FASTQ:
+    Now map **not** retaining tags from the FASTQ (this is default behavior):
 
     >>> samfile = os.path.join(tempdir.name, 'alignments.sam')
-    >>> mapper = Mapper(OPTIONS_CODON_DMS, retain_tags=None)
+    >>> mapper = Mapper(OPTIONS_CODON_DMS)
     >>> mapper.map_to_sam(targetfile, queryfile, samfile)
     >>> for a in pysam.AlignmentFile(samfile):
     ...     tag_names = [tup[0] for tup in a.get_tags()]
