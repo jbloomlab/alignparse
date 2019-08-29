@@ -10,6 +10,9 @@ https://lh3.github.io/minimap2/minimap2.html
 
 """
 
+
+import functools
+
 import numpy
 
 import regex
@@ -30,6 +33,7 @@ _CS_OP_REGEX = regex.compile('|'.join(f"(?P<{op_name}>{op_str})" for
 """regex.Regex: matches single ``cs`` operation, group name is operation."""
 
 
+@functools.lru_cache(maxsize=16384)
 def split_cs(cs_string, *, invalid='raise'):
     """Split a short ``cs`` tag into its constituent operations.
 
@@ -43,14 +47,14 @@ def split_cs(cs_string, *, invalid='raise'):
 
     Return
     ------
-    list or None
-        List of the individual ``cs`` operations, or `None` if invalid
+    tuple or None
+        Tuple of the individual ``cs`` operations, or `None` if invalid
         `cs_string` and `invalid` is 'ignore'.
 
     Example
     -------
     >>> split_cs(':32*nt*na:10-gga:5+aaa:10')
-    [':32', '*nt', '*na', ':10', '-gga', ':5', '+aaa', ':10']
+    (':32', '*nt', '*na', ':10', '-gga', ':5', '+aaa', ':10')
 
     >>> split_cs('bad:32*nt*na:10-gga:5', invalid='ignore') is None
     True
@@ -70,9 +74,10 @@ def split_cs(cs_string, *, invalid='raise'):
         else:
             raise ValueError(f"invalid `invalid` of {invalid}")
     else:
-        return m.captures(1)
+        return tuple(m.captures(1))
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_op_type(cs_op, *, invalid='raise'):
     """Get type of ``cs`` operation.
 
@@ -116,6 +121,7 @@ def cs_op_type(cs_op, *, invalid='raise'):
         return m.lastgroup
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_op_len_target(cs_op, *, invalid='raise'):
     """Get length of valid ``cs`` operation.
 
@@ -278,10 +284,8 @@ class Alignment:
         # add to `feature_cs` overlapping part of first cs op
         start_idx = numpy.searchsorted(self._cs_ops_ends, start, side='right')
         start_op_start = self._cs_ops_starts[start_idx]
-        start_op_end = self._cs_ops_ends[start_idx]
         start_op = self._cs_ops[start_idx]
         assert start_idx < self._nops
-        assert start < start_op_end
         feature_cs = []
         if start_op_start > start:
             # feature starts before first cs op
@@ -290,15 +294,15 @@ class Alignment:
             feature_cs.append(start_op)
         else:
             # feature starts at or within specific cs op
-            start_overlap = start_op_end - start
-            assert start_overlap >= 0
+            start_op_end = self._cs_ops_ends[start_idx]
+            assert start < start_op_end
             start_op_type = cs_op_type(start_op)
             if start_op_start == start and end >= start_op_end:
                 feature_cs.append(start_op)
             elif start_op_type == 'identity':
-                feature_cs.append(f":{start_overlap}")
+                feature_cs.append(f":{start_op_end - start}")
             elif start_op_type == 'deletion':
-                feature_cs.append(f"-{start_op[-start_overlap:]}")
+                feature_cs.append(f"-{start_op[start - start_op_end:]}")
             elif start_op_type == 'insertion':
                 raise RuntimeError('insertion should not be feature start')
             else:
@@ -327,7 +331,6 @@ class Alignment:
         else:
             # feature ends within specific cs op
             end_overlap = end - end_op_start
-            assert end_overlap > 0
             end_op_type = cs_op_type(end_op)
             if end_op_type == 'identity':
                 feat_cs_end = f":{end_overlap}"
@@ -366,6 +369,7 @@ class Alignment:
         return (feature_cs, clip5, clip3)
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_sequence(cs, seq):
     """Convert ``cs`` tag to a sequence.
 
@@ -387,10 +391,9 @@ def cs_to_sequence(cs, seq):
     'CGGATCAGAT'
 
     """
-    cs_list = split_cs(cs)
     seq_loc = 0
     seq_list = []
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'identity':
             op_len = cs_op_len_target(cs_op)
@@ -409,6 +412,7 @@ def cs_to_sequence(cs, seq):
     return ''.join(seq_list).upper()
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_mutation_str(cs, offset=0):
     """Convert ``cs`` tag to a descriptive string of mutations.
 
@@ -445,10 +449,9 @@ def cs_to_mutation_str(cs, offset=0):
     considered mutations in the returned strings.
 
     """
-    cs_list = split_cs(cs)
     seq_loc = 1 + offset
     mut_strs_list = []
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'identity':
             seq_loc += cs_op_len_target(cs_op)
@@ -471,6 +474,7 @@ def cs_to_mutation_str(cs, offset=0):
     return ' '.join(mut_strs_list)
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_nt_mutation_count(cs):
     """Count the number of nucleotide mutations in ``cs`` tag.
 
@@ -496,8 +500,7 @@ def cs_to_nt_mutation_count(cs):
 
     """
     nt_mut_count = 0
-    cs_list = split_cs(cs)
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
             if cs_op[1] != 'n':
@@ -510,6 +513,7 @@ def cs_to_nt_mutation_count(cs):
     return nt_mut_count
 
 
+@functools.lru_cache(maxsize=16384)
 def cs_to_op_mutation_count(cs):
     """Count the number of mutation operations in ``cs`` tag.
 
@@ -535,8 +539,7 @@ def cs_to_op_mutation_count(cs):
 
     """
     op_mut_count = 0
-    cs_list = split_cs(cs)
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
             if cs_op[1] != 'n':
