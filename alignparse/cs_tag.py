@@ -47,14 +47,14 @@ def split_cs(cs_string, *, invalid='raise'):
 
     Return
     ------
-    list or None
-        List of the individual ``cs`` operations, or `None` if invalid
+    tuple or None
+        Tuple of the individual ``cs`` operations, or `None` if invalid
         `cs_string` and `invalid` is 'ignore'.
 
     Example
     -------
     >>> split_cs(':32*nt*na:10-gga:5+aaa:10')
-    [':32', '*nt', '*na', ':10', '-gga', ':5', '+aaa', ':10']
+    (':32', '*nt', '*na', ':10', '-gga', ':5', '+aaa', ':10')
 
     >>> split_cs('bad:32*nt*na:10-gga:5', invalid='ignore') is None
     True
@@ -74,7 +74,7 @@ def split_cs(cs_string, *, invalid='raise'):
         else:
             raise ValueError(f"invalid `invalid` of {invalid}")
     else:
-        return m.captures(1)
+        return tuple(m.captures(1))
 
 
 @functools.lru_cache(maxsize=16384)
@@ -391,10 +391,9 @@ def cs_to_sequence(cs, seq):
     'CGGATCAGAT'
 
     """
-    cs_list = split_cs(cs)
     seq_loc = 0
     seq_list = []
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'identity':
             op_len = cs_op_len_target(cs_op)
@@ -450,10 +449,9 @@ def cs_to_mutation_str(cs, offset=0):
     considered mutations in the returned strings.
 
     """
-    cs_list = split_cs(cs)
     seq_loc = 1 + offset
     mut_strs_list = []
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'identity':
             seq_loc += cs_op_len_target(cs_op)
@@ -502,8 +500,7 @@ def cs_to_nt_mutation_count(cs):
 
     """
     nt_mut_count = 0
-    cs_list = split_cs(cs)
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
             if cs_op[1] != 'n':
@@ -542,8 +539,7 @@ def cs_to_op_mutation_count(cs):
 
     """
     op_mut_count = 0
-    cs_list = split_cs(cs)
-    for cs_op in cs_list:
+    for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
         if op_type == 'substitution':
             if cs_op[1] != 'n':
