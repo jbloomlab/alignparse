@@ -275,13 +275,20 @@ class Alignment:
             # arrays of query and target sites that are aligned
             self._aligned_query, self._aligned_target = map(
                     numpy.array,
-                    zip(*self.get_aligned_pairs(matches_only=True)))
+                    zip(*self._sam_alignment
+                        .get_aligned_pairs(matches_only=True))
+                    )
             assert len(self._aligned_query) == len(self._aligned_target)
 
         # get index of first aligned site >= targetstart, and last
         # aligned site <= targetend
         istart = numpy.searchsorted(self._aligned_target, targetstart)
         iend = numpy.searchsorted(self._aligned_target, targetend)
+        n = len(self._aligned_query) - 1
+        istart = min(istart, n)
+        iend = min(iend, n)
+        assert istart >= 0
+        assert istart <= iend
 
         # compute accuracy
         return alignparse.utils.qvals_to_accuracy(
