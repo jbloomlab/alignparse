@@ -10,7 +10,7 @@ RecA_PacBio_amplicon:
     filter:
       mutation_nt_count: 30
       mutation_op_count: null
-    return: mutations
+    return: [mutations, accuracy]
   spacer:
     filter:
       mutation_nt_count: 1
@@ -19,7 +19,7 @@ RecA_PacBio_amplicon:
     filter:
       mutation_nt_count: 0
       mutation_op_count: null
-    return: sequence
+    return: [sequence, accuracy]
   termini3:
     filter:
       clip3: 4

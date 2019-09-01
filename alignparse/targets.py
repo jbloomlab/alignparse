@@ -305,12 +305,12 @@ class Targets:
             the keys are missing, the value is set to zero. If the value
             is `None` ('null' in YAML notation), then no filter is applied.
 
-          - 'return': a str or list of strings indicating what we return
-            for this feature. If 'returns' is absent or the value is `None`
-            `None` ('null' in YAML notation), nothing is returned for this
-            feature. Otherwise, list one or more of 'sequence', 'mutations',
-            'cs', 'clip5', and 'clip3' to get the sequence, mutation string,
-            ``cs`` tag, or number of clipped nucleotides from each end.
+          - 'return': str or list of strings indicating what to return for this
+            feature. If 'returns' is absent or the value is `None` ('null' in
+            YAML notation), nothing is returned for this feature. Otherwise
+            list one or more of 'sequence', 'mutations', 'accuracy', 'cs',
+            'clip5', and 'clip3' to get the sequence, mutation string, ``cs``
+            tag, or number of clipped nucleotides from each end.
 
         In addition, target-level dicts should have keys 'query_clip5' and
         'query_clip3' which give the max amount that can be clipped from
@@ -361,7 +361,7 @@ class Targets:
         self._reserved_cols = ['query_name'] + self._clip_cols
 
         # suffixes in feature columns returned parse_alignment
-        self._return_suffixes = ['_mutations', '_sequence', '_cs',
+        self._return_suffixes = ['_mutations', '_sequence', '_accuracy', '_cs',
                                  '_clip5', '_clip3']
 
         # valid filtering keys
@@ -917,8 +917,8 @@ class Targets:
               `pandas.DataFrame` with rows for each validly aligned read. Rows
               give query name, query clipping at each end of alignment, and any
               feature-level info specified for return in `feature_parse_specs`
-              in columns with names equal to feature suffixed by
-              '_sequence', '_mutations', '_cs', '_clip5', and '_clip3'.
+              in columns with names equal to feature suffixed by '_sequence',
+              '_mutations', '_accuracy', '_cs', '_clip5', and '_clip3'.
               and '_clip3'.
 
             - 'filtered' is a dict keyed by name of each target. Entries are
@@ -949,6 +949,10 @@ class Targets:
           - 'ins5TAA' : insertion of 'TAA' starting at site 5
 
           - 'del5to6' : deletion of sites 5 to 6, inclusive
+
+        The returned accuracy is the average accuracy of the aligned
+        query sites as calculated from the Q-values, and is `nan` if
+        there are no aligned query sites.
 
         """
         if multi_align == 'primary':
@@ -1165,6 +1169,9 @@ class Targets:
                 elif return_name == 'sequence':
                     clippedseq = feature.seq[clip5: feature.length - clip3]
                     parse_tup.append(cs_to_sequence(cs, clippedseq))
+                elif return_name == 'accuracy':
+                    parse_tup.append(a.get_accuracy(feature.start,
+                                                    feature.end))
                 else:
                     allowednames = [name[1:] for name in self._return_suffixes]
                     raise ValueError(f"invalid `return_name` {return_name}, "
@@ -1224,7 +1231,7 @@ class Targets:
             the number of unmapped reads.
 
         """
-        suffixes = self._return_suffixes[2:]
+        suffixes = self._return_suffixes[3:]
         d = {target: None for target in self.target_names}
         if 'unmapped' in self.target_names:
             raise ValueError('cannot have a target named "unmapped"')
