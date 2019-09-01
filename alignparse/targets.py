@@ -766,7 +766,9 @@ class Targets:
         # set up multiprocessing pool
         if ncpus == -1:
             ncpus = pathos.multiprocessing.cpu_count()
-        elif ncpus < 1:
+        else:
+            ncpus = min(pathos.multiprocessing.cpu_count(), ncpus)
+        if ncpus < 1:
             raise ValueError('`ncpus` must be >= 1')
         if ncpus > 1:
             pool = pathos.multiprocessing.ProcessingPool(ncpus)
