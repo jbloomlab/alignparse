@@ -11,6 +11,7 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 import contextlib
 import copy
+import itertools
 import os
 import re
 import tempfile
@@ -24,6 +25,8 @@ import matplotlib.colors
 import matplotlib.pyplot as plt
 
 import pandas as pd
+
+import pathos
 
 import pysam
 
@@ -654,6 +657,128 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
+    def align_and_parse(self,
+                        df,
+                        mapper,
+                        outdir,
+                        *,
+                        name_col='name',
+                        queryfile_col='queryfile',
+                        group_cols=None,
+                        to_csv=False,
+                        use_existing=False,
+                        multi_align='primary',
+                        ncpus=-1,
+                        ):
+        """Align query sequences and then parse alignments.
+
+        Note
+        ----
+        This is a convenience method to run :meth:`Targets.align` and
+        :meth:`Targets.parse_alignment` on multiple queries and collate
+        the results.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Data frame with information on queries to align.
+        mapper : :class:`alignparse.minimap2.Mapper`
+            Mapper that runs ``minimap2``. Alignment options set when creating
+            this mapper.
+        outdir : str
+            Name of directory with created alignments and parsing files.
+            Created if it does not exist.
+        name_col : str
+            Column in `df` with the name of each set of queries.
+        queryfile_col :str
+            Column in `df` with FASTQ file with queries.
+        group_cols : `None` or str or list
+            Columns in `df` used to "group" results. These columns are
+            in all created data frames. For instance, might specify
+            different libraries or samples.
+        to_csv : bool
+            Write CSV files rather than return data frames. Useful to
+            avoid reading large data frames into memory.
+        use_existing : bool
+            If intermediate output files exist, re-use them or overwrite
+            them? **Use with caution**, there is no check to make sure
+            the output files were not written with different parameters.
+        multi_align : {'primary'}
+            How to handle multiple alignments. Currently only option is
+            'primary', which ignores all secondary alignments.
+        ncpus : int
+            Number of CPUs to use; -1 means all available.
+
+        """
+        # check columns in `df`
+        if not group_cols:
+            addtl_cols = [name_col]
+        else:
+            if isinstance(group_cols, str):
+                group_cols = [group_cols]
+            addtl_cols = [group_cols] + [name_col]
+            if len(set(addtl_cols)) != len(addtl_cols):
+                raise ValueError('`name_col` and `group_cols` have redundant '
+                                 f"entries: {addtl_cols}")
+        expected_cols = addtl_cols + [queryfile_col]
+        if not set(df.columns).issuperset(set(expected_cols)):
+            raise ValueError('`df` does not contain all expected columns: ' +
+                             str(expected_cols))
+
+        os.makedirs(outdir, exist_ok=True)
+
+        if ncpus == -1:
+            ncpus = pathos.multiprocessing.cpu_count()
+        elif ncpus < 1:
+            raise ValueError('`ncpus` must be >= 1')
+
+        # For each query we create a "full name" that includes name +
+        # grouping cols, a subdirectory that holds all files
+        # for this query, and the samfile for the alignments.
+        reserved_cols = {'fullname', 'subdir', 'samfile'}
+        if set(expected_cols).intersection(reserved_cols):
+            raise ValueError(f"`df` cannot have columns: {reserved_cols}")
+        df = (
+            df
+            [expected_cols]
+            .assign(
+                fullname=lambda x: x.apply(lambda r: '_'.join(str(r[c]) for c
+                                                              in addtl_cols),
+                                           axis=1),
+                subdir=lambda x: x['fullname'].map(lambda n: os.path.join(
+                                                   outdir, n)),
+                samfile=lambda x: x['subdir'].map(lambda d: os.path.join(
+                                                  d, 'alignments.sam')),
+                )
+            )
+        if len(df) != df['fullname'].nunique():
+            raise ValueError('Names the queries are not unique even after '
+                             'adding grouping columns.')
+
+        # now make the alignments
+        queryfiles = []
+        samfiles = []
+        for tup in df.itertuples():
+            os.makedirs(tup.subdir, exist_ok=True)
+            if os.path.isfile(tup.samfile) and use_existing:
+                pass
+            else:
+                if os.path.isfile(tup.samfile):
+                    os.remove(tup.samfile)
+                queryfiles.append(getattr(tup, queryfile_col))
+                samfiles.append(tup.samfile)
+        if samfiles:
+            pool = pathos.multiprocessing.ProcessingPool(ncpus)
+            _ = pool.map(self.align, queryfiles, samfiles,
+                         itertools.repeat(mapper))
+        assert all(os.path.isfile(f) for f in df['samfile'])
+
+        # pandas `read_csv` has a `nrows` option.
+
+        # iterate over files using `csv` module
+
+        # https://stackoverflow.com/questions/14947238/change-first-line-of-a-file-in-python
+
     def parse_alignment(self, samfile, *, multi_align='primary',
                         to_csv=False, csv_dir=None, overwrite_csv=False):
         """Parse alignment features as specified in `feature_parse_specs`.
@@ -667,7 +792,7 @@ class Targets:
             How to handle multiple alignments. Currently only option is
             'primary', which ignores all secondary alignments.
         to_csv : bool
-            Write CSV files rather than return data frames. Useful to
+            Return CSV file names rather than return data frames. Useful to
             avoid reading large data frames into memory.
         csv_dir : None or str
             If `to_csv` is `True`, name of directory to which we

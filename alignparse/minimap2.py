@@ -227,7 +227,7 @@ class Mapper:
         """
         for fname, f in [('target', targetfile), ('query', queryfile)]:
             if not os.path.isfile(f):
-                raise IOError(f"cannot find `{fname}file` {fname}")
+                raise IOError(f"cannot find `{fname}file` {f}")
 
         if os.path.splitext(samfile)[1] != '.sam':
             raise ValueError(f"`samfile` lacks extension '.sam': {samfile}")
@@ -253,6 +253,8 @@ class Mapper:
                 try:
                     _ = subprocess.check_call(cmds, stdout=sam, stderr=err)
                 except Exception as exc:
+                    if os.path.isfile(untagged_samfile):
+                        os.remove(untagged_samfile)
                     exc_type = type(exc).__name__
                     err.seek(0)
                     raise RuntimeError(f"Error running commands:\n{cmds}\n\n"
