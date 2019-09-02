@@ -771,7 +771,7 @@ class Targets:
         if ncpus < 1:
             raise ValueError('`ncpus` must be >= 1')
         if ncpus > 1:
-            pool = pathos.multiprocessing.ProcessingPool(ncpus)
+            pool = pathos.pools.ProcessPool(ncpus)
             map_func = pool.map
         else:
             def map_func(f, *args):
@@ -799,6 +799,12 @@ class Targets:
                                  df['subdir'],
                                  itertools.repeat(overwrite)
                                  )
+
+        # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
+        if ncpus > 1:
+            pool.close()
+            pool.join()
+            pool.clear()
 
         # Set up to gather overall readstats, aligned, and filtered by
         # getting and checking column names:
