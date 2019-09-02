@@ -522,8 +522,7 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
     ----------
     fastqfile : str
         FASTQ file with circular consensus sequences, generated from BAM output
-        of ``ccs`` with ``samtools bam2fq -T np,rq {bamfile} > {fastqfile}``.
-        Can be gzipped.
+        of ``ccs``.
     pass_tag : str
         Tag in FASTQ file header giving number of passes (if present).
 

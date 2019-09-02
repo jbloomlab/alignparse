@@ -115,19 +115,19 @@ class Mapper:
     Note
     -----
     If `retain_tags` is set, then :meth:`Mapper.map_to_sam` searches for tags
-    in query FASTQ headers like the `np` and `rq` tags here::
+    in query FASTQ headers like the `np`` tags here::
 
-        @m54228_181120_212724/4194377/ccs   np:i:45 rq:f:1
+        @m54228_181120_212724/4194377/ccs   np:i:45
 
     These tags are retained in the `samfile` alignment output. If you are
     analyzing PacBio CCSs, you initially had a BAM file from ``ccs`` with
-    `np` and `rq` tags indicating number of subread passes and read quality.
+    `np` tags indicating number of subread passes.
     If you convert that BAM to a FASTQ with::
 
-        samtools bam2fq -T np,rq {bamfile} > {fastqfile}
+        samtools bam2fq -T np {bamfile} > {fastqfile}
 
     then the FASTQ file will have these tags and you can retain them in the SAM
-    alignment from :meth:`Mapper.map_to_sam` with `retain_tags=['np', 'rq']`.
+    alignment from :meth:`Mapper.map_to_sam` with `retain_tags=['np']`.
 
     Examples
     --------
@@ -143,7 +143,7 @@ class Mapper:
     ...         ''').strip())
     >>> with open(queryfile, 'w') as f:
     ...     _ = f.write(textwrap.dedent('''
-    ...         @m54228_181120_212724/4194376/ccs   np:i:127    rq:f:1
+    ...         @m54228_181120_212724/4194376/ccs   np:i:127
     ...         ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ...         +
     ...         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,10 +165,10 @@ class Mapper:
     >>> print(tag_names)
     ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl']
 
-    Now map retaining the `rq` and `np` tags in the FASTQ:
+    Now map retaining the `np` tag in the FASTQ:
 
     >>> samfile_tags = os.path.join(tempdir.name, 'alignments_tags.sam')
-    >>> mapper_tags = Mapper(OPTIONS_CODON_DMS, retain_tags=['rq', 'np'])
+    >>> mapper_tags = Mapper(OPTIONS_CODON_DMS, retain_tags=['np'])
     >>> mapper_tags.map_to_sam(targetfile, queryfile, samfile_tags)
     >>> for a in pysam.AlignmentFile(samfile_tags):
     ...     tag_names = [tup[0] for tup in a.get_tags()]
@@ -177,10 +177,9 @@ class Mapper:
     ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     NM:i:4 ms:i:102 AS:i:102 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
-    cs:Z::6*na*na*nt:49*ga:4 rl:i:0 rq:f:1  np:i:127
+    cs:Z::6*na*na*nt:49*ga:4 rl:i:0 np:i:127
     >>> print(tag_names)  # doctest: +NORMALIZE_WHITESPACE
-    ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl',
-     'rq', 'np']
+    ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl', 'np']
 
     Remove the temporary directory for the example:
 
