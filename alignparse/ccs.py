@@ -609,8 +609,8 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
     accuracy = []
     for rec in pysam.FastxFile(fastqfile):
         length.append(len(rec.sequence))
-        accuracy.append(alignparse.utils.qvals_to_accuracy(rec.quality,
-                                                           'sanger'))
+        accuracy.append(alignparse.utils.qvals_to_accuracy(
+                            numpy.array(rec.get_quality_array())))
         if passes is not None:
             if not rec.comment:
                 passes = None
