@@ -50,6 +50,7 @@ setup(
             'numpy>=0.13',
             'packaging',
             'pandas>=0.25.1',
+            'pathos>=0.2.4',
             'plotnine>=0.6',
             'pysam>=0.14',
             'regex>=2.5.33',

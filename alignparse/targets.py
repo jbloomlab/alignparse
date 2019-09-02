@@ -11,6 +11,7 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 import contextlib
 import copy
+import itertools
 import os
 import re
 import tempfile
@@ -24,6 +25,8 @@ import matplotlib.colors
 import matplotlib.pyplot as plt
 
 import pandas as pd
+
+import pathos
 
 import pysam
 
@@ -654,7 +657,232 @@ class Targets:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def parse_alignment(self, samfile, *, multi_align='primary',
+    def align_and_parse(self,
+                        df,
+                        mapper,
+                        outdir,
+                        *,
+                        name_col='name',
+                        queryfile_col='queryfile',
+                        group_cols=None,
+                        to_csv=False,
+                        overwrite=False,
+                        multi_align='primary',
+                        ncpus=-1,
+                        ):
+        """Align query sequences and then parse alignments.
+
+        Note
+        ----
+        This is a convenience method to run :meth:`Targets.align` and
+        :meth:`Targets.parse_alignment` on multiple queries and collate
+        the results.
+
+        It also allows multiple queries to be handled simultaneously using
+        multiprocessing.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Data frame with information on queries to align.
+        mapper : :class:`alignparse.minimap2.Mapper`
+            Mapper that runs ``minimap2``. Alignment options set when creating
+            this mapper.
+        outdir : str
+            Name of directory with created alignments and parsing files.
+            Created if it does not exist.
+        name_col : str
+            Column in `df` with the name of each set of queries.
+        queryfile_col :str
+            Column in `df` with FASTQ file with queries.
+        group_cols : `None` or str or list
+            Columns in `df` used to "group" results. These columns are
+            in all created data frames. For instance, might specify
+            different libraries or samples.
+        to_csv : bool
+            Write CSV files rather than return data frames. Useful to
+            avoid reading large data frames into memory.
+        overwrite : bool
+            If some of the created output files already exist, do we
+            overwrite them or raise and error?
+        multi_align : {'primary'}
+            How to handle multiple alignments. Currently only option is
+            'primary', which ignores all secondary alignments.
+        ncpus : int
+            Number of CPUs to use; -1 means all available.
+
+        Returns
+        -------
+        (readstats, aligned, filtered) : tuple
+            Same meaning as for :meth:`Targets.parse_alignments` except
+            the data frames / CSV files all have additional columns indicating
+            name of each query set (`name_cols`) as well as any `group_cols`.
+
+        """
+        # check columns in `df`
+        if not group_cols:
+            addtl_cols = [name_col]
+        else:
+            if isinstance(group_cols, str):
+                group_cols = [group_cols]
+            addtl_cols = group_cols + [name_col]
+            if len(set(addtl_cols)) != len(addtl_cols):
+                raise ValueError('`name_col` and `group_cols` have redundant '
+                                 f"entries: {addtl_cols}")
+        expected_cols = addtl_cols + [queryfile_col]
+        if not set(df.columns).issuperset(set(expected_cols)):
+            raise ValueError('`df` does not contain all expected columns: ' +
+                             str(expected_cols))
+
+        os.makedirs(outdir, exist_ok=True)
+
+        # For each query we create a "full name" that includes name +
+        # grouping cols, a subdirectory that holds all files
+        # for this query, and the samfile for the alignments.
+        reserved_cols = {'fullname', 'subdir', 'samfile'}
+        if set(expected_cols).intersection(reserved_cols):
+            raise ValueError(f"`df` cannot have columns: {reserved_cols}")
+        df = (
+            df
+            [expected_cols]
+            .astype(str)
+            .assign(
+                fullname=lambda x: x.apply(lambda r: '_'.join(r[c] for c
+                                                              in addtl_cols),
+                                           axis=1),
+                subdir=lambda x: x['fullname'].map(lambda n: os.path.join(
+                                                   outdir, n)),
+                samfile=lambda x: x['subdir'].map(lambda d: os.path.join(
+                                                  d, 'alignments.sam')),
+                )
+            .reset_index(drop=True)
+            )
+        if len(df) != df['fullname'].nunique():
+            raise ValueError('Names the queries are not unique even after '
+                             'adding grouping columns.')
+        if any(df[col].str.contains(',').any() for col in df.columns):
+            raise ValueError('`name_col` and `group_cols` entry contains ","')
+
+        # set up multiprocessing pool
+        if ncpus == -1:
+            ncpus = pathos.multiprocessing.cpu_count()
+        else:
+            ncpus = min(pathos.multiprocessing.cpu_count(), ncpus)
+        if ncpus < 1:
+            raise ValueError('`ncpus` must be >= 1')
+        if ncpus > 1:
+            pool = pathos.multiprocessing.ProcessingPool(ncpus)
+            map_func = pool.map
+        else:
+            def map_func(f, *args):
+                return [f(*argtup) for argtup in zip(*args)]
+
+        # now make the alignments
+        for tup in df.itertuples():
+            os.makedirs(tup.subdir, exist_ok=True)
+            if os.path.isfile(tup.samfile):
+                if overwrite:
+                    os.remove(tup.samfile)
+                else:
+                    raise IOError(f"file {tup.samfile} already exists")
+        _ = map_func(self.align,
+                     df[queryfile_col],
+                     df['samfile'],
+                     itertools.repeat(mapper))
+        assert all(os.path.isfile(f) for f in df['samfile'])
+
+        # now parse the alignments
+        parse_results = map_func(self.parse_alignment,
+                                 df['samfile'],
+                                 itertools.repeat(multi_align),
+                                 itertools.repeat(True),
+                                 df['subdir'],
+                                 itertools.repeat(overwrite)
+                                 )
+
+        # Set up to gather overall readstats, aligned, and filtered by
+        # getting and checking column names:
+        readstatcols = ['category', 'count']
+        alignedcols = {t: self._parse_returnvals(t) for t in self.target_names}
+        filteredcols = ['query_name', 'filter_reason']
+        disallowedcols = readstatcols + filteredcols
+        for tc in alignedcols.values():
+            disallowedcols += tc
+        if set(addtl_cols).intersection(set(disallowedcols)):
+            raise ValueError('`name_col`, `group_cols` cannot have any of ' +
+                             str(disallowedcols))
+        alignedcols = {t: addtl_cols + tc for t, tc in alignedcols.items()}
+        filteredcols = addtl_cols + filteredcols
+
+        # set up data frames or names of files
+        readstats = pd.DataFrame([], columns=addtl_cols + readstatcols)
+        filtered = {t: os.path.join(outdir, t.replace(' ', '_') +
+                                    '_filtered.csv')
+                    for t in self.target_names}
+        aligned = {t: os.path.join(outdir, t.replace(' ', '_') +
+                                   '_aligned.csv')
+                   for t in self.target_names}
+        for f in list(filtered.values()) + list(aligned.values()):
+            if os.path.isfile(f):
+                if not overwrite:
+                    raise IOError(f"file {f} already exists.")
+                else:
+                    os.remove(f)
+
+        # collect read stats for all runs
+        for i, (ireadstats, _, _) in enumerate(parse_results):
+            readstats = readstats.append(
+                    (ireadstats
+                     .assign(**{c: df.at[i, c] for c in addtl_cols})
+                     [readstats.columns]
+                     ),
+                    ignore_index=True,
+                    sort=False,
+                    )
+        readstats = readstats.assign(count=lambda x: x['count'].astype(int))
+
+        # collect aligned and filtered for all runs
+        for t in self.target_names:
+            with contextlib.ExitStack() as stack:
+                # Define callback to delete CSV files on error. See here:
+                # https://docs.python.org/3/library/contextlib.html#replacing-any-use-of-try-finally-and-flag-variables
+                @stack.callback
+                def delete_files_on_err():
+                    for fname in [aligned[t], filtered[t]]:
+                        if os.path.isfile(fname):
+                            os.remove(fname)
+
+                alignedfile = stack.enter_context(open(aligned[t], 'w'))
+                filteredfile = stack.enter_context(open(filtered[t], 'w'))
+                alignedfile.write(','.join(alignedcols[t]) + '\n')
+                filteredfile.write(','.join(filteredcols) + '\n')
+
+                for i, (_, ialigned, ifiltered) in enumerate(parse_results):
+                    addtl_text = ','.join(df.at[i, c] for c in addtl_cols)
+                    for fin_name, fout, cols in [
+                            (ialigned[t], alignedfile, alignedcols[t]),
+                            (ifiltered[t], filteredfile, filteredcols),
+                            ]:
+                        with open(fin_name) as fin:
+                            firstline = fin.readline()
+                            assert (firstline[: -1].split(',') ==
+                                    cols[len(addtl_cols):]), fin_name
+                            for line in fin:
+                                fout.write(addtl_text)
+                                fout.write(',')
+                                fout.write(line)
+                            fout.flush()
+
+                stack.pop_all()  # no callback to delete files if reached here
+
+        if not to_csv:
+            aligned = {t: pd.read_csv(f).fillna('')
+                       for t, f in aligned.items()}
+            filtered = {t: pd.read_csv(f) for t, f in filtered.items()}
+
+        return readstats, aligned, filtered
+
+    def parse_alignment(self, samfile, multi_align='primary',
                         to_csv=False, csv_dir=None, overwrite_csv=False):
         """Parse alignment features as specified in `feature_parse_specs`.
 
@@ -667,7 +895,7 @@ class Targets:
             How to handle multiple alignments. Currently only option is
             'primary', which ignores all secondary alignments.
         to_csv : bool
-            Write CSV files rather than return data frames. Useful to
+            Return CSV file names rather than return data frames. Useful to
             avoid reading large data frames into memory.
         csv_dir : None or str
             If `to_csv` is `True`, name of directory to which we
@@ -747,14 +975,13 @@ class Targets:
                        for t in self.target_names}
             filenames = list(filtered.values()) + list(aligned.values())
             if (not overwrite_csv) and any(map(os.path.isfile, filenames)):
-                raise ValueError(f"existing file with name in: {filenames}")
+                raise IOError(f"existing file with name in: {filenames}")
         else:
             filtered = {t: [] for t in self.target_names}
             aligned = {t: [] for t in self.target_names}
 
         # Iterate samfile in contextlib so can handle files if using `to_csv`.
         with contextlib.ExitStack() as stack:
-
             # Define callback to delete CSV files on error. See here:
             # https://docs.python.org/3/library/contextlib.html#replacing-any-use-of-try-finally-and-flag-variables
             @stack.callback
@@ -825,6 +1052,10 @@ class Targets:
                 aligned = {t: pd.DataFrame(tlist,
                                            columns=self._parse_returnvals(t))
                            for t, tlist in aligned.items()}
+            else:
+                for f in (list(aligned_files.values()) +
+                          list(filtered_files.values())):
+                    f.flush()
 
             stack.pop_all()  # no callback to delete CSV files if reached here
 
