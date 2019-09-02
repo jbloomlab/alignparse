@@ -11,6 +11,7 @@ https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md
 
 import collections
 import io
+import itertools
 import math
 import os
 import re
@@ -20,6 +21,8 @@ import textwrap  # noqa: F401
 import numpy
 
 import pandas as pd
+
+import pathos
 
 import plotnine as p9
 
@@ -68,7 +71,7 @@ class Summary:
 
     """
 
-    def __init__(self, *, name, fastqfile, reportfile):
+    def __init__(self, name, fastqfile, reportfile):
         """See main class docstring."""
         self.name = name
         self.fastqfile = fastqfile
@@ -118,6 +121,9 @@ class Summaries:
         Column in `df` with report for run, appropriate for passing to
         :class:`Summary` as `reportfile`. Set to `None` if no reports.
         If there are no reports, then ZMW stats are not available.
+    ncpus : int
+        Number of CPUs to use; -1 means all available. Useful as processing
+        all the FASTQ files to compute read accuracies can take a while.
 
     Attributes
     ----------
@@ -127,7 +133,8 @@ class Summaries:
     """
 
     def __init__(self, df, *,
-                 name_col='name', fastq_col='fastq', report_col='report'):
+                 name_col='name', fastq_col='fastq', report_col='report',
+                 ncpus=-1):
         """See main class docstring."""
         cols = [name_col, fastq_col]
         if report_col:
@@ -141,18 +148,30 @@ class Summaries:
         if len(df[name_col]) != len(df[name_col].unique()):
             raise ValueError(f"the run names in {name_col} are not unique")
 
-        self.summaries = []
-        for tup in df.itertuples(index=False):
-            if report_col:
-                reportfile = getattr(tup, report_col)
-            else:
-                reportfile = None
-            self.summaries.append(
-                Summary(name=getattr(tup, name_col),
-                        fastqfile=getattr(tup, fastq_col),
-                        reportfile=reportfile,
-                        )
-                )
+        # get Summary for each run in a multiprocessing pool
+        if ncpus == -1:
+            ncpus = pathos.multiprocessing.cpu_count()
+        else:
+            ncpus = min(pathos.multiprocessing.cpu_count(), ncpus)
+        if ncpus < 1:
+            raise ValueError('`ncpus` must be >= 1')
+        elif ncpus > 1:
+            pool = pathos.pools.ProcessPool(ncpus)
+            map_func = pool.map
+        else:
+            def map_func(f, *args):
+                return [f(*argtup) for argtup in zip(*args)]
+        self.summaries = map_func(Summary,
+                                  df[name_col],
+                                  df[fastq_col],
+                                  (df[report_col] if report_col else
+                                   itertools.repeat(None)),
+                                  )
+        # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
+        if ncpus > 1:
+            pool.close()
+            pool.join()
+            pool.clear()
 
     def plot_ccs_stats(self, variable, *,
                        trim_frac=0.005, bins=25, histogram_stat='count',
