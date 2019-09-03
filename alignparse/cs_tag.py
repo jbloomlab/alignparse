@@ -17,6 +17,8 @@ import numpy
 
 import regex
 
+import alignparse.utils
+
 _CS_OPS = {
     'identity': ':[0-9]+',
     'substitution': r'\*[acgtn][acgtn]',
@@ -241,6 +243,57 @@ class Alignment:
         assert self._nops == len(self._cs_ops_starts)
         assert (self._cs_ops_ends - self._cs_ops_starts ==
                 self._cs_ops_lengths_target).all()
+
+        self._sam_alignment = sam_alignment
+
+    def get_accuracy(self, targetstart, targetend):
+        """Get accuracy of part of query aligned to a region of the target.
+
+        Parameters
+        ----------
+        targetstart : int
+            Start of region in target in 0, 1, ... numbering.
+        targetend : int
+            End of region in target (not inclusive of this site).
+
+        Returns
+        -------
+        float or NaN
+            The accuracy of the region, computed as the average of the
+            Q-scores for all aligned sites in the query, or `NaN` if
+            there are no query sites aligned to this region.
+
+        """
+        if targetstart >= targetend:
+            raise ValueError('`targetstart` must be < `targetend`')
+
+        # if function hasn't yet been called, set up necessary variables
+        if not hasattr(self, '_qs'):
+            # array of all Q values in query
+            self._qs = numpy.asarray(self._sam_alignment.query_qualities,
+                                     dtype='int')
+            # arrays of query and target sites that are aligned
+            self._aligned_query, self._aligned_target = map(
+                    numpy.array,
+                    zip(*self._sam_alignment
+                        .get_aligned_pairs(matches_only=True))
+                    )
+            assert len(self._aligned_query) == len(self._aligned_target)
+
+        # get index of first aligned site >= targetstart, and last
+        # aligned site <= targetend
+        istart = numpy.searchsorted(self._aligned_target, targetstart)
+        iend = numpy.searchsorted(self._aligned_target, targetend)
+        n = len(self._aligned_query) - 1
+        istart = min(istart, n)
+        iend = min(iend, n)
+        assert istart >= 0
+        assert istart <= iend
+
+        # compute accuracy
+        return alignparse.utils.qvals_to_accuracy(
+                self._qs[self._aligned_query[istart]:
+                         self._aligned_query[iend]])
 
     def extract_cs(self, start, end):
         """Extract ``cs`` tag corresponding to feature in target.
