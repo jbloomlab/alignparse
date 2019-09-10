@@ -119,15 +119,9 @@ class Mapper:
 
         @m54228_181120_212724/4194377/ccs   np:i:45
 
-    These tags are retained in the `samfile` alignment output. If you are
-    analyzing PacBio CCSs, you initially had a BAM file from ``ccs`` with
-    `np` tags indicating number of subread passes.
-    If you convert that BAM to a FASTQ with::
-
-        samtools bam2fq -T np {bamfile} > {fastqfile}
-
-    then the FASTQ file will have these tags and you can retain them in the SAM
-    alignment from :meth:`Mapper.map_to_sam` with `retain_tags=['np']`.
+    and retains them in the `samfile` alignment output. Such tags
+    are present in FASTQ files created by PacBio ``ccs`` version 4.0. For
+    the above header, you'd use `retain_tags=['np']`.
 
     Examples
     --------
