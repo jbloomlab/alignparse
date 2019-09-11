@@ -462,20 +462,20 @@ def report_to_stats(reportfile):
     ...     ''').lstrip())
     >>> reportfile.flush()
     >>> report_to_stats(reportfile.name)
-                          status  number  fraction
-    0        ZMWs generating CCS  182500  0.265660
-    1         No usable subreads       0  0.000000
-    2        Below SNR threshold       0  0.000000
-    3        Lacking full passes  344375  0.501297
-    4             Heteroduplexes    1056  0.001537
-    5     Min coverage violation    2035  0.002962
-    6     Draft generation error    7636  0.011116
-    7   Draft above --max-length      49  0.000071
-    8   Draft below --min-length       2  0.000003
-    9    Lacking usable subreads       0  0.000000
-    10      CCS did not converge       0  0.000000
-    11      CCS below minimum RQ  149315  0.217354
-    12             Unknown error       0  0.000000
+                                    status  number  fraction
+    0             Success -- CCS generated  182500  0.265660
+    1         Failed -- No usable subreads       0  0.000000
+    2        Failed -- Below SNR threshold       0  0.000000
+    3        Failed -- Lacking full passes  344375  0.501297
+    4             Failed -- Heteroduplexes    1056  0.001537
+    5     Failed -- Min coverage violation    2035  0.002962
+    6     Failed -- Draft generation error    7636  0.011116
+    7   Failed -- Draft above --max-length      49  0.000071
+    8   Failed -- Draft below --min-length       2  0.000003
+    9    Failed -- Lacking usable subreads       0  0.000000
+    10      Failed -- CCS did not converge       0  0.000000
+    11      Failed -- CCS below minimum RQ  149315  0.217354
+    12             Failed -- Unknown error       0  0.000000
     >>> reportfile.close()
 
     An example of the ``ccs`` version 3.1.0 output:
@@ -586,11 +586,11 @@ def _report_to_stats_v4(reportfile):
         report = f.read()
     m = reportmatch.search(report)
     if m is not None:
-        failed_records = [(line.split(':')[0].strip(),
+        failed_records = [('Failed -- ' + line.split(':')[0].strip(),
                            int(line.split(':')[1].split()[0]))
                           for line in m.group('failed_text').split('\n')
                           if line]
-        return (pd.DataFrame({'status': ['ZMWs generating CCS'],
+        return (pd.DataFrame({'status': ['Success -- CCS generated'],
                               'number': [int(m.group('n_generated'))]
                               })
                 .append(pd.DataFrame(failed_records,

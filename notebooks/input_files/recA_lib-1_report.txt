@@ -1,24 +1,17 @@
-ZMW Yield
-Success (without retry) -- CCS generated,96,60.00%
-Success (with retry)    -- CCS generated,2,1.25%
-Failed -- Below SNR threshold,0,0.00%
-Failed -- No usable subreads,1,0.63%
-Failed -- Insert size too long,0,0.00%
-Failed -- Insert size too small,0,0.00%
-Failed -- Not enough full passes,38,23.75%
-Failed -- Too many unusable subreads,0,0.00%
-Failed -- CCS did not converge,0,0.00%
-Failed -- CCS below minimum predicted accuracy,23,14.37%
-Failed -- Unknown error during processing,0,0.00%
+ZMWs input          (A)  : 166
+ZMWs generating CCS (B)  : 139 (83.73%)
+ZMWs filtered       (C)  : 27 (16.27%)
 
-
-Subread Yield
-Success - Used for CCS,5495,82.51%
-Failed -- Below SNR threshold,0,0.00%
-Failed -- Alpha/Beta mismatch,0,0.00%
-Failed -- Below minimum quality,0,0.00%
-Failed -- Filtered by size,32,0.48%
-Failed -- Identity too low,871,13.08%
-Failed -- Z-Score too low,0,0.00%
-Failed -- From ZMW with too few passes,62,0.93%
-Failed -- Other,200,3.00%
+Exclusive ZMW counts for (C):
+No usable subreads       : 0 (0.00%)
+Below SNR threshold      : 0 (0.00%)
+Lacking full passes      : 19 (70.37%)
+Heteroduplexes           : 1 (3.70%)
+Min coverage violation   : 1 (3.70%)
+Draft generation error   : 3 (11.11%)
+Draft above --max-length : 0 (0.00%)
+Draft below --min-length : 1 (3.70%)
+Lacking usable subreads  : 0 (0.00%)
+CCS did not converge     : 0 (0.00%)
+CCS below minimum RQ     : 2 (7.40%)
+Unknown error            : 0 (0.00%)
