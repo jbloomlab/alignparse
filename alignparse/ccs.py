@@ -440,6 +440,7 @@ def report_to_stats(reportfile):
     -------
     An example of the ``ccs`` version 4.0.0 output:
 
+    >>> pd.set_option('max_columns', 10)  # show many columns
     >>> reportfile = tempfile.NamedTemporaryFile(mode='w')
     >>> _ = reportfile.write(textwrap.dedent('''
     ...     ZMWs input          (A)  : 686919
