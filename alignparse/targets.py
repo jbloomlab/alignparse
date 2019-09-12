@@ -329,6 +329,9 @@ class Targets:
         set this option to `True` in order to allow return of mutations /
         sequences for features with clipping allowed; otherwise you'll get
         an error if you try to recover such sequences / mutations.
+    ignore_feature_parse_specs_keys : None or list
+        Ignore these target-leve keys in `feature_parse_specs`. Useful for
+        YAML with default keys that don't represent actual targets.
 
     Attributes
     ----------
@@ -345,7 +348,8 @@ class Targets:
 
     def __init__(self, *, seqsfile, feature_parse_specs,
                  allow_extra_features=False, seqsfileformat='genbank',
-                 allow_clipped_muts_seqs=False):
+                 allow_clipped_muts_seqs=False,
+                 ignore_feature_parse_specs_keys=None):
         """See main class docstring."""
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
@@ -353,6 +357,14 @@ class Targets:
                 self._feature_parse_specs = yaml.safe_load(f)
         else:
             self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
+
+        if ignore_feature_parse_specs_keys:
+            for key in ignore_feature_parse_specs_keys:
+                if key in self._feature_parse_specs:
+                    del self._feature_parse_specs[key]
+                else:
+                    raise KeyError(f"`feature_parse_specs` lacks key {key} "
+                                   'in `ignore_feature_parse_specs_keys`')
 
         # names of parse alignment columns with clipping
         self._clip_cols = ['query_clip5', 'query_clip3']

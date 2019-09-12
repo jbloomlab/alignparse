@@ -576,7 +576,7 @@ def _report_to_stats_v4(reportfile):
 
     """
     reportmatch = re.compile(
-            r'^ZMWs input\s+\(A\)\s+:\s+\d+\n'
+            r'^ZMWs input\s+\(A\)\s+:\s+\d+[\s\n]+'
             r'ZMWs generating CCS\s+\(B\)\s+:\s+(?P<n_generated>\d+) \S+\n'
             r'ZMWs filtered\s+\(C\)\s+:\s+\d+ \S+\n'
             '\n'
