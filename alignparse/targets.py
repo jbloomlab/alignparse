@@ -330,7 +330,7 @@ class Targets:
         sequences for features with clipping allowed; otherwise you'll get
         an error if you try to recover such sequences / mutations.
     ignore_feature_parse_specs_keys : None or list
-        Ignore these target-leve keys in `feature_parse_specs`. Useful for
+        Ignore these target-level keys in `feature_parse_specs`. Useful for
         YAML with default keys that don't represent actual targets.
 
     Attributes
