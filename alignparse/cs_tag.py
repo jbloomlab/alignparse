@@ -27,16 +27,36 @@ _CS_OPS = {
     }
 """dict: Short ``cs`` tag operation regular expression matches."""
 
+_INTRON_OP = r'\~[acgtn]{2}\d+[acgtn]{2}'
+"""str: Short ``cs`` tag operation regular expression for intron."""
+
+_INTRON_OP_REGEX = regex.compile(_INTRON_OP)
+"""regex.Regex: matches short ``cs`` tag operation for intron."""
+
+_CS_OPS_W_INTRON = {key: val for key, val in
+                    list(_CS_OPS.items()) + [('intron', _INTRON_OP)]}
+"""dict: ``cs`` tag operation regular expression matches including introns."""
+
 _CS_STR_REGEX = regex.compile('(' + '|'.join(list(_CS_OPS.values())) + ')*')
 """regex.Regex: matches full-length short ``cs`` tags."""
+
+_CS_STR_REGEX_W_INTRON = regex.compile(
+            '(' + '|'.join(list(_CS_OPS_W_INTRON.values())) + ')*')
+"""regex.Regex: matches full-length short ``cs`` tags including introns."""
 
 _CS_OP_REGEX = regex.compile('|'.join(f"(?P<{op_name}>{op_str})" for
                                       op_name, op_str in _CS_OPS.items()))
 """regex.Regex: matches single ``cs`` operation, group name is operation."""
 
+_CS_OP_REGEX_W_INTRON = regex.compile(
+            '|'.join(f"(?P<{op_name}>{op_str})" for
+                     op_name, op_str in _CS_OPS_W_INTRON.items()))
+"""regex.Regex: matches single ``cs`` operation including introns,
+group name is operation."""
+
 
 @functools.lru_cache(maxsize=16384)
-def split_cs(cs_string, *, invalid='raise'):
+def split_cs(cs_string, *, invalid='raise', allow_intron=False):
     """Split a short ``cs`` tag into its constituent operations.
 
     Parameters
@@ -46,6 +66,8 @@ def split_cs(cs_string, *, invalid='raise'):
     invalid : {'raise', 'ignore'}
         If `cs_string` is not a valid string, raise an error or ignore it
         and return `None`.
+    allow_intron : bool
+        Are introns allowed as ``cs`` operations?
 
     Return
     ------
@@ -67,7 +89,10 @@ def split_cs(cs_string, *, invalid='raise'):
     ValueError: invalid `cs_string` of bad:32*nt*na:10-gga:5
 
     """
-    m = _CS_STR_REGEX.fullmatch(cs_string)
+    if allow_intron:
+        m = _CS_STR_REGEX_W_INTRON.fullmatch(cs_string)
+    else:
+        m = _CS_STR_REGEX.fullmatch(cs_string)
     if m is None:
         if invalid == 'ignore':
             return None
@@ -176,6 +201,75 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
         raise ValueError(f"invalid `op_type` of {op_type}")
 
 
+@functools.lru_cache(maxsize=16384)
+def cs_introns_to_deletions(cs, targetseq):
+    """Convert introns to deletions in ``cs`` tag.
+
+    Parameters
+    ----------
+    cs : str
+        Short-format ``cs`` tag.
+    targetseq : str
+        Region of target sequenced covered by `cs` alignment.
+
+    Returns
+    -------
+    str
+        Version of `cs` where all introns have been converted to deletions.
+
+    Examples
+    --------
+    >>> cs_introns_to_deletions(':3-ggaac:2', 'ATGGGAACAT')
+    ':3-ggaac:2'
+    >>> cs_introns_to_deletions(':3~gg5ac:2', 'ATGGGAACAT')
+    ':3-ggaac:2'
+    >>> cs_introns_to_deletions(':2*ga~gg6ta:2-gc:2~at4cg:3',
+    ...                  'ATGGGCCTATTGCTAATCGAAA')
+    ':2*ga-ggccta:2-gc:2-atcg:3'
+
+    """
+    if not _INTRON_OP_REGEX.search(cs):
+        return cs
+    itarget = 0
+    new_cs = []
+    for op in split_cs(cs, allow_intron=True):
+        if _INTRON_OP_REGEX.fullmatch(op):
+            op_len = int(op[3: -2])
+            target_subseq = _ambiguous_to_n(
+                        targetseq[itarget: itarget + op_len]).lower()
+            itarget += op_len
+            new_cs.append(f"-{target_subseq}")
+            assert target_subseq[: 2] == op[1: 3], "{target_subseq}\n{op}"
+            assert target_subseq[-2:] == op[-2:], "{target_subseq}\n{op}"
+        else:
+            new_cs.append(op)
+            itarget += cs_op_len_target(op)
+    return ''.join(new_cs)
+
+
+def _ambiguous_to_n(seq):
+    """Convert all ambiguous nucleotides to 'N'.
+
+    Parameters
+    ----------
+    seq : str
+        Sequence.
+
+    Returns
+    -------
+    str
+        Version of `seq` where all non-N IUPAC ambiguous nucleotides have
+        been converted to 'N'.
+
+    Example
+    -------
+    >>> _ambiguous_to_n('ATGYCAkac')
+    'ATGNCANac'
+
+    """
+    return regex.sub('[MmRrWwSsYyKkVvHhDdBb]', 'N', seq)
+
+
 class Alignment:
     """Process a SAM alignment with a ``cs`` tag to extract features.
 
@@ -186,6 +280,11 @@ class Alignment:
         must have a short format ``cs`` tag (see
         https://lh3.github.io/minimap2/minimap2.html). This must be
         a mapped read, you will get an error if unmapped.
+    introns_to_deletions : bool
+        Convert all introns in the ``cs`` tag to deletions.
+    target_seqs : dict
+        Required if `introns_to_deletions` is `True`. Is keyed by target
+        names with values target sequences as str.
 
     Attributes
     ----------
@@ -208,7 +307,8 @@ class Alignment:
 
     """
 
-    def __init__(self, sam_alignment):
+    def __init__(self, sam_alignment, *,
+                 introns_to_deletions=False, target_seqs=None):
         """See main class docstring."""
         if sam_alignment.is_unmapped:
             raise ValueError(f"`sam_alignment` {sam_alignment.query_name} "
@@ -226,6 +326,13 @@ class Alignment:
         else:
             self.orientation = '+'
         self.cs = str(sam_alignment.get_tag('cs'))
+
+        if introns_to_deletions:
+            if target_seqs is None:
+                raise ValueError('must set `target_seqs`')
+            targetseq = target_seqs[self.target_name][self.target_clip5:
+                                                      self.target_lastpos]
+            self.cs = cs_introns_to_deletions(self.cs, targetseq)
 
         self._cs_ops = split_cs(self.cs)
         self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)

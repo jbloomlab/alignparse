@@ -339,6 +339,8 @@ class Targets:
         List of all :class:`Target` objects.
     target_names : list
         List of names of all targets.
+    target_seqs : dict
+        Keyed by target name, value is sequence as str.
 
     """
 
@@ -408,6 +410,7 @@ class Targets:
                     raise ValueError('feature name cannot end in ' +
                                      str(self._return_suffixes))
         self.target_names = [target.name for target in self.targets]
+        self.target_seqs = {target.name: target.seq for target in self.targets}
 
         # check needed for `to_csv` option of `parse_alignment`.
         if len(self.target_names) != len({tname.replace(' ', '_') for
@@ -1035,7 +1038,8 @@ class Targets:
                 if aligned_seg.is_secondary and primary_only:
                     continue
 
-                a = Alignment(aligned_seg)
+                a = Alignment(aligned_seg, introns_to_deletions=True,
+                              target_seqs=self.target_seqs)
                 tname = a.target_name
 
                 is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
@@ -1267,7 +1271,8 @@ class Targets:
             else:
                 if primary_only and aligned_seg.is_secondary:
                     continue
-                a = Alignment(aligned_seg)
+                a = Alignment(aligned_seg, introns_to_deletions=True,
+                              target_seqs=self.target_seqs)
                 tname = a.target_name
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
