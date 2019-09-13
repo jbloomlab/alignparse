@@ -1,0 +1,86 @@
+# default for genes with two variant tags
+default_2tags: &default_2tags
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  sequenced_mRNA:
+    filter:
+      mutation_nt_count: null
+      mutation_op_count: 10
+    return: [mutations, accuracy]
+  final_mRNA_nts:
+    filter:
+      mutation_nt_count: null
+      mutation_op_count: 2
+  polyA:
+    filter:
+      mutation_nt_count: 12
+      mutation_op_count: 4
+  UMI:
+    return: [sequence, accuracy]
+  cellbarcode:
+    return: [sequence, accuracy]
+  termini3:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  variant_tag_1:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+  variant_tag_2:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+
+# default for genes with four variant tags
+default_4tags: &default_4tags
+  <<: *default_2tags
+  variant_tag_3:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+  variant_tag_4:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+
+# use defaults to define specs for actual genes
+fluPB2:
+  <<: *default_4tags
+
+fluPB1:
+  <<: *default_4tags
+
+fluPA:
+  <<: *default_4tags
+
+fluHA:
+  <<: *default_4tags
+
+fluNP:
+  <<: *default_4tags
+
+fluNA:
+  <<: *default_4tags
+
+fluM1:
+  <<: *default_4tags
+
+fluM2:
+  <<: *default_2tags
+
+fluNS1:
+  <<: *default_4tags
+
+fluNS2:
+  <<: *default_2tags

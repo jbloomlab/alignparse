@@ -1,0 +1,467 @@
+LOCUS       fluPB2                  2395 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluPB2.
+ACCESSION   fluPB2
+VERSION     fluPB2
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..34
+     variant_tag_1   143..143
+     variant_tag_2   149..149
+     variant_tag_3   2163..2163
+     variant_tag_4   2171..2171
+     sequenced_mRNA  35..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
+ORIGIN
+        1 gcgaaagcag gtcaattata ttcaatatgg aaagaataaa agaactaagg aatctaatgt
+       61 cgcagtctcg cactcgcgag atactcacaa aaaccaccgt ggaccatatg gccataatca
+      121 agaagtacac atcaggaaga cargagaara acccagcact taggatgaaa tggatgatgg
+      181 caatgaaata tccaattaca gcagacaaga ggataacgga aatgattcct gagagaaatg
+      241 agcagggaca aactttatgg agtaaaatga atgacgccgg atcagaccga gtgatggtat
+      301 cacctctggc tgtgacatgg tggaatagga atggaccagt gacaagtaca gttcattatc
+      361 caaaaatcta caaaacttat tttgaaaaag tcgaaaggtt aaaacatgga acctttggcc
+      421 ctgtccattt tagaaaccaa gtcaaaatac gtcgaagagt tgacataaat cctggtcatg
+      481 cagatctcag tgccaaagag gcacaggatg taatcatgga agttgttttc cctaacgaag
+      541 tgggagccag gatactaaca tcggaatcgc aactaacgac aaccaaagag aagaaagaag
+      601 aactccaggg ttgcaaaatt tctcctctga tggtggcata catgttggag agagaactgg
+      661 tccgcaaaac gagattcctc ccagtggctg gtggaacaag cagtgtgtac attgaagtgt
+      721 tgcatttgac ccaaggaaca tgctgggaac agatgtacac tccaggaggg gaggcgagga
+      781 atgatgatgt tgatcaaagc ttaattattg ctgctagaaa catagtaaga agagccacag
+      841 tatcagcaga tccactagca tctttattgg agatgtgcca cagcacgcag attggtggaa
+      901 taaggatggt aaacatcctt aggcagaacc caacagaaga gcaagccgtg gatatttgca
+      961 aggctgcaat gggactgaga attagctcat ccttcagttt tggtggattc acatttaaga
+     1021 gaacaagcgg atcatcagtc aagagagagg aagaggtgct tacgggcaat cttcagacat
+     1081 tgaagataag agtgcatgag ggatatgaag agttcacaat ggttgggaga agagcaacag
+     1141 ctatactcag aaaagcaacc aggagattga ttcagctgat agtgagtggg agagacgaac
+     1201 agtcgattgc cgaagcaata attgtggcca tggtattttc acaagaggat tgtatgataa
+     1261 aagcagttag aggtgacctg aatttcgtca atagggcgaa tcagcgattg aatcccatgc
+     1321 accaactttt gagacatttt cagaaggatg caaaggtgct ctttcaaaat tggggaattg
+     1381 aatccatcga caatgtgatg ggaatgatcg ggatattgcc cgacatgact ccaagcaccg
+     1441 agatgtcaat gagaggagtg agaatcagca aaatgggggt agatgagtat tccagcgcgg
+     1501 agaagatagt ggtgagcatt gaccgttttt tgagagttag ggaccaacgt gggaatgtac
+     1561 tactgtctcc cgaggagatc agtgaaacac agggaacaga gaaactgaca ataacttact
+     1621 catcgtcaat gatgtgggag attaatggtc ctgaatcagt gttggtcaat acctatcagt
+     1681 ggatcatcag aaactgggaa actgttaaaa ttcagtggtc ccagaatcct acaatgctgt
+     1741 acaataaaat ggaatttgag ccatttcagt ctttagttcc aaaggccgtt agaggccaat
+     1801 acagtgggtt tgtgagaact ctgttccaac aaatgaggga tgtgcttggg acatttgata
+     1861 ccgctcagat aataaaactt cttcccttcg cagccgctcc accaaagcaa agtagaacgc
+     1921 agttctcctc attgactata aatgtgaggg gatcaggaat gagaatactt gtaaggggca
+     1981 attctccagt attcaactac aacaagacca ctaaaagact cacagttctc ggaaaggatg
+     2041 ctggcccttt aactgaagac ccagatgaag gcacagctgg agttgagtcc gcagttctga
+     2101 gaggattcct cattctgggc aaagaagaca ggagatatgg accagcatta agcataaatg
+     2161 aaytgagcaa ycttgcgaaa ggagagaagg ctaatgtgct aattgggcaa ggagacgtgg
+     2221 tgttggtaat gaaacggaaa cggaactcta gcatacttac tgacagccag acagcgacca
+     2281 aaagaattcg gatggccatc aattagtgtc gaatagttta aaaaaaaaaa aaaaaaaaaa
+     2341 aaaaaaannn nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
+//
+LOCUS       fluPB1                  2395 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluPB1.
+ACCESSION   fluPB1
+VERSION     fluPB1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..22
+     variant_tag_1   146..146
+     variant_tag_2   152..152
+     variant_tag_3   2159..2159
+     variant_tag_4   2162..2162
+     sequenced_mRNA  23..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
+ORIGIN
+        1 gcgaaagcag gcaaaccatt tgaatggatg tcaatccgac tttacttttc ttaaaagtgc
+       61 cagcacaaaa tgctataagc acaactttcc cttatactgg agaccctcct tacagccatg
+      121 ggacaggaac aggatacacc atggayactg tmaacaggac acatcagtac tcagaaaggg
+      181 gaagatggac aacaaacacc gaaactggag caccgcaact caacccgatt gatgggccac
+      241 tgccagaaga caatgaacca agtggttatg cccaaacaga ttgtgtattg gaagcaatgg
+      301 ccttccttga ggaatcccat cctggtatct ttgagacctc gtgtcttgaa acgatggagg
+      361 ttgttcagca aacacgagtg gacaagctga cacaaggccg acagacctat gactggactc
+      421 taaataggaa ccagcctgct gcaacagcat tggccaacac aatagaagtg ttcagatcaa
+      481 atggcctcac ggccaatgaa tctggaaggc tcatagactt ccttaaggat gtaatggagt
+      541 caatgaacaa agaagaaatg gagatcacaa ctcattttca gagaaagaga cgagtgagag
+      601 acaatatgac taagaaaatg gtgacacaga gaacaatagg taaaaggaag cagagattga
+      661 acaaaaggag ttatctaatt agggcattaa ccctgaacac aatgaccaaa gatgctgaga
+      721 gagggaagct aaaacggaga gcaattgcaa ccccagggat gcaaataagg gggtttgtat
+      781 actttgttga gacactagca aggagtatat gtgagaaact tgaacaatca ggattgccag
+      841 ttggaggcaa tgagaagaaa gcaaagttgg caaatgttgt aaggaagatg atgaccaatt
+      901 ctcaggacac tgaaatttct ttcaccatca ctggagataa caccaaatgg aacgaaaatc
+      961 agaaccctcg gatgtttttg gccatgatca catatataac cagaaatcag cccgaatggt
+     1021 tcagaaatgt tctaagtatt gctccaataa tgttctcaaa caaaatggcg agactgggaa
+     1081 aggggtacat gtttgagagc aagagtatga aaattagaac tcaaatacct gcagaaatgc
+     1141 tagcaagcat cgatttgaaa tacttcaatg attcaactag aaagaagatt gaaaaaatcc
+     1201 ggccgctctt aatagatggg actgcatcat tgagccctgg aatgatgatg ggcatgttca
+     1261 atatgttaag tactgtatta ggcgtctcca tcctgaatct tggacaaaag agacacacca
+     1321 agactactta ctggtgggat ggtcttcaat cttctgatga ttttgctctg attgtgaatg
+     1381 cacccaatca tgaagggatt caagccggag tcaacaggtt ttatcgaacc tgtaagctac
+     1441 ttggaattaa tatgagcaag aaaaagtctt acataaacag aacaggtaca tttgaattca
+     1501 caagtttttt ctatcgttat gggtttgttg ccaatttcag catggagctt cccagctttg
+     1561 gggtgtctgg gatcaacgag tctgcggaca tgagtattgg agttactgtc atcaaaaaca
+     1621 atatgataaa caatgatctt ggtccagcaa ccgctcaaat ggcccttcag ctgttcatca
+     1681 aagattacag gtacacgtac cggtgccata gaggtgacac acaaatacaa acccgaagat
+     1741 catttgaaat aaagaaactg tgggagcaaa cccattccaa agctggactg ctggtctccg
+     1801 acggaggccc aaatttatac aacattagaa atctccacat tcctgaagtc tgcttgaaat
+     1861 gggaattaat ggatgaggat taccaggggc gtttatgcaa cccactgaac ccatttgtca
+     1921 accataaaga cattgaatca gtgaacaatg cagtgataat gccagcacat ggtccagcca
+     1981 aaaacatgga gtatgatgct gttgcaacaa cacactcctg gatccccaaa agaaatcgat
+     2041 ccatcttgaa tacaagccaa agaggaatac ttgaagatga acaaatgtac caaaagtgct
+     2101 gcaacttatt tgaaaaattc ttccccagca gttcatacag aagaccagtc gggatatcya
+     2161 gyatggtgga ggctatggtt tccagagccc gaattgatgc acgaattgat ttcgaatctg
+     2221 gaaggataaa gaaagaggag ttcactgaga tcatgaagat ctgttccacc attgaagagc
+     2281 tcagacggca aaaatagtga atttagcttg tccttcatga aaaaaaaaaa aaaaaaaaaa
+     2341 aaaaaaannn nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
+//
+LOCUS       fluPA                   2286 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluPA.
+ACCESSION   fluPA
+VERSION     fluPA
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..27
+     variant_tag_1   143..143
+     variant_tag_2   146..146
+     variant_tag_3   2036..2036
+     variant_tag_4   2048..2048
+     sequenced_mRNA  28..2207
+     final_mRNA_nts  2208..2210
+     polyA           2211..2238
+     UMI             2239..2248
+     cellbarcode     2249..2264
+     termini3        2265..2286
+ORIGIN
+        1 gcgaaagcag gtactgattc aaaatggaag attttgtgcg acaatgcttc aatccgatga
+       61 ttgtcgagct tgcggaaaag gcaatgaaag agtatggaga ggacctgaaa atcgaaacaa
+      121 acaaatttgc agcaatatgc acycayttgg aagtgtgctt catgtattca gattttcact
+      181 tcatcgatga gcaaggcgag tcaatagtcg tagaacttgg cgatccaaat gcacttttga
+      241 agcacagatt tgaaataatc gagggaagag atcgcacaat agcctggaca gtaataaaca
+      301 gtatttgcaa cactacaggg gctgagaaac caaagtttct accagatttg tatgattaca
+      361 agaagaatag attcatcgaa attggagtaa caaggagaga agttcacata tactatctgg
+      421 aaaaggccaa taaaattaaa tctgagaaga cacacatcca cattttctca ttcactgggg
+      481 aggaaatggc cacaaaggcc gactacactc tcgatgaaga aagcagggct aggatcaaaa
+      541 ccaggctatt caccataaga caagaaatgg ctagcagagg cctctgggat tcctttcgtc
+      601 agtccgagag aggcgaagag acaattgaag aaagatttga aatcacagga acaatgcgca
+      661 agcttgccga ccaaagtctc ccgccaaact tctccagcct tgaaaaattt agagcctatg
+      721 tggatggatt cgaaccgaac ggctacattg agggcaagct ttctcaaatg tccaaagaag
+      781 taaatgctag aattgaacct tttttgaaat caacaccacg accacttaga cttccggatg
+      841 ggcctccctg ttctcagcgg tccaaattcc tgctgatgga tgccttaaaa ttaagcattg
+      901 aggacccaag tcatgaggga gaggggatac cgctatatga tgcaatcaaa tgcatgagaa
+      961 cattctttgg atggaaggaa cccaatgttg ttaaaccaca cgaaaaggga ataaatccaa
+     1021 attatcttct gtcatggaag caagtactgg cagaactgca ggacattgag aatgaggaga
+     1081 aaattccaag gactaaaaat atgaagaaaa cgagtcagtt aaagtgggca cttggtgaga
+     1141 acatggcacc agaaaaggta gactttgacg attgtaaaga tgtaggcgat ttgaagcaat
+     1201 atgatagtga tgaaccagaa ttgaggtcgc ttgcaagttg gattcagaat gagttcaaca
+     1261 aggcatgtga actgaccgat tcaagctgga tagagctcga tgagattgga gaagatgcgg
+     1321 ctccaattga acacattgca agcatgagaa ggaattattt cacagcagag gtgtctcatt
+     1381 gcagagccac agaatacata atgaaggggg tgtacatcaa tactgccttg cttaatgcat
+     1441 cctgtgcagc aatggatgat ttccaattaa ttccaatgat aagcaagtgt agaactaagg
+     1501 agggaaggcg aaagaccaat ttgtacggtt tcatcataaa aggaagatcc cacttaagga
+     1561 atgacaccga tgtggtaaac tttgtgagca tggagttttc cctcactgac ccaagacttg
+     1621 aaccacacaa atgggagaag tactgtgttc ttgaggtagg agatatgctt ctaagaagtg
+     1681 ccataggcca tgtgtcaagg cctatgttct tgtatgtgag gacaaatgga acctcaaaaa
+     1741 ttaaaatgaa atgggggatg gaaatgaggc gttgcctcct tcagtcactt caacaaatcg
+     1801 agagtatgat tgaagctgag tcctctgtca aggagaaaga catgaccaaa gagttctttg
+     1861 aaaacaaatc agaaacatgg cccgttggag agtcccccaa aggagtggag gaaggttcca
+     1921 ttgggaaggt ctgcagaact ttattggcaa agtcggtatt caacagcttg tatgcatctc
+     1981 cacaactaga aggattttca gctgaatcaa gaaaactgct tcttatcgtt caggcwctta
+     2041 gggacaayct ggaacctggg acctttgatc ttggggggct atatgaagca attgaggagt
+     2101 gcctgattaa tgatccctgg gttttgctta atgcttcttg gttcaactcc ttcctcacac
+     2161 atgcattgag atagttgtgg caatgctact atttgctatc catactgtcc aaaaaaaaaa
+     2221 aaaaaaaaaa aaaaaaaann nnnnnnnnnn nnnnnnnnnn nnnnagatcg gaagagcgtc
+     2281 gtgtag
+//
+LOCUS       fluHA                   1829 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluHA.
+ACCESSION   fluHA
+VERSION     fluHA
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..28
+     variant_tag_1   142..142
+     variant_tag_2   154..154
+     variant_tag_3   1561..1561
+     variant_tag_4   1562..1562
+     sequenced_mRNA  29..1750
+     final_mRNA_nts  1751..1753
+     polyA           1754..1781
+     UMI             1782..1791
+     cellbarcode     1792..1807
+     termini3        1808..1829
+ORIGIN
+        1 gcaaaagcag gggaaaataa aaacaaccaa aatgaaggca aaactactgg tcctgttata
+       61 tgcatttgta gctacagatg cagacacaat atgtataggc taccatgcga acaactcaac
+      121 cgacactgtt gacacaatac tmgagaagaa tgtrgcagtg acacattctg ttaacctgct
+      181 cgaagacagc cacaacggga aactatgtaa attaaaagga atagccccac tacaattggg
+      241 gaaatgtaac atcaccggat ggctcttggg aaatccagaa tgcgactcac tgcttccagc
+      301 gagatcatgg tcctacattg tagaaacacc aaactctgag aatggagcat gttatccagg
+      361 agatctcatc gactatgagg aactgaggga gcaattgagc tcagtatcat cattagaaag
+      421 attcgaaata tttcccaagg aaagttcatg gcccaaccac acattcaacg gagtaacagt
+      481 atcatgctcc cataggggaa aaagcagttt ttacagaaat ttgctatggc tgacgaagaa
+      541 gggggattca tacccaaagc tgaccaattc ctatgtgaac aataaaggga aagaagtcct
+      601 tgtactatgg ggtgttcatc acccgtctag cagtgatgag caacagagtc tctatagtaa
+      661 tggaaatgct tatgtctctg tagcgtcttc aaattataac aggagattca ccccggaaat
+      721 agctgcaagg cccaaagtaa gagatcaaca tgggaggatg aactattact ggaccttgct
+      781 agaacccgga gacacaataa tatttgaggc aactggtaat ctaatagcac catggtatgc
+      841 tttcgcactg agtagagggt ttgagtccgg catcatcacc tcaaacgcgt caatgcatga
+      901 gtgtaacacg aagtgtcaaa caccccaggg agctataaac agcaatctcc ctttccagaa
+      961 tatacaccca gtcacaatag gagagtgccc aaaatatgtc aggagtacca aattgaggat
+     1021 ggttacagga ctaagaaaca tcccatccat tcaatacaga ggtctatttg gagccattgc
+     1081 tggttttatt gaggggggat ggactggaat gatagatgga tggtatggtt atcatcatca
+     1141 gaatgaacag ggatcaggct atgcagcgga tcaaaaaagc acacaaaatg ccattaacgg
+     1201 gattacaaac aaggtgaact ctgttatcga gaaaatgaac actcaattca cagctgtggg
+     1261 taaagaattc aacaacttag aaaaaaggat ggaaaattta aataaaaaag ttgatgatgg
+     1321 gtttctggac atttggacat ataatgcaga attgttagtt ctactggaaa atgaaaggac
+     1381 tttggatttc catgacttaa atgtgaagaa tctgtacgag aaagtaaaaa gccaattaaa
+     1441 gaataatgcc aaagaaatcg gaaatgggtg ttttgagttc taccacaagt gtgacaatga
+     1501 atgcatggaa agtgtaagaa atgggactta tgattatcca aaatattcag aagaatcaaa
+     1561 rytgaacagg gaaaagatag atggagtgaa attggaatca atgggggtgt atcagattct
+     1621 ggcgatctac tcaactgtcg ccagttcact ggtgcttttg gtctccctgg gggcaatcag
+     1681 tttctggatg tgttctaatg ggtctttgca gtgcagaata tgcatctgag attaggattt
+     1741 cagaaatata aggaaaaaaa aaaaaaaaaa aaaaaaaaaa annnnnnnnn nnnnnnnnnn
+     1801 nnnnnnnaga tcggaagagc gtcgtgtag
+//
+LOCUS       fluNP                   1619 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluNP.
+ACCESSION   fluNP
+VERSION     fluNP
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..27
+     variant_tag_1   152..152
+     variant_tag_2   155..155
+     variant_tag_3   1376..1376
+     variant_tag_4   1382..1382
+     sequenced_mRNA  28..1540
+     final_mRNA_nts  1541..1543
+     polyA           1544..1571
+     UMI             1572..1581
+     cellbarcode     1582..1597
+     termini3        1598..1619
+ORIGIN
+        1 gcaaaagcag ggtagataat cactcacaga gtgacatcga aatcatggcg accaaaggca
+       61 ccaaacgatc ttacgaacag atggagactg atggagaacg ccagaatgcc actgaaatca
+      121 gagcatctgt cggaaaaatg attgatggaa tyggrcgatt ctacatccaa atgtgcaccg
+      181 aacttaaact cagtgattat gagggacggc tgattcagaa cagcttaaca atagagagaa
+      241 tggtgctctc tgcttttgac gagaggagga ataaatatct agaagaacat cccagtgcgg
+      301 ggaaagatcc taagaaaact ggaggaccta tatacaggag agtagatgga aagtggagga
+      361 gagaactcat cctttatgac aaagaagaaa taagacgaat ctggcgccaa gctaataatg
+      421 gtgacgatgc aacggctggt ctgactcaca tgatgatctg gcactccaat ttgaatgatg
+      481 caacttacca gaggacaaga gctcttgttc gcacaggaat ggatcccagg atgtgctcac
+      541 tgatgcaggg ttcaaccctc cctaggaggt ctggggccgc aggtgctgca gtcaaaggag
+      601 ttggaacaat ggtgatggaa ttgatcagaa tgatcaaacg tgggatcaat gatcggaact
+      661 tctggagggg tgagaatgga cggagaacaa ggattgctta tgaaagaatg tgcaacattc
+      721 tcaaagggaa atttcaaaca gctgcacaaa gaacaatggt ggatcaagtg agagagagcc
+      781 ggaatccagg aaatgctgag ttcgaagatc tcatcttttt agcacggtct gcactcatat
+      841 tgagagggtc agttgctcac aagtcctgcc tgcctgcctg tgtgtatgga tctgccgtag
+      901 ccagtggata cgactttgaa agagagggat actctctagt cggaatagac cctttcagac
+      961 tgcttcaaaa cagccaagta tacagcctaa tcagaccaaa tgagaatcca gcacacaaga
+     1021 gtcaactggt gtggatggca tgccattctg ctgcatttga agatctaaga gtatcaagct
+     1081 tcatcagagg gacgaaagtg gtcccaagag ggaagctttc cactagagga gttcaaattg
+     1141 cttccaatga aaacatggag actatggaat caagtaccct tgaactgaga agcagatact
+     1201 gggccataag gaccagaagt ggagggaaca ccaatcaaca gagggcttcc tcgggccaaa
+     1261 tcagcataca acctacgttc tcagtacaga gaaatctccc ttttgacaga ccaaccatta
+     1321 tggcagcatt cactgggaat acagagggga gaacatctga catgagaacc gaaatmataa
+     1381 grctgatgga aagtgcaaga ccagaagatg tgtctttcca ggggcgggga gtcttcgagc
+     1441 tctcggacga aaaggcaacg agcccgatcg tgccctcctt tgacatgagt aatgaaggat
+     1501 cttatttctt cggagacaat gcagaggagt acgacaatta aagaaaaaaa aaaaaaaaaa
+     1561 aaaaaaaaaa annnnnnnnn nnnnnnnnnn nnnnnnnaga tcggaagagc gtcgtgtag
+//
+LOCUS       fluNA                   1463 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluNA.
+ACCESSION   fluNA
+VERSION     fluNA
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..30
+     variant_tag_1   141..141
+     variant_tag_2   150..150
+     variant_tag_3   1245..1245
+     variant_tag_4   1257..1257
+     sequenced_mRNA  31..1384
+     final_mRNA_nts  1385..1387
+     polyA           1388..1415
+     UMI             1416..1425
+     cellbarcode     1426..1441
+     termini3        1442..1463
+ORIGIN
+        1 gcgaaagcag gagtttaaat gaatccaaac cagaaaataa taaccattgg gtcaatctgt
+       61 atggtagtcg gaataattag cctaatattg caaataggaa atataatctc aatatggatt
+      121 agccattcaa ttcaaaccgg raatcaaaay catactggaa tatgcaacca aggcagcatt
+      181 acctataaag ttgttgctgg gcaggactca acttcagtga tattaaccgg caattcatct
+      241 ctttgtccca tccgtgggtg ggctatacac agcaaagaca atggcataag aattggttcc
+      301 aaaggagacg tttttgtcat aagagagcct tttatttcat gttctcactt ggaatgcagg
+      361 accttttttc tgactcaagg cgccttactg aatgacaagc attcaagggg gacctttaag
+      421 gacagaagcc cttatagggc cttaatgagc tgccctgtcg gtgaagctcc gtccccgtac
+      481 aattcaaggt ttgaatcggt tgcttggtca gcaagtgcat gtcatgatgg aatgggctgg
+      541 ctaacaatcg gaatttctgg tccagatgat ggagcagtgg ctgtattaaa atacaaccgc
+      601 ataataactg aaaccataaa aagttggagg aagaatatat tgagaacaca agagtctgaa
+      661 tgtacctgtg taaatggttc atgttttacc ataatgaccg atggcccaag tgatgggctg
+      721 gcctcgtaca aaattttcaa gatcgagaag gggaaggtta ctaaatcgat agagttgaat
+      781 gcacctaatt ctcactacga ggaatgttcc tgttaccctg ataccggcaa agtgatgtgt
+      841 gtgtgcagag acaattggca cggttcgaac cgaccatggg tgtccttcga ccaaaaccta
+      901 gattataaaa taggatacat ctgcagtggg gttttcggtg acaacccgcg tcccaaagat
+      961 ggaacaggca gctgtggccc agtgtctgct gatggagcaa acggagtaaa gggattttca
+     1021 tataagtatg gcaatggtgt ttggatagga aggactaaaa gtgacagttc cagacatggg
+     1081 tttgagatga tttgggatcc taatggatgg acagagactg atagtaggtt ctctatgaga
+     1141 caagatgttg tggcaataac taatcggtca gggtacagcg gaagtttcgt tcaacatcct
+     1201 gagctaacag ggctagactg tatgaggcct tgcttctggg ttgarttaat caggggrcta
+     1261 cctgaggagg acgcaatctg gactagtggg agcatcattt ctttttgtgg tgtgaatagt
+     1321 gatactgtag attggtcttg gccagacggt gctgagttgc cgttcaccat tgacaagtag
+     1381 tttgttcaaa aaaaaaaaaa aaaaaaaaaa aaaaannnnn nnnnnnnnnn nnnnnnnnnn
+     1441 nagatcggaa gagcgtcgtg tag
+//
+LOCUS       fluM1                   1080 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluM1.
+ACCESSION   fluM1
+VERSION     fluM1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..31
+     variant_tag_1   132..132
+     variant_tag_2   135..135
+     variant_tag_3   847..847
+     variant_tag_4   862..862
+     sequenced_mRNA  32..1001
+     final_mRNA_nts  1002..1004
+     polyA           1005..1032
+     UMI             1033..1042
+     cellbarcode     1043..1058
+     termini3        1059..1080
+ORIGIN
+        1 gcaaaagcag gtagatattg aaagatgagt cttctaaccg aggtcgaaac gtacgttctc
+       61 tctatcgtcc cgtcaggccc cctcaaagcc gagatcgcac agagacttga agatgtcttt
+      121 gcagggaaga ayacmgatct tgaggttctc atggaatggc taaagacaag accaatcctg
+      181 tcacctctga ctaaggggat tttaggattt gtgttcacgc tcaccgtgcc cagtgagcgg
+      241 ggactgcagc gtagacgctt tgtccaaaat gctcttaatg ggaacggaga tccaaataac
+      301 atggacaaag cagttaaact gtataggaag cttaagaggg agataacatt ccatggggcc
+      361 aaagaaatag cactcagtta ttctgctggt gcacttgcct gttgtatggg cctcatatac
+      421 aacaggatgg gggctgtgac cactgaagtg gcatttggcc tggtatgcgc aacctgtgaa
+      481 cagattgctg actcccagca tcggtctcat aggcaaatgg tgacaacaac caatccacta
+      541 atcagacatg agaacagaat ggttctagcc agcactacag ctaaggctat ggagcaaatg
+      601 gctggatcga gtgagcaagc agcagaggcc atggatattg ctagtcaggc caggcaaatg
+      661 gtgcaggcga tgagaaccgt tgggactcat cctagctcca gtgctggtct aaaagatgat
+      721 cttcttgaaa atttacaggc ctatcagaaa cgaatggggg tgcagatgca acgattcaag
+      781 tgatcctctc gtcattgcag caaatatcat tggaatcttg cacttgatat tgtggattct
+      841 tgatcgyctt tttttcaaat gyatttatcg tcgctttaaa tacggtttga aaagagggcc
+      901 ttctaccgaa ggagtgccag agtctatgag ggaagaatat cgaaaggaac agcagaatgc
+      961 tgtggatgtt gacgatggtc attttgtcaa catagagctg gagtaaaaaa aaaaaaaaaa
+     1021 aaaaaaaaaa aannnnnnnn nnnnnnnnnn nnnnnnnnag atcggaagag cgtcgtgtag
+//
+LOCUS       fluM2                    392 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluM2.
+ACCESSION   fluM2
+VERSION     fluM2
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..31
+     variant_tag_1   159..159
+     variant_tag_2   174..174
+     sequenced_mRNA  32..313
+     final_mRNA_nts  314..316
+     polyA           317..344
+     UMI             345..354
+     cellbarcode     355..370
+     termini3        371..392
+ORIGIN
+        1 gcaaaagcag gtagatattg aaagatgagt cttctaaccg aggtcgaaac gcctatcaga
+       61 aacgaatggg ggtgcagatg caacgattca agtgatcctc tcgtcattgc agcaaatatc
+      121 attggaatct tgcacttgat attgtggatt cttgatcgyc tttttttcaa atgyatttat
+      181 cgtcgcttta aatacggttt gaaaagaggg ccttctaccg aaggagtgcc agagtctatg
+      241 agggaagaat atcgaaagga acagcagaat gctgtggatg ttgacgatgg tcattttgtc
+      301 aacatagagc tggagtaaaa aaaaaaaaaa aaaaaaaaaa aaaannnnnn nnnnnnnnnn
+      361 nnnnnnnnnn agatcggaag agcgtcgtgt ag
+//
+LOCUS       fluNS1                   943 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluNS1.
+ACCESSION   fluNS1
+VERSION     fluNS1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..28
+     variant_tag_1   151..151
+     variant_tag_2   152..152
+     variant_tag_3   719..719
+     variant_tag_4   732..732
+     sequenced_mRNA  29..864
+     final_mRNA_nts  865..867
+     polyA           868..895
+     UMI             896..905
+     cellbarcode     906..921
+     termini3        922..943
+ORIGIN
+        1 gcaaaagcag ggtgacaaag acataatgga tccaaacact gtgtcaagct ttcaggtaga
+       61 ttgctttctt tggcatgtcc gcaaaagagt tgcagaccaa gaactaggtg atgccccatt
+      121 ccttgatcgg cttcgccgag atcagaagtc yytaagagga agaggcagca ctcttggtct
+      181 ggacatcgaa acagccaccc gtgctggaaa gcaaatagtg gagcggattc tgaaggaaga
+      241 atctgatgag gcactcaaaa tgaccatggc ctctgtacct gcatcgcgct acctaactga
+      301 catgactctt gaggaaatgt caaggcactg gttcatgctc atgcccaagc agaaagtggc
+      361 aggccctctt tgtatcagaa tggaccaggc gatcatggat aagaacatca tactgaaagc
+      421 gaacttcagt gtgatttttg accggctgga gactctaata ttactaaggg ccttcaccga
+      481 agaggggaca attgttggcg aaatttcacc actgccctct cttccaggac atactgatga
+      541 ggatgtcaaa aatgcagttg gggtcctcat cggaggactt gaatggaata ataacacagt
+      601 tcgagtctct gaaactctac agagattcgc ttggagaagc agtaatgaga atgggagacc
+      661 tccactcact ccaaaacaga aacggaaaat ggcgggaaca attaggtcag aagtttgarg
+      721 aaataaggtg gytgattgaa gaagtgagac acagactgaa gataacagag aatagttttg
+      781 agcaaataac atttatgcaa gccttacaac tattgcttga agtggagcaa gagataagaa
+      841 ctttctcgtt tcagcttatt taataataaa aaaaaaaaaa aaaaaaaaaa aaaaannnnn
+      901 nnnnnnnnnn nnnnnnnnnn nagatcggaa gagcgtcgtg tag
+//
+LOCUS       fluNS2                   471 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluNS2.
+ACCESSION   fluNS2
+VERSION     fluNS2
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..28
+     variant_tag_1   247..247
+     variant_tag_2   260..260
+     sequenced_mRNA  29..392
+     final_mRNA_nts  393..395
+     polyA           396..423
+     UMI             424..433
+     cellbarcode     434..449
+     termini3        450..471
+ORIGIN
+        1 gcaaaagcag ggtgacaaag acataatgga tccaaacact gtgtcaagct ttcaggacat
+       61 actgatgagg atgtcaaaaa tgcagttggg gtcctcatcg gaggacttga atggaataat
+      121 aacacagttc gagtctctga aactctacag agattcgctt ggagaagcag taatgagaat
+      181 gggagacctc cactcactcc aaaacagaaa cggaaaatgg cgggaacaat taggtcagaa
+      241 gtttgargaa ataaggtggy tgattgaaga agtgagacac agactgaaga taacagagaa
+      301 tagttttgag caaataacat ttatgcaagc cttacaacta ttgcttgaag tggagcaaga
+      361 gataagaact ttctcgtttc agcttattta ataataaaaa aaaaaaaaaa aaaaaaaaaa
+      421 aaannnnnnn nnnnnnnnnn nnnnnnnnna gatcggaaga gcgtcgtgta g
+//

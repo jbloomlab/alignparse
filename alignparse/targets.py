@@ -329,6 +329,9 @@ class Targets:
         set this option to `True` in order to allow return of mutations /
         sequences for features with clipping allowed; otherwise you'll get
         an error if you try to recover such sequences / mutations.
+    ignore_feature_parse_specs_keys : None or list
+        Ignore these target-level keys in `feature_parse_specs`. Useful for
+        YAML with default keys that don't represent actual targets.
 
     Attributes
     ----------
@@ -336,6 +339,8 @@ class Targets:
         List of all :class:`Target` objects.
     target_names : list
         List of names of all targets.
+    target_seqs : dict
+        Keyed by target name, value is sequence as str.
 
     """
 
@@ -345,7 +350,8 @@ class Targets:
 
     def __init__(self, *, seqsfile, feature_parse_specs,
                  allow_extra_features=False, seqsfileformat='genbank',
-                 allow_clipped_muts_seqs=False):
+                 allow_clipped_muts_seqs=False,
+                 ignore_feature_parse_specs_keys=None):
         """See main class docstring."""
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
@@ -353,6 +359,14 @@ class Targets:
                 self._feature_parse_specs = yaml.safe_load(f)
         else:
             self._feature_parse_specs = copy.deepcopy(feature_parse_specs)
+
+        if ignore_feature_parse_specs_keys:
+            for key in ignore_feature_parse_specs_keys:
+                if key in self._feature_parse_specs:
+                    del self._feature_parse_specs[key]
+                else:
+                    raise KeyError(f"`feature_parse_specs` lacks key {key} "
+                                   'in `ignore_feature_parse_specs_keys`')
 
         # names of parse alignment columns with clipping
         self._clip_cols = ['query_clip5', 'query_clip3']
@@ -396,6 +410,7 @@ class Targets:
                     raise ValueError('feature name cannot end in ' +
                                      str(self._return_suffixes))
         self.target_names = [target.name for target in self.targets]
+        self.target_seqs = {target.name: target.seq for target in self.targets}
 
         # check needed for `to_csv` option of `parse_alignment`.
         if len(self.target_names) != len({tname.replace(' ', '_') for
@@ -625,9 +640,9 @@ class Targets:
         """
         fig, axes = plt.subplots(nrows=len(self.targets),
                                  ncols=1,
-                                 sharex=True,
+                                 sharex=False,
                                  squeeze=False,
-                                 gridspec_kw={'hspace': 0.3},
+                                 gridspec_kw={'hspace': 0.4},
                                  figsize=(ax_width,
                                           len(self.targets) * ax_height),
                                  )
@@ -1023,7 +1038,8 @@ class Targets:
                 if aligned_seg.is_secondary and primary_only:
                     continue
 
-                a = Alignment(aligned_seg)
+                a = Alignment(aligned_seg, introns_to_deletions=True,
+                              target_seqs=self.target_seqs)
                 tname = a.target_name
 
                 is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
@@ -1255,7 +1271,8 @@ class Targets:
             else:
                 if primary_only and aligned_seg.is_secondary:
                     continue
-                a = Alignment(aligned_seg)
+                a = Alignment(aligned_seg, introns_to_deletions=True,
+                              target_seqs=self.target_seqs)
                 tname = a.target_name
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}

@@ -24,7 +24,6 @@ OPTIONS_CODON_DMS = ('-A2',
                      '-O12',
                      '-E2',
                      '--end-bonus=13',
-                     '--score-N=4',
                      '--secondary=no',
                      '--cs',
                      )
@@ -41,7 +40,6 @@ Options have the following meaning / rationale:
   - ``-O12`` : gap opening penalty (high, because few indels expected)
   - ``-E2`` : gap extension penalty
   - ``--end-bonus=13`` : favor codon mutation over gap at termini.
-  - ``--score-N=4`` : mismatch with ambiguous base as bad as other mismatches.
   - ``--secondary=no`` : do not output secondary alignments.
   - ``--cs`` : add short ``cs`` tag ((see https://github.com/lh3/minimap2#cs)
 
@@ -50,7 +48,6 @@ Options have the following meaning / rationale:
 OPTIONS_VIRUS_W_DEL = ('-xsplice:hq',
                        '-un',
                        '-C0',
-                       '--score-N=4',
                        '--splice-flank=no',
                        '-M=1',
                        '--for-only',
@@ -72,7 +69,6 @@ Options have the following meaning / rationale:
   - ``-xsplice:hq`` : preset for long-read high-quality spliced alignment.
   - ``-un`` : do not try to find canonical splice sites.
   - ``-C0`` : no cost for non-canonical splice sites.
-  - ``--score-N=4`` : mismatch with ambiguous base as bad as other mismatches.
   - ``--splice-flank=no`` : no assumptions about base next to splice donor.
   - ``-M=1`` : mark secondary chain that overlaps with another by this much.
   - ``--end-seed-pen=2`` : described as helping avoid tiny terminal exons.
@@ -154,7 +150,7 @@ class Mapper:
     m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0
     ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NM:i:4 ms:i:102 AS:i:102 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
+    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
     cs:Z::6*na*na*nt:49*ga:4 rl:i:0
     >>> print(tag_names)
     ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl']
@@ -170,7 +166,7 @@ class Mapper:
     m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0
     ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NM:i:4 ms:i:102 AS:i:102 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
+    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
     cs:Z::6*na*na*nt:49*ga:4 rl:i:0 np:i:127
     >>> print(tag_names)  # doctest: +NORMALIZE_WHITESPACE
     ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl', 'np']

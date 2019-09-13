@@ -13,6 +13,16 @@ Data from Danny Lawrence's deep mutational scanning of RecA:
 
   - `lib-1_report.txt <lib-1_report.txt>`_ and `lib-2_report.txt <lib-2_report.txt>`_: ``ccs`` report files corresponding the the FASTQ files. Manually edited to also have stats for just a handful of entries.
 
+flu WSN data
+-------------
+Snippets of data from the single-cell virus sequencing study [Russell et al (2019)](https://jvi.asm.org/content/93/14/e00500-19). Note that the data in that study was **not** actually analyzed using ``alignparse``:
+
+ - `flu_WSN_amplicons.gb <flu_WSN_amplicons.gb>`_: PacBio amplicons of flu genes
+ 
+ - `flu_WSN_feature_parse_specs.yaml <flu_WSN_feature_parse_specs.yaml>`_: YAML file specifying how to parse features from PacBio amplicons.
+
+ - `flu_WSN_ccs.fastq <flu_WSN_ccs.fastq>`_: FASTQ file with a snippet of data from one of the PacBio ``ccs`` runs.
+
 VEP data
 ---------
 Data from Kate Dusenbury's initial pilot PacBio sequencing run of VEP constructs. 

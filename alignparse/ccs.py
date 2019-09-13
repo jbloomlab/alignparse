@@ -440,6 +440,7 @@ def report_to_stats(reportfile):
     -------
     An example of the ``ccs`` version 4.0.0 output:
 
+    >>> pd.set_option('max_columns', 10)  # show many columns
     >>> reportfile = tempfile.NamedTemporaryFile(mode='w')
     >>> _ = reportfile.write(textwrap.dedent('''
     ...     ZMWs input          (A)  : 686919
@@ -575,7 +576,7 @@ def _report_to_stats_v4(reportfile):
 
     """
     reportmatch = re.compile(
-            r'^ZMWs input\s+\(A\)\s+:\s+\d+\n'
+            r'^ZMWs input\s+\(A\)\s+:\s+\d+[\s\n]+'
             r'ZMWs generating CCS\s+\(B\)\s+:\s+(?P<n_generated>\d+) \S+\n'
             r'ZMWs filtered\s+\(C\)\s+:\s+\d+ \S+\n'
             '\n'
