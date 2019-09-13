@@ -1,4 +1,4 @@
-LOCUS       fluPB2                  2397 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluPB2                  2395 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluPB2.
 ACCESSION   fluPB2
 VERSION     fluPB2
@@ -8,15 +8,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..34
-     variant_tag_1   142..142
-     variant_tag_2   148..148
-     variant_tag_3   2162..2162
-     variant_tag_4   2170..2170
-     sequenced_mRNA  35..2319
-     polyA           2320..2349
-     UMI             2350..2359
-     cell_barcode    2360..2375
-     termini3        2376..2397
+     variant_tag_1   143..143
+     variant_tag_2   149..149
+     variant_tag_3   2163..2163
+     variant_tag_4   2171..2171
+     sequenced_mRNA  35..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
 ORIGIN
         1 gcgaaagcag gtcaattata ttcaatatgg aaagaataaa agaactaagg aatctaatgt
        61 cgcagtctcg cactcgcgag atactcacaa aaaccaccgt ggaccatatg gccataatca
@@ -57,9 +58,9 @@ ORIGIN
      2161 aaytgagcaa ycttgcgaaa ggagagaagg ctaatgtgct aattgggcaa ggagacgtgg
      2221 tgttggtaat gaaacggaaa cggaactcta gcatacttac tgacagccag acagcgacca
      2281 aaagaattcg gatggccatc aattagtgtc gaatagttta aaaaaaaaaa aaaaaaaaaa
-     2341 aaaaaaaaan nnnnnnnnnn nnnnnnnnnn nnnnnagatc ggaagagcgt cgtgtag
+     2341 aaaaaaannn nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
 //
-LOCUS       fluPB1                  2397 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluPB1                  2395 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluPB1.
 ACCESSION   fluPB1
 VERSION     fluPB1
@@ -69,15 +70,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..22
-     variant_tag_1   145..146
-     variant_tag_2   151..152
-     variant_tag_3   2158..2159
-     variant_tag_4   2161..2162
-     sequenced_mRNA  23..2319
-     polyA           2320..2349
-     UMI             2350..2359
-     cell_barcode    2360..2375
-     termini3        2376..2397
+     variant_tag_1   146..146
+     variant_tag_2   152..152
+     variant_tag_3   2159..2159
+     variant_tag_4   2162..2162
+     sequenced_mRNA  23..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
 ORIGIN
         1 gcgaaagcag gcaaaccatt tgaatggatg tcaatccgac tttacttttc ttaaaagtgc
        61 cagcacaaaa tgctataagc acaactttcc cttatactgg agaccctcct tacagccatg
@@ -118,9 +120,9 @@ ORIGIN
      2161 gyatggtgga ggctatggtt tccagagccc gaattgatgc acgaattgat ttcgaatctg
      2221 gaaggataaa gaaagaggag ttcactgaga tcatgaagat ctgttccacc attgaagagc
      2281 tcagacggca aaaatagtga atttagcttg tccttcatga aaaaaaaaaa aaaaaaaaaa
-     2341 aaaaaaaaan nnnnnnnnnn nnnnnnnnnn nnnnnagatc ggaagagcgt cgtgtag
+     2341 aaaaaaannn nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
 //
-LOCUS       fluPA                   2288 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluPA                   2286 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluPA.
 ACCESSION   fluPA
 VERSION     fluPA
@@ -130,15 +132,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..27
-     variant_tag_1   142..142
-     variant_tag_2   145..145
-     variant_tag_3   2035..2035
-     variant_tag_4   2047..2047
-     sequenced_mRNA  28..2210
-     polyA           2211..2240
-     UMI             2241..2250
-     cell_barcode    2251..2266
-     termini3        2267..2288
+     variant_tag_1   143..143
+     variant_tag_2   146..146
+     variant_tag_3   2036..2036
+     variant_tag_4   2048..2048
+     sequenced_mRNA  28..2207
+     final_mRNA_nts  2208..2210
+     polyA           2211..2238
+     UMI             2239..2248
+     cellbarcode     2249..2264
+     termini3        2265..2286
 ORIGIN
         1 gcgaaagcag gtactgattc aaaatggaag attttgtgcg acaatgcttc aatccgatga
        61 ttgtcgagct tgcggaaaag gcaatgaaag agtatggaga ggacctgaaa atcgaaacaa
@@ -177,10 +180,10 @@ ORIGIN
      2041 gggacaayct ggaacctggg acctttgatc ttggggggct atatgaagca attgaggagt
      2101 gcctgattaa tgatccctgg gttttgctta atgcttcttg gttcaactcc ttcctcacac
      2161 atgcattgag atagttgtgg caatgctact atttgctatc catactgtcc aaaaaaaaaa
-     2221 aaaaaaaaaa aaaaaaaaaa nnnnnnnnnn nnnnnnnnnn nnnnnnagat cggaagagcg
-     2281 tcgtgtag
+     2221 aaaaaaaaaa aaaaaaaann nnnnnnnnnn nnnnnnnnnn nnnnagatcg gaagagcgtc
+     2281 gtgtag
 //
-LOCUS       fluHA                   1831 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluHA                   1829 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluHA.
 ACCESSION   fluHA
 VERSION     fluHA
@@ -190,15 +193,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..28
-     variant_tag_1   141..141
-     variant_tag_2   153..153
-     variant_tag_3   1560..1560
-     variant_tag_4   1561..1561
-     sequenced_mRNA  29..1753
-     polyA           1754..1783
-     UMI             1784..1793
-     cell_barcode    1794..1809
-     termini3        1810..1831
+     variant_tag_1   142..142
+     variant_tag_2   154..154
+     variant_tag_3   1561..1561
+     variant_tag_4   1562..1562
+     sequenced_mRNA  29..1750
+     final_mRNA_nts  1751..1753
+     polyA           1754..1781
+     UMI             1782..1791
+     cellbarcode     1792..1807
+     termini3        1808..1829
 ORIGIN
         1 gcaaaagcag gggaaaataa aaacaaccaa aatgaaggca aaactactgg tcctgttata
        61 tgcatttgta gctacagatg cagacacaat atgtataggc taccatgcga acaactcaac
@@ -229,10 +233,10 @@ ORIGIN
      1561 rytgaacagg gaaaagatag atggagtgaa attggaatca atgggggtgt atcagattct
      1621 ggcgatctac tcaactgtcg ccagttcact ggtgcttttg gtctccctgg gggcaatcag
      1681 tttctggatg tgttctaatg ggtctttgca gtgcagaata tgcatctgag attaggattt
-     1741 cagaaatata aggaaaaaaa aaaaaaaaaa aaaaaaaaaa aaannnnnnn nnnnnnnnnn
-     1801 nnnnnnnnna gatcggaaga gcgtcgtgta g
+     1741 cagaaatata aggaaaaaaa aaaaaaaaaa aaaaaaaaaa annnnnnnnn nnnnnnnnnn
+     1801 nnnnnnnaga tcggaagagc gtcgtgtag
 //
-LOCUS       fluNP                   1621 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluNP                   1619 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluNP.
 ACCESSION   fluNP
 VERSION     fluNP
@@ -242,15 +246,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..27
-     variant_tag_1   151..151
-     variant_tag_2   154..154
-     variant_tag_3   1375..1375
-     variant_tag_4   1381..1381
-     sequenced_mRNA  28..1543
-     polyA           1544..1573
-     UMI             1574..1583
-     cell_barcode    1584..1599
-     termini3        1600..1621
+     variant_tag_1   152..152
+     variant_tag_2   155..155
+     variant_tag_3   1376..1376
+     variant_tag_4   1382..1382
+     sequenced_mRNA  28..1540
+     final_mRNA_nts  1541..1543
+     polyA           1544..1571
+     UMI             1572..1581
+     cellbarcode     1582..1597
+     termini3        1598..1619
 ORIGIN
         1 gcaaaagcag ggtagataat cactcacaga gtgacatcga aatcatggcg accaaaggca
        61 ccaaacgatc ttacgaacag atggagactg atggagaacg ccagaatgcc actgaaatca
@@ -278,10 +283,9 @@ ORIGIN
      1381 grctgatgga aagtgcaaga ccagaagatg tgtctttcca ggggcgggga gtcttcgagc
      1441 tctcggacga aaaggcaacg agcccgatcg tgccctcctt tgacatgagt aatgaaggat
      1501 cttatttctt cggagacaat gcagaggagt acgacaatta aagaaaaaaa aaaaaaaaaa
-     1561 aaaaaaaaaa aaannnnnnn nnnnnnnnnn nnnnnnnnna gatcggaaga gcgtcgtgta
-     1621 g
+     1561 aaaaaaaaaa annnnnnnnn nnnnnnnnnn nnnnnnnaga tcggaagagc gtcgtgtag
 //
-LOCUS       fluNA                   1465 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluNA                   1463 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluNA.
 ACCESSION   fluNA
 VERSION     fluNA
@@ -291,15 +295,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..30
-     variant_tag_1   140..140
-     variant_tag_2   149..149
-     variant_tag_3   1244..1244
-     variant_tag_4   1256..1256
-     sequenced_mRNA  31..1387
-     polyA           1388..1417
-     UMI             1418..1427
-     cell_barcode    1428..1443
-     termini3        1444..1465
+     variant_tag_1   141..141
+     variant_tag_2   150..150
+     variant_tag_3   1245..1245
+     variant_tag_4   1257..1257
+     sequenced_mRNA  31..1384
+     final_mRNA_nts  1385..1387
+     polyA           1388..1415
+     UMI             1416..1425
+     cellbarcode     1426..1441
+     termini3        1442..1463
 ORIGIN
         1 gcgaaagcag gagtttaaat gaatccaaac cagaaaataa taaccattgg gtcaatctgt
        61 atggtagtcg gaataattag cctaatattg caaataggaa atataatctc aatatggatt
@@ -324,10 +329,10 @@ ORIGIN
      1201 gagctaacag ggctagactg tatgaggcct tgcttctggg ttgarttaat caggggrcta
      1261 cctgaggagg acgcaatctg gactagtggg agcatcattt ctttttgtgg tgtgaatagt
      1321 gatactgtag attggtcttg gccagacggt gctgagttgc cgttcaccat tgacaagtag
-     1381 tttgttcaaa aaaaaaaaaa aaaaaaaaaa aaaaaaannn nnnnnnnnnn nnnnnnnnnn
-     1441 nnnagatcgg aagagcgtcg tgtag
+     1381 tttgttcaaa aaaaaaaaaa aaaaaaaaaa aaaaannnnn nnnnnnnnnn nnnnnnnnnn
+     1441 nagatcggaa gagcgtcgtg tag
 //
-LOCUS       fluM1                   1082 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluM1                   1080 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluM1.
 ACCESSION   fluM1
 VERSION     fluM1
@@ -337,15 +342,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..31
-     variant_tag_1   131..131
-     variant_tag_2   134..134
-     variant_tag_3   846..846
-     variant_tag_4   861..861
-     sequenced_mRNA  32..1004
-     polyA           1005..1034
-     UMI             1035..1044
-     cell_barcode    1045..1060
-     termini3        1061..1082
+     variant_tag_1   132..132
+     variant_tag_2   135..135
+     variant_tag_3   847..847
+     variant_tag_4   862..862
+     sequenced_mRNA  32..1001
+     final_mRNA_nts  1002..1004
+     polyA           1005..1032
+     UMI             1033..1042
+     cellbarcode     1043..1058
+     termini3        1059..1080
 ORIGIN
         1 gcaaaagcag gtagatattg aaagatgagt cttctaaccg aggtcgaaac gtacgttctc
        61 tctatcgtcc cgtcaggccc cctcaaagcc gagatcgcac agagacttga agatgtcttt
@@ -364,10 +370,9 @@ ORIGIN
       841 tgatcgyctt tttttcaaat gyatttatcg tcgctttaaa tacggtttga aaagagggcc
       901 ttctaccgaa ggagtgccag agtctatgag ggaagaatat cgaaaggaac agcagaatgc
       961 tgtggatgtt gacgatggtc attttgtcaa catagagctg gagtaaaaaa aaaaaaaaaa
-     1021 aaaaaaaaaa aaaannnnnn nnnnnnnnnn nnnnnnnnnn agatcggaag agcgtcgtgt
-     1081 ag
+     1021 aaaaaaaaaa aannnnnnnn nnnnnnnnnn nnnnnnnnag atcggaagag cgtcgtgtag
 //
-LOCUS       fluM2                    394 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluM2                    392 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluM2.
 ACCESSION   fluM2
 VERSION     fluM2
@@ -377,23 +382,24 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..31
-     variant_tag_1   158..158
-     variant_tag_2   173..173
-     sequenced_mRNA  32..316
-     polyA           317..346
-     UMI             347..356
-     cell_barcode    357..372
-     termini3        373..394
+     variant_tag_1   159..159
+     variant_tag_2   174..174
+     sequenced_mRNA  32..313
+     final_mRNA_nts  314..316
+     polyA           317..344
+     UMI             345..354
+     cellbarcode     355..370
+     termini3        371..392
 ORIGIN
         1 gcaaaagcag gtagatattg aaagatgagt cttctaaccg aggtcgaaac gcctatcaga
        61 aacgaatggg ggtgcagatg caacgattca agtgatcctc tcgtcattgc agcaaatatc
       121 attggaatct tgcacttgat attgtggatt cttgatcgyc tttttttcaa atgyatttat
       181 cgtcgcttta aatacggttt gaaaagaggg ccttctaccg aaggagtgcc agagtctatg
       241 agggaagaat atcgaaagga acagcagaat gctgtggatg ttgacgatgg tcattttgtc
-      301 aacatagagc tggagtaaaa aaaaaaaaaa aaaaaaaaaa aaaaaannnn nnnnnnnnnn
-      361 nnnnnnnnnn nnagatcgga agagcgtcgt gtag
+      301 aacatagagc tggagtaaaa aaaaaaaaaa aaaaaaaaaa aaaannnnnn nnnnnnnnnn
+      361 nnnnnnnnnn agatcggaag agcgtcgtgt ag
 //
-LOCUS       fluNS1                   945 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluNS1                   943 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluNS1.
 ACCESSION   fluNS1
 VERSION     fluNS1
@@ -403,15 +409,16 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..28
-     variant_tag_1   150..150
-     variant_tag_2   151..151
-     variant_tag_3   718..718
-     variant_tag_4   731..731
-     sequenced_mRNA  29..867
-     polyA           868..897
-     UMI             898..907
-     cell_barcode    908..923
-     termini3        924..945
+     variant_tag_1   151..151
+     variant_tag_2   152..152
+     variant_tag_3   719..719
+     variant_tag_4   732..732
+     sequenced_mRNA  29..864
+     final_mRNA_nts  865..867
+     polyA           868..895
+     UMI             896..905
+     cellbarcode     906..921
+     termini3        922..943
 ORIGIN
         1 gcaaaagcag ggtgacaaag acataatgga tccaaacact gtgtcaagct ttcaggtaga
        61 ttgctttctt tggcatgtcc gcaaaagagt tgcagaccaa gaactaggtg atgccccatt
@@ -427,10 +434,10 @@ ORIGIN
       661 tccactcact ccaaaacaga aacggaaaat ggcgggaaca attaggtcag aagtttgarg
       721 aaataaggtg gytgattgaa gaagtgagac acagactgaa gataacagag aatagttttg
       781 agcaaataac atttatgcaa gccttacaac tattgcttga agtggagcaa gagataagaa
-      841 ctttctcgtt tcagcttatt taataataaa aaaaaaaaaa aaaaaaaaaa aaaaaaannn
-      901 nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
+      841 ctttctcgtt tcagcttatt taataataaa aaaaaaaaaa aaaaaaaaaa aaaaannnnn
+      901 nnnnnnnnnn nnnnnnnnnn nagatcggaa gagcgtcgtg tag
 //
-LOCUS       fluNS2                   473 bp    DNA              UNK 01-JAN-1980
+LOCUS       fluNS2                   471 bp    DNA              UNK 01-JAN-1980
 DEFINITION  fluNS2.
 ACCESSION   fluNS2
 VERSION     fluNS2
@@ -440,13 +447,14 @@ SOURCE      .
             .
 FEATURES             Location/Qualifiers
      termini5        1..28
-     variant_tag_1   246..246
-     variant_tag_2   259..259
-     sequenced_mRNA  29..395
-     polyA           396..425
-     UMI             426..435
-     cell_barcode    436..451
-     termini3        452..473
+     variant_tag_1   247..247
+     variant_tag_2   260..260
+     sequenced_mRNA  29..392
+     final_mRNA_nts  393..395
+     polyA           396..423
+     UMI             424..433
+     cellbarcode     434..449
+     termini3        450..471
 ORIGIN
         1 gcaaaagcag ggtgacaaag acataatgga tccaaacact gtgtcaagct ttcaggacat
        61 actgatgagg atgtcaaaaa tgcagttggg gtcctcatcg gaggacttga atggaataat
@@ -455,5 +463,5 @@ ORIGIN
       241 gtttgargaa ataaggtggy tgattgaaga agtgagacac agactgaaga taacagagaa
       301 tagttttgag caaataacat ttatgcaagc cttacaacta ttgcttgaag tggagcaaga
       361 gataagaact ttctcgtttc agcttattta ataataaaaa aaaaaaaaaa aaaaaaaaaa
-      421 aaaaannnnn nnnnnnnnnn nnnnnnnnnn nagatcggaa gagcgtcgtg tag
+      421 aaannnnnnn nnnnnnnnnn nnnnnnnnna gatcggaaga gcgtcgtgta g
 //
