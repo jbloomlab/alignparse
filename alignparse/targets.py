@@ -637,9 +637,9 @@ class Targets:
         """
         fig, axes = plt.subplots(nrows=len(self.targets),
                                  ncols=1,
-                                 sharex=True,
+                                 sharex=False,
                                  squeeze=False,
-                                 gridspec_kw={'hspace': 0.3},
+                                 gridspec_kw={'hspace': 0.4},
                                  figsize=(ax_width,
                                           len(self.targets) * ax_height),
                                  )
