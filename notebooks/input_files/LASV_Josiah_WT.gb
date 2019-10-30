@@ -1,0 +1,80 @@
+LOCUS       LASV_Josiah_WT          1730 bp ds-DNA     linear       14-JUN-2019
+DEFINITION  .
+ACCESSION   
+VERSION     
+SOURCE      Kate Dusenbury
+  ORGANISM  .
+COMMENT     
+COMMENT     
+COMMENT     PacBio amplicon for LASV Josiah WT sequence
+COMMENT     
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     T2A             85..147
+                     /locus_tag="T2A"
+                     /label="T2A"
+     WPRE            1639..1730
+                     /locus_tag="WPRE"
+                     /label="WPRE"
+     ZsGreen         15..84
+                     /locus_tag="ZsGreen"
+                     /label="ZsGreen"
+     termini3        1639..1730
+                     /locus_tag="3'Termini"
+                     /label="3'Termini"
+     index           9..14
+                     /locus_tag="sample index"
+                     /label="index"
+     leader5         1..8
+                     /locus_tag="5' leader"
+                     /label="5' leader"
+     termini5        1..147
+                     /locus_tag="5'Termini"
+                     /label="5'Termini"
+     variant_tag5    34..34
+                     /variant_1=T
+                     /variant_2=C
+                     /locus_tag="5'VariantTag"
+                     /label="5'VariantTag"
+     variant_tag3    1702..1702
+                     /variant_1=G
+                     /variant_2=A
+                     /locus_tag="3'VariantTag"
+                     /label="3'VariantTag"
+     spacer          1624..1638
+                     /locus_tag="3'Spacer"
+                     /label="3'Spacer"
+     gene            148..1623
+                     /locus_tag="LASV_Josiah_WT"
+                     /label="LASV_Josiah_WT"
+ORIGIN
+        1 GACTGATANN NNNNcagcga cgccaagaac cagYagtggc acctgaccga gcacgccatc
+       61 gcctccggcT CCGCCTTGCC CGCTGGATCC GGCGAGGGCA GAGGAAGTCT GCTAACATGC
+      121 GGTGACGTCG AGGAGAATCC TGGCCCAATG GGACAAATAG TGACATTCTT CCAGGAAGTG
+      181 CCTCATGTAA TAGAAGAGGT GATGAACATT GTTCTCATTG CACTGTCTGT ACTAGCAGTG
+      241 CTGAAAGGTC TGTACAATTT TGCAACGTGT GGCCTTGTTG GTTTGGTCAC TTTCCTCCTG
+      301 TTGTGTGGTA GGTCTTGCAC AACCAGTCTT TATAAAGGGG TTTATGAGCT TCAGACTCTG
+      361 GAACTAAACA TGGAGACACT CAATATGACC ATGCCTCTCT CCTGCACAAA GAACAACAGT
+      421 CATCATTATA TAATGGTGGG CAATGAGACA GGACTAGAAC TGACCTTGAC CAACACGAGC
+      481 ATTATTAATC ACAAATTTTG CAATCTGTCT GATGCCCACA AAAAGAACCT CTATGACCAC
+      541 GCTCTTATGA GCATAATCTC AACTTtccac ttgtccatcc ccaacTTCAA TCAGTATGAG
+      601 GCAATGAGCT GCGATTTTAA TGGGGGAAAG ATTAGTGTGC AGTACAACCT GAGTCACAGC
+      661 TATGCTGGGG ATGCAGCCAA CCATTGTGGT ACTGTTGCAA ATGGTGTGTT ACAGACTTTT
+      721 ATGAGGATGG CTTGGGGTGG GAGCTACATT GCTCTTGACT CAGGCCGTGG CAACTGGGAC
+      781 TGTATTATGA CTAGTTATCA ATATCTGATA ATCCAAAATA CAACCTGGGA AGATCACTGC
+      841 CAATTCTCGA GACCATCTCC CATCGGTTAT CTCGGGCTCC TCTCACAAAG GACTAGAGAT
+      901 ATTTATATTA GTAGAAGATT GCTAGGCACA TTCACATGGA CACTGTCAGA TTCTGAAGGT
+      961 AAAGACACAC CAGGGGGATA TTGTCTGACC AGGTGGATGC TAATTGAGGC TGAACTAAAA
+     1021 TGCTTCGGGA ACACAGCTGT GGCAAAATGT AATGAGAAGC ATGATGAgga attttgtgac
+     1081 atgctgaggc TGTTTGACTT CAACAAACAA GCCATTCAAA GGTTGAAAGC TGAAGCACAA
+     1141 ATGAGCATTC AGTTGATCAA CAAAGCAGTA AATGCTTTGA TAAATGACCA ACTTATAATG
+     1201 AAGAACCATC TACGGGACAT CATGGGAATT CCATACTGTA ATTACAGCAA GTATTGGTAC
+     1261 CTCAACCACA CAACTACTGG GAGAACATCA CTGCCCAAAT GTTGGCTTGT ATCAAATGGT
+     1321 TCATACTTGA ACGAGACCCA CTTTTCTGAT GATATTGAAC AACAAGCTGA CAATATGATC
+     1381 ACTGAGATGT TACAGAAGGA GTATATGGAG AGGCAGGGGA AGACACCATT GGGTCTAGTT
+     1441 GACCTCTTTG TGTTCAGCAC AAGTTTCTAT CTTATTAGCA TCTTCCTTCA CCTAGTCAAA
+     1501 ATACCAACTC ATAGGCATAT TGTAGGCAAG TCGTGTCCCA AACCTCACAG ATTGAATCAT
+     1561 ATGGGCATTT GTTCCTGTGG ACTCTACAAA CAGCCTGGTG TGCCTGTGAA ATGGAAGAGA
+     1621 TGAGCTAGCT AAACGCGTTG ATCCtaatca acctctggat tacaaaattt gtgaaagatt
+     1681 gactggtatt cttaactatg tRgctccttt tacgctatgt ggatacgctg 
+//
