@@ -683,7 +683,8 @@ class Targets:
                         to_csv=False,
                         overwrite=False,
                         multi_align='primary',
-                        ncpus=-1,
+                        filtered_cs=False,
+                        ncpus=-1
                         ):
         """Align query sequences and then parse alignments.
 
@@ -723,6 +724,10 @@ class Targets:
         multi_align : {'primary'}
             How to handle multiple alignments. Currently only option is
             'primary', which ignores all secondary alignments.
+        filtered_cs : bool
+            Add `cs` tag that failed the filter to filtered dataframe along
+            with filter reason. Allows for more easily investigating why
+            reads are failing the filters.
         ncpus : int
             Number of CPUs to use; -1 means all available.
 
@@ -812,7 +817,8 @@ class Targets:
                                  itertools.repeat(multi_align),
                                  itertools.repeat(True),
                                  df['subdir'],
-                                 itertools.repeat(overwrite)
+                                 itertools.repeat(overwrite),
+                                 itertools.repeat(filtered_cs)
                                  )
 
         # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
@@ -1053,8 +1059,10 @@ class Targets:
                               target_seqs=self.target_seqs)
                 tname = a.target_name
 
-                is_filtered, parse_tup = self.\
-                    _parse_single_Alignment(a, tname, filtered_cs)
+                is_filtered, parse_tup = self._parse_single_Alignment(
+                                                                a,
+                                                                tname,
+                                                                filtered_cs)
 
                 if is_filtered:
                     readstats[tname]['filtered'] += 1
