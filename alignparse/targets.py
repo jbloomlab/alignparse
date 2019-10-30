@@ -1053,9 +1053,8 @@ class Targets:
                               target_seqs=self.target_seqs)
                 tname = a.target_name
 
-                is_filtered, parse_tup = self._parse_single_Alignment(a,
-                                                                      tname,
-                                                                      filtered_cs)
+                is_filtered, parse_tup = self.\
+                    _parse_single_Alignment(a, tname, filtered_cs)
 
                 if is_filtered:
                     readstats[tname]['filtered'] += 1
@@ -1134,7 +1133,6 @@ class Targets:
         a : :class:`alignparse.cs_tag.Alignment`
         targetname : str
         filtered_cs : bool
-            If `True` also return `cs` tag of feature that failed filter.
 
         Returns
         --------
