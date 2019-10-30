@@ -683,7 +683,8 @@ class Targets:
                         to_csv=False,
                         overwrite=False,
                         multi_align='primary',
-                        ncpus=-1,
+                        filtered_cs=False,
+                        ncpus=-1
                         ):
         """Align query sequences and then parse alignments.
 
@@ -723,6 +724,10 @@ class Targets:
         multi_align : {'primary'}
             How to handle multiple alignments. Currently only option is
             'primary', which ignores all secondary alignments.
+        filtered_cs : bool
+            Add `cs` tag that failed the filter to filtered dataframe along
+            with filter reason. Allows for more easily investigating why
+            reads are failing the filters.
         ncpus : int
             Number of CPUs to use; -1 means all available.
 
@@ -812,7 +817,8 @@ class Targets:
                                  itertools.repeat(multi_align),
                                  itertools.repeat(True),
                                  df['subdir'],
-                                 itertools.repeat(overwrite)
+                                 itertools.repeat(overwrite),
+                                 itertools.repeat(filtered_cs)
                                  )
 
         # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
@@ -904,7 +910,8 @@ class Targets:
         return readstats, aligned, filtered
 
     def parse_alignment(self, samfile, multi_align='primary',
-                        to_csv=False, csv_dir=None, overwrite_csv=False):
+                        to_csv=False, csv_dir=None, overwrite_csv=False,
+                        filtered_cs=False):
         """Parse alignment features as specified in `feature_parse_specs`.
 
         Parameters
@@ -925,6 +932,10 @@ class Targets:
         overwrite_csv : bool
             If using `to_csv`, do we overwrite existing CSV files or
             raise an error if they already exist?
+        filtered_cs : bool
+            Add `cs` tag that failed the filter to filtered dataframe along
+            with filter reason. Allows for more easily investigating why
+            reads are failing the filters.
 
         Returns
         -------
@@ -945,6 +956,8 @@ class Targets:
             - 'filtered' is a dict keyed by name of each target. Entries are
               `pandas.DataFrame` with a row for each filtered aligned read
               giving the query name and the reason it was filtered.
+              If `filtered_cs` is `True` then, add a column to the 'filtered'
+              `pandas.DataFrame`s with the `cs` tag that failed the filter.
 
             If `to_csv` is `True`, then `aligned` and `filtered` give
             names of CSV files holding data frames.
@@ -990,7 +1003,11 @@ class Targets:
         readstats = {t: {'filtered': 0, 'aligned': 0}
                      for t in self.target_names}
 
-        filtered_cols = ['query_name', 'filter_reason']
+        if filtered_cs:
+            filtered_cols = ['query_name', 'filter_reason', 'filter_cs']
+        else:
+            filtered_cols = ['query_name', 'filter_reason']
+
         if to_csv:
             filtered = {t: os.path.join(csv_dir, t.replace(' ', '_') +
                                         '_filtered.csv')
@@ -1042,7 +1059,10 @@ class Targets:
                               target_seqs=self.target_seqs)
                 tname = a.target_name
 
-                is_filtered, parse_tup = self._parse_single_Alignment(a, tname)
+                is_filtered, parse_tup = self._parse_single_Alignment(
+                                                                a,
+                                                                tname,
+                                                                filtered_cs)
 
                 if is_filtered:
                     readstats[tname]['filtered'] += 1
@@ -1113,22 +1133,25 @@ class Targets:
         else:
             return self._feature_parse_specs[targetname][featurename]['return']
 
-    def _parse_single_Alignment(self, a, targetname):
+    def _parse_single_Alignment(self, a, targetname, filtered_cs=False):
         """Parse a single alignment.
 
         Parameters
         ----------
         a : :class:`alignparse.cs_tag.Alignment`
         targetname : str
+        filtered_cs : bool
 
         Returns
         --------
         2-tuple
             Tuple `(is_filtered, parse_tup)` where `is_filtered` is bool
             indicating if alignment fails `feature_parse_specs` filters.
-            If it fails, `parse_tup` is 2-tuple `(query_name, filter_reason)`.
-            If it passes, `parse_tup` is list giving values specified
-            by :meth:`_parse_returnvals` for `targetname`.
+            If it fails and `filtered_cs` is `False`, `parse_tup` is 2-tuple
+            `(query_name, filter_reason)`. If it fails and `filtered_cs` is
+            `True`, `parse_tup` is tuple `(query_name, filter_reason,
+            filtered_cs)`. If it passes, `parse_tup` is list giving values
+            specified by :meth:`_parse_returnvals` for `targetname`.
 
         """
         query_name = a.query_name
@@ -1148,7 +1171,7 @@ class Targets:
         for feature in self.features_to_parse(targetname):
             feat_info = a.extract_cs(feature.start, feature.end)
             if feat_info is None:
-                # feature is full clipped, determine which end
+                # feature is fully clipped, determine which end
                 if a.target_clip5 >= feature.end:
                     clip5 = feature.length
                     clip3 = 0
@@ -1176,7 +1199,10 @@ class Targets:
                            }
             for key, valmax in target_parse_filters[featurename].items():
                 if filter_vals[key] > valmax:
-                    return True, (query_name, f"{featurename} {key}")
+                    if filtered_cs:
+                        return True, (query_name, f"{featurename} {key}", cs)
+                    else:
+                        return True, (query_name, f"{featurename} {key}")
 
             # get return values
             for return_name in self._parse_returnvals(targetname, featurename):
