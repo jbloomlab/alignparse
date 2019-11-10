@@ -11,42 +11,37 @@ COMMENT
 COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      T2A             85..147
-                     /locus_tag="T2A"
                      /label="T2A"
      WPRE            1639..1730
-                     /locus_tag="WPRE"
                      /label="WPRE"
      ZsGreen         15..84
-                     /locus_tag="ZsGreen"
                      /label="ZsGreen"
      termini3        1639..1730
-                     /locus_tag="3'Termini"
                      /label="3'Termini"
      index           9..14
-                     /locus_tag="sample index"
                      /label="index"
      leader5         1..8
-                     /locus_tag="5' leader"
                      /label="5' leader"
      termini5        1..147
-                     /locus_tag="5'Termini"
                      /label="5'Termini"
      variant_tag5    34..34
                      /variant_1=T
                      /variant_2=C
-                     /locus_tag="5'VariantTag"
                      /label="5'VariantTag"
      variant_tag3    1702..1702
                      /variant_1=G
                      /variant_2=A
-                     /locus_tag="3'VariantTag"
                      /label="3'VariantTag"
      spacer          1624..1638
-                     /locus_tag="3'Spacer"
                      /label="3'Spacer"
      gene            148..1623
-                     /locus_tag="LASV_Josiah_WT"
                      /label="LASV_Josiah_WT"
+     run_5A          519..525
+                     /label="Run_5A_WT"
+     run_5G_1        621..627
+                     /label="Run_5G_WT_1"
+     run_5G_2        972..978
+                     /label="Run_5G_WT_2"
 ORIGIN
         1 GACTGATANN NNNNcagcga cgccaagaac cagYagtggc acctgaccga gcacgccatc
        61 gcctccggcT CCGCCTTGCC CGCTGGATCC GGCGAGGGCA GAGGAAGTCT GCTAACATGC

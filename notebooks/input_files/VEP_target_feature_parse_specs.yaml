@@ -32,5 +32,11 @@ LASV_Josiah_WT: &VEP_target_parse_specs
     return: sequence
   variant_tag3:
     return: sequence
+  run_5A:
+    return: [mutations, accuracy]
+  run_5G_1:
+    return: [mutations, accuracy]
+  run_5G_2:
+    return: [mutations, accuracy]
 
 LASV_Josiah_OPT: *VEP_target_parse_specs
