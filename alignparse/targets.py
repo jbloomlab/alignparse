@@ -1300,6 +1300,8 @@ class Targets:
             else:
                 if primary_only and aligned_seg.is_secondary:
                     continue
+                if aligned_seg.is_supplementary:
+                    continue
                 a = Alignment(aligned_seg, introns_to_deletions=True,
                               target_seqs=self.target_seqs)
                 tname = a.target_name
