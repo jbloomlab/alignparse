@@ -1052,6 +1052,9 @@ class Targets:
                     unmapped += 1
                     continue
 
+                if aligned_seg.is_supplementary:
+                    continue
+
                 if aligned_seg.is_secondary and primary_only:
                     continue
 
