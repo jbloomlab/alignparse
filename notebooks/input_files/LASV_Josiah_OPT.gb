@@ -12,7 +12,6 @@ COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      T2A             85..147
                      /label="T2A"
-                     width 5 offset 0"
      WPRE            1639..1730
                      /label="WPRE"
      ZsGreen         15..84
