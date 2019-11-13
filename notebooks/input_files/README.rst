@@ -23,11 +23,11 @@ Snippets of data from the single-cell virus sequencing study [Russell et al (201
 
  - `flu_WSN_ccs.fastq <flu_WSN_ccs.fastq>`_: FASTQ file with a snippet of data from one of the PacBio ``ccs`` runs.
 
-VEP data
+LASV data
 ---------
-Data from Kate Dusenbury's initial pilot PacBio sequencing run of VEP constructs. 
+Data from Kate Dusenbury's initial pilot PacBio sequencing run of viral entry protein constructs. The data analyzed here is from the LASV glycoprotein constructs only.
 
     - `LASV_Josiah_WT.gb <LASV_Josiah_WT.gb>`_: PacBio amplicon of LASV GP from strain Josiah, wildtype sequence.
     - `LASV_Josiah_OPT.gb <LASV_Josiah_OPT.gb>`_: PacBio amplicon of LASV GP from strain Josiah, codon optimized sequence.
-    - `vep_pilot_report.txt <vep_pilot_report>`_: Report file from the VEP pilot PacBio sequencing. The ZMW numbers are scaled to be consistent with the size (250 CCSs) of the accompanying ``ccs`` file. 
-    - `vep_pilot_ccs.fastq <vep_pilot_ccs.fastq>`_: FASTQ file containing the first 250 CCSs from the VEP pilot PacBio sequencing run. This should contain ~75 reads matching the LASV Josiah sequences.
+    - `lasv_pilot_report.txt <lasv_pilot_report>`_: Report file from the VEP pilot PacBio sequencing. The ZMW numbers are scaled to be consistent with the size (250 CCSs) of the accompanying ``ccs`` file. 
+    - `lasv_pilot_ccs.fastq <lasv_pilot_ccs.fastq>`_: FASTQ file containing 250 CCSs mapping to LASV Josiah from the pilot PacBio sequencing run. All of these reads should match the LASV Josiah sequences, but ~50 of them should be filtered and ~200 of them should be aligned.
