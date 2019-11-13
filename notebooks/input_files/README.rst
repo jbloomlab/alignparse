@@ -27,7 +27,7 @@ VEP data
 ---------
 Data from Kate Dusenbury's initial pilot PacBio sequencing run of VEP constructs. 
 
-    - `LASV_G1959_WT.gb <LASV_G1959_WT.gb>`_: PacBio amplicon of LASV GP from strain G1959, wildtype sequence.
-    - `LASV_G1959_OPT.gb <LASV_G1959_OPT.gb>`_: PacBio amplicon of LSAV GP fro strain G1959, codon optimized sequence.
+    - `LASV_Josiah_WT.gb <LASV_Josiah_WT.gb>`_: PacBio amplicon of LASV GP from strain Josiah, wildtype sequence.
+    - `LASV_Josiah_OPT.gb <LASV_Josiah_OPT.gb>`_: PacBio amplicon of LASV GP from strain Josiah, codon optimized sequence.
     - `vep_pilot_report.txt <vep_pilot_report>`_: Report file from the VEP pilot PacBio sequencing. The ZMW numbers are scaled to be consistent with the size (250 CCSs) of the accompanying ``ccs`` file. 
-    - `vep_pilot_ccs.fastq <vep_pilot_ccs.fastq>`_: FASTQ file containing the first 250 CCSs from the VEP pilot PacBio sequencing run. This should contain ~50 reads matching the LASV G1959 sequences.
+    - `vep_pilot_ccs.fastq <vep_pilot_ccs.fastq>`_: FASTQ file containing the first 250 CCSs from the VEP pilot PacBio sequencing run. This should contain ~75 reads matching the LASV Josiah sequences.

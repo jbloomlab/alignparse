@@ -684,6 +684,7 @@ class Targets:
                         overwrite=False,
                         multi_align='primary',
                         filtered_cs=False,
+                        skip_sups=True,
                         ncpus=-1
                         ):
         """Align query sequences and then parse alignments.
@@ -728,6 +729,11 @@ class Targets:
             Add `cs` tag that failed the filter to filtered dataframe along
             with filter reason. Allows for more easily investigating why
             reads are failing the filters.
+        skip_sups : bool
+            Whether or not to skip supplementary alignments when parsing.
+            Supplementary alignments are additional possible alignments for
+            a read due to the read potentially being a chimeric. The default
+            is to skip these alignments and *not* parse them.
         ncpus : int
             Number of CPUs to use; -1 means all available.
 
@@ -818,7 +824,8 @@ class Targets:
                                  itertools.repeat(True),
                                  df['subdir'],
                                  itertools.repeat(overwrite),
-                                 itertools.repeat(filtered_cs)
+                                 itertools.repeat(filtered_cs),
+                                 itertools.repeat(skip_sups)
                                  )
 
         # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
@@ -911,7 +918,7 @@ class Targets:
 
     def parse_alignment(self, samfile, multi_align='primary',
                         to_csv=False, csv_dir=None, overwrite_csv=False,
-                        filtered_cs=False):
+                        filtered_cs=False, skip_sups=True):
         """Parse alignment features as specified in `feature_parse_specs`.
 
         Parameters
@@ -936,6 +943,11 @@ class Targets:
             Add `cs` tag that failed the filter to filtered dataframe along
             with filter reason. Allows for more easily investigating why
             reads are failing the filters.
+        skip_sups : bool
+            Whether or not to skip supplementary alignments when parsing.
+            Supplementary alignments are additional possible alignments for
+            a read due to the read potentially being a chimeric. The default
+            is to skip these alignments and *not* parse them.
 
         Returns
         -------
@@ -1050,6 +1062,9 @@ class Targets:
 
                 if aligned_seg.is_unmapped:
                     unmapped += 1
+                    continue
+
+                if aligned_seg.is_supplementary and skip_sups:
                     continue
 
                 if aligned_seg.is_secondary and primary_only:
@@ -1228,7 +1243,8 @@ class Targets:
         # if here, alignment not filtered: return it
         return False, parse_tup
 
-    def _parse_alignment_cs(self, samfile, *, multi_align='primary'):
+    def _parse_alignment_cs(self, samfile, *, multi_align='primary',
+                            skip_sups=True):
         """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
@@ -1296,6 +1312,8 @@ class Targets:
                 d['unmapped'] += 1
             else:
                 if primary_only and aligned_seg.is_secondary:
+                    continue
+                if skip_sups and aligned_seg.is_supplementary:
                     continue
                 a = Alignment(aligned_seg, introns_to_deletions=True,
                               target_seqs=self.target_seqs)
