@@ -36,12 +36,7 @@ FEATURES             Location/Qualifiers
                      /label="3'Spacer"
      gene            148..1623
                      /label="LASV_Josiah_WT"
-     run_5A          519..525
-                     /label="Run_5A_WT"
-     run_5G_1        621..627
-                     /label="Run_5G_WT_1"
-     run_5G_2        972..978
-                     /label="Run_5G_WT_2"
+
 ORIGIN
         1 GACTGATANN NNNNcagcga cgccaagaac cagYagtggc acctgaccga gcacgccatc
        61 gcctccggcT CCGCCTTGCC CGCTGGATCC GGCGAGGGCA GAGGAAGTCT GCTAACATGC

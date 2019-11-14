@@ -1,4 +1,4 @@
-LASV_Josiah_WT: &VEP_target_parse_specs
+LASV_Josiah_WT: &LASV_target_parse_specs
   query_clip5: 10
   query_clip3: 10
   termini5:
@@ -10,10 +10,6 @@ LASV_Josiah_WT: &VEP_target_parse_specs
     filter:
       clip3: 4
       mutation_nt_count: 1
-      mutation_op_count: null
-  T2A:
-    filter:
-      mutation_nt_count: 5
       mutation_op_count: null
   gene:
     filter:
@@ -32,11 +28,5 @@ LASV_Josiah_WT: &VEP_target_parse_specs
     return: sequence
   variant_tag3:
     return: sequence
-  run_5A:
-    return: [mutations, accuracy]
-  run_5G_1:
-    return: [mutations, accuracy]
-  run_5G_2:
-    return: [mutations, accuracy]
 
-LASV_Josiah_OPT: *VEP_target_parse_specs
+LASV_Josiah_OPT: *LASV_target_parse_specs
