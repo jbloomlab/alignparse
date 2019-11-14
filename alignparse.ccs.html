@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>ccs &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="consensus" href="alignparse.consensus.html" />
+    <link rel="prev" title="alignparse package" href="alignparse.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-alignparse.ccs"></span><div class="section" id="ccs">
+<h1>ccs<a class="headerlink" href="#ccs" title="Permalink to this headline">¶</a></h1>
+<p>Tools for inspecting output of the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program:
+<a class="reference external" href="https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md">https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md</a></p>
+<dl class="class">
+<dt id="alignparse.ccs.Summaries">
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summaries</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">*</em>, <em class="sig-param">name_col='name'</em>, <em class="sig-param">fastq_col='fastq'</em>, <em class="sig-param">report_col='report'</em>, <em class="sig-param">ncpus=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Summaries of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Data frame giving information on runs of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> being summarized.</p></li>
+<li><p><strong>name_col</strong> (<em>str</em>) – Column in <cite>df</cite> with name of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p></li>
+<li><p><strong>fastq_col</strong> (<em>str</em>) – Column in <cite>df</cite> with FASTQ file for run, appropriate for passing
+to <a class="reference internal" href="#alignparse.ccs.Summary" title="alignparse.ccs.Summary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summary</span></code></a> as <cite>fastqfile</cite>.</p></li>
+<li><p><strong>report_col</strong> (<em>str</em><em> or </em><em>None</em>) – Column in <cite>df</cite> with report for run, appropriate for passing to
+<a class="reference internal" href="#alignparse.ccs.Summary" title="alignparse.ccs.Summary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summary</span></code></a> as <cite>reportfile</cite>. Set to <cite>None</cite> if no reports.
+If there are no reports, then ZMW stats are not available.</p></li>
+<li><p><strong>ncpus</strong> (<em>int</em>) – Number of CPUs to use; -1 means all available. Useful as processing
+all the FASTQ files to compute read accuracies can take a while.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="alignparse.ccs.Summaries.summaries">
+<code class="sig-name descname">summaries</code><a class="headerlink" href="#alignparse.ccs.Summaries.summaries" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of <a class="reference internal" href="#alignparse.ccs.Summary" title="alignparse.ccs.Summary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summary</span></code></a> objects for each run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.ccs_stats">
+<code class="sig-name descname">ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.ccs_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get CCS stats for all runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>{'length'</em><em>, </em><em>'passes'</em><em>, </em><em>'accuracy'}</em>) – Variable for which we get stats. You will get an error
+if <a class="reference internal" href="#alignparse.ccs.Summaries.has_stat" title="alignparse.ccs.Summaries.has_stat"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Summaries.has_stat()</span></code></a> is not true for <cite>variable</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data frame with columns of ‘name’ (holding run name) and the value
+of <cite>variable</cite> giving variable value for all CCSs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.has_stat">
+<code class="sig-name descname">has_stat</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_stat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do the summaries contain a statistic?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variable</strong> (<em>{'length'</em><em>, </em><em>'passes'</em><em>, </em><em>'accuracy'}</em>) – Variable for which we want statistics.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><cite>True</cite> if all runs have statistics for <cite>variable</cite>,
+<cite>False</cite> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.has_zmw_stats">
+<code class="sig-name descname">has_zmw_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_zmw_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Are ZMW stats available?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><cite>True</cite> if all runs have ZMW stats, <cite>False</cite> otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.plot_ccs_stats">
+<code class="sig-name descname">plot_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">variable</em>, <em class="sig-param">*</em>, <em class="sig-param">trim_frac=0.005</em>, <em class="sig-param">bins=25</em>, <em class="sig-param">histogram_stat='count'</em>, <em class="sig-param">maxcol=None</em>, <em class="sig-param">panelsize=1.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot histograms of CCS stats for all runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable</strong> (<em>{'length'</em><em>, </em><em>'passes'</em><em>, </em><em>'accuracy'}</em>) – Variable for which we plot stats. You will get an error
+if <a class="reference internal" href="#alignparse.ccs.Summaries.has_stat" title="alignparse.ccs.Summaries.has_stat"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Summaries.has_stat()</span></code></a> is not true for <cite>variable</cite>.</p></li>
+<li><p><strong>trim_frac</strong> (<em>float</em>) – Trim this amount of the bottom and top fraction from the
+data before plotting. Useful if outliers greatly extend scale.</p></li>
+<li><p><strong>bins</strong> (<em>int</em>) – Number of histogram binds</p></li>
+<li><p><strong>histogram_stat</strong> (<em>{'count'</em><em>, </em><em>'density'}</em>) – Plot the count of CCSs or their density normalized for each run.</p></li>
+<li><p><strong>maxcol</strong> (<em>None</em><em> or </em><em>int</em>) – Max number of columns in faceted plot.</p></li>
+<li><p><strong>panelsize</strong> (<em>float</em>) – Size of each plot panel.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A panel of histograms.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plotnine.ggplot.ggplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.plot_zmw_stats">
+<code class="sig-name descname">plot_zmw_stats</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_zmw_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot of ZMW stats for all runs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Raises an error if <a class="reference internal" href="#alignparse.ccs.Summaries.has_zmw_stats" title="alignparse.ccs.Summaries.has_zmw_stats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Summaries.has_zmw_stats()</span></code></a> is not <cite>True</cite>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> (<em>dict</em>) – Keyword arguments passed to <a class="reference internal" href="#alignparse.ccs.Summaries.zmw_stats" title="alignparse.ccs.Summaries.zmw_stats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Summaries.zmw_stats()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Stacked bar graph of ZMW stats for each run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>plotnine.ggplot.ggplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="alignparse.ccs.Summaries.zmw_stats">
+<code class="sig-name descname">zmw_stats</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">minfailfrac=0.01</em>, <em class="sig-param">groupsuccess=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.zmw_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ZMW stats for all runs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Raises an error if <a class="reference internal" href="#alignparse.ccs.Summaries.has_zmw_stats" title="alignparse.ccs.Summaries.has_zmw_stats"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Summaries.has_zmw_stats()</span></code></a> is not <cite>True</cite>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>minfailfrac</strong> (<em>float</em>) – Group failure categories with &lt;= this fraction ZMWs for all runs.</p></li>
+<li><p><strong>groupsuccess</strong> (<em>bool</em>) – Group all success categories into ‘Success – CCS generated’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Data frame with stats on ZMW status for all runs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="alignparse.ccs.Summary">
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summary</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">fastqfile</em>, <em class="sig-param">reportfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Summary of a single <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p></li>
+<li><p><strong>fastqfile</strong> (<em>str</em>) – FASTQ file with circular consensus sequences, typically generated by
+PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program. Can be gzipped. Number of passes is determined
+from the <code class="docutils literal notranslate"><span class="pre">np</span></code> tag in the FASTQ comments if present.</p></li>
+<li><p><strong>reportfile</strong> (<em>str</em><em> or </em><em>None</em>) – Report file generated by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> using <code class="docutils literal notranslate"><span class="pre">--reportFile</span></code> flag, or
+None if no such report available.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#alignparse.ccs.Summary.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.fastqfile">
+<code class="sig-name descname">fastqfile</code><a class="headerlink" href="#alignparse.ccs.Summary.fastqfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>FASTQ file with the circular consensus sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.reportfile">
+<code class="sig-name descname">reportfile</code><a class="headerlink" href="#alignparse.ccs.Summary.reportfile" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">ccs</span></code> report file. Currently handles reports in formats generated
+by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> versions 3.* and 4.0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.zmw_stats">
+<code class="sig-name descname">zmw_stats</code><a class="headerlink" href="#alignparse.ccs.Summary.zmw_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stats on ZMW extracted from <cite>reportfile</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>pandas.DataFrame or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.passes">
+<code class="sig-name descname">passes</code><a class="headerlink" href="#alignparse.ccs.Summary.passes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists number of passes for all circular consensus sequences, or
+<cite>None</cite> if this information is not available in a <code class="docutils literal notranslate"><span class="pre">np</span></code> tag
+in <cite>fastqfile</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.array or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.accuracy">
+<code class="sig-name descname">accuracy</code><a class="headerlink" href="#alignparse.ccs.Summary.accuracy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists accuracies for all circular consensus sequences. This is the
+average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.ccs.Summary.length">
+<code class="sig-name descname">length</code><a class="headerlink" href="#alignparse.ccs.Summary.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists lengths for all circular consensus sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="alignparse.ccs.get_ccs_stats">
+<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">get_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">fastqfile</em>, <em class="sig-param">*</em>, <em class="sig-param">pass_tag='np'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#get_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.get_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get basic statistics about circular consensus sequences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fastqfile</strong> (<em>str</em>) – FASTQ file with circular consensus sequences, generated from BAM output
+of <code class="docutils literal notranslate"><span class="pre">ccs</span></code>.</p></li>
+<li><p><strong>pass_tag</strong> (<em>str</em>) – Tag in FASTQ file header giving number of passes (if present).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The 3-tuple <cite>(passes, accuracy, length)</cite> contains numpy arrays
+giving number of passes, accuracies, and lengths for sequences in
+<cite>fastqfile</cite>. The accuracy (average across sequence) and length
+are computed from the quality scores and sequence in <cite>fastqfile</cite>;
+the number of passes must be provided as <cite>pass_tag</cite> and are returned
+as <cite>None</cite> if that tag is missing from any read in <cite>fastqfile</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>collections.namedtuple</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fastqfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194373/ccs np:i:18</span>
+<span class="gp">... </span><span class="s1">  GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA</span>
+<span class="gp">... </span><span class="s1">  +</span>
+<span class="gp">... </span><span class="s1">  ~~~~{~~~~~~~c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~i~~~~~~~(</span>
+<span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194374/ccs np:i:51</span>
+<span class="gp">... </span><span class="s1">  GCACGGCGTCACACTTTGCTATGCCATAGCATGTTTATCCATAAGATTAGCGGATCCTACCT</span>
+<span class="gp">... </span><span class="s1">  +</span>
+<span class="gp">... </span><span class="s1">  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="gp">... </span><span class="s1">  &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ccs_stats</span><span class="p">(</span><span class="n">fastqfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  
+<span class="go">CCS_Stats(passes=array([18, 51]),</span>
+<span class="go">          accuracy=array([0.99672907, 1.        ]),</span>
+<span class="go">          length=array([61, 62]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Similar test without <code class="docutils literal notranslate"><span class="pre">np</span></code> tag in FASTQ file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fastqfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194373/ccs</span>
+<span class="gp">... </span><span class="s1">  GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA</span>
+<span class="gp">... </span><span class="s1">  +</span>
+<span class="gp">... </span><span class="s1">  ~~~~{~~~~~~~c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~i~~~~~~~(</span>
+<span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194374/ccs</span>
+<span class="gp">... </span><span class="s1">  GCACGGCGTCACACTTTGCTATGCCATAGCATGTTTATCCATAAGATTAGCGGATCCTACCT</span>
+<span class="gp">... </span><span class="s1">  +</span>
+<span class="gp">... </span><span class="s1">  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="gp">... </span><span class="s1">  &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_ccs_stats</span><span class="p">(</span><span class="n">fastqfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  
+<span class="go">CCS_Stats(passes=None,</span>
+<span class="go">          accuracy=array([0.99672907, 1.        ]),</span>
+<span class="go">          length=array([61, 62]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="alignparse.ccs.report_to_stats">
+<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">report_to_stats</code><span class="sig-paren">(</span><em class="sig-param">reportfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#report_to_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.report_to_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse ZMW statistics from report file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reportfile</strong> (<em>str</em>) – Report file generatedy by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> using <code class="docutils literal notranslate"><span class="pre">--reportFile</span></code> flag.
+Handles formats generated <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.* and 4.0.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A data frame with the statistics.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 4.0.0 output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">    ZMWs input          (A)  : 686919</span>
+<span class="gp">... </span><span class="s1">    ZMWs generating CCS (B)  : 182500 (26.57%)</span>
+<span class="gp">... </span><span class="s1">    ZMWs filtered       (C)  : 504419 (73.43%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    Exclusive ZMW counts for (C):</span>
+<span class="gp">... </span><span class="s1">    No usable subreads       : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Below SNR threshold      : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Lacking full passes      : 344375 (68.27%)</span>
+<span class="gp">... </span><span class="s1">    Heteroduplexes           : 1056 (0.21%)</span>
+<span class="gp">... </span><span class="s1">    Min coverage violation   : 2035 (0.40%)</span>
+<span class="gp">... </span><span class="s1">    Draft generation error   : 7636 (1.51%)</span>
+<span class="gp">... </span><span class="s1">    Draft above --max-length : 49 (0.01%)</span>
+<span class="gp">... </span><span class="s1">    Draft below --min-length : 2 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Lacking usable subreads  : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    CCS did not converge     : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    CCS below minimum RQ     : 149315 (29.60%)</span>
+<span class="gp">... </span><span class="s1">    Unknown error            : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">                                status  number  fraction</span>
+<span class="go">0             Success -- CCS generated  182500  0.265660</span>
+<span class="go">1         Failed -- No usable subreads       0  0.000000</span>
+<span class="go">2        Failed -- Below SNR threshold       0  0.000000</span>
+<span class="go">3        Failed -- Lacking full passes  344375  0.501297</span>
+<span class="go">4             Failed -- Heteroduplexes    1056  0.001537</span>
+<span class="go">5     Failed -- Min coverage violation    2035  0.002962</span>
+<span class="go">6     Failed -- Draft generation error    7636  0.011116</span>
+<span class="go">7   Failed -- Draft above --max-length      49  0.000071</span>
+<span class="go">8   Failed -- Draft below --min-length       2  0.000003</span>
+<span class="go">9    Failed -- Lacking usable subreads       0  0.000000</span>
+<span class="go">10      Failed -- CCS did not converge       0  0.000000</span>
+<span class="go">11      Failed -- CCS below minimum RQ  149315  0.217354</span>
+<span class="go">12             Failed -- Unknown error       0  0.000000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.1.0 output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">    ZMW Yield</span>
+<span class="gp">... </span><span class="s1">    Success -- CCS generated,242220,45.57%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Below SNR threshold,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- No usable subreads,4877,0.92%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Insert size too long,35,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Insert size too small,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Not enough full passes,180620,33.98%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Too many unusable subreads,1,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- CCS did not converge,23,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- CCS below minimum predicted accuracy,103801,19.53%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Unknown error during processing,0,0.00%</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    Subread Yield</span>
+<span class="gp">... </span><span class="s1">    Success - Used for CCS,10972010,89.06%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Below SNR threshold,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Alpha/Beta mismatch,171,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Below minimum quality,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Filtered by size,144209,1.17%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Identity too low,2745750,22.29%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Z-Score too low,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- From ZMW with too few passes,274296,2.23%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Other,928871,7.54%</span>
+<span class="gp">... </span><span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">                                           status  number  fraction</span>
+<span class="go">0                        Success -- CCS generated  242220    0.4557</span>
+<span class="go">1                   Failed -- Below SNR threshold       0    0.0000</span>
+<span class="go">2                    Failed -- No usable subreads    4877    0.0092</span>
+<span class="go">3                  Failed -- Insert size too long      35    0.0000</span>
+<span class="go">4                 Failed -- Insert size too small       0    0.0000</span>
+<span class="go">5                Failed -- Not enough full passes  180620    0.3398</span>
+<span class="go">6            Failed -- Too many unusable subreads       1    0.0000</span>
+<span class="go">7                  Failed -- CCS did not converge      23    0.0000</span>
+<span class="go">8  Failed -- CCS below minimum predicted accuracy  103801    0.1953</span>
+<span class="go">9       Failed -- Unknown error during processing       0    0.0000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.4.1 output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">    ZMW Yield</span>
+<span class="gp">... </span><span class="s1">    Success (without retry) -- CCS generated,202033,29.44%</span>
+<span class="gp">... </span><span class="s1">    Success (with retry)    -- CCS generated,2,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Below SNR threshold,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- No usable subreads,2093,0.31%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Insert size too long,10,0.01%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Insert size too small,79,0.01%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Not enough full passes,343876,50.12%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Too many unusable subreads,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- CCS did not converge,0,0.00%</span>
+<span class="gp">... </span><span class="s1">    Failed -- CCS below minimum predicted accuracy,138083,20.12%</span>
+<span class="gp">... </span><span class="s1">    Failed -- Unknown error during processing,0,0.00%</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  
+<span class="go">                                           status  number fraction</span>
+<span class="go">0        Success (without retry) -- CCS generated  202033   0.2944</span>
+<span class="go">1        Success (with retry)    -- CCS generated       2   0.0000</span>
+<span class="go">2                   Failed -- Below SNR threshold       0   0.0000</span>
+<span class="go">3                    Failed -- No usable subreads    2093   0.0031</span>
+<span class="go">4                  Failed -- Insert size too long      10   0.0001</span>
+<span class="go">5                 Failed -- Insert size too small      79   0.0001</span>
+<span class="go">6                Failed -- Not enough full passes  343876   0.5012</span>
+<span class="go">7            Failed -- Too many unusable subreads       0   0.0000</span>
+<span class="go">8                  Failed -- CCS did not converge       0   0.0000</span>
+<span class="go">9  Failed -- CCS below minimum predicted accuracy  138083   0.2012</span>
+<span class="go">10      Failed -- Unknown error during processing       0   0.0000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="alignparse.html">alignparse package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="alignparse.html#alignparse">alignparse</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="alignparse.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="alignparse.html">alignparse package</a><ul>
+      <li>Previous: <a href="alignparse.html" title="previous chapter">alignparse package</a></li>
+      <li>Next: <a href="alignparse.consensus.html" title="next chapter">consensus</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/alignparse.ccs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

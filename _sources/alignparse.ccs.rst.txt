@@ -1,0 +1,4 @@
+.. automodule:: alignparse.ccs
+   :members:
+   :undoc-members:
+   :show-inheritance:

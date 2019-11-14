@@ -1,0 +1,4 @@
+.. automodule:: alignparse.constants
+   :members:
+   :undoc-members:
+   :show-inheritance:

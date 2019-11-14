@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>minimap2 &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="targets" href="alignparse.targets.html" />
+    <link rel="prev" title="cs_tag" href="alignparse.cs_tag.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <span class="target" id="module-alignparse.minimap2"></span><div class="section" id="minimap2">
+<h1>minimap2<a class="headerlink" href="#minimap2" title="Permalink to this headline">¶</a></h1>
+<p>Runs <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a> aligner.</p>
+<dl class="class">
+<dt id="alignparse.minimap2.Mapper">
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">Mapper</code><span class="sig-paren">(</span><em class="sig-param">options</em>, <em class="sig-param">*</em>, <em class="sig-param">prog='minimap2'</em>, <em class="sig-param">min_version='2.17'</em>, <em class="sig-param">check_cs=True</em>, <em class="sig-param">retain_tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Run <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>options</strong> (<em>tuple</em><em> or </em><em>list</em>) – Command line options to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>. For instance, see
+<a class="reference internal" href="#alignparse.minimap2.OPTIONS_CODON_DMS" title="alignparse.minimap2.OPTIONS_CODON_DMS"><code class="xref py py-data docutils literal notranslate"><span class="pre">OPTIONS_CODON_DMS</span></code></a> or <a class="reference internal" href="#alignparse.minimap2.OPTIONS_VIRUS_W_DEL" title="alignparse.minimap2.OPTIONS_VIRUS_W_DEL"><code class="xref py py-data docutils literal notranslate"><span class="pre">OPTIONS_VIRUS_W_DEL</span></code></a>.</p></li>
+<li><p><strong>prog</strong> (<em>str</em>) – Path to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> executable.</p></li>
+<li><p><strong>min_version</strong> (<em>str</em>) – Minimum version of <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>. <a class="reference internal" href="#alignparse.minimap2.Mapper" title="alignparse.minimap2.Mapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mapper</span></code></a> has only
+been tested with versions &gt;= 2.17.</p></li>
+<li><p><strong>check_cs</strong> (<em>bool</em>) – Check that <cite>options</cite> includes <code class="docutils literal notranslate"><span class="pre">--cs</span></code> to output the short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
+<li><p><strong>retain_tags</strong> (<em>None</em><em> or </em><em>list</em>) – Retain these tags in query sequences in output alignments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="alignparse.minimap2.Mapper.options">
+<code class="sig-name descname">options</code><a class="headerlink" href="#alignparse.minimap2.Mapper.options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Options to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.minimap2.Mapper.prog">
+<code class="sig-name descname">prog</code><a class="headerlink" href="#alignparse.minimap2.Mapper.prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> executable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.minimap2.Mapper.version">
+<code class="sig-name descname">version</code><a class="headerlink" href="#alignparse.minimap2.Mapper.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="alignparse.minimap2.Mapper.retain_tags">
+<code class="sig-name descname">retain_tags</code><a class="headerlink" href="#alignparse.minimap2.Mapper.retain_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tags to retain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>None or list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If <cite>retain_tags</cite> is set, then <a class="reference internal" href="#alignparse.minimap2.Mapper.map_to_sam" title="alignparse.minimap2.Mapper.map_to_sam"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Mapper.map_to_sam()</span></code></a> searches for tags
+in query FASTQ headers like the <cite>np`</cite> tags here:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@m54228_181120_212724</span><span class="o">/</span><span class="mi">4194377</span><span class="o">/</span><span class="n">ccs</span>   <span class="n">np</span><span class="p">:</span><span class="n">i</span><span class="p">:</span><span class="mi">45</span>
+</pre></div>
+</div>
+<p>and retains them in the <cite>samfile</cite> alignment output. Such tags
+are present in FASTQ files created by PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 4.0. For
+the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
+</div>
+<p class="rubric">Examples</p>
+<p>First, create toy example target and query file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">targetfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;targets.fasta&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">queryfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;queries.fastq&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">        &gt;refseq</span>
+<span class="gp">... </span><span class="s1">        ATGCAANNNGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGGGTAT</span>
+<span class="gp">... </span><span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">queryfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">_</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">        @m54228_181120_212724/4194376/ccs   np:i:127</span>
+<span class="gp">... </span><span class="s1">        ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT</span>
+<span class="gp">... </span><span class="s1">        +</span>
+<span class="gp">... </span><span class="s1">        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="gp">... </span><span class="s1">        &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Now map <strong>not</strong> retaining tags from the FASTQ (this is default behavior):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments.sam&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span> <span class="o">=</span> <span class="n">Mapper</span><span class="p">(</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span><span class="o">.</span><span class="n">map_to_sam</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="n">queryfile</span><span class="p">,</span> <span class="n">samfile</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">samfile</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">tag_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tags</span><span class="p">()]</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>  
+<span class="go">m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0</span>
+<span class="go">ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT</span>
+<span class="go">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="go">NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167</span>
+<span class="go">cs:Z::6*na*na*nt:49*ga:4 rl:i:0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tag_names</span><span class="p">)</span>
+<span class="go">[&#39;NM&#39;, &#39;ms&#39;, &#39;AS&#39;, &#39;nn&#39;, &#39;tp&#39;, &#39;cm&#39;, &#39;s1&#39;, &#39;s2&#39;, &#39;de&#39;, &#39;cs&#39;, &#39;rl&#39;]</span>
+</pre></div>
+</div>
+<p>Now map retaining the <cite>np</cite> tag in the FASTQ:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile_tags</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments_tags.sam&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper_tags</span> <span class="o">=</span> <span class="n">Mapper</span><span class="p">(</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">,</span> <span class="n">retain_tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;np&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mapper_tags</span><span class="o">.</span><span class="n">map_to_sam</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="n">queryfile</span><span class="p">,</span> <span class="n">samfile_tags</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">samfile_tags</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">tag_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">tup</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tags</span><span class="p">()]</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tostring</span><span class="p">())</span>  
+<span class="go">m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0</span>
+<span class="go">ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT</span>
+<span class="go">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="go">NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167</span>
+<span class="go">cs:Z::6*na*na*nt:49*ga:4 rl:i:0 np:i:127</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tag_names</span><span class="p">)</span>  
+<span class="go">[&#39;NM&#39;, &#39;ms&#39;, &#39;AS&#39;, &#39;nn&#39;, &#39;tp&#39;, &#39;cm&#39;, &#39;s1&#39;, &#39;s2&#39;, &#39;de&#39;, &#39;cs&#39;, &#39;rl&#39;, &#39;np&#39;]</span>
+</pre></div>
+</div>
+<p>Remove the temporary directory for the example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="alignparse.minimap2.Mapper.map_to_sam">
+<code class="sig-name descname">map_to_sam</code><span class="sig-paren">(</span><em class="sig-param">targetfile</em>, <em class="sig-param">queryfile</em>, <em class="sig-param">samfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper.map_to_sam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper.map_to_sam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map query sequences to targets and output SAM file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>targetfile</strong> (<em>str</em>) – Alignment targets (reference), typically FASTA (can be gzipped).</p></li>
+<li><p><strong>queryfile</strong> (<em>str</em>) – Queries to align, typically FASTA or FASTQ (can be gzipped).</p></li>
+<li><p><strong>samfile</strong> (<em>str</em>) – Name of created SAM file (should have suffix <code class="docutils literal notranslate"><span class="pre">.sam</span></code>).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="alignparse.minimap2.OPTIONS_CODON_DMS">
+<code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_CODON_DMS</code><em class="property"> = ('-A2', '-B4', '-O12', '-E2', '--end-bonus=13', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_CODON_DMS" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for codon-mutant libraries.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These options work well for sequences expected to have codon-level mutations
+(3 nucleotides in a row) and not expected to have many indels.</p>
+<dl class="simple">
+<dt>Options have the following meaning / rationale:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-A2</span></code> : score for a match</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-B4</span></code> : penalty for a mismatch</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-O12</span></code> : gap opening penalty (high, because few indels expected)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-E2</span></code> : gap extension penalty</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--end-bonus=13</span></code> : favor codon mutation over gap at termini.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--secondary=no</span></code> : do not output secondary alignments.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--cs</span></code> : add short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag ((see <a class="reference external" href="https://github.com/lh3/minimap2#cs">https://github.com/lh3/minimap2#cs</a>)</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="data">
+<dt id="alignparse.minimap2.OPTIONS_VIRUS_W_DEL">
+<code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_VIRUS_W_DEL</code><em class="property"> = ('-xsplice:hq', '-un', '-C0', '--splice-flank=no', '-M=1', '--for-only', '--end-seed-pen=2', '--end-bonus=2', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_VIRUS_W_DEL" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for viral genes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These options work well for sequences expected to have nucleotide mutations
+and long internal deletions. It handles long deletions by having <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>
+treat them like introns. This means that in the output, introns should be
+parsed like deletions.</p>
+<dl class="simple">
+<dt>Options have the following meaning / rationale:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-xsplice:hq</span></code> : preset for long-read high-quality spliced alignment.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-un</span></code> : do not try to find canonical splice sites.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-C0</span></code> : no cost for non-canonical splice sites.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--splice-flank=no</span></code> : no assumptions about base next to splice donor.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-M=1</span></code> : mark secondary chain that overlaps with another by this much.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--end-seed-pen=2</span></code> : described as helping avoid tiny terminal exons.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--end-bonus=2</span></code> : bonus for extending to end of alignment.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--secondary=no</span></code> : do not output secondary alignments.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--cs</span></code> : add short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag ((see <a class="reference external" href="https://github.com/lh3/minimap2#cs">https://github.com/lh3/minimap2#cs</a>)</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="alignparse.html">alignparse package</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="alignparse.html#alignparse">alignparse</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="alignparse.html#submodules">Submodules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="alignparse.html">alignparse package</a><ul>
+      <li>Previous: <a href="alignparse.cs_tag.html" title="previous chapter">cs_tag</a></li>
+      <li>Next: <a href="alignparse.targets.html" title="next chapter">targets</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/alignparse.minimap2.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

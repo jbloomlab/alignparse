@@ -1,0 +1,20 @@
+alignparse package
+==================
+
+.. automodule:: alignparse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+
+   alignparse.ccs
+   alignparse.consensus
+   alignparse.constants
+   alignparse.cs_tag
+   alignparse.minimap2
+   alignparse.targets
+   alignparse.utils

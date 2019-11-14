@@ -1,0 +1,858 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>alignparse.cs_tag &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for alignparse.cs_tag</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">=======</span>
+<span class="sd">cs_tag</span>
+<span class="sd">=======</span>
+
+<span class="sd">Parse SAM entries with ``cs`` short tag from ``minimap2`` output.</span>
+
+<span class="sd">See here for details on short ``cs`` tag format:</span>
+<span class="sd">https://lh3.github.io/minimap2/minimap2.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">regex</span>
+
+<span class="kn">import</span> <span class="nn">alignparse.utils</span>
+
+<span class="n">_CS_OPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;identity&#39;</span><span class="p">:</span> <span class="s1">&#39;:[0-9]+&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;substitution&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\*[acgtn][acgtn]&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;insertion&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\+[acgtn]+&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;deletion&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;\-[acgtn]+&#39;</span>
+    <span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;dict: Short ``cs`` tag operation regular expression matches.&quot;&quot;&quot;</span>
+
+<span class="n">_INTRON_OP</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\~[acgtn]</span><span class="si">{2}</span><span class="s1">\d+[acgtn]</span><span class="si">{2}</span><span class="s1">&#39;</span>
+<span class="sd">&quot;&quot;&quot;str: Short ``cs`` tag operation regular expression for intron.&quot;&quot;&quot;</span>
+
+<span class="n">_INTRON_OP_REGEX</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">_INTRON_OP</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;regex.Regex: matches short ``cs`` tag operation for intron.&quot;&quot;&quot;</span>
+
+<span class="n">_CS_OPS_W_INTRON</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">_CS_OPS</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="o">+</span> <span class="p">[(</span><span class="s1">&#39;intron&#39;</span><span class="p">,</span> <span class="n">_INTRON_OP</span><span class="p">)]}</span>
+<span class="sd">&quot;&quot;&quot;dict: ``cs`` tag operation regular expression matches including introns.&quot;&quot;&quot;</span>
+
+<span class="n">_CS_STR_REGEX</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_CS_OPS</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">+</span> <span class="s1">&#39;)*&#39;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;regex.Regex: matches full-length short ``cs`` tags.&quot;&quot;&quot;</span>
+
+<span class="n">_CS_STR_REGEX_W_INTRON</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="s1">&#39;(&#39;</span> <span class="o">+</span> <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_CS_OPS_W_INTRON</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">+</span> <span class="s1">&#39;)*&#39;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;regex.Regex: matches full-length short ``cs`` tags including introns.&quot;&quot;&quot;</span>
+
+<span class="n">_CS_OP_REGEX</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;(?P&lt;</span><span class="si">{op_name}</span><span class="s2">&gt;</span><span class="si">{op_str}</span><span class="s2">)&quot;</span> <span class="k">for</span>
+                                      <span class="n">op_name</span><span class="p">,</span> <span class="n">op_str</span> <span class="ow">in</span> <span class="n">_CS_OPS</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="sd">&quot;&quot;&quot;regex.Regex: matches single ``cs`` operation, group name is operation.&quot;&quot;&quot;</span>
+
+<span class="n">_CS_OP_REGEX_W_INTRON</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+            <span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;(?P&lt;</span><span class="si">{op_name}</span><span class="s2">&gt;</span><span class="si">{op_str}</span><span class="s2">)&quot;</span> <span class="k">for</span>
+                     <span class="n">op_name</span><span class="p">,</span> <span class="n">op_str</span> <span class="ow">in</span> <span class="n">_CS_OPS_W_INTRON</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+<span class="sd">&quot;&quot;&quot;regex.Regex: matches single ``cs`` operation including introns,</span>
+<span class="sd">group name is operation.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="split_cs"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.split_cs">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">split_cs</span><span class="p">(</span><span class="n">cs_string</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">,</span> <span class="n">allow_intron</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split a short ``cs`` tag into its constituent operations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs_string : str</span>
+<span class="sd">        The short ``cs`` tag.</span>
+<span class="sd">    invalid : {&#39;raise&#39;, &#39;ignore&#39;}</span>
+<span class="sd">        If `cs_string` is not a valid string, raise an error or ignore it</span>
+<span class="sd">        and return `None`.</span>
+<span class="sd">    allow_intron : bool</span>
+<span class="sd">        Are introns allowed as ``cs`` operations?</span>
+
+<span class="sd">    Return</span>
+<span class="sd">    ------</span>
+<span class="sd">    tuple or None</span>
+<span class="sd">        Tuple of the individual ``cs`` operations, or `None` if invalid</span>
+<span class="sd">        `cs_string` and `invalid` is &#39;ignore&#39;.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; split_cs(&#39;:32*nt*na:10-gga:5+aaa:10&#39;)</span>
+<span class="sd">    (&#39;:32&#39;, &#39;*nt&#39;, &#39;*na&#39;, &#39;:10&#39;, &#39;-gga&#39;, &#39;:5&#39;, &#39;+aaa&#39;, &#39;:10&#39;)</span>
+
+<span class="sd">    &gt;&gt;&gt; split_cs(&#39;bad:32*nt*na:10-gga:5&#39;, invalid=&#39;ignore&#39;) is None</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; split_cs(&#39;bad:32*nt*na:10-gga:5&#39;)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: invalid `cs_string` of bad:32*nt*na:10-gga:5</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">allow_intron</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_CS_STR_REGEX_W_INTRON</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">cs_string</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">_CS_STR_REGEX</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">cs_string</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">invalid</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">invalid</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `cs_string` of </span><span class="si">{cs_string}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `invalid` of </span><span class="si">{invalid}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">captures</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="cs_op_type"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_type">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get type of ``cs`` operation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs_op : str</span>
+<span class="sd">        A **single** operation in a short ``cs`` tag.</span>
+<span class="sd">    invalid : {&#39;raise&#39;, &#39;ignore&#39;}</span>
+<span class="sd">        If `cs_string` is not a valid string, raise an error or ignore it</span>
+<span class="sd">        and return `None`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    {&#39;substitution&#39;, &#39;insertion&#39;, &#39;deletion&#39;, &#39;identity&#39;, None}</span>
+<span class="sd">        Type of ``cs`` operation, or `None` if `cs_string` invalid and</span>
+<span class="sd">        `invalid` is &#39;ignore&#39;.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_type(&#39;*nt&#39;)</span>
+<span class="sd">    &#39;substitution&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_type(&#39;:45&#39;)</span>
+<span class="sd">    &#39;identity&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_type(&#39;*nt:45&#39;)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: invalid `cs_op` of *nt:45</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_type(&#39;*nt:45&#39;, invalid=&#39;ignore&#39;) is None</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">_CS_OP_REGEX</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">invalid</span> <span class="o">==</span> <span class="s1">&#39;ignore&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">invalid</span> <span class="o">==</span> <span class="s1">&#39;raise&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `cs_op` of </span><span class="si">{cs_op}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `invalid` of </span><span class="si">{invalid}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">lastgroup</span></div>
+
+
+<div class="viewcode-block" id="cs_op_len_target"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_len_target">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_op_len_target</span><span class="p">(</span><span class="n">cs_op</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get length of valid ``cs`` operation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs_op : str</span>
+<span class="sd">        A **single** operation in a short ``cs`` tag.</span>
+<span class="sd">    invalid : {&#39;raise&#39;, &#39;ignore&#39;}</span>
+<span class="sd">        If `cs_string` is not a valid string, raise an error or ignore it</span>
+<span class="sd">        and return `None`.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int or None</span>
+<span class="sd">        Length of given cs_op. This length is based on the target sequence,</span>
+<span class="sd">        so insertions in the query have length 0 and deletions are the length</span>
+<span class="sd">        of the target sequence deleted from the query. &#39;None&#39; if `cs_op`</span>
+<span class="sd">        is invalid and `invalid` is `ignore`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;*nt&#39;)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;:45&#39;)</span>
+<span class="sd">    45</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;-at&#39;)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;+gc&#39;)</span>
+<span class="sd">    0</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;*nt:45&#39;)</span>
+<span class="sd">    Traceback (most recent call last):</span>
+<span class="sd">    ...</span>
+<span class="sd">    ValueError: invalid `cs_op` of *nt:45</span>
+<span class="sd">    &gt;&gt;&gt; cs_op_len_target(&#39;*nt:45&#39;, invalid=&#39;ignore&#39;) is None</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="n">invalid</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">op_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `op_type` of </span><span class="si">{op_type}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cs_introns_to_deletions"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_introns_to_deletions">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_introns_to_deletions</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">targetseq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert introns to deletions in ``cs`` tag.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        Short-format ``cs`` tag.</span>
+<span class="sd">    targetseq : str</span>
+<span class="sd">        Region of target sequenced covered by `cs` alignment.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Version of `cs` where all introns have been converted to deletions.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; cs_introns_to_deletions(&#39;:3-ggaac:2&#39;, &#39;ATGGGAACAT&#39;)</span>
+<span class="sd">    &#39;:3-ggaac:2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_introns_to_deletions(&#39;:3~gg5ac:2&#39;, &#39;ATGGGAACAT&#39;)</span>
+<span class="sd">    &#39;:3-ggaac:2&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_introns_to_deletions(&#39;:2*ga~gg6ta:2-gc:2~at4cg:3&#39;,</span>
+<span class="sd">    ...                  &#39;ATGGGCCTATTGCTAATCGAAA&#39;)</span>
+<span class="sd">    &#39;:2*ga-ggccta:2-gc:2-atcg:3&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_INTRON_OP_REGEX</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">cs</span>
+    <span class="n">itarget</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">new_cs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">allow_intron</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">_INTRON_OP_REGEX</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">op</span><span class="p">):</span>
+            <span class="n">op_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">op</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">target_subseq</span> <span class="o">=</span> <span class="n">_ambiguous_to_n</span><span class="p">(</span>
+                        <span class="n">targetseq</span><span class="p">[</span><span class="n">itarget</span><span class="p">:</span> <span class="n">itarget</span> <span class="o">+</span> <span class="n">op_len</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">itarget</span> <span class="o">+=</span> <span class="n">op_len</span>
+            <span class="n">new_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;-</span><span class="si">{target_subseq}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">target_subseq</span><span class="p">[:</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="mi">3</span><span class="p">],</span> <span class="s2">&quot;</span><span class="si">{target_subseq}</span><span class="se">\n</span><span class="si">{op}</span><span class="s2">&quot;</span>
+            <span class="k">assert</span> <span class="n">target_subseq</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="n">op</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:],</span> <span class="s2">&quot;</span><span class="si">{target_subseq}</span><span class="se">\n</span><span class="si">{op}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+            <span class="n">itarget</span> <span class="o">+=</span> <span class="n">cs_op_len_target</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_cs</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_ambiguous_to_n</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert all ambiguous nucleotides to &#39;N&#39;.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    seq : str</span>
+<span class="sd">        Sequence.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Version of `seq` where all non-N IUPAC ambiguous nucleotides have</span>
+<span class="sd">        been converted to &#39;N&#39;.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; _ambiguous_to_n(&#39;ATGYCAkac&#39;)</span>
+<span class="sd">    &#39;ATGNCANac&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[MmRrWwSsYyKkVvHhDdBb]&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">seq</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Alignment"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment">[docs]</a><span class="k">class</span> <span class="nc">Alignment</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Process a SAM alignment with a ``cs`` tag to extract features.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sam_alignment : pysam.AlignedSegment</span>
+<span class="sd">        Aligned segment from `pysam &lt;https://pysam.readthedocs.io&gt;`_,</span>
+<span class="sd">        must have a short format ``cs`` tag (see</span>
+<span class="sd">        https://lh3.github.io/minimap2/minimap2.html). This must be</span>
+<span class="sd">        a mapped read, you will get an error if unmapped.</span>
+<span class="sd">    introns_to_deletions : bool</span>
+<span class="sd">        Convert all introns in the ``cs`` tag to deletions.</span>
+<span class="sd">    target_seqs : dict</span>
+<span class="sd">        Required if `introns_to_deletions` is `True`. Is keyed by target</span>
+<span class="sd">        names with values target sequences as str.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    query_name : str</span>
+<span class="sd">        Name of query in alignment.</span>
+<span class="sd">    target_name : str</span>
+<span class="sd">        Name of alignment target.</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        The ``cs`` tag.</span>
+<span class="sd">    query_clip5 : int</span>
+<span class="sd">        Length at 5&#39; end of query not in alignment.</span>
+<span class="sd">    query_clip3 : int</span>
+<span class="sd">        Length at 3&#39; end of query not in alignment.</span>
+<span class="sd">    target_clip5 : int</span>
+<span class="sd">        Length at 5&#39; end of target not in alignment.</span>
+<span class="sd">    target_lastpos : int</span>
+<span class="sd">        Last position of alignment in target (exclusive).</span>
+<span class="sd">    orientation :  {&#39;+&#39;, &#39;-&#39;}</span>
+<span class="sd">        Does query align to the target (+) or reverse complement (-).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sam_alignment</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">introns_to_deletions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target_seqs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">is_unmapped</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`sam_alignment` </span><span class="si">{sam_alignment.query_name}</span><span class="s2"> &quot;</span>
+                             <span class="s1">&#39;is unmapped&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_name</span> <span class="o">=</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">query_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_name</span> <span class="o">=</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">reference_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_clip5</span> <span class="o">=</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">query_alignment_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_clip3</span> <span class="o">=</span> <span class="p">(</span><span class="n">sam_alignment</span><span class="o">.</span><span class="n">query_length</span> <span class="o">-</span>
+                            <span class="n">sam_alignment</span><span class="o">.</span><span class="n">query_alignment_end</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_clip5</span> <span class="o">=</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">reference_start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target_lastpos</span> <span class="o">=</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">reference_end</span>
+        <span class="k">if</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">is_reverse</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">orientation</span> <span class="o">=</span> <span class="s1">&#39;+&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cs</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">sam_alignment</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">introns_to_deletions</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">target_seqs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;must set `target_seqs`&#39;</span><span class="p">)</span>
+            <span class="n">targetseq</span> <span class="o">=</span> <span class="n">target_seqs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">target_name</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">target_clip5</span><span class="p">:</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">target_lastpos</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cs</span> <span class="o">=</span> <span class="n">cs_introns_to_deletions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">,</span> <span class="n">targetseq</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span> <span class="o">=</span> <span class="n">split_cs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_lengths_target</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">cs_op_len_target</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+                                                   <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span><span class="p">])</span>
+
+        <span class="c1"># sites are 0-indexed and exclusive</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_clip5</span> <span class="o">+</span>
+                             <span class="n">numpy</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_lengths_target</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_clip5</span><span class="p">),</span>
+                                           <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_lengths_target</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span> <span class="o">==</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_lengths_target</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sam_alignment</span> <span class="o">=</span> <span class="n">sam_alignment</span>
+
+<div class="viewcode-block" id="Alignment.get_accuracy"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.get_accuracy">[docs]</a>    <span class="k">def</span> <span class="nf">get_accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targetstart</span><span class="p">,</span> <span class="n">targetend</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get accuracy of part of query aligned to a region of the target.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        targetstart : int</span>
+<span class="sd">            Start of region in target in 0, 1, ... numbering.</span>
+<span class="sd">        targetend : int</span>
+<span class="sd">            End of region in target (not inclusive of this site).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or NaN</span>
+<span class="sd">            The accuracy of the region, computed as the average of the</span>
+<span class="sd">            Q-scores for all aligned sites in the query, or `NaN` if</span>
+<span class="sd">            there are no query sites aligned to this region.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">targetstart</span> <span class="o">&gt;=</span> <span class="n">targetend</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`targetstart` must be &lt; `targetend`&#39;</span><span class="p">)</span>
+
+        <span class="c1"># if function hasn&#39;t yet been called, set up necessary variables</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_qs&#39;</span><span class="p">):</span>
+            <span class="c1"># array of all Q values in query</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_qs</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sam_alignment</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">,</span>
+                                     <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;int&#39;</span><span class="p">)</span>
+            <span class="c1"># arrays of query and target sites that are aligned</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aligned_target</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+                    <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+                    <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sam_alignment</span>
+                        <span class="o">.</span><span class="n">get_aligned_pairs</span><span class="p">(</span><span class="n">matches_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_target</span><span class="p">)</span>
+
+        <span class="c1"># get index of first aligned site &gt;= targetstart, and last</span>
+        <span class="c1"># aligned site &lt;= targetend</span>
+        <span class="n">istart</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_target</span><span class="p">,</span> <span class="n">targetstart</span><span class="p">)</span>
+        <span class="n">iend</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_target</span><span class="p">,</span> <span class="n">targetend</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">istart</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">istart</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">iend</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">iend</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">istart</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">istart</span> <span class="o">&lt;=</span> <span class="n">iend</span>
+
+        <span class="c1"># compute accuracy</span>
+        <span class="k">return</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">qvals_to_accuracy</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">[</span><span class="n">istart</span><span class="p">]:</span>
+                         <span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">[</span><span class="n">iend</span><span class="p">]])</span></div>
+
+<div class="viewcode-block" id="Alignment.extract_cs"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.extract_cs">[docs]</a>    <span class="k">def</span> <span class="nf">extract_cs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract ``cs`` tag corresponding to feature in target.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int</span>
+<span class="sd">            Start of feature in target in 0, 1, ... numbering.</span>
+<span class="sd">        end : int</span>
+<span class="sd">            End of feature in target (not inclusive of this site).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple or None</span>
+<span class="sd">            If feature is not present in alignment, return `None`. Otherwise,</span>
+<span class="sd">            return `(cs, clip5, clip3)` where `cs` is the ``cs`` string for</span>
+<span class="sd">            the aligned portion of the feature, and `clip5` and `clip3` are</span>
+<span class="sd">            the lengths that must be clipped off the end of the feature to</span>
+<span class="sd">            get to that alignment.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If an insertion is at the boundary of two features, it is assigned</span>
+<span class="sd">        as being at the end of the first feature.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `start` of </span><span class="si">{start}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="n">start</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`end` </span><span class="si">{end}</span><span class="s2"> not &gt; `start` </span><span class="si">{start}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">):</span>
+            <span class="c1"># feature starts at or after end of last cs op</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span><span class="p">):</span>
+            <span class="c1"># feature ends at or before beginning of first cs op</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">clip5</span> <span class="o">=</span> <span class="n">clip3</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Get `start_idx` as index of cs op that contains feature start</span>
+        <span class="c1"># add to `feature_cs` overlapping part of first cs op</span>
+        <span class="n">start_idx</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+        <span class="n">start_op_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span><span class="p">[</span><span class="n">start_idx</span><span class="p">]</span>
+        <span class="n">start_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span><span class="p">[</span><span class="n">start_idx</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">start_idx</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span>
+        <span class="n">feature_cs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">start_op_start</span> <span class="o">&gt;</span> <span class="n">start</span><span class="p">:</span>
+            <span class="c1"># feature starts before first cs op</span>
+            <span class="k">assert</span> <span class="n">start_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;5&#39; clip not at 5&#39; end.&quot;</span>
+            <span class="n">clip5</span> <span class="o">=</span> <span class="n">start_op_start</span> <span class="o">-</span> <span class="n">start</span>
+            <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># feature starts at or within specific cs op</span>
+            <span class="n">start_op_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">[</span><span class="n">start_idx</span><span class="p">]</span>
+            <span class="k">assert</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">start_op_end</span>
+            <span class="n">start_op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start_op_start</span> <span class="o">==</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;=</span> <span class="n">start_op_end</span><span class="p">:</span>
+                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;:{start_op_end - start}&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;-</span><span class="si">{start_op[start - start_op_end:]}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;insertion should not be feature start&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;unrecognized op type of </span><span class="si">{start_op_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Get `end_idx` as index of cs op that contains feature end, and</span>
+        <span class="c1"># make `feat_cs_end` the overlapping part of this last cs op</span>
+        <span class="n">end_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span>
+                                            <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">while</span> <span class="p">((</span><span class="n">end</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">[</span><span class="n">end_idx</span><span class="p">])</span> <span class="ow">and</span>
+               <span class="p">(</span><span class="n">end_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span><span class="p">)):</span>
+            <span class="n">end_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">end_op_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_starts</span><span class="p">[</span><span class="n">end_idx</span><span class="p">]</span>
+        <span class="n">end_op_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops_ends</span><span class="p">[</span><span class="n">end_idx</span><span class="p">]</span>
+        <span class="n">end_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span><span class="p">[</span><span class="n">end_idx</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="n">start_idx</span> <span class="o">&lt;=</span> <span class="n">end_idx</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span>
+        <span class="k">assert</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="n">end_op_end</span> <span class="ow">or</span> <span class="n">end_idx</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">assert</span> <span class="n">end</span> <span class="o">&gt;=</span> <span class="n">end_op_start</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="n">end_op_end</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">end_idx</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nops</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;clip3 not at end&#39;</span>
+            <span class="n">clip3</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">end_op_end</span>
+            <span class="n">feat_cs_end</span> <span class="o">=</span> <span class="n">end_op</span>
+        <span class="k">elif</span> <span class="n">end</span> <span class="o">==</span> <span class="n">end_op_end</span><span class="p">:</span>
+            <span class="c1"># feature ends at a specific cs op</span>
+            <span class="n">feat_cs_end</span> <span class="o">=</span> <span class="n">end_op</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># feature ends within specific cs op</span>
+            <span class="n">end_overlap</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">end_op_start</span>
+            <span class="n">end_op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">end_op</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">end_op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+                <span class="n">feat_cs_end</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;:</span><span class="si">{end_overlap}</span><span class="s2">&quot;</span>
+            <span class="k">elif</span> <span class="n">end_op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+                <span class="n">feat_cs_end</span> <span class="o">=</span> <span class="n">end_op</span><span class="p">[:</span> <span class="n">end_overlap</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">end_op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;should not get here as end == end_op_end&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;unrecognized op type of </span><span class="si">{end_op_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">start_idx</span> <span class="o">==</span> <span class="n">end_idx</span><span class="p">:</span>
+            <span class="c1"># avoid double-counting feature, clip properly</span>
+            <span class="k">assert</span> <span class="n">start_op</span> <span class="o">==</span> <span class="n">end_op</span>
+            <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+                <span class="n">feature_cs</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;:{end - start - clip5 - clip3}&quot;</span>
+            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+                <span class="n">feature_cs</span> <span class="o">=</span> <span class="n">end_op</span>
+            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+                <span class="n">del_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span> <span class="o">-</span> <span class="n">start_op_start</span><span class="p">)</span>
+                <span class="n">del_end</span> <span class="o">=</span> <span class="n">end_op_end</span> <span class="o">-</span> <span class="n">end_op_start</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end_op_end</span> <span class="o">-</span> <span class="n">end</span><span class="p">)</span>
+                <span class="n">feature_cs</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">end_op</span><span class="p">[</span><span class="n">del_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">del_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;start_idx != end_idx for insertion&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;unrecognized op type of </span><span class="si">{op_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">feature_cs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cs_ops</span><span class="p">[</span><span class="n">start_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">end_idx</span><span class="p">])</span>
+            <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feat_cs_end</span><span class="p">)</span>
+            <span class="n">feature_cs</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feature_cs</span><span class="p">)</span>
+
+        <span class="c1"># this next assert might be costly, so maybe remove eventually</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">cs_op_len_target</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">feature_cs</span><span class="p">))</span> <span class="o">+</span>
+                <span class="n">clip5</span> <span class="o">+</span> <span class="n">clip3</span> <span class="o">==</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">),</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{feature_cs}</span><span class="s2">,</span><span class="si">{clip5}</span><span class="s2">,</span><span class="si">{clip3}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">feature_cs</span><span class="p">,</span> <span class="n">clip5</span><span class="p">,</span> <span class="n">clip3</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="cs_to_sequence"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_sequence">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_to_sequence</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a sequence.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        `cs` string</span>
+<span class="sd">    seq : str</span>
+<span class="sd">        Sequence of target for region corresponding to `cs` string.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Nucleotide sequence generated by applying `cs` to `seq`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_sequence(&#39;:4*nt-tc:2+g:2&#39;, &#39;CGGANTCCAAT&#39;)</span>
+<span class="sd">    &#39;CGGATCAGAT&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq_loc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">seq_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cs_op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+        <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+            <span class="n">op_len</span> <span class="o">=</span> <span class="n">cs_op_len_target</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+            <span class="n">seq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">seq_loc</span><span class="p">:</span> <span class="n">seq_loc</span> <span class="o">+</span> <span class="n">op_len</span><span class="p">])</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="n">op_len</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+            <span class="n">seq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cs_op</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+            <span class="n">seq_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid cs `op_type` of </span><span class="si">{op_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq_list</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="cs_to_mutation_str"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_mutation_str">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_to_mutation_str</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a descriptive string of mutations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        A ``cs`` tag.</span>
+<span class="sd">    offset : int</span>
+<span class="sd">        Mutations are numbered in 1, ... numbering **plus** this offset.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        Space-delimited string of form &#39;A5T G86A ins7ACG del19to24&#39;</span>
+<span class="sd">        for all mutations specified in `cs`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_mutation_str(&#39;:4*nt-tc:2+ga:6&#39;)</span>
+<span class="sd">    &#39;del6to7 ins10GA&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_mutation_str(&#39;:4*at-tc:2+ga:6&#39;)</span>
+<span class="sd">    &#39;A5T del6to7 ins10GA&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_mutation_str(&#39;:4*at-tc:2+ga:6&#39;, offset=2)</span>
+<span class="sd">    &#39;A7T del8to9 ins12GA&#39;</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_mutation_str(&#39;:45&#39;)</span>
+<span class="sd">    &#39;&#39;</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Mutation strings use &quot;human readable&quot; indexing, so the first nucleotide of</span>
+<span class="sd">    the sequence is 1 and deletions are inclusive of the last number.</span>
+
+<span class="sd">    Changes from ambiguous nucleotides to any other identity are **not**</span>
+<span class="sd">    considered mutations in the returned strings.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq_loc</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">offset</span>
+    <span class="n">mut_strs_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">cs_op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+        <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="n">cs_op_len_target</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+                <span class="n">sub</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">seq_loc</span><span class="p">),</span> <span class="n">cs_op</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">mut_strs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span><span class="p">:</span>
+            <span class="n">ins</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;ins&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">seq_loc</span><span class="p">),</span> <span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">upper</span><span class="p">()])</span>
+            <span class="n">mut_strs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ins</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+            <span class="n">deletion</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;del&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">seq_loc</span><span class="p">),</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span>
+                                <span class="nb">str</span><span class="p">(</span><span class="n">seq_loc</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span><span class="o">-</span><span class="mi">2</span><span class="p">)])</span>
+            <span class="n">mut_strs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deletion</span><span class="p">)</span>
+            <span class="n">seq_loc</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Invalid cs `op_type` of </span><span class="si">{op_type}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mut_strs_list</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cs_to_nt_mutation_count"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_nt_mutation_count">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_to_nt_mutation_count</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Count the number of nucleotide mutations in ``cs`` tag.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        `cs` string</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        Number of nucleotides that are mutated. Insertions / deletions</span>
+<span class="sd">        are counted as the number of nucleotides in the indel.</span>
+<span class="sd">        Changes from an ambiguous nucleotide to are **not** considered</span>
+<span class="sd">        mutations.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_nt_mutation_count(&#39;:4*nt-tc:2+g&#39;)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_nt_mutation_count(&#39;:4*gt-tc:2+g&#39;)</span>
+<span class="sd">    4</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nt_mut_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cs_op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+        <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+                <span class="n">nt_mut_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span> <span class="ow">or</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+            <span class="n">nt_mut_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">!=</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid cs `op_type` of </span><span class="si">{op_type}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">nt_mut_count</span></div>
+
+
+<div class="viewcode-block" id="cs_to_op_mutation_count"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_op_mutation_count">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">cs_to_op_mutation_count</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Count the number of mutation operations in ``cs`` tag.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cs : str</span>
+<span class="sd">        The ``cs`` tag.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        Number of mutation operations in the query sequence. Each indel or</span>
+<span class="sd">        substitution is counted as a single mutation operation regardless</span>
+<span class="sd">        of how many mutations it contains. Changes from ambiguous nucleotides</span>
+<span class="sd">        to another nucleotide are **not** counted.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_op_mutation_count(&#39;:4*nt-tc:2+g&#39;)</span>
+<span class="sd">    2</span>
+<span class="sd">    &gt;&gt;&gt; cs_to_op_mutation_count(&#39;:4*gt-tc:2+g&#39;)</span>
+<span class="sd">    3</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">op_mut_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cs_op</span> <span class="ow">in</span> <span class="n">split_cs</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
+        <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;substitution&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cs_op</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;n&#39;</span><span class="p">:</span>
+                <span class="n">op_mut_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;insertion&#39;</span> <span class="ow">or</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s1">&#39;deletion&#39;</span><span class="p">:</span>
+            <span class="n">op_mut_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">op_type</span> <span class="o">!=</span> <span class="s1">&#39;identity&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;Invalid cs `op_type` of </span><span class="si">{op_type}</span><span class="s1">.&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">op_mut_count</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">alignparse documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../alignparse.html">alignparse package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

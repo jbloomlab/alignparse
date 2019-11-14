@@ -1,0 +1,4 @@
+.. automodule:: alignparse.targets
+   :members:
+   :undoc-members:
+   :show-inheritance:

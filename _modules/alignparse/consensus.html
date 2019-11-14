@@ -1,0 +1,825 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>alignparse.consensus &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for alignparse.consensus</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">=========</span>
+<span class="sd">consensus</span>
+<span class="sd">=========</span>
+
+<span class="sd">Get consensus of sequences / mutations. Useful for grouping sequences</span>
+<span class="sd">within a barcode.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">io</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">textwrap</span>  <span class="c1"># noqa: F401</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">import</span> <span class="nn">scipy.optimize</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span>
+
+
+<span class="n">Mutations</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span>
+                        <span class="s1">&#39;Mutations&#39;</span><span class="p">,</span>
+                        <span class="p">[</span><span class="s1">&#39;substitutions&#39;</span><span class="p">,</span> <span class="s1">&#39;deletions&#39;</span><span class="p">,</span> <span class="s1">&#39;insertions&#39;</span><span class="p">])</span>
+
+
+<span class="n">_MUT_REGEX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;substitution&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[ACGTN](?P&lt;start&gt;\d+)[ACGTN]&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;deletion&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;start&gt;\d+)to\d+&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;insertion&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(?P&lt;start&gt;\d+)(?:len\d+|[ACGTN]+)&#39;</span><span class="p">),</span>
+    <span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;dict: Mutation regular expression matches.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="process_mut_str"><a class="viewcode-back" href="../../alignparse.consensus.html#alignparse.consensus.process_mut_str">[docs]</a><span class="k">def</span> <span class="nf">process_mut_str</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Process a string of mutations.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    s : str</span>
+<span class="sd">        Space-delimited mutations. Substitutions in form &#39;A6T&#39;. Deletions</span>
+<span class="sd">        in form &#39;del5to7&#39;. Insertions in form &#39;ins6len2&#39; or &#39;ins6TA&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    namedtuple</span>
+<span class="sd">        The tuple is named `Mutations` and has the following elements in order:</span>
+<span class="sd">          - `substitutions`: list of substitutions in order of sequence.</span>
+<span class="sd">          - `deletions`: list of deletions in order of sequence.</span>
+<span class="sd">          - `insertions`: list of insertions in order of sequence.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; s = &#39;A1T del5to7 G9C ins6len2 del12to12&#39;</span>
+<span class="sd">    &gt;&gt;&gt; process_mut_str(s)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    Mutations(substitutions=[&#39;A1T&#39;, &#39;G9C&#39;],</span>
+<span class="sd">              deletions=[&#39;del5to7&#39;, &#39;del12to12&#39;],</span>
+<span class="sd">              insertions=[&#39;ins6len2&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; s = &#39;A11T del5to7 G9C ins6GA del12to15 ins13AAT&#39;</span>
+<span class="sd">    &gt;&gt;&gt; process_mut_str(s)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    Mutations(substitutions=[&#39;G9C&#39;, &#39;A11T&#39;],</span>
+<span class="sd">              deletions=[&#39;del5to7&#39;, &#39;del12to15&#39;],</span>
+<span class="sd">              insertions=[&#39;ins6GA&#39;, &#39;ins13AAT&#39;])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mut_lists</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">mut_str</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">mut_type</span><span class="p">,</span> <span class="n">regex</span> <span class="ow">in</span> <span class="n">_MUT_REGEX</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">mut_str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">))</span>
+                <span class="n">mut_lists</span><span class="p">[</span><span class="n">mut_type</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">))</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cannot match mutation </span><span class="si">{mut_str}</span><span class="se">\n</span><span class="s2">(in </span><span class="si">{s}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mlist</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">mlist</span><span class="p">))</span> <span class="k">for</span> <span class="n">mlist</span> <span class="ow">in</span> <span class="n">mut_lists</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;duplicate mutation in: </span><span class="si">{s}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Mutations</span><span class="p">(</span>
+            <span class="n">substitutions</span><span class="o">=</span><span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mut_lists</span><span class="p">[</span><span class="s1">&#39;substitution&#39;</span><span class="p">])],</span>
+            <span class="n">deletions</span><span class="o">=</span><span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mut_lists</span><span class="p">[</span><span class="s1">&#39;deletion&#39;</span><span class="p">])],</span>
+            <span class="n">insertions</span><span class="o">=</span><span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">mut_lists</span><span class="p">[</span><span class="s1">&#39;insertion&#39;</span><span class="p">])],</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="add_mut_info_cols"><a class="viewcode-back" href="../../alignparse.consensus.html#alignparse.consensus.add_mut_info_cols">[docs]</a><span class="k">def</span> <span class="nf">add_mut_info_cols</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                      <span class="o">*</span><span class="p">,</span>
+                      <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;mutations&#39;</span><span class="p">,</span>
+                      <span class="n">sub_str_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">del_str_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">ins_str_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">indel_str_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">n_sub_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">n_del_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">n_ins_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">n_indel_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">overwrite_cols</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Expand information about mutations in a data frame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        Data frame with each row giving information about a variant.</span>
+<span class="sd">    mutation_col : str</span>
+<span class="sd">        Name of column in `df` with str containing space-delimited</span>
+<span class="sd">        list of mutations in format parseable by :func:`process_mut_str`.</span>
+<span class="sd">    sub_str_col : str or None</span>
+<span class="sd">        Name of added column with string giving substitutions.</span>
+<span class="sd">    del_str_col : str or None</span>
+<span class="sd">        Name of added column with string giving deletions.</span>
+<span class="sd">    ins_str_col : str or None</span>
+<span class="sd">        Name of added column with string giving insertions.</span>
+<span class="sd">    indel_str_col : str or None</span>
+<span class="sd">        Name of added column with string giving deletions and insertions.</span>
+<span class="sd">    n_sub_col : str or None</span>
+<span class="sd">        Name of added column with number of substitutions.</span>
+<span class="sd">    n_del_col : str or None</span>
+<span class="sd">        Name of added column with number of deletions.</span>
+<span class="sd">    n_ins_col : str or None</span>
+<span class="sd">        Name of added column with number of insertions.</span>
+<span class="sd">    n_indel_col : str or None</span>
+<span class="sd">        Name of added column with number of deletions and insertions.</span>
+<span class="sd">    overwrite_cols : bool</span>
+<span class="sd">        If column to be created is already in `df`, overwrite it?</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        A **copy** of `df` with the indicated columns added.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Data frame for which we get mutation info:</span>
+
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({</span>
+<span class="sd">    ...       &#39;name&#39;: [&#39;seq1&#39;, &#39;seq2&#39;, &#39;seq3&#39;],</span>
+<span class="sd">    ...       &#39;mutations&#39;: [&#39;A6G del7to8 T3A&#39;, &#39;&#39;, &#39;T5A ins5AAT del8to9&#39;],</span>
+<span class="sd">    ...       })</span>
+
+<span class="sd">    Get info on substitutions:</span>
+
+<span class="sd">    &gt;&gt;&gt; add_mut_info_cols(df, sub_str_col=&#39;subs&#39;, n_sub_col=&#39;nsubs&#39;)</span>
+<span class="sd">       name            mutations     subs  nsubs</span>
+<span class="sd">    0  seq1      A6G del7to8 T3A  T3A A6G      2</span>
+<span class="sd">    1  seq2                                    0</span>
+<span class="sd">    2  seq3  T5A ins5AAT del8to9      T5A      1</span>
+
+<span class="sd">    Get info on substitutions and indels:</span>
+
+<span class="sd">    &gt;&gt;&gt; pd.set_option(&#39;max_columns&#39;, 10)</span>
+<span class="sd">    &gt;&gt;&gt; add_mut_info_cols(df, sub_str_col=&#39;subs&#39;, n_sub_col=&#39;nsubs&#39;,</span>
+<span class="sd">    ...                   indel_str_col=&#39;indels&#39;, n_indel_col=&#39;nindels&#39;)</span>
+<span class="sd">       name            mutations     subs           indels  nsubs  nindels</span>
+<span class="sd">    0  seq1      A6G del7to8 T3A  T3A A6G          del7to8      2        1</span>
+<span class="sd">    1  seq2                                                     0        0</span>
+<span class="sd">    2  seq3  T5A ins5AAT del8to9      T5A  del8to9 ins5AAT      1        2</span>
+
+<span class="sd">    Just get counts for all types of mutations:</span>
+
+<span class="sd">    &gt;&gt;&gt; add_mut_info_cols(df, n_sub_col=&#39;nsubs&#39;, n_del_col=&#39;ndels&#39;,</span>
+<span class="sd">    ...                   n_ins_col=&#39;nins&#39;, n_indel_col=&#39;nindels&#39;)</span>
+<span class="sd">       name            mutations  nsubs  ndels  nins  nindels</span>
+<span class="sd">    0  seq1      A6G del7to8 T3A      2      1     0        1</span>
+<span class="sd">    1  seq2                           0      0     0        0</span>
+<span class="sd">    2  seq3  T5A ins5AAT del8to9      1      1     1        2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` lacks `mutation_col` </span><span class="si">{mutation_col}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">new_cols</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;substitutions_str&#39;</span><span class="p">,</span> <span class="n">sub_str_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;deletions_str&#39;</span><span class="p">,</span> <span class="n">del_str_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;insertions_str&#39;</span><span class="p">,</span> <span class="n">ins_str_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;indel_str&#39;</span><span class="p">,</span> <span class="n">indel_str_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;substitutions_n&#39;</span><span class="p">,</span> <span class="n">n_sub_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;deletions_n&#39;</span><span class="p">,</span> <span class="n">n_del_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;insertions_n&#39;</span><span class="p">,</span> <span class="n">n_ins_col</span><span class="p">),</span>
+                                  <span class="p">(</span><span class="s1">&#39;indel_n&#39;</span><span class="p">,</span> <span class="n">n_indel_col</span><span class="p">)]</span>
+                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">new_cols</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`mutation_col` also name of col to add&#39;</span><span class="p">)</span>
+    <span class="n">already_has</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">new_cols</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">already_has</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">overwrite_cols</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` already has these columns: </span><span class="si">{already_has}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_mut_info</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">process_mut_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">returnlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">new_cols</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">mut_type</span><span class="p">,</span> <span class="n">col_type</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mut_type</span> <span class="o">==</span> <span class="s1">&#39;indel&#39;</span><span class="p">:</span>
+                <span class="n">mlist</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">deletions</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">insertions</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mlist</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">mut_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">col_type</span> <span class="o">==</span> <span class="s1">&#39;str&#39;</span><span class="p">:</span>
+                <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mlist</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">col_type</span> <span class="o">==</span> <span class="s1">&#39;n&#39;</span>
+                <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mlist</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">returnlist</span>
+
+    <span class="n">mut_info_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                        <span class="p">[</span><span class="n">_mut_info</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="n">mutation_col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">],</span>
+                        <span class="n">columns</span><span class="o">=</span><span class="n">new_cols</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                   <span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+                   <span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">df</span>
+            <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">new_cols</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mut_info_df</span><span class="p">)</span>
+            <span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">_LnL_error_rate</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Log likelihood of sequences per group as function of error rate.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Used as utility function for computing the empirical accuracy by</span>
+<span class="sd">    :func:`empirical_accuracy`. See the docs for that function to understand</span>
+<span class="sd">    the notation / nomenclature used here.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        A different row for each group of sequences.</span>
+<span class="sd">    n_col : str</span>
+<span class="sd">        Column in `df` with number of sequences per group.</span>
+<span class="sd">    u_col : str</span>
+<span class="sd">        Column in `df` with number of unique sequences per group.</span>
+<span class="sd">    count_col : str</span>
+<span class="sd">        Column in `df` with number of groups with this value of :math:`n`</span>
+<span class="sd">        and :math:`u`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame(</span>
+<span class="sd">    ...         [[4, 3, 1],</span>
+<span class="sd">    ...          [4, 2, 2],</span>
+<span class="sd">    ...          [4, 1, 1],</span>
+<span class="sd">    ...          ],</span>
+<span class="sd">    ...         columns=[&#39;n&#39;, &#39;u&#39;, &#39;count&#39;],</span>
+<span class="sd">    ...         )</span>
+<span class="sd">    &gt;&gt;&gt; lnl = _LnL_error_rate(df, n_col=&#39;n&#39;, u_col=&#39;u&#39;, count_col=&#39;count&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; round(lnl.maxlik_eps(), 3)</span>
+<span class="sd">    0.25</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_col</span><span class="p">,</span> <span class="n">u_col</span><span class="p">,</span> <span class="n">count_col</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span>
+            <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                <span class="n">n</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">n_col</span><span class="p">],</span>
+                <span class="n">u</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">u_col</span><span class="p">],</span>
+                <span class="n">count</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">count_col</span><span class="p">],</span>
+                <span class="n">binom</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">binom</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">delta_un</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">lnlik</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Log likelihood for error rate `eps`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span> <span class="o">*</span>
+                   <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;binom&#39;</span><span class="p">]</span> <span class="o">*</span>
+                             <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span>
+                             <span class="n">eps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;u&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;delta_un&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">eps</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span>
+                             <span class="p">)</span>
+                   <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">neg_lnlik</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Negative log likelihood for error rate `epsilon`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">lnlik</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">maxlik_eps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Maximum likelihood value of error rate `epsilon`.&quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">minimize_scalar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neg_lnlik</span><span class="p">,</span>
+                                             <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">1e-8</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">1e-8</span><span class="p">),</span>
+                                             <span class="n">method</span><span class="o">=</span><span class="s1">&#39;bounded&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;optimization failed:</span><span class="se">\n</span><span class="si">{res}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">x</span>
+
+
+<div class="viewcode-block" id="empirical_accuracy"><a class="viewcode-back" href="../../alignparse.consensus.html#alignparse.consensus.empirical_accuracy">[docs]</a><span class="k">def</span> <span class="nf">empirical_accuracy</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                       <span class="o">*</span><span class="p">,</span>
+                       <span class="n">group_cols</span><span class="o">=</span><span class="s1">&#39;barcode&#39;</span><span class="p">,</span>
+                       <span class="n">upstream_group_cols</span><span class="o">=</span><span class="s1">&#39;library&#39;</span><span class="p">,</span>
+                       <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;mutations&#39;</span><span class="p">,</span>
+                       <span class="n">accuracy_col</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span>
+                       <span class="n">sort_mutations</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Accuracy from number of identical sequences in a group (i.e., barcode).</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The accuracy :math:`1 - \epsilon` is calculated as follows:</span>
+
+<span class="sd">    Let :math:`\epsilon` be the probability a sequence has an error.</span>
+<span class="sd">    Consider a group of :math:`n` sequences that should be identical in</span>
+<span class="sd">    the absence of errors (i.e., they all have the same barcode), and</span>
+<span class="sd">    assume errors only make sequences **different** (the chance of two</span>
+<span class="sd">    sequences having the same error is very low). We would like to</span>
+<span class="sd">    calculate the probability of observing :math:`u` unique sequences in</span>
+<span class="sd">    the group given :math:`\epsilon` and :math:`n`.</span>
+
+<span class="sd">    First, consider the case where there are two sequences in the group</span>
+<span class="sd">    (:math:`n = 2`). The probability of having :math:`u = 1` unique</span>
+<span class="sd">    sequences in the group is the probability that neither have an error:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \Pr\left(u=1 | n=2, \epsilon\right) = \left(1 - \epsilon\right)^2.</span>
+
+<span class="sd">    The probability of having :math:`u = 2` unique sequences is the</span>
+<span class="sd">    the probability that either one or both have errors:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \Pr\left(u=2 | n=2, \epsilon\right) = 2\left(1 - \epsilon\right)\epsilon</span>
+<span class="sd">       + \epsilon^2.</span>
+
+<span class="sd">    Generalizing to arbitrary :math:`n`, we have:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \Pr\left(u | n, \epsilon\right) = \binom{n}{u-1}</span>
+<span class="sd">       \left(1 - \epsilon\right)^{n - u + 1} \epsilon^{u - 1} +</span>
+<span class="sd">       \delta_{un} \epsilon^n</span>
+
+<span class="sd">    where :math:`\binom{n}{u-1}` is the binomial coefficient and</span>
+<span class="sd">    :math:`\delta_{un}` is the Kronecker delta.</span>
+
+<span class="sd">    Let there be :math:`G` groups of sequences, with the size and number</span>
+<span class="sd">    of unique sequences in group :math:`g` be :math:`n_g` and :math:`u_g`</span>
+<span class="sd">    (where :math:`g = 1, \ldots, G`).</span>
+<span class="sd">    The overall likelihood :math:`L` of the observed numbers of unique</span>
+<span class="sd">    sequences given the group sizes and error rate is:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       L &amp;=&amp; \Pr\left(\left\{u_g\right\}|\left\{n_g\right\},\epsilon\right) \\</span>
+<span class="sd">       &amp;=&amp; \prod_g \Pr\left(u_g | n_g, \epsilon\right).</span>
+
+<span class="sd">    To find the maximum likelihood of error rate, we simply use numerical</span>
+<span class="sd">    optimization to find the value of :math:`\epsilon` that maximizes</span>
+<span class="sd">    :math:`L`. In practice, we actually maximize :math:`\ln\left(L\right)`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        Each row gives data for a different sequence.</span>
+<span class="sd">    group_cols : str or list</span>
+<span class="sd">        Column(s) in `df` indicating how we group sequences before computing</span>
+<span class="sd">        fraction within group that is identical.</span>
+<span class="sd">    upstream_group_cols : str or None or list</span>
+<span class="sd">        Column(s) in `df` that we use to group **before** doing the grouping</span>
+<span class="sd">        for computing fraction identical. So a different average fraction</span>
+<span class="sd">        will be returned for each of these upstream groups.</span>
+<span class="sd">    mutation_col : str</span>
+<span class="sd">        Column in `df` that we compare when determining if sequences are</span>
+<span class="sd">        identical. Typically list of mutations or sequences themselves.</span>
+<span class="sd">    accuracy_col : str</span>
+<span class="sd">        Name of column in returned data frame that gives empirical accuracy.</span>
+<span class="sd">    sort_mutations : bool</span>
+<span class="sd">        Useful if you have strings of space-delimited mutations not guaranteed</span>
+<span class="sd">        to be consistently ordered. If `True`, sort such space-delimited</span>
+<span class="sd">        mutations.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pandas.DataFrame</span>
+<span class="sd">        Has all columns in `upstream_group_cols` plus the new column with</span>
+<span class="sd">        name given by `accuracy_col`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; df = pd.DataFrame({</span>
+<span class="sd">    ...         &#39;barcode&#39;: [&#39;AT&#39;, &#39;AT&#39;, &#39;TG&#39;, &#39;TA&#39;, &#39;TA&#39;, &#39;TA&#39;],</span>
+<span class="sd">    ...         &#39;mutations&#39;: [&#39;A1G&#39;, &#39;A1G&#39;, &#39;&#39;, &#39;T2A C6G&#39;, &#39;T5C&#39;, &#39;C6G T2A&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; with pd.option_context(&#39;precision&#39;, 4):</span>
+<span class="sd">    ...     empirical_accuracy(df, upstream_group_cols=None)</span>
+<span class="sd">       accuracy</span>
+<span class="sd">    0    0.7692</span>
+
+<span class="sd">    If we do the same without sorting the mutations, we get lower values</span>
+<span class="sd">    as &#39;T2A C6G&#39; and &#39;C6G T2A&#39; are then considered as different:</span>
+
+<span class="sd">    &gt;&gt;&gt; with pd.option_context(&#39;precision&#39;, 4):</span>
+<span class="sd">    ...     empirical_accuracy(df, upstream_group_cols=None,</span>
+<span class="sd">    ...                        sort_mutations=False)</span>
+<span class="sd">       accuracy</span>
+<span class="sd">    0    0.4766</span>
+
+<span class="sd">    Now another example with two libraries and non-standard column</span>
+<span class="sd">    names. Note that we only get results for the two libraries</span>
+<span class="sd">    with barcodes found multiple times:</span>
+
+<span class="sd">    &gt;&gt;&gt; df2 = pd.DataFrame({</span>
+<span class="sd">    ...     &#39;bc&#39;  :[&#39;AT&#39;, &#39;AT&#39;, &#39;TG&#39;, &#39;TA&#39;, &#39;TA&#39;, &#39;TA&#39;, &#39;TA&#39;],</span>
+<span class="sd">    ...     &#39;var&#39; :[&#39;v1&#39;, &#39;v1&#39;, &#39;v2&#39;, &#39;v3&#39;, &#39;v4&#39;, &#39;v3&#39;, &#39;v3&#39;],</span>
+<span class="sd">    ...     &#39;lib&#39; :[&#39;s1&#39;, &#39;s1&#39;, &#39;s2&#39;, &#39;s3&#39;, &#39;s3&#39;, &#39;s3&#39;, &#39;s4&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; with pd.option_context(&#39;precision&#39;, 4):</span>
+<span class="sd">    ...     empirical_accuracy(df2, upstream_group_cols=&#39;lib&#39;, group_cols=&#39;bc&#39;,</span>
+<span class="sd">    ...                        mutation_col=&#39;var&#39;, sort_mutations=False)</span>
+<span class="sd">      lib  accuracy</span>
+<span class="sd">    0  s1    1.0000</span>
+<span class="sd">    1  s3    0.6667</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">reserved_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_n&#39;</span><span class="p">,</span> <span class="s1">&#39;_u&#39;</span><span class="p">,</span> <span class="s1">&#39;_ngroups&#39;</span><span class="p">,</span> <span class="s1">&#39;_dummy&#39;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">reserved_cols</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` cannot have column named </span><span class="si">{col}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">accuracy_col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` has column `accuracy_col` </span><span class="si">{accuracy_col}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">group_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_cols</span><span class="p">]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">upstream_group_cols</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">upstream_group_cols</span> <span class="o">==</span> <span class="p">[]:</span>
+        <span class="n">drop_upstream_col</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">upstream_group_cols</span> <span class="o">=</span> <span class="s1">&#39;_dummy&#39;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">upstream_group_cols</span><span class="p">:</span> <span class="s1">&#39;dummy&#39;</span><span class="p">})</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">drop_upstream_col</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">upstream_group_cols</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">upstream_group_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">upstream_group_cols</span><span class="p">]</span>
+
+    <span class="n">cols</span> <span class="o">=</span> <span class="n">group_cols</span> <span class="o">+</span> <span class="n">upstream_group_cols</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;duplicate in `group_cols` / `upstream_group_cols`&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`mutation_col` </span><span class="si">{mutation_col}</span><span class="s2"> also grouping column&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">mutation_col</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;no column </span><span class="si">{col}</span><span class="s2"> in `df`: {list(df.columns)}&quot;</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">df</span>
+        <span class="c1"># number of sequences in each group</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">_n</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols</span><span class="p">)[</span><span class="n">mutation_col</span><span class="p">]</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;count&#39;</span><span class="p">))</span>
+        <span class="c1"># only retain groups with &gt;1 sequence</span>
+        <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;_n &gt; 1&#39;</span><span class="p">)</span>
+        <span class="c1"># sort mutations</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">mutation_col</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span>
+                                  <span class="n">x</span><span class="p">[</span><span class="n">mutation_col</span><span class="p">]</span>
+                                  <span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())))</span>
+                                  <span class="k">if</span> <span class="n">sort_mutations</span> <span class="k">else</span> <span class="n">x</span><span class="p">[</span><span class="n">mutation_col</span><span class="p">]</span>
+                                  <span class="p">)}</span>
+                <span class="p">)</span>
+        <span class="c1"># number of unique sequences in each group</span>
+        <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">_u</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">cols</span><span class="p">)[</span><span class="n">mutation_col</span><span class="p">]</span>
+                              <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s1">&#39;nunique&#39;</span><span class="p">))</span>
+                <span class="p">)</span>
+        <span class="c1"># number of groups with each combination of n and u</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">upstream_group_cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;_n&#39;</span><span class="p">,</span> <span class="s1">&#39;_u&#39;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;_ngroups&#39;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="c1"># get error rate</span>
+        <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">upstream_group_cols</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">_LnL_error_rate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                             <span class="n">n_col</span><span class="o">=</span><span class="s1">&#39;_n&#39;</span><span class="p">,</span>
+                                             <span class="n">u_col</span><span class="o">=</span><span class="s1">&#39;_u&#39;</span><span class="p">,</span>
+                                             <span class="n">count_col</span><span class="o">=</span><span class="s1">&#39;_ngroups&#39;</span>
+                                             <span class="p">)</span><span class="o">.</span><span class="n">maxlik_eps</span><span class="p">()</span>
+               <span class="p">)</span>
+        <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">accuracy_col</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">drop_upstream_col</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">upstream_group_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">upstream_group_cols</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="simple_mutconsensus"><a class="viewcode-back" href="../../alignparse.consensus.html#alignparse.consensus.simple_mutconsensus">[docs]</a><span class="k">def</span> <span class="nf">simple_mutconsensus</span><span class="p">(</span><span class="n">df</span><span class="p">,</span>
+                        <span class="o">*</span><span class="p">,</span>
+                        <span class="n">group_cols</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;barcode&#39;</span><span class="p">),</span>
+                        <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;mutations&#39;</span><span class="p">,</span>
+                        <span class="n">max_sub_diffs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                        <span class="n">max_indel_diffs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">max_minor_sub_frac</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+                        <span class="n">max_minor_indel_frac</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+                        <span class="n">support_col</span><span class="o">=</span><span class="s1">&#39;variant_call_support&#39;</span><span class="p">,</span>
+                        <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get simple consensus of mutations with group (i.e., barcode).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    df : pandas.DataFrame</span>
+<span class="sd">        Each row gives data on mutations for a different sequence.</span>
+<span class="sd">    group_cols : list, tuple, or str</span>
+<span class="sd">        Group all sequences that share values in these column(s) of `df`.</span>
+<span class="sd">    mutation_col : str</span>
+<span class="sd">        Column in `df` with mutations in form that can be processed by</span>
+<span class="sd">        :func:`processe_mut_str`.</span>
+<span class="sd">    max_sub_diffs : int</span>
+<span class="sd">        Drop groups where any variant differs from all other variants</span>
+<span class="sd">        by more than this many substitution (point mutation) differences.</span>
+<span class="sd">    max_indel_diffs : int</span>
+<span class="sd">        Drop groups where any variant differs from all other variants</span>
+<span class="sd">        by more than this many indel differences.</span>
+<span class="sd">    max_minor_sub_frac : float</span>
+<span class="sd">        Drop groups with a minor (non-consensus) substitution in more than the</span>
+<span class="sd">        **ceiling** of this fraction times the number of sequences in group.</span>
+<span class="sd">    max_minor_indel_frac : float</span>
+<span class="sd">        Drop groups with a minor (non-consensus) indel in more than the</span>
+<span class="sd">        **ceiling** of this fraction times the number of sequences in group.</span>
+<span class="sd">    support_col : str</span>
+<span class="sd">          Name of column in returned `consensus` data frame with number</span>
+<span class="sd">          of sequences supporting the consensus call.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The rationale behind this consensus calling scheme is that we want</span>
+<span class="sd">    to build a consensus except in the following two cases, each of which</span>
+<span class="sd">    indicate a likely problem **beyond** simple rare sequencing errors (such</span>
+<span class="sd">    as strand exchange or barcode collisions):</span>
+
+<span class="sd">      1. A sequence within the group differs by too much from others in</span>
+<span class="sd">         group (given by `max_sub_diffs` and `max_indel_diffs`).</span>
+
+<span class="sd">      2. There are &quot;minor&quot; (non-consensus) mutations present at too high</span>
+<span class="sd">         frequency (given by `max_minor_indel_frac` and `max_minor_sub_frac`).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        The returned tuple `(consensus, dropped)` consists of two</span>
+<span class="sd">        pandas data frames:</span>
+
+<span class="sd">          - `consensus`: Gives consensus for all groups for which</span>
+<span class="sd">            this can be constructed. Columns are `group_cols`, column</span>
+<span class="sd">            with name given by `mutation_col` that gives consensus mutations,</span>
+<span class="sd">            and a column with name given by `support_col` that gives the</span>
+<span class="sd">            number of variants used to generate the consensus.</span>
+
+<span class="sd">          - `dropped`: Gives each dropped group, the reason it was dropped,</span>
+<span class="sd">            and the number of variants (sequences) in that group.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Create a dummy CSV file with our variants and mutations:</span>
+
+<span class="sd">    &gt;&gt;&gt; f = io.StringIO()</span>
+<span class="sd">    &gt;&gt;&gt; _ = f.write(textwrap.dedent(&#39;&#39;&#39;</span>
+<span class="sd">    ...        library,barcode,mutations</span>
+<span class="sd">    ...        lib_1,AG,A2C del5to7</span>
+<span class="sd">    ...        lib_1,AG,A2C</span>
+<span class="sd">    ...        lib_1,TA,G3A ins4len3</span>
+<span class="sd">    ...        lib_2,TA,C5A T6C</span>
+<span class="sd">    ...        lib_2,TA,ins5len1 T6C</span>
+<span class="sd">    ...        lib_2,TA,T6C</span>
+<span class="sd">    ...        lib_2,TA,A4G T6C</span>
+<span class="sd">    ...        lib_2,TG,T6A</span>
+<span class="sd">    ...        lib_2,TG,A2G</span>
+<span class="sd">    ...        lib_2,GG,del1to4</span>
+<span class="sd">    ...        lib_2,GG,A1C</span>
+<span class="sd">    ...        lib_2,AA,</span>
+<span class="sd">    ...        lib_2,AA,</span>
+<span class="sd">    ...        lib_2,AA,T6C</span>
+<span class="sd">    ...        lib_2,AA,T6C</span>
+<span class="sd">    ...        lib_3,AA,ins1len1 del1to2 T6G</span>
+<span class="sd">    ...        lib_3,AA,del5to7 T6G</span>
+<span class="sd">    ...        &#39;&#39;&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; _ = f.seek(0)</span>
+
+<span class="sd">    Read into data frame. Note use of `na_filter=False` so empty strings</span>
+<span class="sd">    are read as such rather than as `na` values:</span>
+
+<span class="sd">    &gt;&gt;&gt; df = pd.read_csv(f, na_filter=False)</span>
+
+<span class="sd">    Get the consensus mutations, and the dropped libraries / barcodes:</span>
+
+<span class="sd">    &gt;&gt;&gt; consensus, dropped = simple_mutconsensus(df)</span>
+<span class="sd">    &gt;&gt;&gt; consensus</span>
+<span class="sd">      library barcode     mutations  variant_call_support</span>
+<span class="sd">    0   lib_1      AG           A2C                     2</span>
+<span class="sd">    1   lib_1      TA  G3A ins4len3                     1</span>
+<span class="sd">    2   lib_2      GG                                   2</span>
+<span class="sd">    3   lib_2      TA           T6C                     4</span>
+<span class="sd">    &gt;&gt;&gt; dropped</span>
+<span class="sd">      library barcode              drop_reason  nseqs</span>
+<span class="sd">    0   lib_2      AA  minor subs too frequent      4</span>
+<span class="sd">    1   lib_2      TG      subs diff too large      2</span>
+<span class="sd">    2   lib_3      AA    indels diff too large      2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">group_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_cols</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">group_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">group_cols</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">group_cols</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` lacks `group_cols`: </span><span class="si">{group_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">in</span> <span class="n">group_cols</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`mutation_col` </span><span class="si">{mutation_col}</span><span class="s2"> in `group_cols`&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` lacks `mutation_col`: </span><span class="si">{mutation_col}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">group_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">mutation_col</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`df` contains `na` (null) entries. It is possible &#39;</span>
+                         <span class="s1">&#39;that you read a CSV without using `na_filter=False` &#39;</span>
+                         <span class="s1">&#39;so that empty mutation strings were read as `na` &#39;</span>
+                         <span class="s1">&#39;rather than empty strings.&#39;</span><span class="p">)</span>
+
+    <span class="n">dropped</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">consensus</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">g_df</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="n">mutation_col</span><span class="p">]:</span>
+
+        <span class="n">nseqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g_df</span><span class="p">)</span>
+        <span class="n">half_nseqs</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">nseqs</span>
+        <span class="k">assert</span> <span class="n">nseqs</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="n">mutations</span> <span class="o">=</span> <span class="p">[</span><span class="n">process_mut_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g_df</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+
+        <span class="n">drop_reason</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">g_consensus</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">mutlists</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;subs&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">substitutions</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mutations</span><span class="p">],</span>
+                    <span class="s1">&#39;indels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">deletions</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">insertions</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">mutations</span><span class="p">],</span>
+                    <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">mtype</span><span class="p">,</span> <span class="n">maxd</span><span class="p">,</span> <span class="n">max_frac</span> <span class="ow">in</span> <span class="p">[</span>
+                        <span class="p">(</span><span class="s1">&#39;subs&#39;</span><span class="p">,</span> <span class="n">max_sub_diffs</span><span class="p">,</span> <span class="n">max_minor_sub_frac</span><span class="p">),</span>
+                        <span class="p">(</span><span class="s1">&#39;indels&#39;</span><span class="p">,</span> <span class="n">max_indel_diffs</span><span class="p">,</span> <span class="n">max_minor_indel_frac</span><span class="p">),</span>
+                        <span class="p">]:</span>
+
+            <span class="c1"># are max_sub_diffs and max_indel_diffs satisfied?</span>
+            <span class="n">ndiffs_by_seq</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">m1set</span><span class="p">),</span> <span class="p">(</span><span class="n">i2</span><span class="p">,</span> <span class="n">m2set</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span>
+                        <span class="nb">enumerate</span><span class="p">(</span><span class="n">mutlists</span><span class="p">[</span><span class="n">mtype</span><span class="p">]),</span> <span class="mi">2</span><span class="p">):</span>
+                <span class="n">ndiffs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">setxor1d</span><span class="p">(</span><span class="n">m1set</span><span class="p">,</span> <span class="n">m2set</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
+                <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ndifflist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxd</span> <span class="k">for</span> <span class="n">ndifflist</span>
+                   <span class="ow">in</span> <span class="n">ndiffs_by_seq</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">drop_reason</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{mtype}</span><span class="s2"> diff too large&quot;</span>
+                <span class="k">break</span>
+
+            <span class="c1"># see if max_minor_mut_frac is satisfied</span>
+            <span class="n">max_muts</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">max_frac</span> <span class="o">*</span> <span class="n">nseqs</span><span class="p">)</span>
+            <span class="n">nseqs_minus_max_muts</span> <span class="o">=</span> <span class="n">nseqs</span> <span class="o">-</span> <span class="n">max_muts</span>
+            <span class="n">counts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+                            <span class="n">mutlists</span><span class="p">[</span><span class="n">mtype</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">max_muts</span> <span class="o">&lt;</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">nseqs_minus_max_muts</span> <span class="k">for</span> <span class="n">count</span>
+                   <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">drop_reason</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;minor </span><span class="si">{mtype}</span><span class="s2"> too frequent&quot;</span>
+                <span class="k">break</span>
+
+            <span class="c1"># consensus for mutation type</span>
+            <span class="n">g_consensus</span> <span class="o">+=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">half_nseqs</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">drop_reason</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dropped</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">drop_reason</span><span class="p">,</span> <span class="n">nseqs</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">consensus</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">g_consensus</span><span class="p">),</span> <span class="n">nseqs</span><span class="p">))</span>
+
+    <span class="n">consensus</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">consensus</span><span class="p">,</span>
+                             <span class="n">columns</span><span class="o">=</span><span class="n">group_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">mutation_col</span><span class="p">,</span> <span class="n">support_col</span><span class="p">])</span>
+    <span class="n">dropped</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dropped</span><span class="p">,</span>
+                           <span class="n">columns</span><span class="o">=</span><span class="n">group_cols</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;drop_reason&#39;</span><span class="p">,</span> <span class="s1">&#39;nseqs&#39;</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">consensus</span><span class="p">,</span> <span class="n">dropped</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">alignparse documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../alignparse.html">alignparse package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

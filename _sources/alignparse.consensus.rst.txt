@@ -1,0 +1,4 @@
+.. automodule:: alignparse.consensus
+   :members:
+   :undoc-members:
+   :show-inheritance:
