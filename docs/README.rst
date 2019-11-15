@@ -80,7 +80,7 @@ First, remove any existing docs::
 
 Now clone the existing ``gh-pages`` branch in ``_build/html``::
 
-    git clone -b gh-pages _build/html
+    git clone -b gh-pages https://github.com/jbloomlab/alignparse _build/html
 
 Next, build the docs::
 
