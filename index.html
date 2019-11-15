@@ -12,6 +12,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,7 +37,7 @@
   <div class="section" id="alignparse-documentation">
 <h1><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation<a class="headerlink" href="#alignparse-documentation" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> is a Python package written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.
-It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to targets, and then filter these alignments based on user-provided specifications and parse out sequences or mutations.</p>
+It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to targets, filter these alignments based on user-provided specifications, and parse out user-defined sequence ‘features’ and/or mutations.</p>
 <p>See below for information and examples of how to use this package.</p>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
@@ -45,7 +46,10 @@ It is designed to align long sequencing reads (such as those from PacBio circula
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recA_DMS.html">RecA deep mutational scanning libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lasv_pilot.html">Lassa virus glycoprotein PacBio sequencing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flu_virus_seq_example.html">Single-cell virus sequencing</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a><ul>
@@ -150,7 +154,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

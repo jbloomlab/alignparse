@@ -1,0 +1,2309 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lassa virus glycoprotein PacBio sequencing" href="lasv_pilot.html" />
+    <link rel="prev" title="Examples" href="examples.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="RecA-deep-mutational-scanning-libraries">
+<h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> to process PacBio circular consensus sequencing of a barcoded library of RecA variants for deep mutational scanning.</p>
+<div class="section" id="Set-up-for-analysis">
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Import necessary Python modules. We use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">alignparse.ccs</span>
+<span class="kn">import</span> <span class="nn">alignparse.consensus</span>
+<span class="kn">import</span> <span class="nn">alignparse.minimap2</span>
+<span class="kn">import</span> <span class="nn">alignparse.targets</span>
+<span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="k">import</span> <span class="n">CBPALETTE</span>
+
+<span class="kn">import</span> <span class="nn">dms_variants.plotnine_themes</span>
+<span class="kn">import</span> <span class="nn">dms_variants.utils</span>
+</pre></div>
+</div>
+</div>
+<p>Suppress warnings that clutter output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Set <a class="reference external" href="https://plotnine.readthedocs.io/en/stable/">plotnine</a> theme to the one defined in <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">theme_set</span><span class="p">(</span><span class="n">dms_variants</span><span class="o">.</span><span class="n">plotnine_themes</span><span class="o">.</span><span class="n">theme_graygrid</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>Directory for output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./output_files/&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Target-amplicon">
+<h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this headline">¶</a></h2>
+<p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined as a Genbank file. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <code class="docutils literal notranslate"><span class="pre">alignparse</span></code>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">recA_targetfile</span> <span class="o">=</span> <span class="s1">&#39;input_files/recA_amplicon.gb&#39;</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">recA_targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LOCUS       RecA_PacBio_amplicon    1342 bp ds-DNA     linear       06-AUG-2018
+DEFINITION  PacBio amplicon for deep mutational scanning of E. coli RecA.
+ACCESSION   None
+VERSION
+SOURCE      Danny Lawrence
+  ORGANISM  .
+COMMENT     PacBio amplicon for RecA libraries.
+COMMENT     There are single nucleotide tags in the 5&#39; and 3&#39; termini to measure strand exchange.
+FEATURES             Location/Qualifiers
+     termini5        1..147
+                     /label=&#34;termini 5&#39; of gene&#34;
+     gene            148..1206
+                     /label=&#34;RecA gene&#34;
+     spacer          1207..1285
+                     /label=&#34;spacer between gene &amp; barcode&#34;
+     barcode         1286..1303
+                     /label=&#34;18 nucleotide barcode&#34;
+     termini3        1304..1342
+                     /label=&#34;termini 3&#39; of barcode&#34;
+     variant_tag5    33..33
+                     /label=&#34;5&#39; variant tag&#34;
+     variant_tag3    1311..1311
+                     /label=&#34;3&#39; variant tag&#34;
+ORIGIN
+        1 gcacggcgtc acactttgct atgccatagc atRtttatcc ataagattag cggatcctac
+       61 ctgacgcttt ttatcgcaac tctctactgt ttctccataa cagaacatat tgactatccg
+      121 gtattacccg gcatgacagg agtaaaaATG GCTATCGACG AAAACAAACA GAAAGCGTTG
+      181 GCGGCAGCAC TGGGCCAGAT TGAGAAACAA TTTGGTAAAG GCTCCATCAT GCGCCTGGGT
+      241 GAAGACCGTT CCATGGATGT GGAAACCATC TCTACCGGTT CGCTTTCACT GGATATCGCG
+      301 CTTGGGGCAG GTGGTCTGCC GATGGGCCGT ATCGTCGAAA TCTACGGACC GGAATCTTCC
+      361 GGTAAAACCA CGCTGACGCT GCAGGTGATC GCCGCAGCGC AGCGTGAAGG TAAAACCTGT
+      421 GCGTTTATCG ATGCTGAACA CGCGCTGGAC CCAATCTACG CACGTAAACT GGGCGTCGAT
+      481 ATCGACAACC TGCTGTGCTC CCAGCCGGAC ACCGGCGAGC AGGCACTGGA AATCTGTGAC
+      541 GCCCTGGCGC GTTCTGGCGC AGTAGACGTT ATCGTCGTTG ACTCCGTGGC GGCACTGACG
+      601 CCGAAAGCGG AAATCGAAGG CGAAATCGGC GACTCTCATA TGGGCCTTGC GGCACGTATG
+      661 ATGAGCCAGG CGATGCGTAA GCTGGCGGGT AACCTGAAGC AGTCCAACAC GCTGCTGATC
+      721 TTCATCAACC AGATCCGTAT GAAAATTGGT GTGATGTTCG GCAACCCGGA AACCACTACC
+      781 GGTGGTAACG CGCTGAAATT CTACGCCTCT GTTCGTCTCG ACATCCGTCG TATCGGCGCG
+      841 GTGAAAGAGG GCGAAAACGT GGTGGGTAGC GAAACCCGCG TGAAAGTGGT GAAGAACAAA
+      901 ATCGCTGCGC CGTTTAAACA GGCTGAATTC CAGATCCTCT ACGGCGAAGG TATCAACTTC
+      961 TACGGCGAAC TGGTTGACCT GGGCGTAAAA GAGAAGCTGA TCGAGAAAGC AGGCGCGTGG
+     1021 TACAGCTACA AAGGTGAGAA GATCGGTCAG GGTAAAGCGA ATGCGACTGC CTGGCTGAAA
+     1081 GATAACCCGG AAACCGCGAA AGAGATCGAG AAGAAAGTAC GTGAGTTGCT GCTGAGCAAC
+     1141 CCGAACTCAA CGCCGGATTT CTCTGTAGAT GATAGCGAAG GCGTAGCAGA AACTAACGAA
+     1201 GATTTTTAAt cgtcttgttt gatacacaag ggtcgcatct gcggcccttt tgctttttta
+     1261 agttgtaagg atatgccatt ctagannnnn nnnnnnnnnn nnnagatcgg Yagagcgtcg
+     1321 tgtagggaaa gagtgtggta cc
+//
+
+</pre></div></div>
+</div>
+<p>Along with the Genbank file giving the sequence of the amplicon, we have a YAML file specifying how to filter and parse alignments to this amplicon. Below is the text of the YAML file.</p>
+<p>As you can see below, the YAML file specifies how well alignments must match the target in order to be retained. The query clipping indicates the max amount of the query that can be clipped at each end prior to the alignment. For each feature, there is a number indicating the max allowable number of nucleotides of that feature can be clipped in the alignment, as well as the max allowable number of mutated nucleotides (indels count in proportion to the number of nucleotide mutations) and mutation
+“operations” (indels count as one operation regardless of size). Below the mutation operation filter is all set to <code class="docutils literal notranslate"><span class="pre">null</span></code>, meaning that for this analysis all the filtering is done on the number of mutated nucleotides. When filters are missing for a feature, they are automatically set to zero.</p>
+<p>The YAML file also specifies what information is parsed from alignments that are not filtered. As you can see, for some features we parse the mutations or the full sequence of the feature, along with the accuracy of that feature in the sequencing query (computed from the Q-values):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">recA_parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/recA_feature_parse_specs.yaml&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">recA_parse_specs_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+RecA_PacBio_amplicon:
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  gene:
+    filter:
+      mutation_nt_count: 30
+      mutation_op_count: null
+    return: [mutations, accuracy]
+  spacer:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+  barcode:
+    return: [sequence, accuracy]
+  termini3:
+    filter:
+      clip3: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  variant_tag5:
+    return: sequence
+  variant_tag3:
+    return: sequence
+
+</pre></div></div>
+</div>
+<p>We now read the amplicon into an <code class="docutils literal notranslate"><span class="pre">alignparse.targets.Targets</span></code> object with the feature-parsing specs:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
+                <span class="n">seqsfile</span><span class="o">=</span><span class="n">recA_targetfile</span><span class="p">,</span>
+                <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">recA_parse_specs_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>(Note that although we just have one target in this example, there can be multiple targets specifies in <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> and <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> when initializing a <code class="docutils literal notranslate"><span class="pre">Targets</span></code>.)</p>
+<p>We can plot the <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_16_0.png" src="_images/recA_DMS_16_0.png" />
+</div>
+</div>
+<p>We can also look at the featue parsing specifications as a dict or YAML string (here we do it as YAML string). Note that all the defaults that were not specified in the YAML file above have now been filled in:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s1">&#39;yaml&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+RecA_PacBio_amplicon:
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip3: 0
+    return: []
+  gene:
+    filter:
+      mutation_nt_count: 30
+      mutation_op_count: null
+      clip5: 0
+      clip3: 0
+    return:
+    - mutations
+    - accuracy
+  spacer:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip5: 0
+      clip3: 0
+    return: []
+  barcode:
+    return:
+    - sequence
+    - accuracy
+    filter:
+      clip5: 0
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+  termini3:
+    filter:
+      clip3: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip5: 0
+    return: []
+  variant_tag5:
+    return:
+    - sequence
+    filter:
+      clip5: 0
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+  variant_tag3:
+    return:
+    - sequence
+    filter:
+      clip5: 0
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="PacBio-CCSs">
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
+<p>We will align and parse PacBio circular consensus sequences (CCSs). FASTQ files with these CCSs along with associated report files were generated from the PacBio subreads <code class="docutils literal notranslate"><span class="pre">*.bam</span></code> file using the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program, version 4.0.0, (see <a class="reference external" href="https://github.com/PacificBiosciences/ccs">here</a> for details on <code class="docutils literal notranslate"><span class="pre">ccs</span></code>) using a command like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccs</span> \
+    <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">length</span> <span class="mi">50</span> \
+    <span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">length</span> <span class="mi">5000</span> \
+    <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">passes</span> <span class="mi">3</span> \
+    <span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">rq</span> <span class="mf">0.999</span> \
+    <span class="o">--</span><span class="n">report</span><span class="o">-</span><span class="n">file</span> <span class="n">recA_lib</span><span class="o">-</span><span class="mi">1</span><span class="n">_report</span><span class="o">.</span><span class="n">txt</span> \
+    <span class="o">--</span><span class="n">num</span><span class="o">-</span><span class="n">threads</span> <span class="mi">16</span> \
+    <span class="n">recA_lib</span><span class="o">-</span><span class="mi">1</span><span class="n">_subreads</span><span class="o">.</span><span class="n">bam</span> \
+    <span class="n">recA_lib</span><span class="o">-</span><span class="mi">1</span><span class="n">_ccs</span><span class="o">.</span><span class="n">fastq</span>
+</pre></div>
+</div>
+<p>Note that to make this example fast, we have extracted just a few hundred CCSs from the <span class="math notranslate nohighlight">\(&gt;10^5\)</span> typically produced in a single PacBio run.</p>
+<p>Here is a data frame with the names of the FASTQ files and reports generated by the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;recA_lib-1&#39;</span><span class="p">,</span> <span class="s1">&#39;recA_lib-2&#39;</span><span class="p">]</span>
+<span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lib-1&#39;</span><span class="p">,</span> <span class="s1">&#39;lib-2&#39;</span><span class="p">]</span>
+<span class="n">ccs_dir</span> <span class="o">=</span> <span class="s1">&#39;input_files&#39;</span>
+
+<span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
+             <span class="s1">&#39;library&#39;</span><span class="p">:</span> <span class="n">libraries</span><span class="p">,</span>
+             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_ccs.fastq&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">]</span>
+             <span class="p">})</span>
+
+<span class="n">pacbio_runs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>library</th>
+      <th>report</th>
+      <th>fastq</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>recA_lib-1</td>
+      <td>lib-1</td>
+      <td>input_files/recA_lib-1_report.txt</td>
+      <td>input_files/recA_lib-1_ccs.fastq</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>recA_lib-2</td>
+      <td>lib-2</td>
+      <td>input_files/recA_lib-2_report.txt</td>
+      <td>input_files/recA_lib-2_ccs.fastq</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We create a <code class="docutils literal notranslate"><span class="pre">alignparse.ccs.Summaries</span></code> object for these CCSs:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>(Note if you did not have the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> reports, you could still do the steps above but would need to set <code class="docutils literal notranslate"><span class="pre">report_col=None</span></code> when creating the <code class="docutils literal notranslate"><span class="pre">Summaries</span></code> objectt, and then you could not analyze ZMW stats as done below.)</p>
+<p>Plot how many ZMWs yielded CCSs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_zmw_stats</span><span class="p">()</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">theme</span><span class="p">(</span><span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">())</span>  <span class="c1"># no vertical grid lines</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_24_0.png" src="_images/recA_DMS_24_0.png" />
+</div>
+</div>
+<p>We can also get the ZMW stats as numerical values:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>status</th>
+      <th>number</th>
+      <th>fraction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>recA_lib-1</td>
+      <td>Success -- CCS generated</td>
+      <td>139</td>
+      <td>0.837349</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>recA_lib-1</td>
+      <td>Failed -- Lacking full passes</td>
+      <td>19</td>
+      <td>0.114458</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>recA_lib-1</td>
+      <td>Failed -- Draft generation error</td>
+      <td>3</td>
+      <td>0.018072</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>recA_lib-1</td>
+      <td>Failed -- Min coverage violation</td>
+      <td>1</td>
+      <td>0.006024</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>recA_lib-1</td>
+      <td>Failed -- CCS below minimum RQ</td>
+      <td>2</td>
+      <td>0.012048</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>recA_lib-1</td>
+      <td>Failed -- Other reason</td>
+      <td>2</td>
+      <td>0.012048</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>recA_lib-2</td>
+      <td>Success -- CCS generated</td>
+      <td>124</td>
+      <td>0.794872</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>recA_lib-2</td>
+      <td>Failed -- Lacking full passes</td>
+      <td>22</td>
+      <td>0.141026</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>recA_lib-2</td>
+      <td>Failed -- Draft generation error</td>
+      <td>4</td>
+      <td>0.025641</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>recA_lib-2</td>
+      <td>Failed -- Min coverage violation</td>
+      <td>2</td>
+      <td>0.012821</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>recA_lib-2</td>
+      <td>Failed -- CCS below minimum RQ</td>
+      <td>2</td>
+      <td>0.012821</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>recA_lib-2</td>
+      <td>Failed -- Other reason</td>
+      <td>2</td>
+      <td>0.012821</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Statistics on the CCSs (length, number of subread passes, quality):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;passes&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">has_stat</span><span class="p">(</span><span class="n">stat</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">theme</span><span class="p">(</span><span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">())</span>  <span class="c1"># no vertical grid lines</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;No </span><span class="si">{stat}</span><span class="s2"> statistics available.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_28_0.png" src="_images/recA_DMS_28_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_28_1.png" src="_images/recA_DMS_28_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_28_2.png" src="_images/recA_DMS_28_2.png" />
+</div>
+</div>
+<p>We can also get these statistics numerically; for instance:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">ccs_stats</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>length</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>recA_lib-1</td>
+      <td>1325</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>recA_lib-1</td>
+      <td>1340</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>recA_lib-1</td>
+      <td>1339</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>recA_lib-1</td>
+      <td>985</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>recA_lib-1</td>
+      <td>1196</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</div>
+<div class="section" id="Align-and-parse-CCSs">
+<h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Permalink to this headline">¶</a></h2>
+<p>Now we align the CCSs using our <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object, and parse the features from queries that align sufficiently well.</p>
+<p>First, we create an <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.Mapper</span></code> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.OPTIONS_CODON_DMS</span></code>):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+      <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using `minimap2` 2.17-r941 with these options:
+-A2 -B4 -O12 -E2 --end-bonus=13 --secondary=no --cs
+</pre></div></div>
+</div>
+<p>We now use <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> to align and parse our FASTQ files of CCSs. (Note that if needed, you can also perform each of these steps separately for each FASTQ file by running <code class="docutils literal notranslate"><span class="pre">Targets.align</span></code> and <code class="docutils literal notranslate"><span class="pre">Targets.parse_alignments</span></code> separately.)</p>
+<p>First, we define a directory to place the created files:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">align_and_parse_outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;RecA_align_and_parse&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now we run <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> on all the CCS sets in the data frame <code class="docutils literal notranslate"><span class="pre">pacbio_runs</span></code>, which we set up above to specify information on each PacBio run. The <code class="docutils literal notranslate"><span class="pre">name_col</span></code> gives the column in the data frame giving the name of each run, the <code class="docutils literal notranslate"><span class="pre">queryfile_col</span></code> gives the column with the FASTQ file for that run, and <code class="docutils literal notranslate"><span class="pre">group_cols</span></code> specifies any columns showing how to group runs when aggregating results (here we aggregate results by library):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
+        <span class="n">df</span><span class="o">=</span><span class="n">pacbio_runs</span><span class="p">,</span>
+        <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
+        <span class="n">outdir</span><span class="o">=</span><span class="n">align_and_parse_outdir</span><span class="p">,</span>
+        <span class="n">name_col</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="n">queryfile_col</span><span class="o">=</span><span class="s1">&#39;fastq&#39;</span><span class="p">,</span>
+        <span class="n">group_cols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;library&#39;</span><span class="p">],</span>
+        <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># overwrite any existing output</span>
+        <span class="n">ncpus</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># use all available CPUs</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The return value from running the function above is a tuple of three elements: <code class="docutils literal notranslate"><span class="pre">readstats</span></code>, <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, and <code class="docutils literal notranslate"><span class="pre">filtered</span></code>. We go through these one by one.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">readstats</span></code> variable is a data frame that gives summary statistics for each run:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>name</th>
+      <th>category</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>aligned RecA_PacBio_amplicon</td>
+      <td>123</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>filtered RecA_PacBio_amplicon</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>unmapped</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-2</td>
+      <td>recA_lib-2</td>
+      <td>aligned RecA_PacBio_amplicon</td>
+      <td>112</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-2</td>
+      <td>recA_lib-2</td>
+      <td>filtered RecA_PacBio_amplicon</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>lib-2</td>
+      <td>recA_lib-2</td>
+      <td>unmapped</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Above we see that all reads mapped to our single target (<code class="docutils literal notranslate"><span class="pre">RecA_PacBio_amplicon</span></code>), and that most could be fully aligned and parsed given our <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>, but that some were filtered for not passing these specs.</p>
+<p>We can plot <code class="docutils literal notranslate"><span class="pre">readstats</span></code> for easy viewing:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">))</span> <span class="o">+</span>
+    <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+          <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
+          <span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">()</span>  <span class="c1"># no vertical grid lines</span>
+          <span class="p">)</span>
+    <span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_40_0.png" src="_images/recA_DMS_40_0.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">aligned</span></code> variable is a dict that is keyed by each target name, and then gives a data frame with information on all queries (CCSs) that were successfully aligned and parsed:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;First few lines of parsed alignments for </span><span class="si">{target}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First few lines of parsed alignments for RecA_PacBio_amplicon
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>barcode_sequence</th>
+      <th>barcode_accuracy</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4391577/ccs</td>
+      <td>1</td>
+      <td>0</td>
+      <td>C100A T102A G658C C659T del840to840</td>
+      <td>0.999455</td>
+      <td>AAGATACACTCGAAATCT</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4915465/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>C142G G144T T329A A738G A946T C947A</td>
+      <td>1.000000</td>
+      <td>AAATATCATCGCGGCCAG</td>
+      <td>1.0</td>
+      <td>T</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4981392/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>C142G G144T T329A A738G A946T C947A</td>
+      <td>1.000000</td>
+      <td>AAATATCATCGCGGCCAG</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/6029553/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>T83A G84A A106T T107A G108A ins693G G862T C863...</td>
+      <td>0.999940</td>
+      <td>CTAATAGTAGTTTTCCAG</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/6488565/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>A254C G255T A466T T467G C468T C940G G942A</td>
+      <td>0.999967</td>
+      <td>TATTTATACCCATGAGTG</td>
+      <td>1.0</td>
+      <td>A</td>
+      <td>T</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Since we have just one target, we get the data frame in <code class="docutils literal notranslate"><span class="pre">aligned</span></code> for that single target into a new variable (<code class="docutils literal notranslate"><span class="pre">aligned_df</span></code>) and save it for analysis in the next subsection. We also extract just the columns of interest from the data frame, and rename <code class="docutils literal notranslate"><span class="pre">barcode_sequence</span></code> to the shorter name of <code class="docutils literal notranslate"><span class="pre">barcode</span></code>. Also, since real analyses of the barcode typically involve Illumina sequencing it in the reverse direction, we make this new <code class="docutils literal notranslate"><span class="pre">barcode</span></code> column the <strong>reverse complement</strong> of
+<code class="docutils literal notranslate"><span class="pre">barcode_sequence</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">aligned</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;not just one target&#39;</span>
+
+<span class="n">aligned_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">aligned</span><span class="p">[</span><span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">barcode</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;barcode_sequence&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="n">dms_variants</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">))</span>
+    <span class="p">[[</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;query_name&#39;</span><span class="p">,</span> <span class="s1">&#39;barcode&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;barcode_accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_accuracy&#39;</span><span class="p">]]</span>
+    <span class="p">)</span>
+
+<span class="n">aligned_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>barcode</th>
+      <th>gene_mutations</th>
+      <th>barcode_accuracy</th>
+      <th>gene_accuracy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4391577/ccs</td>
+      <td>AGATTTCGAGTGTATCTT</td>
+      <td>C100A T102A G658C C659T del840to840</td>
+      <td>1.0</td>
+      <td>0.999455</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4915465/ccs</td>
+      <td>CTGGCCGCGATGATATTT</td>
+      <td>C142G G144T T329A A738G A946T C947A</td>
+      <td>1.0</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4981392/ccs</td>
+      <td>CTGGCCGCGATGATATTT</td>
+      <td>C142G G144T T329A A738G A946T C947A</td>
+      <td>1.0</td>
+      <td>1.000000</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/6029553/ccs</td>
+      <td>CTGGAAAACTACTATTAG</td>
+      <td>T83A G84A A106T T107A G108A ins693G G862T C863...</td>
+      <td>1.0</td>
+      <td>0.999940</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/6488565/ccs</td>
+      <td>CACTCATGGGTATAAATA</td>
+      <td>A254C G255T A466T T467G C468T C940G G942A</td>
+      <td>1.0</td>
+      <td>0.999967</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Finally, the <code class="docutils literal notranslate"><span class="pre">filtered</span></code> variable gives information on why queries that aligned but were filtered (failed <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>) were filtered. Like <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, <code class="docutils literal notranslate"><span class="pre">filtered</span></code> is a dict keyed by target name with values being data frames giving the information:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;First few lines of filtering information for </span><span class="si">{target}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First few lines of filtering information for RecA_PacBio_amplicon
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>filter_reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4194459/ccs</td>
+      <td>spacer mutation_nt_count</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4325806/ccs</td>
+      <td>barcode mutation_nt_count</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4391313/ccs</td>
+      <td>termini3 mutation_nt_count</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4391375/ccs</td>
+      <td>gene clip3</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-1</td>
+      <td>recA_lib-1</td>
+      <td>m54228_180801_171631/4391467/ccs</td>
+      <td>gene clip3</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>As can be seen above, the <code class="docutils literal notranslate"><span class="pre">filter_reason</span></code> column gives which particular specification in <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> was not met.</p>
+<p>Plot this inforrmation:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">target_filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+    <span class="n">nreasons</span> <span class="o">=</span> <span class="n">target_filtered</span><span class="p">[</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_filtered</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">))</span> <span class="o">+</span>
+        <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
+        <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">targetname</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+              <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">nreasons</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
+              <span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">()</span>  <span class="c1"># no vertical grid lines</span>
+              <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_48_0.png" src="_images/recA_DMS_48_0.png" />
+</div>
+</div>
+<p>The example usage of <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> above read all of the information on the parsed alignments into data frames. For large data sets, these data frames might be so large that you don’t want to read them into memory. In that case, use the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> option, which makes <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> simply give the locations of CSV files holding the data frames. Here is an example:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats_csv</span><span class="p">,</span> <span class="n">aligned_csv</span><span class="p">,</span> <span class="n">filtered_csv</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
+        <span class="n">df</span><span class="o">=</span><span class="n">pacbio_runs</span><span class="p">,</span>
+        <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
+        <span class="n">outdir</span><span class="o">=</span><span class="n">align_and_parse_outdir</span><span class="p">,</span>
+        <span class="n">name_col</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="n">queryfile_col</span><span class="o">=</span><span class="s1">&#39;fastq&#39;</span><span class="p">,</span>
+        <span class="n">group_cols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;library&#39;</span><span class="p">],</span>
+        <span class="n">to_csv</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># overwrite any existing output</span>
+        <span class="n">ncpus</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># use all available CPUs</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now the returned information on the parsed alignments and filtering just gives the locations of the CSV files for the data frames:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">aligned_csv</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">filtered_csv</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;RecA_PacBio_amplicon&#39;: &#39;./output_files/RecA_align_and_parse/RecA_PacBio_amplicon_aligned.csv&#39;}
+{&#39;RecA_PacBio_amplicon&#39;: &#39;./output_files/RecA_align_and_parse/RecA_PacBio_amplicon_filtered.csv&#39;}
+</pre></div></div>
+</div>
+<p>Note that since no mutations are specified as empty strings in these CSV files, if you read them using <code class="docutils literal notranslate"><span class="pre">pandas.read_csv</span></code>, you then need to do so using <code class="docutils literal notranslate"><span class="pre">na_filter=None</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">pandas.read_csv(&lt;csv_file&gt;,</span> <span class="pre">na_filter=None)</span></code>) so that empty strings are not converted to <code class="docutils literal notranslate"><span class="pre">nan</span></code> values.</p>
+<p>Here are all of the files created by running <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> (they also include SAM alignments and parsing results for each individual run):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Contents of </span><span class="si">{align_and_parse_outdir}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">48</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fs</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">align_and_parse_outdir</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span>
+                                     <span class="n">align_and_parse_outdir</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Contents of ./output_files/RecA_align_and_parse:
+------------------------------------------------
+  RecA_PacBio_amplicon_aligned.csv
+  RecA_PacBio_amplicon_filtered.csv
+  lib-1_recA_lib-1/RecA_PacBio_amplicon_aligned.csv
+  lib-1_recA_lib-1/RecA_PacBio_amplicon_filtered.csv
+  lib-1_recA_lib-1/alignments.sam
+  lib-2_recA_lib-2/RecA_PacBio_amplicon_aligned.csv
+  lib-2_recA_lib-2/RecA_PacBio_amplicon_filtered.csv
+  lib-2_recA_lib-2/alignments.sam
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Per-barcode-consensus-sequences">
+<h2>Per-barcode consensus sequences<a class="headerlink" href="#Per-barcode-consensus-sequences" title="Permalink to this headline">¶</a></h2>
+<p>In a deep mutational scanning experiment, we typically want to determine the sequence of the gene variant associated with each barcode. In this section, we do that–and also estimate the empirical accuracy of the sequencing by determining how often two sequences with the same barcode are identical.</p>
+<p>We start with the <code class="docutils literal notranslate"><span class="pre">aligned_df</span></code> data frame generated in the previous subsection. First, we want to plot the distribution of accuracies for the barcodes and genes. Because these span a wide range, it’s most convenient to convert the accuracies into error rates (1 - accuracy), and then plot these error rates on a log scale. In order to do this, we also need to set some floor for the error rates since zero can’t be plotted on a log scale. Compute these “floored” error rates:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">error_rate_floor</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># error rates &lt; this set to this</span>
+
+<span class="n">aligned_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">aligned_df</span>
+    <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">barcode_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;barcode_accuracy&#39;</span><span class="p">],</span>
+                                           <span class="n">error_rate_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="n">gene_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene_accuracy&#39;</span><span class="p">],</span>
+                                        <span class="n">error_rate_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. Specify this cutoff:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">error_cutoff</span> <span class="o">=</span> <span class="mf">1e-4</span>
+</pre></div>
+</div>
+</div>
+<p>Now plot the distributiton of these error rates, drawing an orange vertical line at the cutoff:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+ <span class="n">ggplot</span><span class="p">(</span><span class="n">aligned_df</span>
+        <span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;library&#39;</span><span class="p">],</span>
+              <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;barcode_error&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_error&#39;</span><span class="p">],</span>
+              <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;feature_type&#39;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;error rate&#39;</span><span class="p">),</span>
+        <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;error rate&#39;</span><span class="p">))</span> <span class="o">+</span>
+ <span class="n">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="o">+</span>
+ <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">error_cutoff</span><span class="p">,</span>
+            <span class="n">linetype</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
+ <span class="n">facet_grid</span><span class="p">(</span><span class="s1">&#39;library ~ feature_type&#39;</span><span class="p">)</span> <span class="o">+</span>
+ <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">4.5</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">libraries</span><span class="p">)))</span> <span class="o">+</span>
+ <span class="n">ylab</span><span class="p">(</span><span class="s1">&#39;number of CCSs&#39;</span><span class="p">)</span> <span class="o">+</span>
+ <span class="n">scale_x_log10</span><span class="p">()</span>
+ <span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_60_0.png" src="_images/recA_DMS_60_0.png" />
+</div>
+</div>
+<p>The plot above shows that a modest number of CCSs fail the error-rate filters (are to the right of the cutoff).</p>
+<p>We mark to retain the CCSs that pass the filters:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">aligned_df</span>
+    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">retained</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene_error&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">)</span> <span class="o">&amp;</span>
+                                <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;barcode_error&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">))</span>
+           <span class="p">)</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Here are the numbers retained:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">aligned_df</span>
+ <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;retained&#39;</span><span class="p">])</span>
+ <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+ <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;number of CCSs&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+ <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>retained</th>
+      <th>number of CCSs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>False</td>
+      <td>33</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>True</td>
+      <td>90</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-2</td>
+      <td>False</td>
+      <td>39</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-2</td>
+      <td>True</td>
+      <td>73</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Before getting the consensus sequence for each barcode, we next want to know how many different CCSs we have per barcode among the retained CCSs. Plot this distribution:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">max_CCSs</span> <span class="o">=</span> <span class="mi">8</span> <span class="c1"># in plot, group barcodes with &gt;= this many CCSs</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+ <span class="n">ggplot</span><span class="p">(</span>
+    <span class="n">aligned_df</span>
+     <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;retained&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;barcode&#39;</span><span class="p">])</span>
+     <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;nseqs&#39;</span><span class="p">)</span>
+     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">nseqs</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;nseqs&#39;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_CCSs</span><span class="p">)),</span>
+    <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;nseqs&#39;</span><span class="p">))</span> <span class="o">+</span>
+ <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
+ <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ library&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+ <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.75</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">libraries</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+       <span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">(),</span>  <span class="c1"># no vertial tick lines</span>
+       <span class="p">)</span> <span class="o">+</span>
+ <span class="n">ylab</span><span class="p">(</span><span class="s1">&#39;number of barcodes&#39;</span><span class="p">)</span> <span class="o">+</span>
+ <span class="n">xlab</span><span class="p">(</span><span class="s1">&#39;CCSs for barcode&#39;</span><span class="p">)</span>
+ <span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/recA_DMS_66_0.png" src="_images/recA_DMS_66_0.png" />
+</div>
+</div>
+<p>We see above that barcodes are often sequenced just once, but are also often sequenced two or more times.</p>
+<p>From the barcodes with multiple CCSs, we can estimate the true (or “empirical”) accuracy of the CCSs. This is different than the purported accuracy returned by the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program and plotted above. Those <code class="docutils literal notranslate"><span class="pre">ccs</span></code> accuracies are PacBio’s estimation of accuracy from the sequencing, but they may not be fully correct. In addition, not all the “error” comes from pure sequencing errors: we can also have experimental factors such as barcode collisions (two different variants sharing the same barcode)
+or PCR strand exchange make molecules with the same barcode actually different.</p>
+<p>The concept of empirical accuracy is quite simple: we look to see how often CCSs with the same barcode actually have the same gene sequence. If the sequencing is accurate and their aren’t additional experimental factors causing effective errors, then CCSs with the same barcode will always be identical. The less often they are identical, the lower the empirical accuracy. The actual calculation of empirical accuracy is implemented in <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.empirical_accuracy</span></code> (see the docs of
+that function for a full explanation of the calculation).</p>
+<p>In addition, we’d like to split out the analysis by whether or not the CCSs have an indel. The reason is that indels are the main source of error in PacBio sequencing, but we plan to disregard all sequences with indels anyway. So first use <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.add_mut_info_cols</span></code> to add information about whether the CCSs have indels:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
+                    <span class="n">aligned_df</span><span class="p">,</span>
+                    <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
+                    <span class="n">n_indel_col</span><span class="o">=</span><span class="s1">&#39;n_indels&#39;</span><span class="p">)</span>
+
+<span class="n">aligned_df</span> <span class="o">=</span> <span class="n">aligned_df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">has_indel</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;n_indels&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Here are the numbers with and without indels among the retained CCSs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">aligned_df</span>
+ <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;retained&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;has_indel&#39;</span><span class="p">])</span>
+ <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+ <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;number_CCSs&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+ <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>has_indel</th>
+      <th>number_CCSs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>False</td>
+      <td>76</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>True</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-2</td>
+      <td>False</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-2</td>
+      <td>True</td>
+      <td>8</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Now we can compute the empirical accuracy. First, among all retained CCSs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
+            <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;retained&#39;</span><span class="p">),</span>
+            <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>accuracy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>0.864817</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-2</td>
+      <td>0.786710</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>And excluding CCSs with indels:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
+            <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;retained &amp; not has_indel&#39;</span><span class="p">),</span>
+            <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>accuracy</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>0.948033</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-2</td>
+      <td>0.928539</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>As can be seen above, the empirical accuracy is quite a bit higher when excluding sequences with indels, which is what will happen in practice below. However, the empirical accuracy is still much lower than the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> estimated accuracy, since above we only retained CCSs with accuracy &gt;99.99%. This indicates that either the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> estimated accuracies are not actually accurate, or other experimental factors also contribute to decrease the empirical accuracy. You can play around with the
+filter on the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>-estimated accuracies to see how they affect the empirical accuracy–but in general, we find on real (larger) datasets that beyond a point, increasing the filter on the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>-estimated accuracies no longer further enhances the empirical accuracy.</p>
+<p>Finally, we’d like to actually build a consensus sequence for each barcodes. There are lots of existing programs with complex error models that use Q-values to build consensus sequences–but we instead use the simple approach implemented in <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.simple_mutconsensus</span></code>. The documentation for that function explains the method in detail, but basically it works like this: 1. When there is just one CCS per barcode, the consensus is just that sequence. 2. When there are multiple CCSs
+per barcode, they are used to build a consensus–however, the entire barcode is discarded if there are many differences between CCSs with the barcode, or high-frequency non-consensus mutations. The reason that barcodes are discarded in such cases as many differences between CCSs or high-frequency non-consensus mutations suggest errors such as barcode collisions or PCR strand exchange.</p>
+<p>The advantage of this simple method is that it tries to throw away barcodes for which there is likely to be some source of experimental error.</p>
+<p>Build the consensus sequences:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">consensus</span><span class="p">,</span> <span class="n">dropped</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">simple_mutconsensus</span><span class="p">(</span>
+                        <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;retained&#39;</span><span class="p">),</span>
+                        <span class="n">group_cols</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;library&#39;</span><span class="p">,</span> <span class="s1">&#39;barcode&#39;</span><span class="p">),</span>
+                        <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
+                        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Note how we get back two data frames. The <code class="docutils literal notranslate"><span class="pre">consensus</span></code> data frame simply gives the consensus sequences:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">consensus</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>barcode</th>
+      <th>gene_mutations</th>
+      <th>variant_call_support</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>AAAGTCTGACCGAAAAAA</td>
+      <td>C154A G509C T510A C823G T824G G825T del763to763</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>AACACGTTATAGATGTAG</td>
+      <td>A52C T53C T54C C85A C87G T277G T278A C296A G297C</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>AGACCGGGCGGGGCCTAT</td>
+      <td>A526G G694A G715C A937G C939G</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-1</td>
+      <td>AGAGAGATATTAAAAAAA</td>
+      <td>C22A A23C G24C G34A C35G G36A G400C G402C A631...</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-1</td>
+      <td>ATCTCCTCTCCAAGCCGT</td>
+      <td>G326C C327A</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>In addition to the mutations in the consensus, it also gives the <code class="docutils literal notranslate"><span class="pre">variant_call_support</span></code>, which is the number of CCSs supporting the consensus call. When the call support is one, then we expect the accuracy to be equal to the empirical ones we computed above (either with or without indels depending on whether we exclude consensus sequences with indels). When the variant call support is greater than one, the accuracy will be higher as there are more CCSs supporting the consensus call.</p>
+<p>It is often useful to get the mutations in <code class="docutils literal notranslate"><span class="pre">consensus</span></code> that are just substitutions, and also denote which sequences have indels. That can be done as follows:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">consensus</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
+                    <span class="n">consensus</span><span class="p">,</span>
+                    <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
+                    <span class="n">sub_str_col</span><span class="o">=</span><span class="s1">&#39;substitutions&#39;</span><span class="p">,</span>
+                    <span class="n">n_indel_col</span><span class="o">=</span><span class="s1">&#39;number_of_indels&#39;</span><span class="p">,</span>
+                    <span class="n">overwrite_cols</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">consensus</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>barcode</th>
+      <th>gene_mutations</th>
+      <th>variant_call_support</th>
+      <th>substitutions</th>
+      <th>number_of_indels</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>AAAGTCTGACCGAAAAAA</td>
+      <td>C154A G509C T510A C823G T824G G825T del763to763</td>
+      <td>1</td>
+      <td>C154A G509C T510A C823G T824G G825T</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>AACACGTTATAGATGTAG</td>
+      <td>A52C T53C T54C C85A C87G T277G T278A C296A G297C</td>
+      <td>3</td>
+      <td>A52C T53C T54C C85A C87G T277G T278A C296A G297C</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-1</td>
+      <td>AGACCGGGCGGGGCCTAT</td>
+      <td>A526G G694A G715C A937G C939G</td>
+      <td>4</td>
+      <td>A526G G694A G715C A937G C939G</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-1</td>
+      <td>AGAGAGATATTAAAAAAA</td>
+      <td>C22A A23C G24C G34A C35G G36A G400C G402C A631...</td>
+      <td>1</td>
+      <td>C22A A23C G24C G34A C35G G36A G400C G402C A631...</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>lib-1</td>
+      <td>ATCTCCTCTCCAAGCCGT</td>
+      <td>G326C C327A</td>
+      <td>1</td>
+      <td>G326C C327A</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>If you filter the data frame above for just those barcodes with no indels, you can then pass the data frame directly into a <a class="reference external" href="https://jbloomlab.github.io/dms_variants/dms_variants.codonvarianttable.html#dms_variants.codonvarianttable.CodonVariantTable">dms_variants.codonvarianttable.CodonVariantTable</a> for further analysis.</p>
+<p>You can also look at what happened to the barcodes for which we could <strong>not</strong> build consensus sequences by looking at the <code class="docutils literal notranslate"><span class="pre">dropped</span></code> data frame:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dropped</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>library</th>
+      <th>barcode</th>
+      <th>drop_reason</th>
+      <th>nseqs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>lib-1</td>
+      <td>CTATACCCAAATTAATAA</td>
+      <td>subs diff too large</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>lib-1</td>
+      <td>CTGATTTGGCTTTATTTT</td>
+      <td>subs diff too large</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>lib-2</td>
+      <td>CTGATATACGTACGCAAC</td>
+      <td>subs diff too large</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>lib-2</td>
+      <td>TACCCTGCCTCGCCGAAC</td>
+      <td>subs diff too large</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Or to summarize the drop reasons:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">dropped</span>
+ <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;drop_reason&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+ <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;number_barcodes&#39;</span><span class="p">)</span>
+ <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+ <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>drop_reason</th>
+      <th>number_barcodes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>subs diff too large</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We see that only a few barcodes were dropped, and that in all cases the reason was that the differences in number of substitutions among CCSs within the barcode was too large.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">RecA deep mutational scanning libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lasv_pilot.html">Lassa virus glycoprotein PacBio sequencing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flu_virus_seq_example.html">Single-cell virus sequencing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="examples.html">Examples</a><ul>
+      <li>Previous: <a href="examples.html" title="previous chapter">Examples</a></li>
+      <li>Next: <a href="lasv_pilot.html" title="next chapter">Lassa virus glycoprotein PacBio sequencing</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/recA_DMS.nblink.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

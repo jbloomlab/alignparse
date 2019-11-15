@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -588,6 +589,13 @@
 
 <div class="viewcode-block" id="Targets.feature_parse_specs"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.feature_parse_specs">[docs]</a>    <span class="k">def</span> <span class="nf">feature_parse_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returntype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the feature parsing specs.</span>
+<span class="sd">        </span>
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Filters will be applied in the order they are listed in the </span>
+<span class="sd">        `feature_parse_specs` `yaml` file or `dict`. Once a read fails a</span>
+<span class="sd">        filter, other filters will not be applied. As such, it is recommended</span>
+<span class="sd">        to have features with filters for 5&#39; and 3&#39; clipping listed first.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -1000,10 +1008,10 @@
 <span class="sd">              &#39;_mutations&#39;, &#39;_accuracy&#39;, &#39;_cs&#39;, &#39;_clip5&#39;, and &#39;_clip3&#39;.</span>
 <span class="sd">              and &#39;_clip3&#39;.</span>
 
-<span class="sd">            - &#39;filtered&#39; is a dict keyed by name of each target. Entries are</span>
+<span class="sd">            - `filtered` is a dict keyed by name of each target. Entries are</span>
 <span class="sd">              `pandas.DataFrame` with a row for each filtered aligned read</span>
 <span class="sd">              giving the query name and the reason it was filtered.</span>
-<span class="sd">              If `filtered_cs` is `True` then, add a column to the &#39;filtered&#39;</span>
+<span class="sd">              If `filtered_cs` is `True` then, add a column to the &quot;filtered&quot;</span>
 <span class="sd">              `pandas.DataFrame`s with the `cs` tag that failed the filter.</span>
 
 <span class="sd">            If `to_csv` is `True`, then `aligned` and `filtered` give</span>
@@ -1490,7 +1498,7 @@
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

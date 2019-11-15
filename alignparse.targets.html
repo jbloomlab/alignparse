@@ -12,6 +12,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -413,6 +414,13 @@ name of each query set (<cite>name_cols</cite>) as well as any <cite>group_cols<
 <dt id="alignparse.targets.Targets.feature_parse_specs">
 <code class="sig-name descname">feature_parse_specs</code><span class="sig-paren">(</span><em class="sig-param">returntype</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.feature_parse_specs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.targets.Targets.feature_parse_specs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the feature parsing specs.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Filters will be applied in the order they are listed in the
+<cite>feature_parse_specs</cite> <cite>yaml</cite> file or <cite>dict</cite>. Once a read fails a
+filter, other filters will not be applied. As such, it is recommended
+to have features with filters for 5’ and 3’ clipping listed first.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>returntype</strong> (<em>{'dict'</em><em>, </em><em>'yaml'}</em>) – Return a Python <cite>dict</cite> or a YAML string representation.</p>
@@ -506,10 +514,10 @@ feature-level info specified for return in <cite>feature_parse_specs</cite>
 in columns with names equal to feature suffixed by ‘_sequence’,
 ‘_mutations’, ‘_accuracy’, ‘_cs’, ‘_clip5’, and ‘_clip3’.
 and ‘_clip3’.</p></li>
-<li><p>’filtered’ is a dict keyed by name of each target. Entries are
+<li><p><cite>filtered</cite> is a dict keyed by name of each target. Entries are
 <cite>pandas.DataFrame</cite> with a row for each filtered aligned read
 giving the query name and the reason it was filtered.
-If <cite>filtered_cs</cite> is <cite>True</cite> then, add a column to the ‘filtered’
+If <cite>filtered_cs</cite> is <cite>True</cite> then, add a column to the “filtered”
 <cite>pandas.DataFrame`s with the `cs</cite> tag that failed the filter.</p></li>
 </ul>
 <p>If <cite>to_csv</cite> is <cite>True</cite>, then <cite>aligned</cite> and <cite>filtered</cite> give
@@ -685,7 +693,7 @@ targets.</p>
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

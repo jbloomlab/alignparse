@@ -1,0 +1,2184 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Single-cell virus sequencing" href="flu_virus_seq_example.html" />
+    <link rel="prev" title="RecA deep mutational scanning libraries" href="recA_DMS.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Lassa-virus-glycoprotein-PacBio-sequencing">
+<h1>Lassa virus glycoprotein PacBio sequencing<a class="headerlink" href="#Lassa-virus-glycoprotein-PacBio-sequencing" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process circular consensus sequences that map to multiple different targets. Here, our two targets are a wildtype and a codon optimized sequence for the Lassa virus (LASV) glycoprotein from the Josiah strain. For such targets we do not expect large internal deletions, so we use alignment settings optimized for codon-level mutations as these will be the settings used when analyzing mutant LASV GP sequences
+in later experiments.</p>
+<p>Here we analyze a snippet of the full data set of circular consensus sequences so that the example is small and fast.</p>
+<p>In the other included example notebooks, we aligned and parsed the PacBio reads using the single <code class="docutils literal notranslate"><span class="pre">align_and_parse</span></code> function. Here we use separate functions to do the aligning and parsing steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs tag</a> and are in the SAM file format.</p>
+<div class="section" id="Set-up-for-analysis">
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Import necessary Python modules:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">pysam</span>
+
+<span class="kn">import</span> <span class="nn">alignparse.ccs</span>
+<span class="kn">import</span> <span class="nn">alignparse.minimap2</span>
+<span class="kn">import</span> <span class="nn">alignparse.targets</span>
+<span class="kn">import</span> <span class="nn">alignparse.cs_tag</span>
+<span class="kn">import</span> <span class="nn">alignparse.consensus</span>
+</pre></div>
+</div>
+</div>
+<p>Suppress warnings that clutter output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Directory for output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./output_files/&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Color palette for plots:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CBPALETTE</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;#E69F00&#39;</span><span class="p">,</span> <span class="s1">&#39;#56B4E9&#39;</span><span class="p">,</span> <span class="s1">&#39;#009E73&#39;</span><span class="p">,</span> <span class="s1">&#39;#999999&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Target-amplicons">
+<h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Permalink to this headline">¶</a></h2>
+<p>We have performed sequencing of several LASV GP amplicons that include the glycoprotein sequence along with a PacBio index and several other features. Here we analyze reads mapping to two of these amplicons. The amplicons are defined as Genbank files. First, let’s just look at the files:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">,</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
+
+<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;input_files/</span><span class="si">{target_file_name}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
+
+
+<span class="k">for</span> <span class="n">targetfile</span> <span class="ow">in</span> <span class="n">targetfiles</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LOCUS       LASV_Josiah_WT          1730 bp ds-DNA     linear       14-JUN-2019
+DEFINITION  .
+ACCESSION
+VERSION
+SOURCE      Kate Crawford
+  ORGANISM  .
+COMMENT
+COMMENT
+COMMENT     PacBio amplicon for LASV Josiah WT sequence
+COMMENT
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     T2A             85..147
+                     /label=&#34;T2A&#34;
+     WPRE            1639..1730
+                     /label=&#34;WPRE&#34;
+     ZsGreen         15..84
+                     /label=&#34;ZsGreen&#34;
+     termini3        1639..1730
+                     /label=&#34;3&#39;Termini&#34;
+     index           9..14
+                     /label=&#34;index&#34;
+     leader5         1..8
+                     /label=&#34;5&#39; leader&#34;
+     termini5        1..147
+                     /label=&#34;5&#39;Termini&#34;
+     variant_tag5    34..34
+                     /variant_1=T
+                     /variant_2=C
+                     /label=&#34;5&#39;VariantTag&#34;
+     variant_tag3    1702..1702
+                     /variant_1=G
+                     /variant_2=A
+                     /label=&#34;3&#39;VariantTag&#34;
+     spacer          1624..1638
+                     /label=&#34;3&#39;Spacer&#34;
+     gene            148..1623
+                     /label=&#34;LASV_Josiah_WT&#34;
+
+ORIGIN
+        1 GACTGATANN NNNNcagcga cgccaagaac cagYagtggc acctgaccga gcacgccatc
+       61 gcctccggcT CCGCCTTGCC CGCTGGATCC GGCGAGGGCA GAGGAAGTCT GCTAACATGC
+      121 GGTGACGTCG AGGAGAATCC TGGCCCAATG GGACAAATAG TGACATTCTT CCAGGAAGTG
+      181 CCTCATGTAA TAGAAGAGGT GATGAACATT GTTCTCATTG CACTGTCTGT ACTAGCAGTG
+      241 CTGAAAGGTC TGTACAATTT TGCAACGTGT GGCCTTGTTG GTTTGGTCAC TTTCCTCCTG
+      301 TTGTGTGGTA GGTCTTGCAC AACCAGTCTT TATAAAGGGG TTTATGAGCT TCAGACTCTG
+      361 GAACTAAACA TGGAGACACT CAATATGACC ATGCCTCTCT CCTGCACAAA GAACAACAGT
+      421 CATCATTATA TAATGGTGGG CAATGAGACA GGACTAGAAC TGACCTTGAC CAACACGAGC
+      481 ATTATTAATC ACAAATTTTG CAATCTGTCT GATGCCCACA AAAAGAACCT CTATGACCAC
+      541 GCTCTTATGA GCATAATCTC AACTTtccac ttgtccatcc ccaacTTCAA TCAGTATGAG
+      601 GCAATGAGCT GCGATTTTAA TGGGGGAAAG ATTAGTGTGC AGTACAACCT GAGTCACAGC
+      661 TATGCTGGGG ATGCAGCCAA CCATTGTGGT ACTGTTGCAA ATGGTGTGTT ACAGACTTTT
+      721 ATGAGGATGG CTTGGGGTGG GAGCTACATT GCTCTTGACT CAGGCCGTGG CAACTGGGAC
+      781 TGTATTATGA CTAGTTATCA ATATCTGATA ATCCAAAATA CAACCTGGGA AGATCACTGC
+      841 CAATTCTCGA GACCATCTCC CATCGGTTAT CTCGGGCTCC TCTCACAAAG GACTAGAGAT
+      901 ATTTATATTA GTAGAAGATT GCTAGGCACA TTCACATGGA CACTGTCAGA TTCTGAAGGT
+      961 AAAGACACAC CAGGGGGATA TTGTCTGACC AGGTGGATGC TAATTGAGGC TGAACTAAAA
+     1021 TGCTTCGGGA ACACAGCTGT GGCAAAATGT AATGAGAAGC ATGATGAgga attttgtgac
+     1081 atgctgaggc TGTTTGACTT CAACAAACAA GCCATTCAAA GGTTGAAAGC TGAAGCACAA
+     1141 ATGAGCATTC AGTTGATCAA CAAAGCAGTA AATGCTTTGA TAAATGACCA ACTTATAATG
+     1201 AAGAACCATC TACGGGACAT CATGGGAATT CCATACTGTA ATTACAGCAA GTATTGGTAC
+     1261 CTCAACCACA CAACTACTGG GAGAACATCA CTGCCCAAAT GTTGGCTTGT ATCAAATGGT
+     1321 TCATACTTGA ACGAGACCCA CTTTTCTGAT GATATTGAAC AACAAGCTGA CAATATGATC
+     1381 ACTGAGATGT TACAGAAGGA GTATATGGAG AGGCAGGGGA AGACACCATT GGGTCTAGTT
+     1441 GACCTCTTTG TGTTCAGCAC AAGTTTCTAT CTTATTAGCA TCTTCCTTCA CCTAGTCAAA
+     1501 ATACCAACTC ATAGGCATAT TGTAGGCAAG TCGTGTCCCA AACCTCACAG ATTGAATCAT
+     1561 ATGGGCATTT GTTCCTGTGG ACTCTACAAA CAGCCTGGTG TGCCTGTGAA ATGGAAGAGA
+     1621 TGAGCTAGCT AAACGCGTTG ATCCtaatca acctctggat tacaaaattt gtgaaagatt
+     1681 gactggtatt cttaactatg tRgctccttt tacgctatgt ggatacgctg
+//
+
+LOCUS       LASV_Josiah_OPT          1730 bp ds-DNA     linear       14-JUN-2019
+DEFINITION  .
+ACCESSION
+VERSION
+SOURCE      Kate Crawford
+  ORGANISM  .
+COMMENT
+COMMENT
+COMMENT     PacBio amplicon for LASV Josiah OPT sequence
+COMMENT
+COMMENT     ApEinfo:methylated:1
+FEATURES             Location/Qualifiers
+     T2A             85..147
+                     /label=&#34;T2A&#34;
+     WPRE            1639..1730
+                     /label=&#34;WPRE&#34;
+     ZsGreen         15..84
+                     /label=&#34;ZsGreen&#34;
+     termini3        1639..1730
+                     /label=&#34;3&#39;Termini&#34;
+     index           9..14
+                     /label=&#34;index&#34;
+     leader5         1..8
+                     /label=&#34;5&#39; leader&#34;
+     termini5        1..147
+                     /label=&#34;5&#39;Termini&#34;
+     variant_tag5     34..34
+                     /variant_1=T
+                     /variant_2=C
+                     /label=&#34;5&#39;VariantTag&#34;
+     variant_tag3     1702..1702
+                     /variant_1=G
+                     /variant_2=A
+                     /label=&#34;3&#39;VariantTag&#34;
+     spacer          1624..1638
+                     /label=&#34;3&#39;Spacer&#34;
+     gene            148..1623
+                     /label=&#34;LASV_Josiah_OPT&#34;
+
+ORIGIN
+        1 GACTGATANN NNNNcagcga cgccaagaac cagYagtggc acctgaccga gcacgccatc
+       61 gcctccggcT CCGCCTTGCC CGCTGGATCC GGCGAGGGCA GAGGAAGTCT GCTAACATGC
+      121 GGTGACGTCG AGGAGAATCC TGGCCCAATG GGCCAGATCG TGACCTTCTT CCAAGAAGTG
+      181 CCTCATGTGA TTGAGGAGGT GATGAATATC GTGCTGATCG CTTTAAGCGT GCTGGCCGTT
+      241 CTTAAGGGCC TCTATAACTT CGCCACTTGT GGTTTAGTCG GACTGGTGAC ATTTCTGCTG
+      301 CTGTGTGGCA GATCTTGTAC CACATCTTTA TACAAGGGCG TGTACGAGCT GCAGACTTTA
+      361 GAACTGAACA TGGAGACTTT AAACATGACC ATGCCTTTAA GCTGTACCAA GAACAATAGC
+      421 CACCACTACA TCATGGTGGG CAACGAGACC GGTTTAGAAC TGACACTCAC CAACACCAGC
+      481 ATTATCAACC ATAAGTTCTG CAACCTCTCC GACGCTCACA AGAAGAATTT ATACGACCAC
+      541 GCTTTAATGA GCATCATCTC CACCTTCCAT CTCTCCATTC CTAATttcaa ccagtacgag
+      601 gccatgAGCT GCGACTTTAA CGGCGGCAAG ATCTCCGTGC AGTACAATTT ATCCCATAGC
+      661 TACGCCGGCG ATGCCGCCAA TCACTGCGGA ACCGTGGCCA ACGGCGTGCT GCAGACATTC
+      721 ATGAGGATGG CTTGGGGCGG CTCCTATATC GCTTTAGACT CCGGCAGAGG AAACTGGGAC
+      781 TGTATCATGA CCAGCTACCA ATATTTAATC ATTCAGAACA CCACATGGGA GGACCACTGC
+      841 CAATTCTCTC GTCCCTCTCC TATCGGCTAT CTGGGACTGC TGTCCCAGAG GACCAGAGAC
+      901 ATCTACATCT CTCGTAGGCT GCTGGGCACA TTCACTTGGA CTTTAAGCGA CAGCGAAGGC
+      961 AAAGATACTC CCGGTGGCTA CTGTTTAACA AGATGGATGC TGATCGAGGC CGAGCTCAAG
+     1021 TGCTTCGGAA ATACCGCCGT GGCCAAATGC AACGAGAAAC ACGACGAGGA GTTCTGCGAC
+     1081 ATGCTGAGGC TCTTCGACTT CAacaagcaa gccattcaga ggcTGAAGGC CGAAGCCCAG
+     1141 ATGTCCATCC AGCTGATTAA TAAGGCCGTG AATGCCCTCA TTAACGACCA GCTGATCATG
+     1201 AAGAACCATT TAAGGGACAT CATGGGCATC CCTTATTGCA ACTACAGCAA ATACTGGTAT
+     1261 TTAAATCATA CCACCACCGG TCGTACATCC TTACCTAAGT GCTGGCTGGT CAGCAATGGC
+     1321 TCCTATTTAA ACGAGACACA CTTCTCCGAC GACATCGAGC AGCAAGCCGA CAACATGATC
+     1381 ACCGAAATGC TCCAGAAGGA GTACATGGAG AGGCAAGGTA AGACTCCTCT GGGTTTAGTG
+     1441 GATTTATTCG TCTTCAGCAC CTCCTTCTAT TTAATCTCCA TCTTTCTTCA TCTGGTGAAG
+     1501 ATTCCTACCC ACAGACACAT TGTGGGCAAG AGCTGTCCTA AGCCTCATAG ACTGAACCAC
+     1561 ATGGGCATCT GTAGCTGCGG TTTATATAAA CAGCCCGGTG TTCCCGTTAA GTGGAAGAGG
+     1621 TGAGCTAGCT AAACGCGTTG ATCCtaatca acctctggat tacaaaattt gtgaaagatt
+     1681 gactggtatt cttaactatg tRgctccttt tacgctatgt ggatacgctg
+//
+
+</pre></div></div>
+</div>
+<p>Read the amplicons into a <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object, specifying the features that we require the target to contain:</p>
+<p>First, read in the <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file containing the <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> for these targets. Here, the <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> are the same for both targets, but this is not required.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/lasv_feature_parse_specs.yaml&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span><span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
+                  <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">parse_specs_file</span><span class="p">,</span>
+                  <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                  <span class="n">allow_clipped_muts_seqs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Plot the targets:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_15_0.png" src="_images/lasv_pilot_15_0.png" />
+</div>
+</div>
+<p>We can also look at the featue parsing specifications as a dict or YAML string (here we do it as YAML string):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s1">&#39;yaml&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_WT: &amp;id001
+  query_clip5: 10
+  query_clip3: 10
+  termini5:
+    filter:
+      clip5: 10
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip3: 0
+    return: []
+  termini3:
+    filter:
+      clip3: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip5: 0
+    return: []
+  gene:
+    filter:
+      mutation_nt_count: 30
+      mutation_op_count: null
+      clip5: 0
+      clip3: 0
+    return:
+    - mutations
+    - accuracy
+  spacer:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+      clip5: 0
+      clip3: 0
+    return: []
+  index:
+    filter:
+      clip5: 3
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+    return:
+    - sequence
+  variant_tag5:
+    return:
+    - sequence
+    filter:
+      clip5: 0
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+  variant_tag3:
+    return:
+    - sequence
+    filter:
+      clip5: 0
+      clip3: 0
+      mutation_nt_count: 0
+      mutation_op_count: 0
+LASV_Josiah_OPT: *id001
+
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="PacBio-CCSs">
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
+<p>We will align PacBio circular consensus sequences (CCSs) to the target. First, we want to look at the CCSs. A FASTQ file with these CCSs along with an associated report file were generated using the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program (see <a class="reference external" href="https://github.com/PacificBiosciences/ccs">here</a> for details on <code class="docutils literal notranslate"><span class="pre">ccs</span></code>) using commands like the following (generates report file and BAM of CCSs):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccs</span> <span class="o">--</span><span class="n">minLength</span> <span class="mi">50</span> <span class="o">--</span><span class="n">maxLength</span> <span class="mi">5000</span> \
+    <span class="o">--</span><span class="n">minPasses</span> <span class="mi">3</span>  <span class="o">--</span><span class="n">minPredictedAccuracy</span> <span class="mf">0.999</span> \
+    <span class="o">--</span><span class="n">reportFile</span> <span class="n">lasv_pilot_report</span><span class="o">.</span><span class="n">txt</span> \
+    <span class="o">--</span><span class="n">polish</span> <span class="o">--</span><span class="n">numThreads</span> <span class="mi">16</span> \
+    <span class="n">lasv_pilot_subreads</span><span class="o">.</span><span class="n">bam</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">bam</span>
+</pre></div>
+</div>
+<p>The BAM file was then converted to a FASTQ file using <a class="reference external" href="http://www.htslib.org/">samtools</a> with a flag to retain the number of passes (<code class="docutils literal notranslate"><span class="pre">np</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">samtools</span> <span class="n">bam2fq</span> <span class="o">-</span><span class="n">T</span> <span class="n">np</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">bam</span> <span class="o">&gt;</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">fastq</span>
+</pre></div>
+</div>
+<p>Here is a data frame with the resulting FASTQ and BAM files:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lasv_pilot&#39;</span><span class="p">]</span>
+<span class="n">ccs_dir</span> <span class="o">=</span> <span class="s1">&#39;input_files&#39;</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;lasv_example&#39;</span>
+
+<span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
+             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq&quot;</span><span class="p">]</span>
+             <span class="p">})</span>
+
+<span class="n">pacbio_runs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>report</th>
+      <th>fastq</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>lasv_pilot</td>
+      <td>input_files/lasv_pilot_report.txt</td>
+      <td>input_files/lasv_example_ccs.fastq</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We create a <code class="docutils literal notranslate"><span class="pre">Summaries</span></code> object for these CCSs:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Plot how many ZMWs yielded CCSs:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_zmw_stats</span><span class="p">()</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_23_0.png" src="_images/lasv_pilot_23_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>status</th>
+      <th>number</th>
+      <th>fraction</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>lasv_pilot</td>
+      <td>Success -- CCS generated</td>
+      <td>250</td>
+      <td>0.4996</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>lasv_pilot</td>
+      <td>Failed -- Not enough full passes</td>
+      <td>157</td>
+      <td>0.3144</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>lasv_pilot</td>
+      <td>Failed -- CCS below minimum predicted accuracy</td>
+      <td>86</td>
+      <td>0.1720</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>lasv_pilot</td>
+      <td>Failed -- No usable subreads</td>
+      <td>6</td>
+      <td>0.0137</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>lasv_pilot</td>
+      <td>Failed -- Other reason</td>
+      <td>0</td>
+      <td>0.0000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Statistics on the CCSs (length, number of subread passes, accuracy):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;passes&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">has_stat</span><span class="p">(</span><span class="n">stat</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;No information available on CCS </span><span class="si">{stat}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_26_0.png" src="_images/lasv_pilot_26_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_26_1.png" src="_images/lasv_pilot_26_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_26_2.png" src="_images/lasv_pilot_26_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Align-CCSs-to-target">
+<h2>Align CCSs to target<a class="headerlink" href="#Align-CCSs-to-target" title="Permalink to this headline">¶</a></h2>
+<p>Now we use <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> to align the CCSs to the target.</p>
+<p>First, we create a <code class="docutils literal notranslate"><span class="pre">Mapper</span></code> object to run <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>, using the options for codon-level deep mutational scanning:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+      <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using `minimap2` 2.17-r941 with these options:
+-A2 -B4 -O12 -E2 --end-bonus=13 --secondary=no --cs
+</pre></div></div>
+</div>
+<p>Now use this mapper to do the alignments to a SAM file. First, add the names of the desired alignment files to our data frame:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">alignments</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outdir</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_alignments.sam&#39;</span><span class="p">)</span>
+
+<span class="n">pacbio_runs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>report</th>
+      <th>fastq</th>
+      <th>alignments</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>lasv_pilot</td>
+      <td>input_files/lasv_pilot_report.txt</td>
+      <td>input_files/lasv_example_ccs.fastq</td>
+      <td>./output_files/lasv_pilot_alignments.sam</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Now use the mapper to actually align the FASTQ queries to the target:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Aligning </span><span class="si">{tup.fastq}</span><span class="s2"> to create </span><span class="si">{tup.alignments}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="n">targets</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">queryfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span>
+                  <span class="n">alignmentfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span>
+                  <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Aligning input_files/lasv_example_ccs.fastq to create ./output_files/lasv_pilot_alignments.sam...
+</pre></div></div>
+</div>
+<p>These SAM files now contain the alignments along with the <code class="docutils literal notranslate"><span class="pre">`cs</span></code> tag &lt;<a class="reference external" href="https://github.com/lh3/minimap2#cs">https://github.com/lh3/minimap2#cs</a>&gt;`__, which contains details on the mutations:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="p">[</span><span class="s1">&#39;alignments&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="k">with</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;First alignment in </span><span class="si">{fname}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First alignment in ./output_files/lasv_pilot_alignments.sam has `cs` tag:
+:8*ng*na*ng*na*nc*ng:19*nc:1667*na:28
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Parse-the-alignments">
+<h2>Parse the alignments<a class="headerlink" href="#Parse-the-alignments" title="Permalink to this headline">¶</a></h2>
+<p>Now we use <code class="docutils literal notranslate"><span class="pre">Targets.parse_alignments</span></code> to parse the SAM files to get the information we specified for return. This function returns a data frames (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <code class="docutils literal notranslate"><span class="pre">Targets</span></code> giving data frames on the aligned and filtered reads. We concatenate the data frames for each PacBio run and then look at them together:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">aligned</span> <span class="o">=</span> <span class="p">{</span><span class="n">targetname</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
+<span class="n">filtered</span> <span class="o">=</span> <span class="p">{</span><span class="n">targetname</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{run.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">run_readstats</span><span class="p">,</span> <span class="n">run_aligned</span><span class="p">,</span> <span class="n">run_filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">parse_alignment</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">filtered_cs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># when concatenating add the run name to keep track of runs for results</span>
+    <span class="n">readstats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_readstats</span>
+                     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                     <span class="p">)</span>
+    <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+        <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+                                   <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                                   <span class="p">)</span>
+        <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+                                    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                                    <span class="p">)</span>
+
+<span class="c1"># now concatenate the data frames for each run</span>
+<span class="n">readstats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Parsing PacBio run lasv_pilot
+</pre></div></div>
+</div>
+<p>First lets look at the read stats:</p>
+<p>From the known composition of the library, there should be more LASV_Josiah_OPT reads than LASV_Josiah_WT.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>category</th>
+      <th>count</th>
+      <th>run_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>filtered LASV_Josiah_WT</td>
+      <td>23</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>aligned LASV_Josiah_WT</td>
+      <td>84</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>filtered LASV_Josiah_OPT</td>
+      <td>31</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>aligned LASV_Josiah_OPT</td>
+      <td>112</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>unmapped</td>
+      <td>0</td>
+      <td>lasv_pilot</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">))</span> <span class="o">+</span>
+    <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ run_name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+          <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">)</span>
+          <span class="p">)</span>
+    <span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_39_0.png" src="_images/lasv_pilot_39_0.png" />
+</div>
+</div>
+<p>Now look at the information on the filtered reads. This is a bigger data frame, so we just look at the first few lines for the first target (of which there is only one anyway):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">filtered</span><span class="p">[</span><span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>filter_reason</th>
+      <th>filter_cs</th>
+      <th>run_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194989/ccs</td>
+      <td>termini5 clip5</td>
+      <td>*nc*na*nc:19*nc:113</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4260334/ccs</td>
+      <td>query_clip5</td>
+      <td>None</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4260585/ccs</td>
+      <td>termini3 mutation_nt_count</td>
+      <td>:35*ag:20*ag:6*na:28</td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>m54228_190605_190010/4391712/ccs</td>
+      <td>termini5 clip5</td>
+      <td></td>
+      <td>lasv_pilot</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>m54228_190605_190010/4456843/ccs</td>
+      <td>termini3 clip3</td>
+      <td></td>
+      <td>lasv_pilot</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">target_filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+    <span class="n">nreasons</span> <span class="o">=</span> <span class="n">target_filtered</span><span class="p">[</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_filtered</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">))</span> <span class="o">+</span>
+        <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
+        <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ run_name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">targetname</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+              <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">nreasons</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
+              <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_42_0.png" src="_images/lasv_pilot_42_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_42_1.png" src="_images/lasv_pilot_42_1.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Error-filtering">
+<h2>Error filtering<a class="headerlink" href="#Error-filtering" title="Permalink to this headline">¶</a></h2>
+<p>Before looking at the information for the validly aligned (not filtered) reads, it is important to get a sense of the error rate for these sequencing reads.</p>
+<p>These reads do not have barcodes on each initial viral entry protein plasmid, but we can use the ‘gene_accuracy’ information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
+<p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">recA_DMS.ipynb</a> example notebook. However, here we will plot the graphs for each target.</p>
+<p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. We specify this cutoff below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">error_rate_floor</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># error rates &lt; this set to this</span>
+<span class="n">error_cutoff</span> <span class="o">=</span> <span class="mf">1e-4</span>
+
+<span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                  <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+                  <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+                          <span class="n">gene_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene_accuracy&#39;</span><span class="p">],</span>
+                                                          <span class="n">error_rate_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                          <span class="p">)</span>
+                  <span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+         <span class="n">ggplot</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;run_name&#39;</span><span class="p">],</span>
+                      <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gene_error&#39;</span><span class="p">],</span>
+                      <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;feature_type&#39;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;error rate&#39;</span><span class="p">),</span>
+                <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;error rate&#39;</span><span class="p">))</span> <span class="o">+</span>
+         <span class="n">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="o">+</span>
+         <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">error_cutoff</span><span class="p">,</span>
+                    <span class="n">linetype</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span>
+         <span class="n">facet_grid</span><span class="p">(</span><span class="s1">&#39;~ feature_type&#39;</span><span class="p">)</span> <span class="o">+</span>
+         <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span>
+         <span class="n">labs</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;number of CCSs&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="p">(</span><span class="n">targetname</span><span class="p">))</span> <span class="o">+</span>
+         <span class="n">scale_x_log10</span><span class="p">()</span>
+         <span class="p">)</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_44_0.png" src="_images/lasv_pilot_44_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_44_1.png" src="_images/lasv_pilot_44_1.png" />
+</div>
+</div>
+<p>Store all reads with an error rate &lt;1e-4 in new dataframes for retained sequences.</p>
+<p>We will use these retained sequences for further analyses.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">retained</span> <span class="o">=</span> <span class="p">{</span><span class="n">targetname</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">target_retained</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="s1">&#39;gene_error&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">retained</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_retained</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Data-analysis">
+<h2>Data analysis<a class="headerlink" href="#Data-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Now we can examine our data in more detail. First, let’s look at the first few entries in the data frame for the each target:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">target_name</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_WT
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194436/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194472/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>T572C</td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194509/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>m54228_190605_190010/4194553/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>m54228_190605_190010/4194576/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>AGACAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_OPT
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194382/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GAGACG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194390/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194399/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>m54228_190605_190010/4194439/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>m54228_190605_190010/4194445/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>CTTCAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>As seen by the ‘index_sequence’ columns, each target here has 2 or 3 different indices that map to it. These indicies indicate different samples.</p>
+<p>We can then split these dataframes into sample-specific dataframes based on the known starting index sequences for each target. We will store these dataframes in a new dictionary, keyed by target and index.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">indices</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;AGACAC&#39;</span><span class="p">,</span> <span class="s1">&#39;GGTATG&#39;</span><span class="p">],</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ACGACC&#39;</span><span class="p">,</span> <span class="s1">&#39;CTTCAC&#39;</span><span class="p">,</span> <span class="s1">&#39;GAGACG&#39;</span><span class="p">]}</span>
+<span class="n">target_idx_retained</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">index_counts</span> <span class="o">=</span> <span class="p">{</span><span class="n">target</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">}</span>
+<span class="n">index_counts_dfs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">target_name</span><span class="p">]:</span>
+        <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index_counts</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">])))</span>
+    <span class="n">index_counts</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
+                                                          <span class="nb">sum</span><span class="p">(</span><span class="n">idx_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_tup</span> <span class="ow">in</span> <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">]))))</span>
+    <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>In the process of making these separate dataframes, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">index_count_plot</span> <span class="o">=</span> <span class="p">(</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">))</span> <span class="o">+</span>
+                        <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">vjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hjust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
+                        <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span>
+                        <span class="n">ylab</span><span class="p">(</span><span class="s1">&#39;Reads&#39;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">xlab</span><span class="p">(</span><span class="s1">&#39;Target&#39;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">ggtitle</span><span class="p">(</span><span class="s1">&#39;Reads per Sample Index&#39;</span><span class="p">))</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">index_count_plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_52_0.png" src="_images/lasv_pilot_52_0.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_52_1.png" src="_images/lasv_pilot_52_1.png" />
+</div>
+</div>
+<p>The two target-specific dataframes are now five index-specific dataframes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">target_idx</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_WT_AGACAC
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194576/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>AGACAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194612/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>AGACAC</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194613/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>AGACAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_WT_GGTATG
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194436/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194472/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>T572C</td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194509/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GGTATG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_OPT_ACGACC
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194390/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194399/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194439/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>ACGACC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_OPT_CTTCAC
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194445/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.000000</td>
+      <td>CTTCAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194501/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.000000</td>
+      <td>CTTCAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194549/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>0.999915</td>
+      <td>CTTCAC</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>8.484769e-05</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LASV_Josiah_OPT_GAGACG
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>gene_mutations</th>
+      <th>gene_accuracy</th>
+      <th>index_sequence</th>
+      <th>variant_tag5_sequence</th>
+      <th>variant_tag3_sequence</th>
+      <th>run_name</th>
+      <th>gene_error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>m54228_190605_190010/4194382/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GAGACG</td>
+      <td>C</td>
+      <td>A</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>m54228_190605_190010/4194467/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GAGACG</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>m54228_190605_190010/4194491/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td></td>
+      <td>1.0</td>
+      <td>GAGACG</td>
+      <td>T</td>
+      <td>G</td>
+      <td>lasv_pilot</td>
+      <td>1.000000e-07</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>We can add mutation info for the genes in these targets.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
+    <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">],</span>
+                                                                              <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
+                                                                              <span class="n">n_sub_col</span><span class="o">=</span><span class="s1">&#39;n_gene_subs&#39;</span><span class="p">,</span>
+                                                                              <span class="n">n_indel_col</span><span class="o">=</span><span class="s1">&#39;n_gene_indels&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>We can then plot the number of reads for each sample that has each number of substitutions or indels to get a sense of how many mutations are in these reads, if some smaples have more mutations than others, and if substitutions or indels are more prevalent in these sequences.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mut_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n_gene_subs&#39;</span><span class="p">,</span> <span class="s1">&#39;n_gene_indels&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
+    <span class="n">target_idx_plot_muts</span> <span class="o">=</span> <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">][</span><span class="n">mut_cols</span><span class="p">]</span><span class="o">.</span><span class="n">melt</span><span class="p">()</span>
+    <span class="n">mut_counts_plot</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_idx_plot_muts</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span> <span class="o">+</span>
+                        <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
+                        <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ variable&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_idx}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+                              <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+                              <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">mut_counts_plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_58_0.png" src="_images/lasv_pilot_58_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_58_1.png" src="_images/lasv_pilot_58_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_58_2.png" src="_images/lasv_pilot_58_2.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_58_3.png" src="_images/lasv_pilot_58_3.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_58_4.png" src="_images/lasv_pilot_58_4.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="recA_DMS.html">RecA deep mutational scanning libraries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Lassa virus glycoprotein PacBio sequencing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flu_virus_seq_example.html">Single-cell virus sequencing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="examples.html">Examples</a><ul>
+      <li>Previous: <a href="recA_DMS.html" title="previous chapter">RecA deep mutational scanning libraries</a></li>
+      <li>Next: <a href="flu_virus_seq_example.html" title="next chapter">Single-cell virus sequencing</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/lasv_pilot.nblink.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

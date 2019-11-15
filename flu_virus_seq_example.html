@@ -1,0 +1,1706 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Single-cell virus sequencing &#8212; alignparse 0.1.dev0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="alignparse package" href="alignparse.html" />
+    <link rel="prev" title="Lassa virus glycoprotein PacBio sequencing" href="lasv_pilot.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Single-cell-virus-sequencing">
+<h1>Single-cell virus sequencing<a class="headerlink" href="#Single-cell-virus-sequencing" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process full-length PacBio CCSs of viral cDNAs generated in single-cell virus sequencing of influenza-infected cells. Specifically, it processes a snippet of data taking from <a class="reference external" href="https://jvi.asm.org/content/93/14/e00500-19">Russell et al, 2019</a>, which was generated by PacBio sequencing of viral cDNAs with unique molecular identifiers (UMIS) and cell barcodes added using a 10X Chromium (v2 reagents). This
+notebook aligns these CCSs to the influenza transcripts and parses the barcodes / UMIs and viral mutations.</p>
+<div class="section" id="Set-up-for-analysis">
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
+<p>Import necessary Python modules. We use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">alignparse.ccs</span>
+<span class="kn">import</span> <span class="nn">alignparse.consensus</span>
+<span class="kn">import</span> <span class="nn">alignparse.minimap2</span>
+<span class="kn">import</span> <span class="nn">alignparse.targets</span>
+<span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="k">import</span> <span class="n">CBPALETTE</span>
+
+<span class="kn">import</span> <span class="nn">dms_variants.plotnine_themes</span>
+<span class="kn">import</span> <span class="nn">dms_variants.utils</span>
+</pre></div>
+</div>
+</div>
+<p>Suppress warnings that clutter output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Set <a class="reference external" href="https://plotnine.readthedocs.io/en/stable/">plotnine</a> theme to the one defined in <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">theme_set</span><span class="p">(</span><span class="n">dms_variants</span><span class="o">.</span><span class="n">plotnine_themes</span><span class="o">.</span><span class="n">theme_graygrid</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>Directory for output:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./output_files/&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Target-amplicons">
+<h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Permalink to this headline">¶</a></h2>
+<p>The alignment targets consist of PCR amplicons covering the influenza virus mRNAs (WSN strain) with a 5’ termini corresponding to the primer binding site, the 3’ polyA tail used for reverse transcription, the UMI and cell barcode, and the common 3’ termini. There are also variant tags distinguishing the synonymously tagged viral variants (see <a class="reference external" href="https://jvi.asm.org/content/93/14/e00500-19">Russell et al, 2019</a>).</p>
+<p>First, let’s look at the Genbank file holding the targets. Below we show the first 85 lines (the actual file is quite large as it defined all 10 influenza mRNAs):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targetfile</span> <span class="o">=</span> <span class="s1">&#39;input_files/flu_WSN_amplicons.gb&#39;</span>
+
+<span class="n">nlines_to_show</span> <span class="o">=</span> <span class="mi">85</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlines_to_show</span><span class="p">)))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+LOCUS       fluPB2                  2395 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluPB2.
+ACCESSION   fluPB2
+VERSION     fluPB2
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..34
+     variant_tag_1   143..143
+     variant_tag_2   149..149
+     variant_tag_3   2163..2163
+     variant_tag_4   2171..2171
+     sequenced_mRNA  35..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
+ORIGIN
+        1 gcgaaagcag gtcaattata ttcaatatgg aaagaataaa agaactaagg aatctaatgt
+       61 cgcagtctcg cactcgcgag atactcacaa aaaccaccgt ggaccatatg gccataatca
+      121 agaagtacac atcaggaaga cargagaara acccagcact taggatgaaa tggatgatgg
+      181 caatgaaata tccaattaca gcagacaaga ggataacgga aatgattcct gagagaaatg
+      241 agcagggaca aactttatgg agtaaaatga atgacgccgg atcagaccga gtgatggtat
+      301 cacctctggc tgtgacatgg tggaatagga atggaccagt gacaagtaca gttcattatc
+      361 caaaaatcta caaaacttat tttgaaaaag tcgaaaggtt aaaacatgga acctttggcc
+      421 ctgtccattt tagaaaccaa gtcaaaatac gtcgaagagt tgacataaat cctggtcatg
+      481 cagatctcag tgccaaagag gcacaggatg taatcatgga agttgttttc cctaacgaag
+      541 tgggagccag gatactaaca tcggaatcgc aactaacgac aaccaaagag aagaaagaag
+      601 aactccaggg ttgcaaaatt tctcctctga tggtggcata catgttggag agagaactgg
+      661 tccgcaaaac gagattcctc ccagtggctg gtggaacaag cagtgtgtac attgaagtgt
+      721 tgcatttgac ccaaggaaca tgctgggaac agatgtacac tccaggaggg gaggcgagga
+      781 atgatgatgt tgatcaaagc ttaattattg ctgctagaaa catagtaaga agagccacag
+      841 tatcagcaga tccactagca tctttattgg agatgtgcca cagcacgcag attggtggaa
+      901 taaggatggt aaacatcctt aggcagaacc caacagaaga gcaagccgtg gatatttgca
+      961 aggctgcaat gggactgaga attagctcat ccttcagttt tggtggattc acatttaaga
+     1021 gaacaagcgg atcatcagtc aagagagagg aagaggtgct tacgggcaat cttcagacat
+     1081 tgaagataag agtgcatgag ggatatgaag agttcacaat ggttgggaga agagcaacag
+     1141 ctatactcag aaaagcaacc aggagattga ttcagctgat agtgagtggg agagacgaac
+     1201 agtcgattgc cgaagcaata attgtggcca tggtattttc acaagaggat tgtatgataa
+     1261 aagcagttag aggtgacctg aatttcgtca atagggcgaa tcagcgattg aatcccatgc
+     1321 accaactttt gagacatttt cagaaggatg caaaggtgct ctttcaaaat tggggaattg
+     1381 aatccatcga caatgtgatg ggaatgatcg ggatattgcc cgacatgact ccaagcaccg
+     1441 agatgtcaat gagaggagtg agaatcagca aaatgggggt agatgagtat tccagcgcgg
+     1501 agaagatagt ggtgagcatt gaccgttttt tgagagttag ggaccaacgt gggaatgtac
+     1561 tactgtctcc cgaggagatc agtgaaacac agggaacaga gaaactgaca ataacttact
+     1621 catcgtcaat gatgtgggag attaatggtc ctgaatcagt gttggtcaat acctatcagt
+     1681 ggatcatcag aaactgggaa actgttaaaa ttcagtggtc ccagaatcct acaatgctgt
+     1741 acaataaaat ggaatttgag ccatttcagt ctttagttcc aaaggccgtt agaggccaat
+     1801 acagtgggtt tgtgagaact ctgttccaac aaatgaggga tgtgcttggg acatttgata
+     1861 ccgctcagat aataaaactt cttcccttcg cagccgctcc accaaagcaa agtagaacgc
+     1921 agttctcctc attgactata aatgtgaggg gatcaggaat gagaatactt gtaaggggca
+     1981 attctccagt attcaactac aacaagacca ctaaaagact cacagttctc ggaaaggatg
+     2041 ctggcccttt aactgaagac ccagatgaag gcacagctgg agttgagtcc gcagttctga
+     2101 gaggattcct cattctgggc aaagaagaca ggagatatgg accagcatta agcataaatg
+     2161 aaytgagcaa ycttgcgaaa ggagagaagg ctaatgtgct aattgggcaa ggagacgtgg
+     2221 tgttggtaat gaaacggaaa cggaactcta gcatacttac tgacagccag acagcgacca
+     2281 aaagaattcg gatggccatc aattagtgtc gaatagttta aaaaaaaaaa aaaaaaaaaa
+     2341 aaaaaaannn nnnnnnnnnn nnnnnnnnnn nnnagatcgg aagagcgtcg tgtag
+//
+LOCUS       fluPB1                  2395 bp    DNA              UNK 01-JAN-1980
+DEFINITION  fluPB1.
+ACCESSION   fluPB1
+VERSION     fluPB1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     termini5        1..22
+     variant_tag_1   146..146
+     variant_tag_2   152..152
+     variant_tag_3   2159..2159
+     variant_tag_4   2162..2162
+     sequenced_mRNA  23..2316
+     final_mRNA_nts  2317..2319
+     polyA           2320..2347
+     UMI             2348..2357
+     cellbarcode     2358..2373
+     termini3        2374..2395
+ORIGIN
+        1 gcgaaagcag gcaaaccatt tgaatggatg tcaatccgac tttacttttc ttaaaagtgc
+       61 cagcacaaaa tgctataagc acaactttcc cttatactgg agaccctcct tacagccatg
+
+</pre></div></div>
+</div>
+<p>We also have the YAML file specifying how to parse the features in the alignments. Note how this file uses the YAML syntax for defaults to avoid repeating the same specifications for each target:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">feature_parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/flu_WSN_feature_parse_specs.yaml&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">feature_parse_specs_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+# default for genes with two variant tags
+default_2tags: &amp;default_2tags
+  query_clip5: 4
+  query_clip3: 4
+  termini5:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  sequenced_mRNA:
+    filter:
+      mutation_nt_count: null
+      mutation_op_count: 10
+    return: [mutations, accuracy]
+  final_mRNA_nts:
+    filter:
+      mutation_nt_count: null
+      mutation_op_count: 2
+  polyA:
+    filter:
+      mutation_nt_count: 12
+      mutation_op_count: 4
+  UMI:
+    return: [sequence, accuracy]
+  cellbarcode:
+    return: [sequence, accuracy]
+  termini3:
+    filter:
+      clip5: 4
+      mutation_nt_count: 1
+      mutation_op_count: null
+  variant_tag_1:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+  variant_tag_2:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+
+# default for genes with four variant tags
+default_4tags: &amp;default_4tags
+  &lt;&lt;: *default_2tags
+  variant_tag_3:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+  variant_tag_4:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+    return: sequence
+
+# use defaults to define specs for actual genes
+fluPB2:
+  &lt;&lt;: *default_4tags
+
+fluPB1:
+  &lt;&lt;: *default_4tags
+
+fluPA:
+  &lt;&lt;: *default_4tags
+
+fluHA:
+  &lt;&lt;: *default_4tags
+
+fluNP:
+  &lt;&lt;: *default_4tags
+
+fluNA:
+  &lt;&lt;: *default_4tags
+
+fluM1:
+  &lt;&lt;: *default_4tags
+
+fluM2:
+  &lt;&lt;: *default_2tags
+
+fluNS1:
+  &lt;&lt;: *default_4tags
+
+fluNS2:
+  &lt;&lt;: *default_2tags
+
+</pre></div></div>
+</div>
+<p>We now read the targets into an <code class="docutils literal notranslate"><span class="pre">alignparse.targets.Targets</span></code> object with the feature-parsing specs (ignoring the keys that define thet defaults):</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
+                <span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfile</span><span class="p">,</span>
+                <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">feature_parse_specs_file</span><span class="p">,</span>
+                <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;default_2tags&#39;</span><span class="p">,</span>
+                                                 <span class="s1">&#39;default_4tags&#39;</span><span class="p">],</span>
+                <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Plot the <code class="docutils literal notranslate"><span class="pre">Targets</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_16_0.png" src="_images/flu_virus_seq_example_16_0.png" />
+</div>
+</div>
+<p>Several things of note about how these targets are defined. These all relate to the fact that the most difficult region to parse is the polyA tail and the UMI / cell barcode–the reason being that the polyA tail is not sequenced very accurately (it is a homopolymer) plus appears to be somewhat impure in the actual primers, so is difficult to align correctly. This is compounded by the fact that we don’t know the actual UMI sequence and so don’t want indels of the polyA tail to “bleed” into the UMI
+or gene alignment. Therefore:</p>
+<ul class="simple">
+<li><p>We define a separate feature for the final nucleotides (last 3) of the mRNA upstream of the sequenced mRNA, so polyA indels don’t get assigned to the sequenced mRNA too often.</p></li>
+<li><p>We define the polyA to be just 28 nucleotides in the alignment even though the length in the primer is 30, so that deletions don’t affect the UMI.</p></li>
+</ul>
+<p>These empirically help with the alilgnments.</p>
+</div>
+<div class="section" id="PacBio-CCSs">
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
+<p>Now let’s look at the PacBio CCSs. First, define a data frame with the information on the PacBio runs (here we just have one):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;flu_WSN&#39;</span><span class="p">],</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;input_files/flu_WSN_ccs.fastq&#39;</span><span class="p">]</span>
+             <span class="p">})</span>
+
+<span class="n">pacbio_runs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>fastq</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>input_files/flu_WSN_ccs.fastq</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Create an <code class="docutils literal notranslate"><span class="pre">alignparse.ccs.Summaries</span></code> object:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">,</span>
+                                         <span class="n">report_col</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Statistics on the CCSs (length, number of subread passes, quality):</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;passes&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">has_stat</span><span class="p">(</span><span class="n">stat</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">theme</span><span class="p">(</span><span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">())</span>  <span class="c1"># no vertical grid lines</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;No </span><span class="si">{stat}</span><span class="s2"> statistics available.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_23_0.png" src="_images/flu_virus_seq_example_23_0.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_23_1.png" src="_images/flu_virus_seq_example_23_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_23_2.png" src="_images/flu_virus_seq_example_23_2.png" />
+</div>
+</div>
+</div>
+<div class="section" id="Align-and-parse">
+<h2>Align and parse<a class="headerlink" href="#Align-and-parse" title="Permalink to this headline">¶</a></h2>
+<p>First, we create an <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.Mapper</span></code> to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for viruses with potentially large internal deletions (which are handled like spliced introns); these options are specified by <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.OPTIONS_VIRUS_W_DEL</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_VIRUS_W_DEL</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+      <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Using `minimap2` 2.17-r941 with these options:
+-xsplice:hq -un -C0 --splice-flank=no -M=1 --for-only --end-seed-pen=2 --end-bonus=2 --secondary=no --cs
+</pre></div></div>
+</div>
+<p>Now use <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> to align and parse the CCSs. First, create the output directory:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">align_and_parse_outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;flu_WSN_align_and_parse&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now do the alignments and parsing:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
+        <span class="n">df</span><span class="o">=</span><span class="n">pacbio_runs</span><span class="p">,</span>
+        <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
+        <span class="n">outdir</span><span class="o">=</span><span class="n">align_and_parse_outdir</span><span class="p">,</span>
+        <span class="n">name_col</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="n">queryfile_col</span><span class="o">=</span><span class="s1">&#39;fastq&#39;</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># overwrite any existing output</span>
+        <span class="n">ncpus</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># use all available CPUs</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>First, let’s look at the read alignment stats:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">readstats</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>category</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>filtered fluPB2</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>aligned fluPB2</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>filtered fluPB1</td>
+      <td>34</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>aligned fluPB1</td>
+      <td>162</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>filtered fluPA</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>flu_WSN</td>
+      <td>aligned fluPA</td>
+      <td>169</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>flu_WSN</td>
+      <td>filtered fluHA</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>flu_WSN</td>
+      <td>aligned fluHA</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>flu_WSN</td>
+      <td>filtered fluNP</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>flu_WSN</td>
+      <td>aligned fluNP</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>flu_WSN</td>
+      <td>filtered fluNA</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>flu_WSN</td>
+      <td>aligned fluNA</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>flu_WSN</td>
+      <td>filtered fluM1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>flu_WSN</td>
+      <td>aligned fluM1</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>flu_WSN</td>
+      <td>filtered fluM2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>flu_WSN</td>
+      <td>aligned fluM2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>flu_WSN</td>
+      <td>filtered fluNS1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>flu_WSN</td>
+      <td>aligned fluNS1</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>flu_WSN</td>
+      <td>filtered fluNS2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>flu_WSN</td>
+      <td>aligned fluNS2</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>flu_WSN</td>
+      <td>unmapped</td>
+      <td>117</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Plot these stats:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+               <span class="n">category</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">],</span>
+                                                 <span class="n">x</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+                                                 <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+               <span class="n">is_aligned</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;aligned&#39;</span><span class="p">),</span>
+               <span class="p">),</span>
+           <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;is_aligned&#39;</span><span class="p">))</span> <span class="o">+</span>
+    <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+          <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">readstats</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
+          <span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">()</span>  <span class="c1"># no vertical grid lines</span>
+          <span class="p">)</span> <span class="o">+</span>
+    <span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_33_0.png" src="_images/flu_virus_seq_example_33_0.png" />
+</div>
+</div>
+<p>Now let’s look at the reason that reads that were filtered failed to align. Recall that <code class="docutils literal notranslate"><span class="pre">filtered</span></code> holds a data frame for each target:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">[:</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;First few lines of `filtered` for </span><span class="si">{target}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+First few lines of `filtered` for fluPB2:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>filter_reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5308608/ccs</td>
+      <td>termini5 clip5</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/6554482/ccs</td>
+      <td>polyA mutation_nt_count</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/7143925/ccs</td>
+      <td>polyA mutation_nt_count</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/9437481/ccs</td>
+      <td>final_mRNA_nts mutation_op_count</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/9830886/ccs</td>
+      <td>polyA mutation_nt_count</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Concatenate the information for all of the targets and plot reasons why mapped reads were filtered:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ggplot</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">gene</span><span class="o">=</span><span class="n">gene</span><span class="p">)</span> <span class="k">for</span> <span class="n">gene</span><span class="p">,</span> <span class="n">df</span>
+                      <span class="ow">in</span> <span class="n">filtered</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+             <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">gene</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene&#39;</span><span class="p">],</span>
+                                                   <span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span>
+                                                   <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)),</span>
+           <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">))</span> <span class="o">+</span>
+    <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
+    <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ gene&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span>
+    <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+          <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+          <span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">(),</span>  <span class="c1"># no vertical grid lines</span>
+          <span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/flu_virus_seq_example_37_0.png" src="_images/flu_virus_seq_example_37_0.png" />
+</div>
+</div>
+<p>Now let’s look at the first few aligned reads for the first few genes:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">[:</span><span class="mi">4</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First few entries in `aligned` for </span><span class="si">{target}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+First few entries in `aligned` for fluPB2:
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>sequenced_mRNA_mutations</th>
+      <th>sequenced_mRNA_accuracy</th>
+      <th>UMI_sequence</th>
+      <th>UMI_accuracy</th>
+      <th>cellbarcode_sequence</th>
+      <th>cellbarcode_accuracy</th>
+      <th>variant_tag_1_sequence</th>
+      <th>variant_tag_2_sequence</th>
+      <th>variant_tag_3_sequence</th>
+      <th>variant_tag_4_sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5243086/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del279to1904 C2077A C2157A C2214A</td>
+      <td>1.0</td>
+      <td>CAATAGGTAC</td>
+      <td>1.0</td>
+      <td>AGTAGTCACTTCAAGC</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>G</td>
+      <td>C</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5833039/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del117to2070</td>
+      <td>1.0</td>
+      <td>AGCGCTCTTT</td>
+      <td>1.0</td>
+      <td>ATAAGGTGACCTCTCA</td>
+      <td>1.0</td>
+      <td>A</td>
+      <td>A</td>
+      <td>T</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5898400/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>G67T del152to1989</td>
+      <td>1.0</td>
+      <td>TGTCACTGGC</td>
+      <td>1.0</td>
+      <td>TCGGAGCTGGTCTTAG</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>G</td>
+      <td>C</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/6160599/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>G242T C430G del551to2282</td>
+      <td>1.0</td>
+      <td>CTCGGTCCGC</td>
+      <td>1.0</td>
+      <td>GTGCGCATGGAAATCA</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>G</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/6161088/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del152to1989 G2057T G2118T</td>
+      <td>1.0</td>
+      <td>GGTTGGCGCT</td>
+      <td>1.0</td>
+      <td>CGGAGCTGGTCTTTAG</td>
+      <td>1.0</td>
+      <td>G</td>
+      <td>G</td>
+      <td>C</td>
+      <td>C</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+First few entries in `aligned` for fluPB1:
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>sequenced_mRNA_mutations</th>
+      <th>sequenced_mRNA_accuracy</th>
+      <th>UMI_sequence</th>
+      <th>UMI_accuracy</th>
+      <th>cellbarcode_sequence</th>
+      <th>cellbarcode_accuracy</th>
+      <th>variant_tag_1_sequence</th>
+      <th>variant_tag_2_sequence</th>
+      <th>variant_tag_3_sequence</th>
+      <th>variant_tag_4_sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4784702/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del171to2016 del2268to2268</td>
+      <td>1.000000</td>
+      <td>GCGTATCCTG</td>
+      <td>1.000000</td>
+      <td>CCTTCGTGATGATTGC</td>
+      <td>1.000000</td>
+      <td>T</td>
+      <td>C</td>
+      <td>C</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4785077/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del180to2032</td>
+      <td>1.000000</td>
+      <td>GTGCATGTGT</td>
+      <td>1.000000</td>
+      <td>TTCAGCCTGTTCAAGC</td>
+      <td>1.000000</td>
+      <td>T</td>
+      <td>C</td>
+      <td>C</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5111911/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>ins397T C468T T1612C</td>
+      <td>0.999384</td>
+      <td>AGCGTGCCAC</td>
+      <td>0.999999</td>
+      <td>ATCCTGGCTGCGTCCA</td>
+      <td>0.999998</td>
+      <td>T</td>
+      <td>C</td>
+      <td>C</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5112319/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del258to2001</td>
+      <td>1.000000</td>
+      <td>CAACGATGAC</td>
+      <td>1.000000</td>
+      <td>GGCCACAACGCGAATG</td>
+      <td>1.000000</td>
+      <td>T</td>
+      <td>C</td>
+      <td>C</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/5112383/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del362to2140</td>
+      <td>1.000000</td>
+      <td>ATAAGTGTAG</td>
+      <td>1.000000</td>
+      <td>TAGGTAGCTAGCATAA</td>
+      <td>1.000000</td>
+      <td>T</td>
+      <td>C</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+First few entries in `aligned` for fluPA:
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>sequenced_mRNA_mutations</th>
+      <th>sequenced_mRNA_accuracy</th>
+      <th>UMI_sequence</th>
+      <th>UMI_accuracy</th>
+      <th>cellbarcode_sequence</th>
+      <th>cellbarcode_accuracy</th>
+      <th>variant_tag_1_sequence</th>
+      <th>variant_tag_2_sequence</th>
+      <th>variant_tag_3_sequence</th>
+      <th>variant_tag_4_sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4587763/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del117to1927 C2159A</td>
+      <td>1.000000</td>
+      <td>AAACTAGTGG</td>
+      <td>1.0</td>
+      <td>AAGACATGATCAGTGT</td>
+      <td>1.0</td>
+      <td>T</td>
+      <td></td>
+      <td>T</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4653834/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del179to1839</td>
+      <td>1.000000</td>
+      <td>AGCACACATA</td>
+      <td>1.0</td>
+      <td>TCCCATTGAAAACACA</td>
+      <td>1.0</td>
+      <td>C</td>
+      <td>T</td>
+      <td>A</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4719236/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>C42A del179to1839</td>
+      <td>1.000000</td>
+      <td>ACTGAAACAA</td>
+      <td>1.0</td>
+      <td>TCCCGTTGAAAACACA</td>
+      <td>1.0</td>
+      <td>C</td>
+      <td>T</td>
+      <td>A</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4784775/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del66to177 del265to1996 C2028T</td>
+      <td>0.999981</td>
+      <td>AATAGTTCCC</td>
+      <td>1.0</td>
+      <td>GGCAAACGAGACGCAA</td>
+      <td>1.0</td>
+      <td></td>
+      <td></td>
+      <td>A</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4850043/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>A64G ins402A del1063to1067 del1073to2180</td>
+      <td>0.999704</td>
+      <td>CATCATATTG</td>
+      <td>1.0</td>
+      <td>TGTGGTCCTACTGATC</td>
+      <td>1.0</td>
+      <td>T</td>
+      <td>C</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+First few entries in `aligned` for fluHA:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>query_name</th>
+      <th>query_clip5</th>
+      <th>query_clip3</th>
+      <th>sequenced_mRNA_mutations</th>
+      <th>sequenced_mRNA_accuracy</th>
+      <th>UMI_sequence</th>
+      <th>UMI_accuracy</th>
+      <th>cellbarcode_sequence</th>
+      <th>cellbarcode_accuracy</th>
+      <th>variant_tag_1_sequence</th>
+      <th>variant_tag_2_sequence</th>
+      <th>variant_tag_3_sequence</th>
+      <th>variant_tag_4_sequence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/4522378/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>G397A ins1145A del1251to1722</td>
+      <td>1.000000</td>
+      <td>TAGACCCTTT</td>
+      <td>1.00000</td>
+      <td>GAGTACACTATCGCGC</td>
+      <td>1.0</td>
+      <td>C</td>
+      <td>G</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/6947580/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del108to1459</td>
+      <td>1.000000</td>
+      <td>CTTTGGGGGG</td>
+      <td>0.99998</td>
+      <td>GTAGGTTTGTCACTAG</td>
+      <td>1.0</td>
+      <td></td>
+      <td></td>
+      <td>G</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/7144230/ccs</td>
+      <td>2</td>
+      <td>0</td>
+      <td>C260A C262A ins288G del471to471 C1052A ins1450T</td>
+      <td>0.999627</td>
+      <td>CGTACGGCAG</td>
+      <td>1.00000</td>
+      <td>AAACTGGCTAGGAGCT</td>
+      <td>1.0</td>
+      <td>A</td>
+      <td>A</td>
+      <td>A</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/7340424/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>G213A ins663A G1715A del1718to1722</td>
+      <td>0.999847</td>
+      <td>GCTTGCCGGC</td>
+      <td>1.00000</td>
+      <td>GGTCACTCTGCGTTAT</td>
+      <td>1.0</td>
+      <td>A</td>
+      <td>A</td>
+      <td>A</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>flu_WSN</td>
+      <td>m54228_171201_172448/8520141/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>G9T C153A del771to771 A1253C del1256to1722</td>
+      <td>0.999810</td>
+      <td>GTGCCAAGGA</td>
+      <td>1.00000</td>
+      <td>GAAAGGCTGGTACGAG</td>
+      <td>1.0</td>
+      <td>C</td>
+      <td>G</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    
+    <h1 class="logo logo-name">alignparse</h1>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">Align sequences and then parse features.</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=jbloomlab&repo=alignparse&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+    
+
+<p>
+<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
+    <img
+        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
+    />
+</a>
+</p>
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="examples.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="recA_DMS.html">RecA deep mutational scanning libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lasv_pilot.html">Lassa virus glycoprotein PacBio sequencing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Single-cell virus sequencing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="examples.html">Examples</a><ul>
+      <li>Previous: <a href="lasv_pilot.html" title="previous chapter">Lassa virus glycoprotein PacBio sequencing</a></li>
+      <li>Next: <a href="alignparse.html" title="next chapter">alignparse package</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019--2019.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/flu_virus_seq_example.nblink.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/jbloomlab/alignparse" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
