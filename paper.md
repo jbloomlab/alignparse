@@ -19,7 +19,7 @@ In the past decade, technology for genome sequencing has been advancing at an un
 
 With this expansion of long-read sequencing, also comes an increased need for tools to analzye such data. Several tools exist to map long sequencing reads to reference genomes, but most of these tools were designed for eukaryotic genomics and do not have the flexibility needed to adapt to the ever increasing uses of long-read sequencing.
 
-`alignparse` provides researchers a flexible tool for aligning their long-read sequencing data to a user-specified target sequence and to extract short sequences - corresponding to user-specified features - from their sequencing reads for further analysis. This flexibility allows for the indepth analysis of long-read sequencing results to be more widely applied. 
+`alignparse` provides researchers a flexible tool for aligning their long-read sequencing data to a user-specified target sequence and to extract short sequences - corresponding to user-specified features - from their sequencing reads for further analysis. This flexibility allows for the indepth analysis of long-read sequencing results to be more widely applied. `alignparse` uses `minimap2` for aligning sequences and takes adavantage of the informative `cs` tag returned from `minimap2` alignments in order to parse features from the long-read sequencing results and characterize their mutations and accuracy. 
 
 In our examples, we apply `alignparse` to analyze sequencing of bacterial and viral constructs. These examples show the utility of this package to analyze both full-length viral genomes and laboratory designed mutant libraries of single genes. 
 
