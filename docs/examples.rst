@@ -9,4 +9,5 @@ The actual notebooks and input files used in these examples are `available here 
    :maxdepth: 1
 
    recA_DMS
+   lasv_pilot
    flu_virus_seq_example
