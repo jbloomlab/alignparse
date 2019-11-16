@@ -292,7 +292,9 @@ tag, or number of clipped nucleotides from each end.</p></li>
 <p>In addition, target-level dicts should have keys ‘query_clip5’ and
 ‘query_clip3’ which give the max amount that can be clipped from
 each end of the query prior to the alignment. Use a value of
-<cite>None</cite> (‘null’ in YAML notation) to have no filter on this clipping.</p>
+<cite>None</cite> (‘null’ in YAML notation) to have no filter on this clipping.
+Filters will be applied in the order the features appear in the
+<cite>feature_parse_specs</cite>.</p>
 </p></li>
 <li><p><strong>allow_extra_features</strong> (<em>bool</em>) – Can targets have features not in <cite>feature_parse_specs</cite>?</p></li>
 <li><p><strong>seqsfileformat</strong> (<em>{'genbank'}</em>) – Format of <cite>seqsfile</cite>.</p></li>

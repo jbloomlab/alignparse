@@ -240,7 +240,8 @@ div.rendered_html tbody tr:hover {
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process circular consensus sequences that map to multiple different targets. Here, our two targets are a wildtype and a codon optimized sequence for the Lassa virus (LASV) glycoprotein from the Josiah strain. For such targets we do not expect large internal deletions, so we use alignment settings optimized for codon-level mutations as these will be the settings used when analyzing mutant LASV GP sequences
 in later experiments.</p>
 <p>Here we analyze a snippet of the full data set of circular consensus sequences so that the example is small and fast.</p>
-<p>In the other included example notebooks, we aligned and parsed the PacBio reads using the single <code class="docutils literal notranslate"><span class="pre">align_and_parse</span></code> function. Here we use separate functions to do the aligning and parsing steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs tag</a> and are in the SAM file format.</p>
+<p>In the other included example notebooks, we aligned and parsed the PacBio reads using the single <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function. Here we use separate functions to do the aligning and parsing steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs
+tag</a> and are in the SAM file format.</p>
 <div class="section" id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Import necessary Python modules:</p>
@@ -470,36 +471,22 @@ ORIGIN
 
 </pre></div></div>
 </div>
-<p>Read the amplicons into a <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object, specifying the features that we require the target to contain:</p>
-<p>First, read in the <code class="docutils literal notranslate"><span class="pre">.yaml</span></code> file containing the <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> for these targets. Here, the <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> are the same for both targets, but this is not required.</p>
-<div class="nbinput nblast docutils container">
+<p>Along with the Genbank file giving the sequences of the amplicons, we have a YAML file specifying how to filter and parse alignments to this amplicon.</p>
+<p>Below is the text of the YAML file.</p>
+<p>Additional information about these filters can be found in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA deep mutational scanning libraries</a> example notebook or the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> documentation.</p>
+<p>A filter setting of <code class="docutils literal notranslate"><span class="pre">null</span></code> indicates this filter is not applied. When filters are missing for a feature, they are automatically set to zero.</p>
+<p>Here we filter the <code class="docutils literal notranslate"><span class="pre">gene</span></code> based on <code class="docutils literal notranslate"><span class="pre">mutation_op_counts</span></code> by setting the <code class="docutils literal notranslate"><span class="pre">mutation_nt_counts</span></code> filter for the <code class="docutils literal notranslate"><span class="pre">gene</span></code> to <code class="docutils literal notranslate"><span class="pre">null</span></code>. Although we do not expect these sequences to have large indels, we want to confirm this. Filtering on mutation “operations” allows us to retain sequences with large indels by only filtering on the number of indels, not the number of nucleotides inserted or deleted. Overall, this example uses very loose filters to allow us to do further analyses of the types of
+mutations that are arising in these samples.</p>
+<p>The YAML file also specifies what information is parsed from alignments that are not filtered out. As you can see, for some features we parse the mutations or the full sequence of the feature, along with the accuracy of that feature in the sequencing query (computed from the Q-values).</p>
+<p>As seen below, we can use YAML syntax to apply one set of filters to multiple targets. Here, we apply the same filters to both targets, but this is not necessary.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/lasv_feature_parse_specs.yaml&#39;</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span><span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
-                  <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">parse_specs_file</span><span class="p">,</span>
-                  <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="n">allow_clipped_muts_seqs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Plot the targets:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span></span><span class="n">lasv_parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/lasv_feature_parse_specs.yaml&#39;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lasv_parse_specs_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -507,12 +494,55 @@ ORIGIN
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_15_0.png" src="_images/lasv_pilot_15_0.png" />
+<div class="highlight"><pre>
+LASV_Josiah_WT: &amp;LASV_target_parse_specs
+  query_clip5: 10
+  query_clip3: 10
+  termini5:
+    filter:
+      clip5: 10
+      mutation_nt_count: 5
+      mutation_op_count: null
+  termini3:
+    filter:
+      clip3: 10
+      mutation_nt_count: 5
+      mutation_op_count: null
+  gene:
+    filter:
+      mutation_nt_count: null
+      mutation_op_count: 30
+    return: [mutations, accuracy]
+  spacer:
+    filter:
+      mutation_nt_count: 1
+      mutation_op_count: null
+  index:
+    return: sequence
+  variant_tag5:
+    return: sequence
+  variant_tag3:
+    return: sequence
+
+LASV_Josiah_OPT: *LASV_target_parse_specs
+
+</pre></div></div>
+</div>
+<p>Read the amplicons in <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> into a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object, specifying the features that we require the target to contain. The <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> in this example have more features specified in their Genbank files than we want to parse, so we set <code class="docutils literal notranslate"><span class="pre">allow_extra_features</span></code> to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span><span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
+                  <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
+                  <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<p>We can also look at the featue parsing specifications as a dict or YAML string (here we do it as YAML string):</p>
+<p>When we look at the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.feature_parse_specs">targets.feature_parse_specs</a>, we now see that the previously unspecified specs have been filled in with the defaults.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -531,21 +561,21 @@ LASV_Josiah_WT: &amp;id001
   termini5:
     filter:
       clip5: 10
-      mutation_nt_count: 1
+      mutation_nt_count: 5
       mutation_op_count: null
       clip3: 0
     return: []
   termini3:
     filter:
-      clip3: 4
-      mutation_nt_count: 1
+      clip3: 10
+      mutation_nt_count: 5
       mutation_op_count: null
       clip5: 0
     return: []
   gene:
     filter:
-      mutation_nt_count: 30
-      mutation_op_count: null
+      mutation_nt_count: null
+      mutation_op_count: 30
       clip5: 0
       clip3: 0
     return:
@@ -559,13 +589,13 @@ LASV_Josiah_WT: &amp;id001
       clip3: 0
     return: []
   index:
+    return:
+    - sequence
     filter:
-      clip5: 3
+      clip5: 0
       clip3: 0
       mutation_nt_count: 0
       mutation_op_count: 0
-    return:
-    - sequence
   variant_tag5:
     return:
     - sequence
@@ -585,6 +615,23 @@ LASV_Josiah_WT: &amp;id001
 LASV_Josiah_OPT: *id001
 
 </pre></div></div>
+</div>
+<p>We can also plot the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a>. All features specified in the targets’ Genbank files will be annotated, even if they are not in <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/lasv_pilot_18_0.png" src="_images/lasv_pilot_18_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="PacBio-CCSs">
@@ -660,7 +707,7 @@ LASV_Josiah_OPT: *id001
 </table>
 </div></div>
 </div>
-<p>We create a <code class="docutils literal notranslate"><span class="pre">Summaries</span></code> object for these CCSs:</p>
+<p>We create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">Summaries</a> object for these CCSs:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -685,7 +732,7 @@ LASV_Josiah_OPT: *id001
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_23_0.png" src="_images/lasv_pilot_23_0.png" />
+<img alt="_images/lasv_pilot_24_0.png" src="_images/lasv_pilot_24_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -785,28 +832,28 @@ LASV_Josiah_OPT: *id001
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_26_0.png" src="_images/lasv_pilot_26_0.png" />
+<img alt="_images/lasv_pilot_27_0.png" src="_images/lasv_pilot_27_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_26_1.png" src="_images/lasv_pilot_26_1.png" />
+<img alt="_images/lasv_pilot_27_1.png" src="_images/lasv_pilot_27_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_26_2.png" src="_images/lasv_pilot_26_2.png" />
+<img alt="_images/lasv_pilot_27_2.png" src="_images/lasv_pilot_27_2.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Align-CCSs-to-target">
 <h2>Align CCSs to target<a class="headerlink" href="#Align-CCSs-to-target" title="Permalink to this headline">¶</a></h2>
-<p>Now we use <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> to align the CCSs to the target.</p>
-<p>First, we create a <code class="docutils literal notranslate"><span class="pre">Mapper</span></code> object to run <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>, using the options for codon-level deep mutational scanning:</p>
+<p>Now we use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> to align the CCSs to the target.</p>
+<p>First, we create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, using the options for codon-level deep mutational scanning (specified by <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
@@ -881,7 +928,7 @@ Using `minimap2` 2.17-r941 with these options:
 </table>
 </div></div>
 </div>
-<p>Now use the mapper to actually align the FASTQ queries to the target:</p>
+<p>Now we run <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align">targets.align</a> using the mapper to actually align the FASTQ queries to the target:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
@@ -903,7 +950,8 @@ Using `minimap2` 2.17-r941 with these options:
 Aligning input_files/lasv_example_ccs.fastq to create ./output_files/lasv_pilot_alignments.sam...
 </pre></div></div>
 </div>
-<p>These SAM files now contain the alignments along with the <code class="docutils literal notranslate"><span class="pre">`cs</span></code> tag &lt;<a class="reference external" href="https://github.com/lh3/minimap2#cs">https://github.com/lh3/minimap2#cs</a>&gt;`__, which contains details on the mutations:</p>
+<p>These SAM files now contain the alignments along with the <a class="reference external" href="https://github.com/lh3/minimap2#cs">cs tag</a>.</p>
+<p>An example <a class="reference external" href="https://github.com/lh3/minimap2#cs">cs tag</a> is:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
@@ -928,7 +976,8 @@ First alignment in ./output_files/lasv_pilot_alignments.sam has `cs` tag:
 </div>
 <div class="section" id="Parse-the-alignments">
 <h2>Parse the alignments<a class="headerlink" href="#Parse-the-alignments" title="Permalink to this headline">¶</a></h2>
-<p>Now we use <code class="docutils literal notranslate"><span class="pre">Targets.parse_alignments</span></code> to parse the SAM files to get the information we specified for return. This function returns a data frames (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <code class="docutils literal notranslate"><span class="pre">Targets</span></code> giving data frames on the aligned and filtered reads. We concatenate the data frames for each PacBio run and then look at them together:</p>
+<p>Now we use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> to parse the SAM files to get the information we specified for return. This function returns a data frames (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> giving data frames on the aligned and filtered
+reads. We concatenate the data frames for each PacBio run and then look at them together:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -972,7 +1021,7 @@ Parsing PacBio run lasv_pilot
 </pre></div></div>
 </div>
 <p>First lets look at the read stats:</p>
-<p>From the known composition of the library, there should be more LASV_Josiah_OPT reads than LASV_Josiah_WT.</p>
+<p>From the known composition of the library, there should be more <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> reads than <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_WT</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
@@ -1026,13 +1075,13 @@ Parsing PacBio run lasv_pilot
     <tr>
       <th>2</th>
       <td>filtered LASV_Josiah_OPT</td>
-      <td>31</td>
+      <td>32</td>
       <td>lasv_pilot</td>
     </tr>
     <tr>
       <th>3</th>
       <td>aligned LASV_Josiah_OPT</td>
-      <td>112</td>
+      <td>111</td>
       <td>lasv_pilot</td>
     </tr>
     <tr>
@@ -1066,7 +1115,7 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_39_0.png" src="_images/lasv_pilot_39_0.png" />
+<img alt="_images/lasv_pilot_40_0.png" src="_images/lasv_pilot_40_0.png" />
 </div>
 </div>
 <p>Now look at the information on the filtered reads. This is a bigger data frame, so we just look at the first few lines for the first target (of which there is only one anyway):</p>
@@ -1118,16 +1167,16 @@ Parsing PacBio run lasv_pilot
     </tr>
     <tr>
       <th>1</th>
-      <td>m54228_190605_190010/4260334/ccs</td>
-      <td>query_clip5</td>
-      <td>None</td>
+      <td>m54228_190605_190010/4260241/ccs</td>
+      <td>index clip5</td>
+      <td>*ng*na*nc*na*nc</td>
       <td>lasv_pilot</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>m54228_190605_190010/4260585/ccs</td>
-      <td>termini3 mutation_nt_count</td>
-      <td>:35*ag:20*ag:6*na:28</td>
+      <td>m54228_190605_190010/4260334/ccs</td>
+      <td>query_clip5</td>
+      <td>None</td>
       <td>lasv_pilot</td>
     </tr>
     <tr>
@@ -1173,21 +1222,21 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_42_0.png" src="_images/lasv_pilot_42_0.png" />
+<img alt="_images/lasv_pilot_43_0.png" src="_images/lasv_pilot_43_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_42_1.png" src="_images/lasv_pilot_42_1.png" />
+<img alt="_images/lasv_pilot_43_1.png" src="_images/lasv_pilot_43_1.png" />
 </div>
 </div>
 </div>
 <div class="section" id="Error-filtering">
 <h2>Error filtering<a class="headerlink" href="#Error-filtering" title="Permalink to this headline">¶</a></h2>
 <p>Before looking at the information for the validly aligned (not filtered) reads, it is important to get a sense of the error rate for these sequencing reads.</p>
-<p>These reads do not have barcodes on each initial viral entry protein plasmid, but we can use the ‘gene_accuracy’ information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
+<p>These reads do not have barcodes on each initial viral entry protein plasmid, but we can use the <code class="docutils literal notranslate"><span class="pre">gene_accuracy</span></code> information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
 <p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">recA_DMS.ipynb</a> example notebook. However, here we will plot the graphs for each target.</p>
 <p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. We specify this cutoff below.</p>
 <div class="nbinput docutils container">
@@ -1230,17 +1279,17 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_44_0.png" src="_images/lasv_pilot_44_0.png" />
+<img alt="_images/lasv_pilot_45_0.png" src="_images/lasv_pilot_45_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_44_1.png" src="_images/lasv_pilot_44_1.png" />
+<img alt="_images/lasv_pilot_45_1.png" src="_images/lasv_pilot_45_1.png" />
 </div>
 </div>
-<p>Store all reads with an error rate &lt;1e-4 in new dataframes for retained sequences.</p>
+<p>Next, we store all reads with an error rate <span class="math notranslate nohighlight">\(&lt;10^{-4}\)</span> in new dataframes for retained sequences.</p>
 <p>We will use these retained sequences for further analyses.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
@@ -1257,7 +1306,7 @@ Parsing PacBio run lasv_pilot
 </div>
 <div class="section" id="Data-analysis">
 <h2>Data analysis<a class="headerlink" href="#Data-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Now we can examine our data in more detail. First, let’s look at the first few entries in the data frame for the each target:</p>
+<p>Now we can examine our data in more detail. First, let’s look at the first few entries in the <code class="docutils literal notranslate"><span class="pre">retained</span></code> dataframe for each target:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
@@ -1493,7 +1542,7 @@ LASV_Josiah_OPT
 </table>
 </div></div>
 </div>
-<p>As seen by the ‘index_sequence’ columns, each target here has 2 or 3 different indices that map to it. These indicies indicate different samples.</p>
+<p>As seen by the <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns, each target here has 2 or 3 different indices that map to it. These indicies indicate different samples.</p>
 <p>We can then split these dataframes into sample-specific dataframes based on the known starting index sequences for each target. We will store these dataframes in a new dictionary, keyed by target and index.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
@@ -1514,7 +1563,7 @@ LASV_Josiah_OPT
 </pre></div>
 </div>
 </div>
-<p>In the process of making these separate dataframes, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts.</p>
+<p>In the process of making these separate dataframes, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts. As seen below, only one sequence in this example has an invalid index and it maps to the <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> target.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
@@ -1540,14 +1589,14 @@ LASV_Josiah_OPT
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_52_0.png" src="_images/lasv_pilot_52_0.png" />
+<img alt="_images/lasv_pilot_53_0.png" src="_images/lasv_pilot_53_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_52_1.png" src="_images/lasv_pilot_52_1.png" />
+<img alt="_images/lasv_pilot_53_1.png" src="_images/lasv_pilot_53_1.png" />
 </div>
 </div>
 <p>The two target-specific dataframes are now five index-specific dataframes.</p>
@@ -1992,7 +2041,7 @@ LASV_Josiah_OPT_GAGACG
 </table>
 </div></div>
 </div>
-<p>We can add mutation info for the genes in these targets.</p>
+<p>We can add mutation info for the genes in these targets using <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.add_mut_info_cols">alignparse.consensus.add_mut_info_cols</a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
@@ -2007,6 +2056,7 @@ LASV_Josiah_OPT_GAGACG
 </div>
 </div>
 <p>We can then plot the number of reads for each sample that has each number of substitutions or indels to get a sense of how many mutations are in these reads, if some smaples have more mutations than others, and if substitutions or indels are more prevalent in these sequences.</p>
+<p>With such a small sample snippet of the data, it is difficult to make any conclusions, but with a full dataset, this can provide important information about the mutational processes at work for each sample.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
@@ -2033,35 +2083,44 @@ LASV_Josiah_OPT_GAGACG
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_58_0.png" src="_images/lasv_pilot_58_0.png" />
+<img alt="_images/lasv_pilot_59_0.png" src="_images/lasv_pilot_59_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_58_1.png" src="_images/lasv_pilot_58_1.png" />
+<img alt="_images/lasv_pilot_59_1.png" src="_images/lasv_pilot_59_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_58_2.png" src="_images/lasv_pilot_58_2.png" />
+<img alt="_images/lasv_pilot_59_2.png" src="_images/lasv_pilot_59_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_58_3.png" src="_images/lasv_pilot_58_3.png" />
+<img alt="_images/lasv_pilot_59_3.png" src="_images/lasv_pilot_59_3.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_58_4.png" src="_images/lasv_pilot_58_4.png" />
+<img alt="_images/lasv_pilot_59_4.png" src="_images/lasv_pilot_59_4.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
 </div>
 </div>
 </div>

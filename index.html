@@ -37,7 +37,8 @@
   <div class="section" id="alignparse-documentation">
 <h1><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation<a class="headerlink" href="#alignparse-documentation" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> is a Python package written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.
-It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to targets, filter these alignments based on user-provided specifications, and parse out user-defined sequence ‘features’ and/or mutations.</p>
+It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to targets, filter these alignments based on user-provided specifications, and parse out user-defined sequence <cite>features</cite>.</p>
+<p>For each read that passes the user-defined filters, the user can define what information about each feature (e.g. sequence, mutations, and sequencing accuracy) should be retained for further analyses. The <cite>alignparse.consensus</cite> module provides tools for such further analyses, including analyzing mutations identified in sequence features and defining consensus sequences from barcoded sequencing reads.</p>
 <p>See below for information and examples of how to use this package.</p>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>

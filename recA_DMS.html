@@ -237,10 +237,10 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="RecA-deep-mutational-scanning-libraries">
 <h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Permalink to this headline">¶</a></h1>
-<p>This example shows how to use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> to process PacBio circular consensus sequencing of a barcoded library of RecA variants for deep mutational scanning.</p>
+<p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> to process PacBio circular consensus sequencing of a barcoded library of RecA variants for deep mutational scanning.</p>
 <div class="section" id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Import necessary Python modules. We use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -300,7 +300,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="Target-amplicon">
 <h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this headline">¶</a></h2>
-<p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined as a Genbank file. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <code class="docutils literal notranslate"><span class="pre">alignparse</span></code>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
+<p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined as a Genbank file. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -420,7 +420,7 @@ RecA_PacBio_amplicon:
 
 </pre></div></div>
 </div>
-<p>We now read the amplicon into an <code class="docutils literal notranslate"><span class="pre">alignparse.targets.Targets</span></code> object with the feature-parsing specs:</p>
+<p>We now read the amplicon into an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">alignparse.targets.Targets</a> object with the feature-parsing specs:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -432,8 +432,9 @@ RecA_PacBio_amplicon:
 </pre></div>
 </div>
 </div>
-<p>(Note that although we just have one target in this example, there can be multiple targets specifies in <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> and <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> when initializing a <code class="docutils literal notranslate"><span class="pre">Targets</span></code>.)</p>
-<p>We can plot the <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object:</p>
+<p>(Note that although we just have one target in this example, there can be multiple targets specified in <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> and <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> when initializing a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a>. See the <a class="reference external" href="https://jbloomlab.github.io/alignparse/lasv_pilot.html">Lassa virus glycoprotein</a> or <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus sequencing</a> example notebooks for examples
+of this.)</p>
+<p>We can plot the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -594,14 +595,14 @@ RecA_PacBio_amplicon:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>recA_lib-1</td>
       <td>lib-1</td>
       <td>input_files/recA_lib-1_report.txt</td>
       <td>input_files/recA_lib-1_ccs.fastq</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>recA_lib-2</td>
       <td>lib-2</td>
       <td>input_files/recA_lib-2_report.txt</td>
@@ -611,7 +612,7 @@ RecA_PacBio_amplicon:
 </table>
 </div></div>
 </div>
-<p>We create a <code class="docutils literal notranslate"><span class="pre">alignparse.ccs.Summaries</span></code> object for these CCSs:</p>
+<p>We create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">alignparse.ccs.Summaries</a> object for these CCSs:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -621,7 +622,7 @@ RecA_PacBio_amplicon:
 </pre></div>
 </div>
 </div>
-<p>(Note if you did not have the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> reports, you could still do the steps above but would need to set <code class="docutils literal notranslate"><span class="pre">report_col=None</span></code> when creating the <code class="docutils literal notranslate"><span class="pre">Summaries</span></code> objectt, and then you could not analyze ZMW stats as done below.)</p>
+<p>(Note if you did not have the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> reports, you could still do the steps above but would need to set <code class="docutils literal notranslate"><span class="pre">report_col=None</span></code> when creating the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">Summaries</a> object, and then you could not analyze ZMW stats as done below.)</p>
 <p>Plot how many ZMWs yielded CCSs:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -682,84 +683,84 @@ RecA_PacBio_amplicon:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>recA_lib-1</td>
       <td>Success -- CCS generated</td>
       <td>139</td>
       <td>0.837349</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>recA_lib-1</td>
       <td>Failed -- Lacking full passes</td>
       <td>19</td>
       <td>0.114458</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>recA_lib-1</td>
       <td>Failed -- Draft generation error</td>
       <td>3</td>
       <td>0.018072</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>recA_lib-1</td>
       <td>Failed -- Min coverage violation</td>
       <td>1</td>
       <td>0.006024</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>recA_lib-1</td>
       <td>Failed -- CCS below minimum RQ</td>
       <td>2</td>
       <td>0.012048</td>
     </tr>
     <tr>
-      <td>5</td>
+      <th>5</th>
       <td>recA_lib-1</td>
       <td>Failed -- Other reason</td>
       <td>2</td>
       <td>0.012048</td>
     </tr>
     <tr>
-      <td>6</td>
+      <th>6</th>
       <td>recA_lib-2</td>
       <td>Success -- CCS generated</td>
       <td>124</td>
       <td>0.794872</td>
     </tr>
     <tr>
-      <td>7</td>
+      <th>7</th>
       <td>recA_lib-2</td>
       <td>Failed -- Lacking full passes</td>
       <td>22</td>
       <td>0.141026</td>
     </tr>
     <tr>
-      <td>8</td>
+      <th>8</th>
       <td>recA_lib-2</td>
       <td>Failed -- Draft generation error</td>
       <td>4</td>
       <td>0.025641</td>
     </tr>
     <tr>
-      <td>9</td>
+      <th>9</th>
       <td>recA_lib-2</td>
       <td>Failed -- Min coverage violation</td>
       <td>2</td>
       <td>0.012821</td>
     </tr>
     <tr>
-      <td>10</td>
+      <th>10</th>
       <td>recA_lib-2</td>
       <td>Failed -- CCS below minimum RQ</td>
       <td>2</td>
       <td>0.012821</td>
     </tr>
     <tr>
-      <td>11</td>
+      <th>11</th>
       <td>recA_lib-2</td>
       <td>Failed -- Other reason</td>
       <td>2</td>
@@ -845,27 +846,27 @@ RecA_PacBio_amplicon:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>recA_lib-1</td>
       <td>1325</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>recA_lib-1</td>
       <td>1340</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>recA_lib-1</td>
       <td>1339</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>recA_lib-1</td>
       <td>985</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>recA_lib-1</td>
       <td>1196</td>
     </tr>
@@ -876,8 +877,9 @@ RecA_PacBio_amplicon:
 </div>
 <div class="section" id="Align-and-parse-CCSs">
 <h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Permalink to this headline">¶</a></h2>
-<p>Now we align the CCSs using our <code class="docutils literal notranslate"><span class="pre">Targets</span></code> object, and parse the features from queries that align sufficiently well.</p>
-<p>First, we create an <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.Mapper</span></code> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.OPTIONS_CODON_DMS</span></code>):</p>
+<p>Now we align the CCSs using our <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object, and parse the features from queries that align sufficiently well.</p>
+<p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by
+<a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
@@ -899,7 +901,8 @@ Using `minimap2` 2.17-r941 with these options:
 -A2 -B4 -O12 -E2 --end-bonus=13 --secondary=no --cs
 </pre></div></div>
 </div>
-<p>We now use <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> to align and parse our FASTQ files of CCSs. (Note that if needed, you can also perform each of these steps separately for each FASTQ file by running <code class="docutils literal notranslate"><span class="pre">Targets.align</span></code> and <code class="docutils literal notranslate"><span class="pre">Targets.parse_alignments</span></code> separately.)</p>
+<p>We now use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> to align and parse our FASTQ files of CCSs. (Note that if needed, you can also perform each of these steps separately for each FASTQ file by running <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align">Targets.align</a> and
+<a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> separately. An example of this is in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/lasv_pilot.html">Lassa virus glycoprotein</a> example notebook)</p>
 <p>First, we define a directory to place the created files:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
@@ -910,7 +913,8 @@ Using `minimap2` 2.17-r941 with these options:
 </pre></div>
 </div>
 </div>
-<p>Now we run <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> on all the CCS sets in the data frame <code class="docutils literal notranslate"><span class="pre">pacbio_runs</span></code>, which we set up above to specify information on each PacBio run. The <code class="docutils literal notranslate"><span class="pre">name_col</span></code> gives the column in the data frame giving the name of each run, the <code class="docutils literal notranslate"><span class="pre">queryfile_col</span></code> gives the column with the FASTQ file for that run, and <code class="docutils literal notranslate"><span class="pre">group_cols</span></code> specifies any columns showing how to group runs when aggregating results (here we aggregate results by library):</p>
+<p>Now we run <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> on all the CCS sets in the data frame <code class="docutils literal notranslate"><span class="pre">pacbio_runs</span></code>, which we set up above to specify information on each PacBio run. The <code class="docutils literal notranslate"><span class="pre">name_col</span></code> gives the column in the data frame giving the name of each run, the <code class="docutils literal notranslate"><span class="pre">queryfile_col</span></code> gives the column with the FASTQ file for that run, and <code class="docutils literal notranslate"><span class="pre">group_cols</span></code> specifies any columns showing how to group runs when
+aggregating results (here we aggregate results by library):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
@@ -971,42 +975,42 @@ Using `minimap2` 2.17-r941 with these options:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>aligned RecA_PacBio_amplicon</td>
       <td>123</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>filtered RecA_PacBio_amplicon</td>
       <td>16</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>unmapped</td>
       <td>0</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-2</td>
       <td>recA_lib-2</td>
       <td>aligned RecA_PacBio_amplicon</td>
       <td>112</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-2</td>
       <td>recA_lib-2</td>
       <td>filtered RecA_PacBio_amplicon</td>
       <td>12</td>
     </tr>
     <tr>
-      <td>5</td>
+      <th>5</th>
       <td>lib-2</td>
       <td>recA_lib-2</td>
       <td>unmapped</td>
@@ -1100,7 +1104,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4391577/ccs</td>
@@ -1114,7 +1118,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>C</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4915465/ccs</td>
@@ -1128,7 +1132,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>T</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4981392/ccs</td>
@@ -1142,7 +1146,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>C</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/6029553/ccs</td>
@@ -1156,7 +1160,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>C</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/6488565/ccs</td>
@@ -1228,7 +1232,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4391577/ccs</td>
@@ -1238,7 +1242,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>0.999455</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4915465/ccs</td>
@@ -1248,7 +1252,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>1.000000</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4981392/ccs</td>
@@ -1258,7 +1262,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>1.000000</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/6029553/ccs</td>
@@ -1268,7 +1272,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
       <td>0.999940</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/6488565/ccs</td>
@@ -1331,35 +1335,35 @@ First few lines of filtering information for RecA_PacBio_amplicon
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4194459/ccs</td>
       <td>spacer mutation_nt_count</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4325806/ccs</td>
       <td>barcode mutation_nt_count</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4391313/ccs</td>
       <td>termini3 mutation_nt_count</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4391375/ccs</td>
       <td>gene clip3</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
       <td>m54228_180801_171631/4391467/ccs</td>
@@ -1400,7 +1404,8 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <img alt="_images/recA_DMS_48_0.png" src="_images/recA_DMS_48_0.png" />
 </div>
 </div>
-<p>The example usage of <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> above read all of the information on the parsed alignments into data frames. For large data sets, these data frames might be so large that you don’t want to read them into memory. In that case, use the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> option, which makes <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> simply give the locations of CSV files holding the data frames. Here is an example:</p>
+<p>The example usage of <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> above read all of the information on the parsed alignments into data frames. For large data sets, these data frames might be so large that you don’t want to read them into memory. In that case, use the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> option, which makes
+<a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> simply give the locations of CSV files holding the data frames. Here is an example:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
@@ -1440,8 +1445,8 @@ First few lines of filtering information for RecA_PacBio_amplicon
 {&#39;RecA_PacBio_amplicon&#39;: &#39;./output_files/RecA_align_and_parse/RecA_PacBio_amplicon_filtered.csv&#39;}
 </pre></div></div>
 </div>
-<p>Note that since no mutations are specified as empty strings in these CSV files, if you read them using <code class="docutils literal notranslate"><span class="pre">pandas.read_csv</span></code>, you then need to do so using <code class="docutils literal notranslate"><span class="pre">na_filter=None</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">pandas.read_csv(&lt;csv_file&gt;,</span> <span class="pre">na_filter=None)</span></code>) so that empty strings are not converted to <code class="docutils literal notranslate"><span class="pre">nan</span></code> values.</p>
-<p>Here are all of the files created by running <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> (they also include SAM alignments and parsing results for each individual run):</p>
+<p>Note that since no mutations are specified as empty strings in these CSV files, if you read them using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">pandas.read_csv</a>, you then need to do so using <code class="docutils literal notranslate"><span class="pre">na_filter=None</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">pandas.read_csv(&lt;csv_file&gt;,</span> <span class="pre">na_filter=None)</span></code>) so that empty strings are not converted to <code class="docutils literal notranslate"><span class="pre">nan</span></code> values.</p>
+<p>Here are all of the files created by running <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> (they also include SAM alignments and parsing results for each individual run):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
@@ -1600,25 +1605,25 @@ Contents of ./output_files/RecA_align_and_parse:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>False</td>
       <td>33</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>True</td>
       <td>90</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-2</td>
       <td>False</td>
       <td>39</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-2</td>
       <td>True</td>
       <td>73</td>
@@ -1668,9 +1673,9 @@ Contents of ./output_files/RecA_align_and_parse:
 <p>We see above that barcodes are often sequenced just once, but are also often sequenced two or more times.</p>
 <p>From the barcodes with multiple CCSs, we can estimate the true (or “empirical”) accuracy of the CCSs. This is different than the purported accuracy returned by the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program and plotted above. Those <code class="docutils literal notranslate"><span class="pre">ccs</span></code> accuracies are PacBio’s estimation of accuracy from the sequencing, but they may not be fully correct. In addition, not all the “error” comes from pure sequencing errors: we can also have experimental factors such as barcode collisions (two different variants sharing the same barcode)
 or PCR strand exchange make molecules with the same barcode actually different.</p>
-<p>The concept of empirical accuracy is quite simple: we look to see how often CCSs with the same barcode actually have the same gene sequence. If the sequencing is accurate and their aren’t additional experimental factors causing effective errors, then CCSs with the same barcode will always be identical. The less often they are identical, the lower the empirical accuracy. The actual calculation of empirical accuracy is implemented in <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.empirical_accuracy</span></code> (see the docs of
-that function for a full explanation of the calculation).</p>
-<p>In addition, we’d like to split out the analysis by whether or not the CCSs have an indel. The reason is that indels are the main source of error in PacBio sequencing, but we plan to disregard all sequences with indels anyway. So first use <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.add_mut_info_cols</span></code> to add information about whether the CCSs have indels:</p>
+<p>The concept of empirical accuracy is quite simple: we look to see how often CCSs with the same barcode actually have the same gene sequence. If the sequencing is accurate and their aren’t additional experimental factors causing effective errors, then CCSs with the same barcode will always be identical. The less often they are identical, the lower the empirical accuracy. The actual calculation of empirical accuracy is implemented in
+<a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.empirical_accuracy">alignparse.consensus.empirical_accuracy</a> (see the docs of that function for a full explanation of the calculation).</p>
+<p>In addition, we’d like to split out the analysis by whether or not the CCSs have an indel. The reason is that indels are the main source of error in PacBio sequencing, but we plan to disregard all sequences with indels anyway. So first use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.add_mut_info_cols">alignparse.consensus.add_mut_info_cols</a> to add information about whether the CCSs have indels:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
@@ -1731,25 +1736,25 @@ that function for a full explanation of the calculation).</p>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>False</td>
       <td>76</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>True</td>
       <td>14</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-2</td>
       <td>False</td>
       <td>65</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-2</td>
       <td>True</td>
       <td>8</td>
@@ -1799,12 +1804,12 @@ that function for a full explanation of the calculation).</p>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>0.864817</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-2</td>
       <td>0.786710</td>
     </tr>
@@ -1853,12 +1858,12 @@ that function for a full explanation of the calculation).</p>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>0.948033</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-2</td>
       <td>0.928539</td>
     </tr>
@@ -1868,8 +1873,8 @@ that function for a full explanation of the calculation).</p>
 </div>
 <p>As can be seen above, the empirical accuracy is quite a bit higher when excluding sequences with indels, which is what will happen in practice below. However, the empirical accuracy is still much lower than the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> estimated accuracy, since above we only retained CCSs with accuracy &gt;99.99%. This indicates that either the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> estimated accuracies are not actually accurate, or other experimental factors also contribute to decrease the empirical accuracy. You can play around with the
 filter on the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>-estimated accuracies to see how they affect the empirical accuracy–but in general, we find on real (larger) datasets that beyond a point, increasing the filter on the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>-estimated accuracies no longer further enhances the empirical accuracy.</p>
-<p>Finally, we’d like to actually build a consensus sequence for each barcodes. There are lots of existing programs with complex error models that use Q-values to build consensus sequences–but we instead use the simple approach implemented in <code class="docutils literal notranslate"><span class="pre">alignparse.consensus.simple_mutconsensus</span></code>. The documentation for that function explains the method in detail, but basically it works like this: 1. When there is just one CCS per barcode, the consensus is just that sequence. 2. When there are multiple CCSs
-per barcode, they are used to build a consensus–however, the entire barcode is discarded if there are many differences between CCSs with the barcode, or high-frequency non-consensus mutations. The reason that barcodes are discarded in such cases as many differences between CCSs or high-frequency non-consensus mutations suggest errors such as barcode collisions or PCR strand exchange.</p>
+<p>Finally, we’d like to actually build a consensus sequence for each barcodes. There are lots of existing programs with complex error models that use Q-values to build consensus sequences–but we instead use the simple approach implemented in <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.simple_mutconsensus">alignparse.consensus.simple_mutconsensus</a>. The documentation for that function explains the method in detail, but basically it works like this: 1.
+When there is just one CCS per barcode, the consensus is just that sequence. 2. When there are multiple CCSs per barcode, they are used to build a consensus–however, the entire barcode is discarded if there are many differences between CCSs with the barcode, or high-frequency non-consensus mutations. The reason that barcodes are discarded in such cases as many differences between CCSs or high-frequency non-consensus mutations suggest errors such as barcode collisions or PCR strand exchange.</p>
 <p>The advantage of this simple method is that it tries to throw away barcodes for which there is likely to be some source of experimental error.</p>
 <p>Build the consensus sequences:</p>
 <div class="nbinput nblast docutils container">
@@ -1926,35 +1931,35 @@ per barcode, they are used to build a consensus–however, the entire barcode is
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>AAAGTCTGACCGAAAAAA</td>
       <td>C154A G509C T510A C823G T824G G825T del763to763</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>AACACGTTATAGATGTAG</td>
       <td>A52C T53C T54C C85A C87G T277G T278A C296A G297C</td>
       <td>3</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>AGACCGGGCGGGGCCTAT</td>
       <td>A526G G694A G715C A937G C939G</td>
       <td>4</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-1</td>
       <td>AGAGAGATATTAAAAAAA</td>
       <td>C22A A23C G24C G34A C35G G36A G400C G402C A631...</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-1</td>
       <td>ATCTCCTCTCCAAGCCGT</td>
       <td>G326C C327A</td>
@@ -2015,7 +2020,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>AAAGTCTGACCGAAAAAA</td>
       <td>C154A G509C T510A C823G T824G G825T del763to763</td>
@@ -2024,7 +2029,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
       <td>1</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>AACACGTTATAGATGTAG</td>
       <td>A52C T53C T54C C85A C87G T277G T278A C296A G297C</td>
@@ -2033,7 +2038,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
       <td>0</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-1</td>
       <td>AGACCGGGCGGGGCCTAT</td>
       <td>A526G G694A G715C A937G C939G</td>
@@ -2042,7 +2047,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
       <td>0</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-1</td>
       <td>AGAGAGATATTAAAAAAA</td>
       <td>C22A A23C G24C G34A C35G G36A G400C G402C A631...</td>
@@ -2051,7 +2056,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
       <td>0</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>lib-1</td>
       <td>ATCTCCTCTCCAAGCCGT</td>
       <td>G326C C327A</td>
@@ -2105,28 +2110,28 @@ per barcode, they are used to build a consensus–however, the entire barcode is
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>lib-1</td>
       <td>CTATACCCAAATTAATAA</td>
       <td>subs diff too large</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>lib-1</td>
       <td>CTGATTTGGCTTTATTTT</td>
       <td>subs diff too large</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>lib-2</td>
       <td>CTGATATACGTACGCAAC</td>
       <td>subs diff too large</td>
       <td>3</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>lib-2</td>
       <td>TACCCTGCCTCGCCGAAC</td>
       <td>subs diff too large</td>
@@ -2180,7 +2185,7 @@ per barcode, they are used to build a consensus–however, the entire barcode is
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>subs diff too large</td>
       <td>4</td>
     </tr>

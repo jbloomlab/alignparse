@@ -241,7 +241,7 @@ div.rendered_html tbody tr:hover {
 notebook aligns these CCSs to the influenza transcripts and parses the barcodes / UMIs and viral mutations.</p>
 <div class="section" id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Import necessary Python modules. We use <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -515,7 +515,7 @@ fluNS2:
 
 </pre></div></div>
 </div>
-<p>We now read the targets into an <code class="docutils literal notranslate"><span class="pre">alignparse.targets.Targets</span></code> object with the feature-parsing specs (ignoring the keys that define thet defaults):</p>
+<p>We now read the targets into an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">alignparse.targets.Targets</a> object with the feature-parsing specs (ignoring the keys that define thet defaults):</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -530,7 +530,7 @@ fluNS2:
 </pre></div>
 </div>
 </div>
-<p>Plot the <code class="docutils literal notranslate"><span class="pre">Targets</span></code>:</p>
+<p>Plot the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -601,7 +601,7 @@ or gene alignment. Therefore:</p>
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>input_files/flu_WSN_ccs.fastq</td>
     </tr>
@@ -609,7 +609,7 @@ or gene alignment. Therefore:</p>
 </table>
 </div></div>
 </div>
-<p>Create an <code class="docutils literal notranslate"><span class="pre">alignparse.ccs.Summaries</span></code> object:</p>
+<p>Create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">alignparse.ccs.Summaries</a> object:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -660,7 +660,8 @@ or gene alignment. Therefore:</p>
 </div>
 <div class="section" id="Align-and-parse">
 <h2>Align and parse<a class="headerlink" href="#Align-and-parse" title="Permalink to this headline">¶</a></h2>
-<p>First, we create an <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.Mapper</span></code> to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for viruses with potentially large internal deletions (which are handled like spliced introns); these options are specified by <code class="docutils literal notranslate"><span class="pre">alignparse.minimap2.OPTIONS_VIRUS_W_DEL</span></code>:</p>
+<p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for viruses with potentially large internal deletions (which are handled like spliced introns); these options are specified by
+<a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_VIRUS_W_DEL">alignparse.minimap2.OPTIONS_VIRUS_W_DEL</a>:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -682,7 +683,7 @@ Using `minimap2` 2.17-r941 with these options:
 -xsplice:hq -un -C0 --splice-flank=no -M=1 --for-only --end-seed-pen=2 --end-bonus=2 --secondary=no --cs
 </pre></div></div>
 </div>
-<p>Now use <code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse</span></code> to align and parse the CCSs. First, create the output directory:</p>
+<p>Now use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> to align and parse the CCSs. First, create the output directory:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -750,127 +751,127 @@ Using `minimap2` 2.17-r941 with these options:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>filtered fluPB2</td>
       <td>15</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>aligned fluPB2</td>
       <td>50</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>filtered fluPB1</td>
       <td>34</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>aligned fluPB1</td>
       <td>162</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>filtered fluPA</td>
       <td>35</td>
     </tr>
     <tr>
-      <td>5</td>
+      <th>5</th>
       <td>flu_WSN</td>
       <td>aligned fluPA</td>
       <td>169</td>
     </tr>
     <tr>
-      <td>6</td>
+      <th>6</th>
       <td>flu_WSN</td>
       <td>filtered fluHA</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>7</td>
+      <th>7</th>
       <td>flu_WSN</td>
       <td>aligned fluHA</td>
       <td>8</td>
     </tr>
     <tr>
-      <td>8</td>
+      <th>8</th>
       <td>flu_WSN</td>
       <td>filtered fluNP</td>
       <td>6</td>
     </tr>
     <tr>
-      <td>9</td>
+      <th>9</th>
       <td>flu_WSN</td>
       <td>aligned fluNP</td>
       <td>23</td>
     </tr>
     <tr>
-      <td>10</td>
+      <th>10</th>
       <td>flu_WSN</td>
       <td>filtered fluNA</td>
       <td>3</td>
     </tr>
     <tr>
-      <td>11</td>
+      <th>11</th>
       <td>flu_WSN</td>
       <td>aligned fluNA</td>
       <td>18</td>
     </tr>
     <tr>
-      <td>12</td>
+      <th>12</th>
       <td>flu_WSN</td>
       <td>filtered fluM1</td>
       <td>7</td>
     </tr>
     <tr>
-      <td>13</td>
+      <th>13</th>
       <td>flu_WSN</td>
       <td>aligned fluM1</td>
       <td>14</td>
     </tr>
     <tr>
-      <td>14</td>
+      <th>14</th>
       <td>flu_WSN</td>
       <td>filtered fluM2</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>15</td>
+      <th>15</th>
       <td>flu_WSN</td>
       <td>aligned fluM2</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>16</td>
+      <th>16</th>
       <td>flu_WSN</td>
       <td>filtered fluNS1</td>
       <td>2</td>
     </tr>
     <tr>
-      <td>17</td>
+      <th>17</th>
       <td>flu_WSN</td>
       <td>aligned fluNS1</td>
       <td>20</td>
     </tr>
     <tr>
-      <td>18</td>
+      <th>18</th>
       <td>flu_WSN</td>
       <td>filtered fluNS2</td>
       <td>1</td>
     </tr>
     <tr>
-      <td>19</td>
+      <th>19</th>
       <td>flu_WSN</td>
       <td>aligned fluNS2</td>
       <td>0</td>
     </tr>
     <tr>
-      <td>20</td>
+      <th>20</th>
       <td>flu_WSN</td>
       <td>unmapped</td>
       <td>117</td>
@@ -961,31 +962,31 @@ First few lines of `filtered` for fluPB2:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5308608/ccs</td>
       <td>termini5 clip5</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/6554482/ccs</td>
       <td>polyA mutation_nt_count</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/7143925/ccs</td>
       <td>polyA mutation_nt_count</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/9437481/ccs</td>
       <td>final_mRNA_nts mutation_op_count</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/9830886/ccs</td>
       <td>polyA mutation_nt_count</td>
@@ -1087,7 +1088,7 @@ First few entries in `aligned` for fluPB2:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5243086/ccs</td>
       <td>0</td>
@@ -1104,7 +1105,7 @@ First few entries in `aligned` for fluPB2:
       <td>C</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5833039/ccs</td>
       <td>0</td>
@@ -1121,7 +1122,7 @@ First few entries in `aligned` for fluPB2:
       <td>T</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5898400/ccs</td>
       <td>0</td>
@@ -1138,7 +1139,7 @@ First few entries in `aligned` for fluPB2:
       <td>C</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/6160599/ccs</td>
       <td>0</td>
@@ -1155,7 +1156,7 @@ First few entries in `aligned` for fluPB2:
       <td></td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/6161088/ccs</td>
       <td>0</td>
@@ -1224,7 +1225,7 @@ First few entries in `aligned` for fluPB1:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4784702/ccs</td>
       <td>0</td>
@@ -1241,7 +1242,7 @@ First few entries in `aligned` for fluPB1:
       <td>T</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4785077/ccs</td>
       <td>0</td>
@@ -1258,7 +1259,7 @@ First few entries in `aligned` for fluPB1:
       <td>T</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5111911/ccs</td>
       <td>0</td>
@@ -1275,7 +1276,7 @@ First few entries in `aligned` for fluPB1:
       <td>T</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5112319/ccs</td>
       <td>0</td>
@@ -1292,7 +1293,7 @@ First few entries in `aligned` for fluPB1:
       <td>T</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5112383/ccs</td>
       <td>0</td>
@@ -1361,7 +1362,7 @@ First few entries in `aligned` for fluPA:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4587763/ccs</td>
       <td>0</td>
@@ -1378,7 +1379,7 @@ First few entries in `aligned` for fluPA:
       <td>C</td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4653834/ccs</td>
       <td>0</td>
@@ -1395,7 +1396,7 @@ First few entries in `aligned` for fluPA:
       <td>T</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4719236/ccs</td>
       <td>0</td>
@@ -1412,7 +1413,7 @@ First few entries in `aligned` for fluPA:
       <td>T</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4784775/ccs</td>
       <td>0</td>
@@ -1429,7 +1430,7 @@ First few entries in `aligned` for fluPA:
       <td>T</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4850043/ccs</td>
       <td>0</td>
@@ -1498,7 +1499,7 @@ First few entries in `aligned` for fluHA:
   </thead>
   <tbody>
     <tr>
-      <td>0</td>
+      <th>0</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/4522378/ccs</td>
       <td>0</td>
@@ -1515,7 +1516,7 @@ First few entries in `aligned` for fluHA:
       <td></td>
     </tr>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/6947580/ccs</td>
       <td>0</td>
@@ -1532,7 +1533,7 @@ First few entries in `aligned` for fluHA:
       <td>T</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/7144230/ccs</td>
       <td>2</td>
@@ -1549,7 +1550,7 @@ First few entries in `aligned` for fluHA:
       <td>C</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/7340424/ccs</td>
       <td>0</td>
@@ -1566,7 +1567,7 @@ First few entries in `aligned` for fluHA:
       <td>C</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/8520141/ccs</td>
       <td>0</td>
@@ -1585,6 +1586,15 @@ First few entries in `aligned` for fluHA:
   </tbody>
 </table>
 </div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
