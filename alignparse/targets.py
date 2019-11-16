@@ -316,6 +316,8 @@ class Targets:
         'query_clip3' which give the max amount that can be clipped from
         each end of the query prior to the alignment. Use a value of
         `None` ('null' in YAML notation) to have no filter on this clipping.
+	Filters will be applied in the order the features appear in the
+	`feature_parse_specs`.
 
     allow_extra_features : bool
         Can targets have features not in `feature_parse_specs`?
