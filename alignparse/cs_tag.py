@@ -3,10 +3,11 @@
 cs_tag
 =======
 
-Parse SAM entries with ``cs`` short tag from ``minimap2`` output.
+Parse SAM entries with ``cs`` short tag from
+`minimap2 <https://lh3.github.io/minimap2/>`_ output.
 
-See here for details on short ``cs`` tag format:
-https://lh3.github.io/minimap2/minimap2.html
+See `here <https://lh3.github.io/minimap2/minimap2.html>`_ for details on
+short ``cs`` tag format.
 
 """
 

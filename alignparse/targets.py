@@ -316,8 +316,8 @@ class Targets:
         'query_clip3' which give the max amount that can be clipped from
         each end of the query prior to the alignment. Use a value of
         `None` ('null' in YAML notation) to have no filter on this clipping.
-	Filters will be applied in the order the features appear in the
-	`feature_parse_specs`.
+        Filters will be applied in the order the features appear in the
+        `feature_parse_specs`.
 
     allow_extra_features : bool
         Can targets have features not in `feature_parse_specs`?
@@ -555,10 +555,10 @@ class Targets:
 
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
-        
+
         Note
         ----
-        Filters will be applied in the order they are listed in the 
+        Filters will be applied in the order they are listed in the
         `feature_parse_specs` `yaml` file or `dict`. Once a read fails a
         filter, other filters will not be applied. As such, it is recommended
         to have features with filters for 5' and 3' clipping listed first.
