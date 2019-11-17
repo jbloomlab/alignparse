@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>alignparse.targets &#8212; alignparse 0.1.dev0 documentation</title>
+    <title>alignparse.targets &#8212; alignparse 0.1.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -352,8 +352,8 @@
 <span class="sd">        &#39;query_clip3&#39; which give the max amount that can be clipped from</span>
 <span class="sd">        each end of the query prior to the alignment. Use a value of</span>
 <span class="sd">        `None` (&#39;null&#39; in YAML notation) to have no filter on this clipping.</span>
-<span class="sd">	Filters will be applied in the order the features appear in the</span>
-<span class="sd">	`feature_parse_specs`.</span>
+<span class="sd">        Filters will be applied in the order the features appear in the</span>
+<span class="sd">        `feature_parse_specs`.</span>
 
 <span class="sd">    allow_extra_features : bool</span>
 <span class="sd">        Can targets have features not in `feature_parse_specs`?</span>
@@ -591,10 +591,10 @@
 
 <div class="viewcode-block" id="Targets.feature_parse_specs"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.feature_parse_specs">[docs]</a>    <span class="k">def</span> <span class="nf">feature_parse_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returntype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the feature parsing specs.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
-<span class="sd">        Filters will be applied in the order they are listed in the </span>
+<span class="sd">        Filters will be applied in the order they are listed in the</span>
 <span class="sd">        `feature_parse_specs` `yaml` file or `dict`. Once a read fails a</span>
 <span class="sd">        filter, other filters will not be applied. As such, it is recommended</span>
 <span class="sd">        to have features with filters for 5&#39; and 3&#39; clipping listed first.</span>

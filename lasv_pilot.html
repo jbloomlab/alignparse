@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.dev0 documentation</title>
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -240,8 +240,8 @@ div.rendered_html tbody tr:hover {
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process circular consensus sequences that map to multiple different targets. Here, our two targets are a wildtype and a codon optimized sequence for the Lassa virus (LASV) glycoprotein from the Josiah strain. For such targets we do not expect large internal deletions, so we use alignment settings optimized for codon-level mutations as these will be the settings used when analyzing mutant LASV GP sequences
 in later experiments.</p>
 <p>Here we analyze a snippet of the full data set of circular consensus sequences so that the example is small and fast.</p>
-<p>In the other included example notebooks, we aligned and parsed the PacBio reads using the single <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function. Here we use separate functions to do the aligning and parsing steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs
-tag</a> and are in the SAM file format.</p>
+<p>In the other included example notebooks (<a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA deep mutational scanning libraries</a> and <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus sequencing</a>), we align and parse the PacBio reads using the single <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function. Here we use separate functions to do the aligning and parsing
+steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs tag</a> and are in the SAM file format.</p>
 <div class="section" id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Import necessary Python modules:</p>
@@ -298,7 +298,7 @@ tag</a> and are in the SAM file format.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">CBPALETTE</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;#E69F00&#39;</span><span class="p">,</span> <span class="s1">&#39;#56B4E9&#39;</span><span class="p">,</span> <span class="s1">&#39;#009E73&#39;</span><span class="p">,</span> <span class="s1">&#39;#999999&#39;</span><span class="p">)</span>
+<span></span><span class="n">CBPALETTE</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;#999999&#39;</span><span class="p">,</span> <span class="s1">&#39;#E69F00&#39;</span><span class="p">,</span> <span class="s1">&#39;#56B4E9&#39;</span><span class="p">,</span> <span class="s1">&#39;#009E73&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -471,7 +471,7 @@ ORIGIN
 
 </pre></div></div>
 </div>
-<p>Along with the Genbank file giving the sequences of the amplicons, we have a YAML file specifying how to filter and parse alignments to this amplicon.</p>
+<p>Along with the Genbank files giving the sequences of the amplicons, we have a YAML file specifying how to filter and parse alignments to these amplicons.</p>
 <p>Below is the text of the YAML file.</p>
 <p>Additional information about these filters can be found in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA deep mutational scanning libraries</a> example notebook or the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> documentation.</p>
 <p>A filter setting of <code class="docutils literal notranslate"><span class="pre">null</span></code> indicates this filter is not applied. When filters are missing for a feature, they are automatically set to zero.</p>
@@ -976,8 +976,11 @@ First alignment in ./output_files/lasv_pilot_alignments.sam has `cs` tag:
 </div>
 <div class="section" id="Parse-the-alignments">
 <h2>Parse the alignments<a class="headerlink" href="#Parse-the-alignments" title="Permalink to this headline">¶</a></h2>
-<p>Now we use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> to parse the SAM files to get the information we specified for return. This function returns a data frames (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> giving data frames on the aligned and filtered
-reads. We concatenate the data frames for each PacBio run and then look at them together:</p>
+<p>Now we use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> to parse the SAM files to get the information we specified for return. This function returns a data frame (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> giving data frames of the aligned and filtered
+reads. Here we return the <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> reads as dictionaries of data frames.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> read information can instead be returned as CSV files containing these data frames by setting the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> argument to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Note: When using the combined <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> function as in the other example notebooks (<a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA DMS libraries</a> and <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus
+sequencing</a>), these CSV files will always be created, even if <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code> and the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function is returning <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> as dictionaries of data frames in its final output.</p>
+<p>Here we only have one PacBio run, but in practice we will often have multiple. As such, our example shows how to concatenate the <code class="docutils literal notranslate"><span class="pre">readstats</span></code>, <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> data frames for each PacBio run and then look at the data frames together:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
@@ -1236,8 +1239,8 @@ Parsing PacBio run lasv_pilot
 <div class="section" id="Error-filtering">
 <h2>Error filtering<a class="headerlink" href="#Error-filtering" title="Permalink to this headline">¶</a></h2>
 <p>Before looking at the information for the validly aligned (not filtered) reads, it is important to get a sense of the error rate for these sequencing reads.</p>
-<p>These reads do not have barcodes on each initial viral entry protein plasmid, but we can use the <code class="docutils literal notranslate"><span class="pre">gene_accuracy</span></code> information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
-<p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">recA_DMS.ipynb</a> example notebook. However, here we will plot the graphs for each target.</p>
+<p>These reads do not have random barcodes on the initial viral entry protein plasmids, but we can use the <code class="docutils literal notranslate"><span class="pre">gene_accuracy</span></code> information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
+<p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA DMS libraries</a> example notebook. However, here we will plot the graphs for each target.</p>
 <p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. We specify this cutoff below.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
@@ -1264,7 +1267,7 @@ Parsing PacBio run lasv_pilot
          <span class="n">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="o">+</span>
          <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">error_cutoff</span><span class="p">,</span>
                     <span class="n">linetype</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
-                    <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
          <span class="n">facet_grid</span><span class="p">(</span><span class="s1">&#39;~ feature_type&#39;</span><span class="p">)</span> <span class="o">+</span>
          <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span>
          <span class="n">labs</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;number of CCSs&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="p">(</span><span class="n">targetname</span><span class="p">))</span> <span class="o">+</span>
@@ -1289,7 +1292,7 @@ Parsing PacBio run lasv_pilot
 <img alt="_images/lasv_pilot_45_1.png" src="_images/lasv_pilot_45_1.png" />
 </div>
 </div>
-<p>Next, we store all reads with an error rate <span class="math notranslate nohighlight">\(&lt;10^{-4}\)</span> in new dataframes for retained sequences.</p>
+<p>Next, we store all reads with an error rate <span class="math notranslate nohighlight">\(&lt;10^{-4}\)</span> in new data frames for retained sequences.</p>
 <p>We will use these retained sequences for further analyses.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
@@ -1306,15 +1309,17 @@ Parsing PacBio run lasv_pilot
 </div>
 <div class="section" id="Data-analysis">
 <h2>Data analysis<a class="headerlink" href="#Data-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Now we can examine our data in more detail. First, let’s look at the first few entries in the <code class="docutils literal notranslate"><span class="pre">retained</span></code> dataframe for each target:</p>
+<p>Now we can examine our data in more detail.</p>
+<p>We will only display a few columns so the example renders well in the documentation. First, let’s look at the <code class="docutils literal notranslate"><span class="pre">query_name</span></code>, <code class="docutils literal notranslate"><span class="pre">gene_mutations</span></code>, and <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns for the first few entries in the <code class="docutils literal notranslate"><span class="pre">retained</span></code> data frame for each target:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+<span></span><span class="n">display_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span> <span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">target_name</span><span class="p">)</span>
-    <span class="n">display</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">display_columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -1349,82 +1354,40 @@ LASV_Josiah_WT
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194436/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194472/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td>T572C</td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194509/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>3</th>
       <td>m54228_190605_190010/4194553/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>4</th>
       <td>m54228_190605_190010/4194576/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>AGACAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
@@ -1461,89 +1424,47 @@ LASV_Josiah_OPT
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194382/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GAGACG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194390/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194399/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>3</th>
       <td>m54228_190605_190010/4194439/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>4</th>
       <td>m54228_190605_190010/4194445/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>CTTCAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
 </div></div>
 </div>
 <p>As seen by the <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns, each target here has 2 or 3 different indices that map to it. These indicies indicate different samples.</p>
-<p>We can then split these dataframes into sample-specific dataframes based on the known starting index sequences for each target. We will store these dataframes in a new dictionary, keyed by target and index.</p>
+<p>We can then split these data frames into sample-specific data frames based on the known starting index sequences for each target. We will store these data frames in a new dictionary, keyed by target and index.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
@@ -1563,7 +1484,7 @@ LASV_Josiah_OPT
 </pre></div>
 </div>
 </div>
-<p>In the process of making these separate dataframes, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts. As seen below, only one sequence in this example has an invalid index and it maps to the <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> target.</p>
+<p>In the process of making these separate data frames, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts. As seen below, only one sequence in this example has an invalid index and it maps to the <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> target.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
@@ -1572,6 +1493,8 @@ LASV_Josiah_OPT
 <span></span><span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span>
     <span class="n">df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">id_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">id_order</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">index_count_plot</span> <span class="o">=</span> <span class="p">(</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">))</span> <span class="o">+</span>
                         <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span> <span class="o">+</span>
                         <span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">)</span> <span class="o">+</span>
@@ -1599,7 +1522,7 @@ LASV_Josiah_OPT
 <img alt="_images/lasv_pilot_53_1.png" src="_images/lasv_pilot_53_1.png" />
 </div>
 </div>
-<p>The two target-specific dataframes are now five index-specific dataframes.</p>
+<p>The two target-specific data frames are now five index-specific data frames. Again we will display the <code class="docutils literal notranslate"><span class="pre">query_name</span></code>, <code class="docutils literal notranslate"><span class="pre">gene_mutations</span></code>, and <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
@@ -1607,7 +1530,7 @@ LASV_Josiah_OPT
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">target_idx</span><span class="p">)</span>
-    <span class="n">display</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">][</span><span class="n">display_columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1642,56 +1565,28 @@ LASV_Josiah_WT_AGACAC
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194576/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>AGACAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194612/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>AGACAC</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194613/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>AGACAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
@@ -1728,56 +1623,28 @@ LASV_Josiah_WT_GGTATG
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194436/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194472/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td>T572C</td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194509/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GGTATG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
@@ -1814,56 +1681,28 @@ LASV_Josiah_OPT_ACGACC
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194390/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194399/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194439/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>ACGACC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
@@ -1900,56 +1739,28 @@ LASV_Josiah_OPT_CTTCAC
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194445/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.000000</td>
       <td>CTTCAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194501/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.000000</td>
       <td>CTTCAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194549/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>0.999915</td>
       <td>CTTCAC</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>8.484769e-05</td>
     </tr>
   </tbody>
 </table>
@@ -1986,56 +1797,28 @@ LASV_Josiah_OPT_GAGACG
     <tr style="text-align: right;">
       <th></th>
       <th>query_name</th>
-      <th>query_clip5</th>
-      <th>query_clip3</th>
       <th>gene_mutations</th>
-      <th>gene_accuracy</th>
       <th>index_sequence</th>
-      <th>variant_tag5_sequence</th>
-      <th>variant_tag3_sequence</th>
-      <th>run_name</th>
-      <th>gene_error</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
       <td>m54228_190605_190010/4194382/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GAGACG</td>
-      <td>C</td>
-      <td>A</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>1</th>
       <td>m54228_190605_190010/4194467/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GAGACG</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
     <tr>
       <th>2</th>
       <td>m54228_190605_190010/4194491/ccs</td>
-      <td>0</td>
-      <td>0</td>
       <td></td>
-      <td>1.0</td>
       <td>GAGACG</td>
-      <td>T</td>
-      <td>G</td>
-      <td>lasv_pilot</td>
-      <td>1.000000e-07</td>
     </tr>
   </tbody>
 </table>
@@ -2112,15 +1895,6 @@ LASV_Josiah_OPT_GAGACG
 </div>
 <div class="output_area docutils container">
 <img alt="_images/lasv_pilot_59_4.png" src="_images/lasv_pilot_59_4.png" />
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
 </div>
 </div>
 </div>
