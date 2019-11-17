@@ -4,25 +4,23 @@ LASV_Josiah_WT: &LASV_target_parse_specs
   termini5:
     filter:
       clip5: 10
-      mutation_nt_count: 1
+      mutation_nt_count: 5
       mutation_op_count: null
   termini3:
     filter:
-      clip3: 4
-      mutation_nt_count: 1
+      clip3: 10
+      mutation_nt_count: 5
       mutation_op_count: null
   gene:
     filter:
-      mutation_nt_count: 30
-      mutation_op_count: null
+      mutation_nt_count: null
+      mutation_op_count: 30
     return: [mutations, accuracy]
   spacer:
     filter:
       mutation_nt_count: 1
       mutation_op_count: null
   index:
-    filter:
-      clip5: 3
     return: sequence
   variant_tag5:
     return: sequence

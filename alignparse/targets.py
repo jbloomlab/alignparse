@@ -316,6 +316,8 @@ class Targets:
         'query_clip3' which give the max amount that can be clipped from
         each end of the query prior to the alignment. Use a value of
         `None` ('null' in YAML notation) to have no filter on this clipping.
+        Filters will be applied in the order the features appear in the
+        `feature_parse_specs`.
 
     allow_extra_features : bool
         Can targets have features not in `feature_parse_specs`?
@@ -553,6 +555,13 @@ class Targets:
 
     def feature_parse_specs(self, returntype):
         """Get the feature parsing specs.
+
+        Note
+        ----
+        Filters will be applied in the order they are listed in the
+        `feature_parse_specs` `yaml` file or `dict`. Once a read fails a
+        filter, other filters will not be applied. As such, it is recommended
+        to have features with filters for 5' and 3' clipping listed first.
 
         Parameters
         ----------
@@ -965,10 +974,10 @@ class Targets:
               '_mutations', '_accuracy', '_cs', '_clip5', and '_clip3'.
               and '_clip3'.
 
-            - 'filtered' is a dict keyed by name of each target. Entries are
+            - `filtered` is a dict keyed by name of each target. Entries are
               `pandas.DataFrame` with a row for each filtered aligned read
               giving the query name and the reason it was filtered.
-              If `filtered_cs` is `True` then, add a column to the 'filtered'
+              If `filtered_cs` is `True` then, add a column to the "filtered"
               `pandas.DataFrame`s with the `cs` tag that failed the filter.
 
             If `to_csv` is `True`, then `aligned` and `filtered` give
