@@ -83,7 +83,7 @@ The [alignparse.minimap2](https://jbloomlab.github.io/alignparse/alignparse.mini
 Downstream analyses of parsed features are facilitated by the [alignparse.consensus](https://jbloomlab.github.io/alignparse/alignparse.consensus.html) submodule.
 This submodule provides tools for grouping reads by shared barcodes, determining consensus sequences for barcoded reads, and further processing mutation information for downstream analyses.
 Since the main outputs from [alignparse](https://jbloomlab.github.io/alignparse/) are in intuitive data frame formats, downstream analyses can be highly customized by the user.
-Thus, [alignparse](https://jbloomlab.github.io/alignparse/) provides a flexible and useful tool for parsing complex sets of features from high-throughput long-read sequencing pre-defined targets.
+Thus, [alignparse](https://jbloomlab.github.io/alignparse/) provides a flexible and useful tool for parsing complex sets of features from high-throughput long-read sequencing of pre-defined targets.
 
 # Acknowledgements
 
