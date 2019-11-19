@@ -27,29 +27,20 @@ bibliography: paper.bib
 
 # Summary & Purpose
 
-Advances in sequencing technology to generate large numbers of long high-accuracy reads.
-For instance, the new PacBio Sequel platform can generate XX high-quality circular consensus sequences in a single Y [CITATIONS].
-Numerous programs exist for aligning these reads for purposes for genome assembly.
-However, these long reads can also be used for other purposes such as sequencing long PCR amplicons that contain various sequence features of interest.
-For instance, PacBio circular consensus sequences have been used to sequence influenza viruses in single cells [CITATION], or link barcodes to gene mutants in deep mutational scanning [CITATION].
+Advances in sequencing technology mean it is now possible to generate large numbers of long, high-accuracy sequencing reads.
+For instance, the new PacBio Sequel platform can generate about 200,000 high-quality circular consensus sequences in a single run [@Hebert:2018].
+Numerous programs exist for aligning these reads for purposes of genome assembly.
+However, these long reads can also be used for other purposes, such as sequencing long PCR amplicons that contain various sequence features of interest.
+For instance, PacBio circular consensus sequences have been used to sequence influenza viruses in single cells [@Russell:2019], or link barcodes to gene mutants in deep mutational scanning [@Matreyek:2018].
 For such applications, the alignment of the sequence to the template may be fairly trivial, but it is not trivial to then parse specific features of interest (such mutations, unique molecular identifiers, cell barcodes, and flanking sequences) from these alignments.
 
 Here we describe ``alignparse``, a Python package for parsing complex sets of features from long sequences that map to known amplicons.
-It provides researchers a flexible tool for aligning long-read sequencing data to user-specified target sequences and for extracting short sequences---corresponding to user-specified features---from these reads for further analyses.
-**It's more important to say that it allows the user to provide a complex customized template in Genbank format that provides an arbitrary number of sequence features. It then aligns, and filters alignments based on whether the user-specified features are present with the desired ientity (which is also user-specified). It then gets out the sequences or mutations as requested (basically, what it does)...**
+It provides researchers a flexible tool for aligning long-read sequencing data to user-specified target sequences and for extracting short sequences---corresponding to user-specified features---from these reads for further analyses. Specifically, it allows the user to provide a complex 'target' template in Genbank format that contains an arbitrary number of sequence features. It then aligns the user's long sequencing reads to this target and filters alignments based on whether the user-specified features are present with the desired identity (which is also user-specified). It then parses out the sequences, mutations, or accuracy of these features as specified by the user. The flexibility built into this package allows it to be used by any researcher analyzing long sequencing reads that map to pre-defined amplicons. 
+
+We expect users of this software to be genomics 
+
 
 **Possibly then go into examples, then discuss a bit about API**
-
-**Then describe a bit about how it does it.**
-[alignparse](https://jbloomlab.github.io/alignparse/) uses [minimap2](https://github.com/lh3/minimap2) for aligning sequences and takes adavantage of the informative [cs tag](https://lh3.github.io/minimap2/minimap2.html#10) returned from [minimap2](https://github.com/lh3/minimap2) alignments to parse features from the long-read sequencing data [@Li:2018]. This parsing is all carried out using the [alignparse.targets](https://jbloomlab.github.io/alignparse/alignparse.targets.html) submodule. 
-
-Further analysis of these features is facilitated by the [alignparse.consensus](https://jbloomlab.github.io/alignparse/alignparse.consensus.html) module that provides tools for grouping reads by shared barcodes, determining consensus sequences for barcoded reads, and further processing mutation information for downstream analyses. Such downstream analyses can be highly customized by the user as the output from ``alignparse`` is in an intuitive data frame format that can be easily used as input for additional analyses. Thus, ``alignparse`` provides a flexible and useful tool designed specifically for the initial processing of long-read sequencing data from the deep sequencing of known amplicons. 
-
-As long-read sequencing continues to be applied to areas outside of genome assembly, our analysis tools also need to adapt. ``alignparse`` provides an important tool specifically for analyzing data that comes from the application of long-read sequencing technology to the deep sequencing of pre-defined amplicons that contain complex sets of sequence features to be parsed out for further analyses. **Maybe make this more succinct**
-
-# Audience
-
-``alignparse`` is designed to be used by genomics researchers analyzing long-read sequencing data that maps to pre-defined amplicons. Researchers using long-read sequencing to sequence viral genomes or libraries of variants of single genes for deep mutational scanning will find this tool particularly useful for extracting information from their sequencing reads. Nonetheless, any scientists with long-read sequencing data where each read fully maps to a pre-defined amplicon and from which they would like to extract information about pre-defined sequence features, will find this tool useful for the analysis of such features.
 
 # Uses & Examples 
 
@@ -67,6 +58,28 @@ Given their small size, several viral genomes can be sequenced in full using lon
 
 
 The flexibility of the ``alignparse`` package to be used to analyze long-read sequencing data from deep mutational scanning to single-cell virology experiments helps show the broad utility of this package. With the increasing availability of long-read sequencing technologies, we imagine the use cases for this package will grow to include other instances of deep sequencing long amplicons. ``alignparse`` will also hopefully increase the reproducibility of analyzing such experiments by reducing the current reliance on project-specific scripts and providing researchers an actively-maintained, publically available tool for the initial parsing of amplicon-based long-read sequencing data.
+
+
+
+
+# API
+
+
+
+
+
+
+**Then describe a bit about how it does it.**
+[alignparse](https://jbloomlab.github.io/alignparse/) uses [minimap2](https://github.com/lh3/minimap2) for aligning sequences and takes adavantage of the informative [cs tag](https://lh3.github.io/minimap2/minimap2.html#10) returned from [minimap2](https://github.com/lh3/minimap2) alignments to parse features from the long-read sequencing data [@Li:2018]. This parsing is all carried out using the [alignparse.targets](https://jbloomlab.github.io/alignparse/alignparse.targets.html) submodule. 
+
+Further analysis of these features is facilitated by the [alignparse.consensus](https://jbloomlab.github.io/alignparse/alignparse.consensus.html) module that provides tools for grouping reads by shared barcodes, determining consensus sequences for barcoded reads, and further processing mutation information for downstream analyses. Such downstream analyses can be highly customized by the user as the output from ``alignparse`` is in an intuitive data frame format that can be easily used as input for additional analyses. Thus, ``alignparse`` provides a flexible and useful tool designed specifically for the initial processing of long-read sequencing data from the deep sequencing of known amplicons. 
+
+As long-read sequencing continues to be applied to areas outside of genome assembly, our analysis tools also need to adapt. ``alignparse`` provides an important tool specifically for analyzing data that comes from the application of long-read sequencing technology to the deep sequencing of pre-defined amplicons that contain complex sets of sequence features to be parsed out for further analyses. **Maybe make this more succinct**
+
+# Audience
+
+``alignparse`` is designed to be used by genomics researchers analyzing long-read sequencing data that maps to pre-defined amplicons. Researchers using long-read sequencing to sequence viral genomes or libraries of variants of single genes for deep mutational scanning will find this tool particularly useful for extracting information from their sequencing reads. Nonetheless, any scientists with long-read sequencing data where each read fully maps to a pre-defined amplicon and from which they would like to extract information about pre-defined sequence features, will find this tool useful for the analysis of such features.
+
 
 
 # Acknowledgements
