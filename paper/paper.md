@@ -1,5 +1,5 @@
 ---
-title: 'alignparse: A Python package for parsing complex features out of sequence alignments'
+title: 'alignparse: A Python package for parsing complex features from high-throughput long-read sequencing'
 tags:
   - Python
   - PacBio
@@ -32,11 +32,10 @@ For instance, the new PacBio Sequel platform can generate hundreds of thousands 
 Good programs exist for aligning these reads for genome assembly [@Chaisson:2012, @Li:2018].
 However, these long reads can also be used for other purposes, such as sequencing PCR amplicons that contain various features of interest.
 For instance, PacBio circular consensus sequences have been used to identify the mutations in influenza viruses in single cells [@Russell:2019], or to link barcodes to gene mutants in deep mutational scanning [@Matreyek:2018].
-For such applications, the alignment of the sequence to the template may be fairly trivial, but it is not trivial to then parse specific features of interest (such as mutations, unique molecular identifiers, cell barcodes, and flanking sequences) from these alignments.
+For such applications, the alignment of the sequences to the targets may be fairly trivial, but it is not trivial to then parse specific features of interest (such as mutations, unique molecular identifiers, cell barcodes, and flanking sequences) from these alignments.
 
 Here we describe [alignparse](https://jbloomlab.github.io/alignparse/), a Python package for parsing complex sets of features from long sequences that map to known targets.
-This package provides flexible tools for aligning long-read sequencing data to user-specified target sequences and then extracting specific subsequences corresponding to user-defined features for further analyses. 
-Specifically, it allows the user to provide complex "target" sequences in Genbank format that contain an arbitrary number of user-defined sub-sequence features. 
+Specifically, it allows the user to provide complex target sequences in Genbank format that contain an arbitrary number of user-defined sub-sequence features. 
 It then aligns the sequencing reads to these targets and filters alignments based on whether the user-specified features are present with the desired identities (which can be set to different thresholds for different features). 
 Finally, it parses out the sequences, mutations, and/or accuracy of these features as specified by the user.
 The flexibility of this package therefore fulfills the need for a tool to extract and analyze complex sets of features in large numbers of long sequencing reads.
@@ -47,12 +46,12 @@ Below are two example use cases of [alignparse](https://jbloomlab.github.io/alig
 
 ## Sequencing deep mutational scanning libraries
 
-In deep mutational scanning experiments, researchers use mutant libraries to assay the effects of thousands of individual mutations to a gene-of-interest in one experiment [@Fowler:2014]. 
+In deep mutational scanning experiments, researchers use mutant libraries to assay the effects of tens of thousands of individual mutations to a gene-of-interest in one experiment [@Fowler:2014]. 
 One way to make deep mutational scanning of long gene variants work efficiently with short-read Illumina sequencing is to link the mutations in each variant to a unique molecular barcode [@Hiatt:2010]. 
-This barcode linking can be done by performing long-read PacBio sequencing on the variant library [@Matreyek:2018], but it is then necessary to parse the resulting long reads to associate the barcode with the mutations in the variant.   
+This barcode linking can be done by long-read PacBio sequencing of the variant library [@Matreyek:2018], but it is then necessary to parse the resulting long reads to associate the barcode with the mutations in the variant.   
 
 The [alignparse](https://jbloomlab.github.io/alignparse/) package provides a standard tool for parsing barcodes and linked mutations from the long-read sequencing data. 
-It also allows for the parsing of any number of additional sequence features necessary for validating the quality of deep mutational scanning libraries, such as the presence of terminal sequences or other identifying tags. 
+It also allows for the parsing of additional sequence features necessary for validating the quality of deep mutational scanning libraries, such as the presence of terminal sequences or other identifying tags. 
 The [RecA deep mutational scanning library example](https://jbloomlab.github.io/alignparse/recA_DMS.html) demonstrates this use. 
 
 ## Single-cell viral sequencing
@@ -74,7 +73,7 @@ The [single-cell virus sequencing example](https://jbloomlab.github.io/alignpars
 3. A FASTQ file containing the long-read sequencing data.
 
 These inputs are used to define a [Targets](https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets) object. 
-The main functionality of [alignparse](https://jbloomlab.github.io/alignparse/) then uses this [Targets](https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets) object to create sequence alignments and parse sequence features defined in the input Genbank and YAML files. 
+[alignparse](https://jbloomlab.github.io/alignparse/) then uses this [Targets](https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets) object to create sequence alignments and parse sequence features defined in the input Genbank and YAML files. 
 
 [alignparse](https://jbloomlab.github.io/alignparse/) aligns sequencing reads to the targets using [minimap2](https://github.com/lh3/minimap2).
 The [alignparse.minimap2](https://jbloomlab.github.io/alignparse/alignparse.minimap2.html) submodule provides alignment specifications optimized for the two example use cases described above. 
@@ -83,7 +82,7 @@ The [alignparse.minimap2](https://jbloomlab.github.io/alignparse/alignparse.mini
 Downstream analyses of parsed features are facilitated by the [alignparse.consensus](https://jbloomlab.github.io/alignparse/alignparse.consensus.html) submodule.
 This submodule provides tools for grouping reads by shared barcodes, determining consensus sequences for barcoded reads, and further processing mutation information for downstream analyses.
 Since the main outputs from [alignparse](https://jbloomlab.github.io/alignparse/) are in intuitive data frame formats, downstream analyses can be highly customized by the user.
-Thus, [alignparse](https://jbloomlab.github.io/alignparse/) provides a flexible and useful tool for parsing complex sets of features from high-throughput long-read sequencing pre-defined targets.
+Thus, [alignparse](https://jbloomlab.github.io/alignparse/) provides a flexible and useful tool for parsing complex sets of features from high-throughput long-read sequencing of pre-defined targets.
 
 # Acknowledgements
 
