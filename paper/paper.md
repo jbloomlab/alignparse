@@ -84,6 +84,10 @@ This submodule provides tools for grouping reads by shared barcodes, determining
 Since the main outputs from [alignparse](https://jbloomlab.github.io/alignparse/) are in intuitive data frame formats, downstream analyses can be highly customized by the user.
 Thus, [alignparse](https://jbloomlab.github.io/alignparse/) provides a flexible and useful tool for parsing complex sets of features from high-throughput long-read sequencing of pre-defined targets.
 
+# Code Availability 
+
+The [alignparse](https://jbloomlab.github.io/alignparse/) source code is on GitHub at https://github.com/jbloomlab/alignparse and the documentation is at https://jbloomlab.github.io/alignparse.
+
 # Acknowledgements
 
 We would like to thank members of the Bloom lab for helpful discussions and beta testing.
