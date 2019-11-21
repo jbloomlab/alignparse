@@ -62,7 +62,7 @@ Such experiments require parsing the long-read viral sequences to identify viral
 The [single-cell virus sequencing example](https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html) shows how such parsing can readily be performed using [alignparse](https://jbloomlab.github.io/alignparse/). 
 
 
-# How [alignparse](https://jbloomlab.github.io/alignparse/) works
+# How alignparse works
 
 [alignparse](https://jbloomlab.github.io/alignparse/) takes the following inputs:
 
