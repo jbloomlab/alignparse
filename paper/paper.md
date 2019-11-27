@@ -35,7 +35,7 @@ For instance, PacBio circular consensus sequences have been used to identify the
 For such applications, the alignment of the sequences to the targets may be fairly trivial, but it is not trivial to then parse specific features of interest (such as mutations, unique molecular identifiers, cell barcodes, and flanking sequences) from these alignments.
 
 Here we describe [alignparse](https://jbloomlab.github.io/alignparse/), a Python package for parsing complex sets of features from long sequences that map to known targets.
-Specifically, it allows the user to provide complex target sequences in Genbank format that contain an arbitrary number of user-defined sub-sequence features. 
+Specifically, it allows the user to provide complex target sequences in Genbank format that contain an arbitrary number of user-defined sub-sequence features [@Sayers:2019]. 
 It then aligns the sequencing reads to these targets and filters alignments based on whether the user-specified features are present with the desired identities (which can be set to different thresholds for different features). 
 Finally, it parses out the sequences, mutations, and/or accuracy of these features as specified by the user.
 The flexibility of this package therefore fulfills the need for a tool to extract and analyze complex sets of features in large numbers of long sequencing reads.
