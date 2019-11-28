@@ -1,7 +1,7 @@
 Installation
 --------------
 
-``alignparse`` requires Python 3.6 or higher and a Mac OS X or Linux operating system.
+``alignparse`` requires Python 3.6 or 3.7 and a Mac OS X or Linux operating system.
 
 The easiest way to install ``alignparse`` is from `PyPI <https://pypi.org/>`_ using `pip <https://pip.pypa.io>`_ with::
 
