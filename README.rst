@@ -23,3 +23,5 @@ The source code is `on GitHub <https://github.com/jbloomlab/alignparse>`_.
 See the `alignparse documentation <https://jbloomlab.github.io/alignparse>`_ for details on how to install and use ``alignparse``.
 
 To contribute to this package, read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
+
+To report issues or seek support, please use the `GitHub issue tracker <https://github.com/jbloomlab/alignparse/issues>`_.
