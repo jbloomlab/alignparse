@@ -42,7 +42,8 @@ The flexibility of this package therefore fulfills the need for a tool to extrac
 
 # Uses & Examples 
 
-Below are two example use cases of [alignparse](https://jbloomlab.github.io/alignparse/) from our research:
+Below are two example use cases of [alignparse](https://jbloomlab.github.io/alignparse/) from our research.
+Code, data, and example output are included in the [alignparse](https://jbloomlab.github.io/alignparse/) documentation.
 
 ## Sequencing deep mutational scanning libraries
 
