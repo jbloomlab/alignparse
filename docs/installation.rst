@@ -7,6 +7,9 @@ The easiest way to install ``alignparse`` is from `PyPI <https://pypi.org/>`_ us
 
     pip install alignparse
 
+Note that installing the dependency ``pysam`` may require additional packages on the host system.
+See the `pysam documentation <https://pysam.readthedocs.io/en/latest/installation.html#pypi-installation>`_ for more details.
+
 The source code for ``alignparse`` is available on GitHub at https://github.com/jbloomlab/alignparse.
 
 In order to use the :mod:`alignparse.minimap2` module, you need to install the `minimap2 <https://github.com/lh3/minimap2>`_ executable.
