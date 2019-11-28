@@ -19,6 +19,9 @@ This package is designed to align long sequencing reads (such as those from PacB
 
 The source code is `on GitHub <https://github.com/jbloomlab/alignparse>`_.
 
+``alignparse`` requires Python 3.6 or 3.7 and a Mac OS X or Linux operating system.
 See the `alignparse documentation <https://jbloomlab.github.io/alignparse>`_ for details on how to install and use ``alignparse``.
 
 To contribute to this package, read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
+
+To report issues or seek support, please use the `GitHub issue tracker <https://github.com/jbloomlab/alignparse/issues>`_.

@@ -74,7 +74,7 @@ These can include:
 Running the tests locally
 ++++++++++++++++++++++++++
 After you make changes, you should run two sets of tests.
-To run the tests, go to the top-level packag directory.
+To run the tests, go to the top-level package directory.
 Then make sure that you have installed the packages listed in `test_requirements.txt <test_requirements.txt>`_.
 If these are not installed, install them with::
 
