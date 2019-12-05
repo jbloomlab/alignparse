@@ -89,11 +89,9 @@ class Summary:
             if not os.path.isfile(reportfile):
                 raise IOError(f"cannot find `reportfile` {reportfile}")
             self.zmw_stats = report_to_stats(self.reportfile)
-            zmw_stats_nccs = (self.zmw_stats
-                              .query('status.str.match("^Success")')
-                              ['number']
-                              .sum()
-                              )
+            zmw_stats_nccs = (self.zmw_stats[
+                              self.zmw_stats['status'].str.match("^Success")]
+                              ['number'].sum())
             if len(self.length) != zmw_stats_nccs:
                 raise ValueError('`fastqfile`, `reportfile` differ on number '
                                  f"CCSs.\n{fastqfile} has {len(self.passes)}\n"
@@ -373,16 +371,14 @@ class Summaries:
               )
 
         if groupsuccess:
-            success_df = (df
-                          .query('status.str.match("^Success")')
+            success_df = (df[df['status'].str.match("^Success")]
                           .groupby('name')
                           .aggregate({'number': sum, 'fraction': sum,
                                       'failed': any, 'max_fraction': max})
                           .reset_index()
                           .assign(status='Success -- CCS generated')
                           )
-            df = (df
-                  .query('not status.str.match("^Success")')
+            df = (df[~df['status'].str.match("^Success")]
                   .merge(success_df, how='outer')
                   )
 
