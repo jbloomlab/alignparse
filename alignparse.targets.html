@@ -298,10 +298,10 @@ Filters will be applied in the order the features appear in the
 </p></li>
 <li><p><strong>allow_extra_features</strong> (<em>bool</em>) – Can targets have features not in <cite>feature_parse_specs</cite>?</p></li>
 <li><p><strong>seqsfileformat</strong> (<em>{'genbank'}</em>) – Format of <cite>seqsfile</cite>. Currently, ‘genbank’ is the only supported
-option. More information about the required GenBank Flat File format
-can be found at: <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">https://www.ncbi.nlm.nih.gov/genbank/samplerecord/</a>.
-Genbank files can be readily generated using several sequence editing
-programs, such as <a class="reference external" href="https://jorgensen.biology.utah.edu/wayned/ape/">ApE</a> or <a class="reference external" href="https://www.benchling.com/">Benchling</a>.</p></li>
+option. The GenBank Flat File format is described <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">here</a>, but not all
+fields are required. The documentation includes <a class="reference external" href="https://jbloomlab.github.io/alignparse/examples.html">examples</a> that show
+what fields should typically be included. GenBank files can be readily
+generated using several sequence editing programs, such as <a class="reference external" href="https://jorgensen.biology.utah.edu/wayned/ape/">ApE</a> or <a class="reference external" href="https://www.benchling.com/">Benchling</a>.</p></li>
 <li><p><strong>allow_clipped_muts_seqs</strong> (<em>bool</em>) – Returning sequence or mutations for features where non-zero
 clipping is allowed is dangerous, since as described in
 <a class="reference internal" href="#alignparse.targets.Targets.parse_alignment" title="alignparse.targets.Targets.parse_alignment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Targets.parse_alignment()</span></code></a> these will only be for unclipped
