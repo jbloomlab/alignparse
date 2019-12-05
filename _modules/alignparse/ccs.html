@@ -125,11 +125,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;cannot find `reportfile` </span><span class="si">{reportfile}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span> <span class="o">=</span> <span class="n">report_to_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reportfile</span><span class="p">)</span>
-            <span class="n">zmw_stats_nccs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span>
-                              <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status.str.match(&quot;^Success&quot;)&#39;</span><span class="p">)</span>
-                              <span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">]</span>
-                              <span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-                              <span class="p">)</span>
+            <span class="n">zmw_stats_nccs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">[</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^Success&quot;</span><span class="p">)]</span>
+                              <span class="p">[</span><span class="s1">&#39;number&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span> <span class="o">!=</span> <span class="n">zmw_stats_nccs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`fastqfile`, `reportfile` differ on number &#39;</span>
                                  <span class="n">f</span><span class="s2">&quot;CCSs.</span><span class="se">\n</span><span class="si">{fastqfile}</span><span class="s2"> has {len(self.passes)}</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -409,16 +407,14 @@
               <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">groupsuccess</span><span class="p">:</span>
-            <span class="n">success_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span>
-                          <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;status.str.match(&quot;^Success&quot;)&#39;</span><span class="p">)</span>
+            <span class="n">success_df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^Success&quot;</span><span class="p">)]</span>
                           <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
                           <span class="o">.</span><span class="n">aggregate</span><span class="p">({</span><span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span> <span class="s1">&#39;fraction&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span>
                                       <span class="s1">&#39;failed&#39;</span><span class="p">:</span> <span class="nb">any</span><span class="p">,</span> <span class="s1">&#39;max_fraction&#39;</span><span class="p">:</span> <span class="nb">max</span><span class="p">})</span>
                           <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
                           <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="s1">&#39;Success -- CCS generated&#39;</span><span class="p">)</span>
                           <span class="p">)</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span>
-                  <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;not status.str.match(&quot;^Success&quot;)&#39;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="o">~</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^Success&quot;</span><span class="p">)]</span>
                   <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">success_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">)</span>
                   <span class="p">)</span>
 

@@ -305,7 +305,9 @@ steps. This illustrates an additional use case and shows how this package could 
 </div>
 <div class="section" id="Target-amplicons">
 <h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Permalink to this headline">¶</a></h2>
-<p>We have performed sequencing of several LASV GP amplicons that include the glycoprotein sequence along with a PacBio index and several other features. Here we analyze reads mapping to two of these amplicons. The amplicons are defined as Genbank files. First, let’s just look at the files:</p>
+<p>We have performed sequencing of several LASV GP amplicons that include the glycoprotein sequence along with a PacBio index and several other features. Here we analyze reads mapping to two of these amplicons. The amplicons are defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a>. If there are multiple targets, they can all be defined in a single Genbank file (as we did in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus
+sequencing</a> example) or each target can be defined in its own Genbank file (as we’ve done here).</p>
+<p>First, let’s just look at the files:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -314,7 +316,6 @@ steps. This illustrates an additional use case and shows how this package could 
 <span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">,</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
 
 <span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;input_files/</span><span class="si">{target_file_name}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
-
 
 <span class="k">for</span> <span class="n">targetfile</span> <span class="ow">in</span> <span class="n">targetfiles</span><span class="p">:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -644,8 +645,8 @@ LASV_Josiah_OPT: *id001
     <span class="n">lasv_pilot_subreads</span><span class="o">.</span><span class="n">bam</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">bam</span>
 </pre></div>
 </div>
-<p>The BAM file was then converted to a FASTQ file using <a class="reference external" href="http://www.htslib.org/">samtools</a> with a flag to retain the number of passes (<code class="docutils literal notranslate"><span class="pre">np</span></code>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">samtools</span> <span class="n">bam2fq</span> <span class="o">-</span><span class="n">T</span> <span class="n">np</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">bam</span> <span class="o">&gt;</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">fastq</span>
+<p>The BAM file was then converted to a FASTQ file using <a class="reference external" href="http://www.htslib.org/">samtools</a> with flags to retain the number of passes (<code class="docutils literal notranslate"><span class="pre">np</span></code>) and read quality (<code class="docutils literal notranslate"><span class="pre">rq</span></code>). Here we convert the BAM file to a gzipped FASTQ file to demonstrate the use of compressed files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">samtools</span> <span class="n">bam2fq</span> <span class="o">-</span><span class="n">T</span> <span class="n">np</span><span class="p">,</span><span class="n">rq</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">bam</span> <span class="o">|</span> <span class="n">gzip</span> <span class="o">&gt;</span> <span class="n">lasv_pilot_ccs</span><span class="o">.</span><span class="n">fastq</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
 <p>Here is a data frame with the resulting FASTQ and BAM files:</p>
@@ -661,7 +662,7 @@ LASV_Josiah_OPT: *id001
 <span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
              <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
-             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq&quot;</span><span class="p">]</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
              <span class="p">})</span>
 
 <span class="n">pacbio_runs</span>
@@ -701,7 +702,7 @@ LASV_Josiah_OPT: *id001
       <th>0</th>
       <td>lasv_pilot</td>
       <td>input_files/lasv_pilot_report.txt</td>
-      <td>input_files/lasv_example_ccs.fastq</td>
+      <td>input_files/lasv_example_ccs.fastq.gz</td>
     </tr>
   </tbody>
 </table>
@@ -713,7 +714,7 @@ LASV_Josiah_OPT: *id001
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -921,7 +922,7 @@ Using `minimap2` 2.17-r941 with these options:
       <th>0</th>
       <td>lasv_pilot</td>
       <td>input_files/lasv_pilot_report.txt</td>
-      <td>input_files/lasv_example_ccs.fastq</td>
+      <td>input_files/lasv_example_ccs.fastq.gz</td>
       <td>./output_files/lasv_pilot_alignments.sam</td>
     </tr>
   </tbody>
@@ -947,7 +948,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Aligning input_files/lasv_example_ccs.fastq to create ./output_files/lasv_pilot_alignments.sam...
+Aligning input_files/lasv_example_ccs.fastq.gz to create ./output_files/lasv_pilot_alignments.sam...
 </pre></div></div>
 </div>
 <p>These SAM files now contain the alignments along with the <a class="reference external" href="https://github.com/lh3/minimap2#cs">cs tag</a>.</p>
