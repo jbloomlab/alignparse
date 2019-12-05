@@ -323,12 +323,14 @@ class Targets:
         Can targets have features not in `feature_parse_specs`?
     seqsfileformat : {'genbank'}
         Format of `seqsfile`. Currently, 'genbank' is the only supported
-        option. More information about the required GenBank Flat File format
-        can be found at: https://www.ncbi.nlm.nih.gov/genbank/samplerecord/.
-        Genbank files can be readily generated using several sequence editing
-        programs, such as `ApE
-	<https://jorgensen.biology.utah.edu/wayned/ape/>`_ or `Benchling
-	<https://www.benchling.com/>`_.
+        option. The GenBank Flat File format is described `here
+        <https://www.ncbi.nlm.nih.gov/genbank/samplerecord/>`_, but not all
+        fields are required. The documentation includes `examples
+        <https://jbloomlab.github.io/alignparse/examples.html>`_ that show
+        what fields should typically be included. GenBank files can be readily
+        generated using several sequence editing programs, such as `ApE
+        <https://jorgensen.biology.utah.edu/wayned/ape/>`_ or `Benchling
+        <https://www.benchling.com/>`_.
     allow_clipped_muts_seqs : bool
         Returning sequence or mutations for features where non-zero
         clipping is allowed is dangerous, since as described in
