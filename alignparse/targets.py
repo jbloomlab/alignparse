@@ -327,8 +327,8 @@ class Targets:
         can be found at: https://www.ncbi.nlm.nih.gov/genbank/samplerecord/.
         Genbank files can be readily generated using several sequence editing
         programs, such as `ApE
-         <https://jorgensen.biology.utah.edu/wayned/ape/>`_ or `Benchling
-         <https://www.benchling.com/>`_.
+	<https://jorgensen.biology.utah.edu/wayned/ape/>`_ or `Benchling
+	<https://www.benchling.com/>`_.
     allow_clipped_muts_seqs : bool
         Returning sequence or mutations for features where non-zero
         clipping is allowed is dangerous, since as described in
