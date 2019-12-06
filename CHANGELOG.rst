@@ -8,7 +8,7 @@ The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
 0.1.1
 ---------------------------
-Fixed DataFrame querying bug in `./alignparse/ccs.py`
+* Fixed DataFrame querying bug in `./alignparse/ccs.py`
 
 0.1.0
 ---------------------------
