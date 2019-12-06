@@ -4,11 +4,7 @@ ACCESSION
 VERSION     
 SOURCE      Kate Crawford
   ORGANISM  .
-COMMENT     
-COMMENT     
 COMMENT     PacBio amplicon for LASV Josiah WT sequence
-COMMENT     
-COMMENT     ApEinfo:methylated:1
 FEATURES             Location/Qualifiers
      T2A             85..147
                      /label="T2A"

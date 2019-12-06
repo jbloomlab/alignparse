@@ -4,6 +4,7 @@ minimap2
 ===============
 
 Runs `minimap2 <https://lh3.github.io/minimap2/>`_ aligner.
+``minimap2`` must be version 2.17 or higher.
 
 """
 
