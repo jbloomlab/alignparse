@@ -1,6 +1,6 @@
 {
     "license": "other-open", 
-    "title": "jbloomlab/alignparse 0.1.1", 
+    "title": "alignparse: A Python package for parsing complex features from high-throughput long-read sequencing", 
     "version": "0.1.1", 
     "upload_type": "software", 
     "publication_date": "2019-12-10", 
