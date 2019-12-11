@@ -1,0 +1,30 @@
+{
+    "license": "other-open", 
+    "title": "alignparse: A Python package for parsing complex features from high-throughput long-read sequencing", 
+    "version": "0.1.1", 
+    "upload_type": "software", 
+    "publication_date": "2019-12-10", 
+    "creators": [
+        {   
+            "affiliation": "Fred Hutchinson Cancer Research Center; University of Washington",
+            "name": "Katharine H. D. Crawford"
+        }, 
+        {
+            "affiliation": "Fred Hutchinson Cancer Research Center; Howard Hughes Medical Institute", 
+            "name": "Jesse D. Bloom"
+        }
+    ], 
+    "access_right": "open", 
+    "related_identifiers": [
+        {
+            "scheme": "url", 
+            "identifier": "https://github.com/jbloomlab/alignparse/tree/0.1.1", 
+            "relation": "isSupplementTo"
+        }, 
+        {
+            "scheme": "doi", 
+            "identifier": "10.5281/zenodo.3569586", 
+            "relation": "isVersionOf"
+        }
+    ]
+}

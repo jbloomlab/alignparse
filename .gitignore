@@ -6,6 +6,7 @@ _temp*
 !.travis.yml
 !.flake8
 !.nojekyll
+!.zenodo.json
 
 *.pyc
 docs/alignparse.*
