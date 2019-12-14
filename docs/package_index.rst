@@ -1,4 +1,4 @@
-package index
+Package index
 =============
 
 * :ref:`genindex`

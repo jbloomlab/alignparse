@@ -20,6 +20,8 @@ For each read that passes the filters, information about the features (e.g. accu
 
 See the `alignparse documentation <https://jbloomlab.github.io/alignparse>`_ for details on how to install and use ``alignparse``.
 
+Please `cite alignparse <https://jbloomlab.github.io/alignparse/acknowledgements.html>`_ if you use it in your work.
+
 The source code is `on GitHub <https://github.com/jbloomlab/alignparse>`_.
 
 To contribute to this package, read the instructions in `CONTRIBUTING.rst <CONTRIBUTING.rst>`_.
