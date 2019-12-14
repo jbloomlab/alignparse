@@ -12,6 +12,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -36,18 +37,17 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> requires Python 3.6 or higher and is currently tested on Python 3.6 and 3.7.
+<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> requires Python 3.6 or higher and is currently tested on Python 3.6 and 3.7.
 A Mac OS X or Linux operating system is also required.</p>
-<p>The easiest way to install <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> is from <a class="reference external" href="https://pypi.org/">PyPI</a> using <a class="reference external" href="https://pip.pypa.io">pip</a> with:</p>
+<p>The easiest way to install <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is from <a class="reference external" href="https://pypi.org/">PyPI</a> using <a class="reference external" href="https://pip.pypa.io">pip</a> with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">alignparse</span>
 </pre></div>
 </div>
-<p>Note that installing the dependency <code class="docutils literal notranslate"><span class="pre">pysam</span></code> may require additional packages on the host system.
+<p>Note that installing the dependency <a class="reference external" href="https://pysam.readthedocs.io/en/latest/api.html">pysam</a> may require additional packages on the host system.
 See the <a class="reference external" href="https://pysam.readthedocs.io/en/latest/installation.html#pypi-installation">pysam documentation</a> for more details.</p>
-<p>The source code for <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> is available on GitHub at <a class="reference external" href="https://github.com/jbloomlab/alignparse">https://github.com/jbloomlab/alignparse</a>.</p>
 <p>In order to use the <a class="reference internal" href="alignparse.minimap2.html#module-alignparse.minimap2" title="alignparse.minimap2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alignparse.minimap2</span></code></a> module, you need to install the <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> executable (version 2.17 or higher).
 You can do that via the <a class="reference external" href="https://bioconda.github.io/recipes/minimap2/README.html">bioconda recipe</a> or from the program’s release page <a class="reference external" href="https://github.com/lh3/minimap2#install">as described here</a>.</p>
-<p>An <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> file is provided with the source code. This can be used to create a <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">conda environment</a> that installs <code class="docutils literal notranslate"><span class="pre">alignparse</span></code> and its dependencies using:</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> file is provided with the source code. This can be used to create a <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">conda environment</a> that installs <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> and its dependencies using:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
 </pre></div>
 </div>
@@ -105,7 +105,7 @@ You can do that via the <a class="reference external" href="https://bioconda.git
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">Package index</a></li>
 <li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
 </ul>
 
@@ -144,7 +144,7 @@ You can do that via the <a class="reference external" href="https://bioconda.git
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -12,6 +12,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -35,9 +36,11 @@
             
   <div class="section" id="alignparse-documentation">
 <h1><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation<a class="headerlink" href="#alignparse-documentation" title="Permalink to this headline">¶</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> is a Python package written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.
+<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is a Python package written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.
 It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to <cite>targets</cite>, filter these alignments based on user-provided specifications, and parse out user-defined sequence <cite>features</cite>.</p>
 <p>For each read that passes the user-defined filters, the user can define what information about each feature (e.g. sequence, mutations, and sequencing accuracy) should be retained for further analyses. The <cite>alignparse.consensus</cite> module provides tools for such further analyses, including analyzing mutations identified in sequence features and defining consensus sequences from barcoded sequencing reads.</p>
+<p>The <a class="reference external" href="https://github.com/jbloomlab/alignparse">alignparse source code</a> is freely available on GitHub.</p>
+<p>If you use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for your work, please cite the references in <a class="reference external" href="https://jbloomlab.github.io/alignparse/acknowledgements.html">Acknowledgements</a>.</p>
 <p>See below for information and examples of how to use this package.</p>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
@@ -57,7 +60,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
 <li class="toctree-l2"><a class="reference internal" href="alignparse.html#submodules">Submodules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">Package index</a></li>
 <li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
 </ul>
 </div>
@@ -116,7 +119,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
-<li class="toctree-l1"><a class="reference internal" href="package_index.html">package index</a></li>
+<li class="toctree-l1"><a class="reference internal" href="package_index.html">Package index</a></li>
 <li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgements</a></li>
 </ul>
 
@@ -154,7 +157,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
