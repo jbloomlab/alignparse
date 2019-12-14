@@ -14,6 +14,9 @@ alignparse
 .. image:: https://zenodo.org/badge/194140958.svg
    :target: https://zenodo.org/badge/latestdoi/194140958
 
+.. image:: https://joss.theoj.org/papers/10.21105/joss.01915/status.svg
+   :target: https://doi.org/10.21105/joss.01915
+
 ``alignparse`` is a Python package written by `the Bloom lab <https://research.fhcrc.org/bloom/en.html>`_. 
 It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to targets, filter these alignments based on user-provided specifications, and parse out user-defined sequence features.
 For each read that passes the filters, information about the features (e.g. accuracy, sequence, mutations) is retained for further analyses. 
