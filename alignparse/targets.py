@@ -399,7 +399,8 @@ class Targets:
 
         # get targets from seqsfile
         if select_target_names is not None:
-            if len(select_target_names) < 1:
+            if not (isinstance(select_target_names, list) and
+                    len(select_target_names) >= 1):
                 raise ValueError('`select_target_names` must be none or '
                                  'non-empty list')
         if isinstance(seqsfile, str):
