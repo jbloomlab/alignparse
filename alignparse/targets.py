@@ -342,6 +342,9 @@ class Targets:
     ignore_feature_parse_specs_keys : None or list
         Ignore these target-level keys in `feature_parse_specs`. Useful for
         YAML with default keys that don't represent actual targets.
+    select_target_names : None or list
+        If `None`, the created object is for all sequences in `seqsfile`.
+        Otherwise pass a list with names of just the sequences of interest.
 
     Attributes
     ----------
@@ -361,7 +364,9 @@ class Targets:
     def __init__(self, *, seqsfile, feature_parse_specs,
                  allow_extra_features=False, seqsfileformat='genbank',
                  allow_clipped_muts_seqs=False,
-                 ignore_feature_parse_specs_keys=None):
+                 ignore_feature_parse_specs_keys=None,
+                 select_target_names=None,
+                 ):
         """See main class docstring."""
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
@@ -393,6 +398,10 @@ class Targets:
                             'mutation_op_count']
 
         # get targets from seqsfile
+        if select_target_names is not None:
+            if len(select_target_names) < 1:
+                raise ValueError('`select_target_names` must be none or '
+                                 'non-empty list')
         if isinstance(seqsfile, str):
             seqrecords = list(Bio.SeqIO.parse(seqsfile, format=seqsfileformat))
         else:
@@ -403,6 +412,8 @@ class Targets:
         self._target_dict = {}
         for seqrecord in seqrecords:
             tname = Target.get_name(seqrecord)
+            if select_target_names and (tname not in select_target_names):
+                continue
             target = Target(seqrecord=seqrecord,
                             req_features=self.features_to_parse(tname, 'name'),
                             allow_extra_features=allow_extra_features,
@@ -421,6 +432,8 @@ class Targets:
                                      str(self._return_suffixes))
         self.target_names = [target.name for target in self.targets]
         self.target_seqs = {target.name: target.seq for target in self.targets}
+        if not self.targets:
+            raise ValueError('no targets found')
 
         # check needed for `to_csv` option of `parse_alignment`.
         if len(self.target_names) != len({tname.replace(' ', '_') for
@@ -442,7 +455,7 @@ class Targets:
         # features unless flag to do this explicitly set
         if not allow_clipped_muts_seqs:
             for t in self.target_names:
-                for f in self.features_to_parse(tname, 'name'):
+                for f in self.features_to_parse(t, 'name'):
                     for return_name in ['sequence', 'mutations']:
                         if return_name in self._parse_returnvals(t, f):
                             filt = self._parse_filters[t][f]
