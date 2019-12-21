@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.1 documentation</title>
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -12,7 +12,6 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -259,7 +258,7 @@ steps. This illustrates an additional use case and shows how this package could 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">plotnine</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">plotnine</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="kn">import</span> <span class="nn">pysam</span>
 
@@ -315,7 +314,7 @@ sequencing</a> example) or each target can be defined in its own Genbank file (a
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">,</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
 
-<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;input_files/</span><span class="si">{target_file_name}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
+<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;input_files/</span><span class="si">{target_file_name}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">targetfile</span> <span class="ow">in</span> <span class="n">targetfiles</span><span class="p">:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -626,6 +625,33 @@ LASV_Josiah_OPT: *id001
 <img alt="_images/lasv_pilot_18_0.png" src="_images/lasv_pilot_18_0.png" />
 </div>
 </div>
+<p>Note that if needed, it is also possible to get a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object for just some of the sequences specified in <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> or <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>. This is most commonly useful when <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> contains additional sequences that are not of interest. Below we illustrate how to do this by: - Setting <code class="docutils literal notranslate"><span class="pre">select_target_names</span></code> to only keep the <em>LASV_Josiah_WT</em> sequence in <code class="docutils literal notranslate"><span class="pre">seqsfile</span></code> - Setting
+<code class="docutils literal notranslate"><span class="pre">ingore_feature_parse_specs</span></code> to ignore the other targets (in this case, <em>LASV_Josiah_OPT</em>) in <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">targets_subset</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
+                    <span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
+                    <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
+                    <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">select_target_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">],</span>
+                    <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
+                    <span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Here are the names of the retained targets: </span><span class="si">{targets_subset.target_names}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
+</pre></div></div>
+</div>
 </div>
 <div class="section" id="PacBio-CCSs">
 <h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
@@ -643,7 +669,7 @@ LASV_Josiah_OPT: *id001
 </div>
 <p>Here is a data frame with the resulting FASTQ and BAM files:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -653,8 +679,8 @@ LASV_Josiah_OPT: *id001
 
 <span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
-             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
-             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
+             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
              <span class="p">})</span>
 
 <span class="n">pacbio_runs</span>
@@ -662,7 +688,7 @@ LASV_Josiah_OPT: *id001
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -702,7 +728,7 @@ LASV_Josiah_OPT: *id001
 </div>
 <p>We create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">Summaries</a> object for these CCSs:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -712,7 +738,7 @@ LASV_Josiah_OPT: *id001
 </div>
 <p>Plot how many ZMWs yielded CCSs:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -725,11 +751,11 @@ LASV_Josiah_OPT: *id001
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_24_0.png" src="_images/lasv_pilot_24_0.png" />
+<img alt="_images/lasv_pilot_26_0.png" src="_images/lasv_pilot_26_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -738,7 +764,7 @@ LASV_Josiah_OPT: *id001
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -808,7 +834,7 @@ LASV_Josiah_OPT: *id001
 </div>
 <p>Statistics on the CCSs (length, number of subread passes, accuracy):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -817,7 +843,7 @@ LASV_Josiah_OPT: *id001
         <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;No information available on CCS </span><span class="si">{stat}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No information available on CCS </span><span class="si">{stat}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -825,21 +851,21 @@ LASV_Josiah_OPT: *id001
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_27_0.png" src="_images/lasv_pilot_27_0.png" />
+<img alt="_images/lasv_pilot_29_0.png" src="_images/lasv_pilot_29_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_27_1.png" src="_images/lasv_pilot_27_1.png" />
+<img alt="_images/lasv_pilot_29_1.png" src="_images/lasv_pilot_29_1.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_27_2.png" src="_images/lasv_pilot_27_2.png" />
+<img alt="_images/lasv_pilot_29_2.png" src="_images/lasv_pilot_29_2.png" />
 </div>
 </div>
 </div>
@@ -848,13 +874,13 @@ LASV_Josiah_OPT: *id001
 <p>Now we use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> to align the CCSs to the target.</p>
 <p>First, we create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, using the options for codon-level deep mutational scanning (specified by <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
       <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -870,7 +896,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <p>Now use this mapper to do the alignments to a SAM file. First, add the names of the desired alignment files to our data frame:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -881,7 +907,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -923,12 +949,12 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <p>Now we run <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align">targets.align</a> using the mapper to actually align the FASTQ queries to the target:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Aligning </span><span class="si">{tup.fastq}</span><span class="s2"> to create </span><span class="si">{tup.alignments}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aligning </span><span class="si">{tup.fastq}</span><span class="s2"> to create </span><span class="si">{tup.alignments}</span><span class="s2">...&quot;</span><span class="p">)</span>
     <span class="n">targets</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">queryfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span>
                   <span class="n">alignmentfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span>
                   <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">)</span>
@@ -946,14 +972,14 @@ Aligning input_files/lasv_example_ccs.fastq.gz to create ./output_files/lasv_pil
 <p>These SAM files now contain the alignments along with the <a class="reference external" href="https://github.com/lh3/minimap2#cs">cs tag</a>.</p>
 <p>An example <a class="reference external" href="https://github.com/lh3/minimap2#cs">cs tag</a> is:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="p">[</span><span class="s1">&#39;alignments&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]:</span>
     <span class="k">with</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;First alignment in </span><span class="si">{fname}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First alignment in </span><span class="si">{fname}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -975,7 +1001,7 @@ reads. Here we return the <code class="docutils literal notranslate"><span class
 sequencing</a>), these CSV files will always be created, even if <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> is <code class="docutils literal notranslate"><span class="pre">False</span></code> and the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function is returning <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> as dictionaries of data frames in its final output.</p>
 <p>Here we only have one PacBio run, but in practice we will often have multiple. As such, our example shows how to concatenate the <code class="docutils literal notranslate"><span class="pre">readstats</span></code>, <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> data frames for each PacBio run and then look at the data frames together:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -985,7 +1011,7 @@ sequencing</a>), these CSV files will always be created, even if <code class="do
 
 <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{run.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{run.name}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">run_readstats</span><span class="p">,</span> <span class="n">run_aligned</span><span class="p">,</span> <span class="n">run_filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">parse_alignment</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">filtered_cs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># when concatenating add the run name to keep track of runs for results</span>
@@ -1019,7 +1045,7 @@ Parsing PacBio run lasv_pilot
 <p>First lets look at the read stats:</p>
 <p>From the known composition of the library, there should be more <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> reads than <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_WT</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1028,7 +1054,7 @@ Parsing PacBio run lasv_pilot
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1091,7 +1117,7 @@ Parsing PacBio run lasv_pilot
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1111,12 +1137,12 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_40_0.png" src="_images/lasv_pilot_40_0.png" />
+<img alt="_images/lasv_pilot_42_0.png" src="_images/lasv_pilot_42_0.png" />
 </div>
 </div>
 <p>Now look at the information on the filtered reads. This is a bigger data frame, so we just look at the first few lines for the first target (of which there is only one anyway):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1125,7 +1151,7 @@ Parsing PacBio run lasv_pilot
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1194,7 +1220,7 @@ Parsing PacBio run lasv_pilot
 </div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1218,14 +1244,14 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_43_0.png" src="_images/lasv_pilot_43_0.png" />
+<img alt="_images/lasv_pilot_45_0.png" src="_images/lasv_pilot_45_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_43_1.png" src="_images/lasv_pilot_43_1.png" />
+<img alt="_images/lasv_pilot_45_1.png" src="_images/lasv_pilot_45_1.png" />
 </div>
 </div>
 </div>
@@ -1236,7 +1262,7 @@ Parsing PacBio run lasv_pilot
 <p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA DMS libraries</a> example notebook. However, here we will plot the graphs for each target.</p>
 <p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. We specify this cutoff below.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1275,20 +1301,20 @@ Parsing PacBio run lasv_pilot
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_45_0.png" src="_images/lasv_pilot_45_0.png" />
+<img alt="_images/lasv_pilot_47_0.png" src="_images/lasv_pilot_47_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_45_1.png" src="_images/lasv_pilot_45_1.png" />
+<img alt="_images/lasv_pilot_47_1.png" src="_images/lasv_pilot_47_1.png" />
 </div>
 </div>
 <p>Next, we store all reads with an error rate <span class="math notranslate nohighlight">\(&lt;10^{-4}\)</span> in new data frames for retained sequences.</p>
 <p>We will use these retained sequences for further analyses.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1305,7 +1331,7 @@ Parsing PacBio run lasv_pilot
 <p>Now we can examine our data in more detail.</p>
 <p>We will only display a few columns so the example renders well in the documentation. First, let’s look at the <code class="docutils literal notranslate"><span class="pre">query_name</span></code>, <code class="docutils literal notranslate"><span class="pre">gene_mutations</span></code>, and <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns for the first few entries in the <code class="docutils literal notranslate"><span class="pre">retained</span></code> data frame for each target:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1459,7 +1485,7 @@ LASV_Josiah_OPT
 <p>As seen by the <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns, each target here has 2 or 3 different indices that map to it. These indicies indicate different samples.</p>
 <p>We can then split these data frames into sample-specific data frames based on the known starting index sequences for each target. We will store these data frames in a new dictionary, keyed by target and index.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1469,9 +1495,9 @@ LASV_Josiah_OPT
 <span class="n">index_counts_dfs</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">target_name</span><span class="p">]:</span>
-        <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">index_counts</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">])))</span>
-    <span class="n">index_counts</span><span class="p">[</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
+        <span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">])))</span>
+    <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
                                                           <span class="nb">sum</span><span class="p">(</span><span class="n">idx_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_tup</span> <span class="ow">in</span> <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">]))))</span>
     <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
 </pre></div>
@@ -1479,7 +1505,7 @@ LASV_Josiah_OPT
 </div>
 <p>In the process of making these separate data frames, we also kept track of how many reads for each target map to each index or don’t map to an index (so have an ‘invalid’ index) and can now plot these counts. As seen below, only one sequence in this example has an invalid index and it maps to the <code class="docutils literal notranslate"><span class="pre">LASV_Josiah_OPT</span></code> target.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1505,19 +1531,19 @@ LASV_Josiah_OPT
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_53_0.png" src="_images/lasv_pilot_53_0.png" />
+<img alt="_images/lasv_pilot_55_0.png" src="_images/lasv_pilot_55_0.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_53_1.png" src="_images/lasv_pilot_53_1.png" />
+<img alt="_images/lasv_pilot_55_1.png" src="_images/lasv_pilot_55_1.png" />
 </div>
 </div>
 <p>The two target-specific data frames are now five index-specific data frames. Again we will display the <code class="docutils literal notranslate"><span class="pre">query_name</span></code>, <code class="docutils literal notranslate"><span class="pre">gene_mutations</span></code>, and <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1819,7 +1845,7 @@ LASV_Josiah_OPT_GAGACG
 </div>
 <p>We can add mutation info for the genes in these targets using <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.add_mut_info_cols">alignparse.consensus.add_mut_info_cols</a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1834,7 +1860,7 @@ LASV_Josiah_OPT_GAGACG
 <p>We can then plot the number of reads for each sample that has each number of substitutions or indels to get a sense of how many mutations are in these reads, if some smaples have more mutations than others, and if substitutions or indels are more prevalent in these sequences.</p>
 <p>With such a small sample snippet of the data, it is difficult to make any conclusions, but with a full dataset, this can provide important information about the mutational processes at work for each sample.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1846,7 +1872,7 @@ LASV_Josiah_OPT_GAGACG
                         <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
                         <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ variable&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
                         <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{target_idx}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_idx}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
                         <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
                               <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
                               <span class="p">)</span>
@@ -1859,35 +1885,35 @@ LASV_Josiah_OPT_GAGACG
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_59_0.png" src="_images/lasv_pilot_59_0.png" />
+<img alt="_images/lasv_pilot_61_0.png" src="_images/lasv_pilot_61_0.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_59_1.png" src="_images/lasv_pilot_59_1.png" />
+<img alt="_images/lasv_pilot_61_1.png" src="_images/lasv_pilot_61_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_59_2.png" src="_images/lasv_pilot_59_2.png" />
+<img alt="_images/lasv_pilot_61_2.png" src="_images/lasv_pilot_61_2.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_59_3.png" src="_images/lasv_pilot_59_3.png" />
+<img alt="_images/lasv_pilot_61_3.png" src="_images/lasv_pilot_61_3.png" />
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/lasv_pilot_59_4.png" src="_images/lasv_pilot_59_4.png" />
+<img alt="_images/lasv_pilot_61_4.png" src="_images/lasv_pilot_61_4.png" />
 </div>
 </div>
 </div>
@@ -1991,7 +2017,7 @@ LASV_Josiah_OPT_GAGACG
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

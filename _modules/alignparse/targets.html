@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>alignparse.targets &#8212; alignparse 0.1.1 documentation</title>
+    <title>alignparse.targets &#8212; alignparse 0.1.2 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -12,7 +12,6 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="../../_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -68,8 +67,8 @@
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="k">import</span> <span class="n">CBPALETTE</span>
-<span class="kn">from</span> <span class="nn">alignparse.cs_tag</span> <span class="k">import</span> <span class="p">(</span><span class="n">Alignment</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="kn">import</span> <span class="n">CBPALETTE</span>
+<span class="kn">from</span> <span class="nn">alignparse.cs_tag</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Alignment</span><span class="p">,</span>
                                <span class="n">cs_to_mutation_str</span><span class="p">,</span>
                                <span class="n">cs_to_nt_mutation_count</span><span class="p">,</span>
                                <span class="n">cs_to_op_mutation_count</span><span class="p">,</span>
@@ -106,11 +105,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">seq</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;comma not allowed in feature name: </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;comma not allowed in feature name: </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="n">seq</span>
         <span class="k">if</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;length of `seq` not equal to `end` - `start`&#39;</span><span class="p">)</span>
@@ -118,10 +117,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">start</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get string representation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(name=</span><span class="si">{self.name}</span><span class="s2">, seq=</span><span class="si">{self.seq}</span><span class="s2">, &quot;</span>
-                <span class="n">f</span><span class="s2">&quot;start=</span><span class="si">{self.start}</span><span class="s2">, end=</span><span class="si">{self.end}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(name=</span><span class="si">{self.name}</span><span class="s2">, seq=</span><span class="si">{self.seq}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;start=</span><span class="si">{self.start}</span><span class="s2">, end=</span><span class="si">{self.end}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Target"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Target">[docs]</a><span class="k">class</span> <span class="nc">Target</span><span class="p">:</span>
@@ -154,19 +153,19 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get string representation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(name=</span><span class="si">{self.name}</span><span class="s2">, seq=</span><span class="si">{self.seq}</span><span class="s2">, &quot;</span>
-                <span class="n">f</span><span class="s2">&quot;features=</span><span class="si">{self.features}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(name=</span><span class="si">{self.name}</span><span class="s2">, seq=</span><span class="si">{self.seq}</span><span class="s2">, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;features=</span><span class="si">{self.features}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seqrecord</span><span class="p">,</span> <span class="n">req_features</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(),</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seqrecord</span><span class="p">,</span> <span class="n">req_features</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(),</span>
                  <span class="n">opt_features</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(),</span> <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">(</span><span class="n">seqrecord</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;,&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;comma not allowed in target name: </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;comma not allowed in target name: </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seqrecord</span><span class="p">,</span> <span class="s1">&#39;seq&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`seqrecord` does not define a seq&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`seqrecord` does not define a seq&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">seqrecord</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
@@ -179,12 +178,12 @@
         <span class="k">for</span> <span class="n">bio_feature</span> <span class="ow">in</span> <span class="n">seqrecord</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
             <span class="n">feature_name</span> <span class="o">=</span> <span class="n">bio_feature</span><span class="o">.</span><span class="n">type</span>
             <span class="k">if</span> <span class="n">feature_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features_dict</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;duplicate feature </span><span class="si">{feature_name}</span><span class="s2"> when &quot;</span>
-                                 <span class="n">f</span><span class="s2">&quot;creating Target </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;duplicate feature </span><span class="si">{feature_name}</span><span class="s2"> when &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;creating Target </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">allow_extra_features</span> <span class="ow">or</span> <span class="p">(</span><span class="n">feature_name</span> <span class="ow">in</span> <span class="n">allow_features</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;feature </span><span class="si">{feature_name}</span><span class="s2"> not allowed feature&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;feature </span><span class="si">{feature_name}</span><span class="s2"> not allowed feature&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">bio_feature</span><span class="o">.</span><span class="n">strand</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;feature </span><span class="si">{feature_name}</span><span class="s2"> of </span><span class="si">{self.name}</span><span class="s2"> is - &quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;feature </span><span class="si">{feature_name}</span><span class="s2"> of </span><span class="si">{self.name}</span><span class="s2"> is - &quot;</span>
                                  <span class="s1">&#39;strand, but only + strand features handled&#39;</span><span class="p">)</span>
             <span class="n">feature_seq</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">bio_feature</span><span class="o">.</span><span class="n">location</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">seqrecord</span><span class="p">)</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
             <span class="n">feature</span> <span class="o">=</span> <span class="n">Feature</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">feature_name</span><span class="p">,</span>
@@ -198,7 +197,7 @@
 
         <span class="n">missing_features</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">req_features</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_features_dict</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">missing_features</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.name}</span><span class="s2"> lacks features: </span><span class="si">{missing_features}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.name}</span><span class="s2"> lacks features: </span><span class="si">{missing_features}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Target.get_name"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Target.get_name">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">seqrecord</span><span class="p">):</span>
@@ -216,7 +215,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">seqrecord</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`seqrecord` does not define a name&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`seqrecord` does not define a name&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">seqrecord</span><span class="o">.</span><span class="n">name</span></div>
 
@@ -253,7 +252,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_feature</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Target </span><span class="si">{self.name}</span><span class="s2"> has no feature </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Target </span><span class="si">{self.name}</span><span class="s2"> has no feature </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Target.image"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Target.image">[docs]</a>    <span class="k">def</span> <span class="nf">image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">color_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">feature_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">plots_indexing</span><span class="o">=</span><span class="s1">&#39;genbank&#39;</span><span class="p">):</span>
@@ -291,7 +290,7 @@
             <span class="n">missing_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">feature</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span>
                               <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">color_map</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">missing_colors</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;no `color_map` entry for </span><span class="si">{missing_colors}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no `color_map` entry for </span><span class="si">{missing_colors}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">feature_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">feature_labels</span> <span class="o">=</span> <span class="p">{}</span>
@@ -378,6 +377,9 @@
 <span class="sd">    ignore_feature_parse_specs_keys : None or list</span>
 <span class="sd">        Ignore these target-level keys in `feature_parse_specs`. Useful for</span>
 <span class="sd">        YAML with default keys that don&#39;t represent actual targets.</span>
+<span class="sd">    select_target_names : None or list</span>
+<span class="sd">        If `None`, the created object is for all sequences in `seqsfile`.</span>
+<span class="sd">        Otherwise pass a list with names of just the sequences of interest.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -390,14 +392,16 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get string representation.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(targets=</span><span class="si">{self.targets}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.__class__.__name__}</span><span class="s2">(targets=</span><span class="si">{self.targets}</span><span class="s2">)&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seqsfile</span><span class="p">,</span> <span class="n">feature_parse_specs</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">seqsfile</span><span class="p">,</span> <span class="n">feature_parse_specs</span><span class="p">,</span>
                  <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">seqsfileformat</span><span class="o">=</span><span class="s1">&#39;genbank&#39;</span><span class="p">,</span>
                  <span class="n">allow_clipped_muts_seqs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">select_target_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="c1"># read feature_parse_specs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">feature_parse_specs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -411,7 +415,7 @@
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature_parse_specs</span><span class="p">:</span>
                     <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature_parse_specs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`feature_parse_specs` lacks key </span><span class="si">{key}</span><span class="s2"> &quot;</span>
+                    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`feature_parse_specs` lacks key </span><span class="si">{key}</span><span class="s2"> &quot;</span>
                                    <span class="s1">&#39;in `ignore_feature_parse_specs_keys`&#39;</span><span class="p">)</span>
 
         <span class="c1"># names of parse alignment columns with clipping</span>
@@ -429,6 +433,11 @@
                             <span class="s1">&#39;mutation_op_count&#39;</span><span class="p">]</span>
 
         <span class="c1"># get targets from seqsfile</span>
+        <span class="k">if</span> <span class="n">select_target_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">select_target_names</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">select_target_names</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`select_target_names` must be none or &#39;</span>
+                                 <span class="s1">&#39;non-empty list&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">seqsfile</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">seqrecords</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">SeqIO</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">seqsfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">seqsfileformat</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
@@ -439,24 +448,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_target_dict</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">seqrecord</span> <span class="ow">in</span> <span class="n">seqrecords</span><span class="p">:</span>
             <span class="n">tname</span> <span class="o">=</span> <span class="n">Target</span><span class="o">.</span><span class="n">get_name</span><span class="p">(</span><span class="n">seqrecord</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">select_target_names</span> <span class="ow">and</span> <span class="p">(</span><span class="n">tname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">select_target_names</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">Target</span><span class="p">(</span><span class="n">seqrecord</span><span class="o">=</span><span class="n">seqrecord</span><span class="p">,</span>
                             <span class="n">req_features</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">features_to_parse</span><span class="p">(</span><span class="n">tname</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">),</span>
                             <span class="n">allow_extra_features</span><span class="o">=</span><span class="n">allow_extra_features</span><span class="p">,</span>
                             <span class="p">)</span>
             <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_dict</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;duplicate target name of </span><span class="si">{target.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;duplicate target name of </span><span class="si">{target.name}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_target_dict</span><span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span>
             <span class="c1"># ensure feature names are not reserved or have reserved suffix</span>
             <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">features</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">feature</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reserved_cols</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;feature cannot be named </span><span class="si">{feature.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;feature cannot be named </span><span class="si">{feature.name}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;$&#39;</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_suffixes</span><span class="p">),</span>
                              <span class="n">feature</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;feature name cannot end in &#39;</span> <span class="o">+</span>
                                      <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_return_suffixes</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">target</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">target_seqs</span> <span class="o">=</span> <span class="p">{</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">target</span><span class="o">.</span><span class="n">seq</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no targets found&#39;</span><span class="p">)</span>
 
         <span class="c1"># check needed for `to_csv` option of `parse_alignment`.</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">({</span><span class="n">tname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="k">for</span>
@@ -468,7 +481,7 @@
         <span class="n">extra_targets</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_feature_parse_specs</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">extra_targets</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`feature_parse_specs` includes non-existent &#39;</span>
-                             <span class="n">f</span><span class="s2">&quot;targets </span><span class="si">{extra_targets}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;targets </span><span class="si">{extra_targets}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_feature_parse_specs_defaults</span><span class="p">()</span>
 
@@ -478,15 +491,15 @@
         <span class="c1"># features unless flag to do this explicitly set</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_clipped_muts_seqs</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_parse</span><span class="p">(</span><span class="n">tname</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_parse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
                     <span class="k">for</span> <span class="n">return_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">,</span> <span class="s1">&#39;mutations&#39;</span><span class="p">]:</span>
                         <span class="k">if</span> <span class="n">return_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_returnvals</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
                             <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filters</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">f</span><span class="p">]</span>
                             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">filt</span> <span class="ow">or</span> <span class="n">filt</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
                                        <span class="p">[</span><span class="s1">&#39;clip5&#39;</span><span class="p">,</span> <span class="s1">&#39;clip3&#39;</span><span class="p">])):</span>
                                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                        <span class="n">f</span><span class="s2">&quot;You asked to return </span><span class="si">{return_name}</span><span class="s2"> &quot;</span>
-                                        <span class="n">f</span><span class="s2">&quot;for </span><span class="si">{t}</span><span class="s2">, </span><span class="si">{f}</span><span class="s2">, but clipping is not &quot;</span>
+                                        <span class="sa">f</span><span class="s2">&quot;You asked to return </span><span class="si">{return_name}</span><span class="s2"> &quot;</span>
+                                        <span class="sa">f</span><span class="s2">&quot;for </span><span class="si">{t}</span><span class="s2">, </span><span class="si">{f}</span><span class="s2">, but clipping is not &quot;</span>
                                         <span class="s1">&#39;0 for this feature. To do this, set&#39;</span>
                                         <span class="s1">&#39;`allow_clipped_muts_seqs` to `True`&#39;</span><span class="p">)</span>
 
@@ -511,8 +524,8 @@
                     <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`feature_parse_spec` filter for&#39;</span>
-                                             <span class="n">f</span><span class="s2">&quot; </span><span class="si">{tname}</span><span class="s2">, </span><span class="si">{fname}</span><span class="s2">, </span><span class="si">{k}</span><span class="s2"> is not &quot;</span>
-                                             <span class="n">f</span><span class="s2">&quot;`None` or an integer: </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                             <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{tname}</span><span class="s2">, </span><span class="si">{fname}</span><span class="s2">, </span><span class="si">{k}</span><span class="s2"> is not &quot;</span>
+                                             <span class="sa">f</span><span class="s2">&quot;`None` or an integer: </span><span class="si">{v}</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_filters</span><span class="p">[</span><span class="n">tname</span><span class="p">][</span><span class="n">fname</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="nf">_set_feature_parse_specs_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -523,14 +536,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">tname</span><span class="p">,</span> <span class="n">tspecs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature_parse_specs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_clip_cols</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">tspecs</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
-                                 <span class="n">f</span><span class="s2">&quot;lacks </span><span class="si">{self._clip_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;lacks </span><span class="si">{self._clip_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">fname</span><span class="p">,</span> <span class="n">fdict</span> <span class="ow">in</span> <span class="n">tspecs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">fname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip_cols</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">fdict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;return&#39;</span><span class="p">,</span> <span class="s1">&#39;filter&#39;</span><span class="p">}:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
-                                     <span class="n">f</span><span class="s2">&quot;</span><span class="si">{fname}</span><span class="s2"> has extra keys: only &#39;return&#39; &quot;</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{fname}</span><span class="s2"> has extra keys: only &#39;return&#39; &quot;</span>
                                      <span class="s2">&quot;and &#39;filter&#39; are allowed.&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s1">&#39;return&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fdict</span><span class="p">:</span>
                     <span class="n">fdict</span><span class="p">[</span><span class="s1">&#39;return&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
@@ -541,14 +554,14 @@
                         <span class="k">if</span> <span class="n">returnval</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span>
                                              <span class="bp">self</span><span class="o">.</span><span class="n">_return_suffixes</span><span class="p">]:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                    <span class="n">f</span><span class="s2">&quot;`feature_parse_specs` of </span><span class="si">{tname}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2">&quot;</span>
-                                    <span class="n">f</span><span class="s2">&quot; has invalid return type </span><span class="si">{returnval}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                    <span class="sa">f</span><span class="s2">&quot;`feature_parse_specs` of </span><span class="si">{tname}</span><span class="s2"> </span><span class="si">{fname}</span><span class="s2">&quot;</span>
+                                    <span class="sa">f</span><span class="s2">&quot; has invalid return type </span><span class="si">{returnval}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">if</span> <span class="s1">&#39;filter&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fdict</span><span class="p">:</span>
                     <span class="n">fdict</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">fdict</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filterkeys</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
-                                     <span class="n">f</span><span class="s2">&quot;</span><span class="si">{fname}</span><span class="s2"> has invalid filter type. Only &quot;</span>
-                                     <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._filterkeys}</span><span class="s2"> are allowed.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`feature_parse_specs` for </span><span class="si">{tname}</span><span class="s2"> &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{fname}</span><span class="s2"> has invalid filter type. Only &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self._filterkeys}</span><span class="s2"> are allowed.&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">filterkey</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filterkeys</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">filterkey</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fdict</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]:</span>
                         <span class="n">fdict</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">][</span><span class="n">filterkey</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -579,7 +592,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fnames_to_parse</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;target </span><span class="si">{targetname}</span><span class="s2"> not in &quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;target </span><span class="si">{targetname}</span><span class="s2"> not in &quot;</span>
                                  <span class="s1">&#39;`feature_parse_specs`&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">feature_or_name</span> <span class="o">==</span> <span class="s1">&#39;feature&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_features_to_parse&#39;</span><span class="p">):</span>
@@ -592,10 +605,10 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_features_to_parse</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;target </span><span class="si">{targetname}</span><span class="s2"> not in &quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;target </span><span class="si">{targetname}</span><span class="s2"> not in &quot;</span>
                                  <span class="s1">&#39;`feature_parse_specs`&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `feature_or_name` </span><span class="si">{feature_or_name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `feature_or_name` </span><span class="si">{feature_or_name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Targets.feature_parse_specs"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.feature_parse_specs">[docs]</a>    <span class="k">def</span> <span class="nf">feature_parse_specs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">returntype</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the feature parsing specs.</span>
@@ -627,7 +640,7 @@
                              <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                              <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `returntype` of </span><span class="si">{returntype}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `returntype` of </span><span class="si">{returntype}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Targets.get_target"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.get_target">[docs]</a>    <span class="k">def</span> <span class="nf">get_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get :class:`Target` by name.</span>
@@ -646,7 +659,7 @@
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_dict</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;no target named </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no target named </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Targets.write_fasta"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.write_fasta">[docs]</a>    <span class="k">def</span> <span class="nf">write_fasta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fastafile</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write all targets to a FASTA file.</span>
@@ -659,12 +672,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
-                <span class="n">fastafile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&gt;</span><span class="si">{target.name}</span><span class="se">\n</span><span class="si">{target.seq}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">fastafile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="si">{target.name}</span><span class="se">\n</span><span class="si">{target.seq}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">fastafile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fastafile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;&gt;</span><span class="si">{target.name}</span><span class="se">\n</span><span class="si">{target.seq}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt;</span><span class="si">{target.name}</span><span class="se">\n</span><span class="si">{target.seq}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Targets.plot"><a class="viewcode-back" href="../../alignparse.targets.html#alignparse.targets.Targets.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax_width</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">ax_height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plot all the targets.</span>
@@ -793,7 +806,7 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        (readstats, aligned, filtered) : tuple</span>
-<span class="sd">            Same meaning as for :meth:`Targets.parse_alignments` except</span>
+<span class="sd">            Same meaning as for :meth:`Targets.parse_alignment` except</span>
 <span class="sd">            the data frames / CSV files all have additional columns indicating</span>
 <span class="sd">            name of each query set (`name_cols`) as well as any `group_cols`.</span>
 
@@ -807,7 +820,7 @@
             <span class="n">addtl_cols</span> <span class="o">=</span> <span class="n">group_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">name_col</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">addtl_cols</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">addtl_cols</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`name_col` and `group_cols` have redundant &#39;</span>
-                                 <span class="n">f</span><span class="s2">&quot;entries: </span><span class="si">{addtl_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
+                                 <span class="sa">f</span><span class="s2">&quot;entries: </span><span class="si">{addtl_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">expected_cols</span> <span class="o">=</span> <span class="n">addtl_cols</span> <span class="o">+</span> <span class="p">[</span><span class="n">queryfile_col</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">expected_cols</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;`df` does not contain all expected columns: &#39;</span> <span class="o">+</span>
@@ -820,7 +833,7 @@
         <span class="c1"># for this query, and the samfile for the alignments.</span>
         <span class="n">reserved_cols</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fullname&#39;</span><span class="p">,</span> <span class="s1">&#39;subdir&#39;</span><span class="p">,</span> <span class="s1">&#39;samfile&#39;</span><span class="p">}</span>
         <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_cols</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">reserved_cols</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;`df` cannot have columns: </span><span class="si">{reserved_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`df` cannot have columns: </span><span class="si">{reserved_cols}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">df</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">df</span>
             <span class="p">[</span><span class="n">expected_cols</span><span class="p">]</span>
@@ -863,7 +876,7 @@
                 <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tup</span><span class="o">.</span><span class="n">samfile</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;file </span><span class="si">{tup.samfile}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file </span><span class="si">{tup.samfile}</span><span class="s2"> already exists&quot;</span><span class="p">)</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">map_func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">align</span><span class="p">,</span>
                      <span class="n">df</span><span class="p">[</span><span class="n">queryfile_col</span><span class="p">],</span>
                      <span class="n">df</span><span class="p">[</span><span class="s1">&#39;samfile&#39;</span><span class="p">],</span>
@@ -912,7 +925,7 @@
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">aligned</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;file </span><span class="si">{f}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;file </span><span class="si">{f}</span><span class="s2"> already exists.&quot;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
@@ -1057,7 +1070,7 @@
         <span class="k">if</span> <span class="n">multi_align</span> <span class="o">==</span> <span class="s1">&#39;primary&#39;</span><span class="p">:</span>
             <span class="n">primary_only</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `multi_align` </span><span class="si">{multi_align}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `multi_align` </span><span class="si">{multi_align}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">csv_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">csv_dir</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -1082,7 +1095,7 @@
                        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
             <span class="n">filenames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">aligned</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">overwrite_csv</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">,</span> <span class="n">filenames</span><span class="p">)):</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;existing file with name in: </span><span class="si">{filenames}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;existing file with name in: </span><span class="si">{filenames}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">filtered</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
             <span class="n">aligned</span> <span class="o">=</span> <span class="p">{</span><span class="n">t</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
@@ -1196,7 +1209,7 @@
             <span class="n">returnlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">,</span> <span class="s1">&#39;query_clip5&#39;</span><span class="p">,</span> <span class="s1">&#39;query_clip3&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">featurename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">features_to_parse</span><span class="p">(</span><span class="n">targetname</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_returnvals</span><span class="p">(</span><span class="n">targetname</span><span class="p">,</span> <span class="n">featurename</span><span class="p">):</span>
-                    <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2">_</span><span class="si">{val}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2">_</span><span class="si">{val}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">returnlist</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feature_parse_specs</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="n">featurename</span><span class="p">][</span><span class="s1">&#39;return&#39;</span><span class="p">]</span>
@@ -1250,10 +1263,10 @@
                     <span class="n">cs</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                            <span class="n">f</span><span class="s2">&quot;Should not get here:</span><span class="se">\n</span><span class="s2">target = </span><span class="si">{targetname}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="n">f</span><span class="s2">&quot;feature = </span><span class="si">{feature}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="n">f</span><span class="s2">&quot;target_clip5 = </span><span class="si">{a.target_clip5}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="n">f</span><span class="s2">&quot;lastpos = </span><span class="si">{a.target_lastpos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Should not get here:</span><span class="se">\n</span><span class="s2">target = </span><span class="si">{targetname}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;feature = </span><span class="si">{feature}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;target_clip5 = </span><span class="si">{a.target_clip5}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;lastpos = </span><span class="si">{a.target_lastpos}</span><span class="se">\n</span><span class="s2">&quot;</span>
                             <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cs</span><span class="p">,</span> <span class="n">clip5</span><span class="p">,</span> <span class="n">clip3</span> <span class="o">=</span> <span class="n">feat_info</span>
@@ -1268,9 +1281,9 @@
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">valmax</span> <span class="ow">in</span> <span class="n">target_parse_filters</span><span class="p">[</span><span class="n">featurename</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">filter_vals</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">valmax</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">filtered_cs</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="n">query_name</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2"> </span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="n">query_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2"> </span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cs</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="n">query_name</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2"> </span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(</span><span class="n">query_name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{featurename}</span><span class="s2"> </span><span class="si">{key}</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="c1"># get return values</span>
             <span class="k">for</span> <span class="n">return_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_returnvals</span><span class="p">(</span><span class="n">targetname</span><span class="p">,</span> <span class="n">featurename</span><span class="p">):</span>
@@ -1290,8 +1303,8 @@
                                                     <span class="n">feature</span><span class="o">.</span><span class="n">end</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">allowednames</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_suffixes</span><span class="p">]</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `return_name` </span><span class="si">{return_name}</span><span class="s2">, &quot;</span>
-                                     <span class="n">f</span><span class="s2">&quot;should be one of </span><span class="si">{allowednames}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `return_name` </span><span class="si">{return_name}</span><span class="s2">, &quot;</span>
+                                     <span class="sa">f</span><span class="s2">&quot;should be one of </span><span class="si">{allowednames}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># if here, alignment not filtered: return it</span>
         <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parse_tup</span>
@@ -1303,7 +1316,7 @@
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 <span class="sd">        This method returns the same information that can be better</span>
-<span class="sd">        obtained via :meth:`Targets.parse_alignments` by setting</span>
+<span class="sd">        obtained via :meth:`Targets.parse_alignment` by setting</span>
 <span class="sd">        to return &#39;cs&#39;, &#39;clip5&#39;, &#39;clip3&#39; for every feature. It is</span>
 <span class="sd">        currently retained only for debugging / testing purposes,</span>
 <span class="sd">        and may eventually be removed.</span>
@@ -1358,7 +1371,7 @@
         <span class="k">if</span> <span class="n">multi_align</span> <span class="o">==</span> <span class="s1">&#39;primary&#39;</span><span class="p">:</span>
             <span class="n">primary_only</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;invalid `multi_align` </span><span class="si">{multi_align}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `multi_align` </span><span class="si">{multi_align}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">aligned_seg</span> <span class="ow">in</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">samfile</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">aligned_seg</span><span class="o">.</span><span class="n">is_unmapped</span><span class="p">:</span>
@@ -1395,10 +1408,10 @@
                             <span class="n">d</span><span class="p">[</span><span class="n">tname</span><span class="p">][</span><span class="n">fname</span> <span class="o">+</span> <span class="s1">&#39;_clip3&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="n">f</span><span class="s2">&quot;Should never get here for target </span><span class="si">{tname}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="n">f</span><span class="s2">&quot;feature = </span><span class="si">{feature}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="n">f</span><span class="s2">&quot;target_clip5 = </span><span class="si">{a.target_clip5}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                                <span class="n">f</span><span class="s2">&quot;lastpos = </span><span class="si">{a.target_lastpos}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;Should never get here for target </span><span class="si">{tname}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;feature = </span><span class="si">{feature}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;target_clip5 = </span><span class="si">{a.target_clip5}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;lastpos = </span><span class="si">{a.target_lastpos}</span><span class="se">\n</span><span class="s2">&quot;</span>
                                 <span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">d</span><span class="p">[</span><span class="n">tname</span><span class="p">][</span><span class="n">fname</span> <span class="o">+</span> <span class="s1">&#39;_cs&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feat_info</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -1508,7 +1521,7 @@
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

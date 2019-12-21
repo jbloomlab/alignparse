@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>targets &#8212; alignparse 0.1.1 documentation</title>
+    <title>targets &#8212; alignparse 0.1.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -12,7 +12,6 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -262,7 +261,7 @@ indexing of nucleotide sites?</p></li>
 
 <dl class="class">
 <dt id="alignparse.targets.Targets">
-<em class="property">class </em><code class="sig-prename descclassname">alignparse.targets.</code><code class="sig-name descname">Targets</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">seqsfile</em>, <em class="sig-param">feature_parse_specs</em>, <em class="sig-param">allow_extra_features=False</em>, <em class="sig-param">seqsfileformat='genbank'</em>, <em class="sig-param">allow_clipped_muts_seqs=False</em>, <em class="sig-param">ignore_feature_parse_specs_keys=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.targets.Targets" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.targets.</code><code class="sig-name descname">Targets</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">seqsfile</em>, <em class="sig-param">feature_parse_specs</em>, <em class="sig-param">allow_extra_features=False</em>, <em class="sig-param">seqsfileformat='genbank'</em>, <em class="sig-param">allow_clipped_muts_seqs=False</em>, <em class="sig-param">ignore_feature_parse_specs_keys=None</em>, <em class="sig-param">select_target_names=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.targets.Targets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Collection of <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> sequences.</p>
 <dl class="field-list simple">
@@ -311,6 +310,8 @@ sequences for features with clipping allowed; otherwise you’ll get
 an error if you try to recover such sequences / mutations.</p></li>
 <li><p><strong>ignore_feature_parse_specs_keys</strong> (<em>None</em><em> or </em><em>list</em>) – Ignore these target-level keys in <cite>feature_parse_specs</cite>. Useful for
 YAML with default keys that don’t represent actual targets.</p></li>
+<li><p><strong>select_target_names</strong> (<em>None</em><em> or </em><em>list</em>) – If <cite>None</cite>, the created object is for all sequences in <cite>seqsfile</cite>.
+Otherwise pass a list with names of just the sequences of interest.</p></li>
 </ul>
 </dd>
 </dl>
@@ -406,7 +407,7 @@ is to skip these alignments and <em>not</em> parse them.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>(readstats, aligned, filtered)</strong> – Same meaning as for <code class="xref py py-meth docutils literal notranslate"><span class="pre">Targets.parse_alignments()</span></code> except
+<dd class="field-even"><p><strong>(readstats, aligned, filtered)</strong> – Same meaning as for <a class="reference internal" href="#alignparse.targets.Targets.parse_alignment" title="alignparse.targets.Targets.parse_alignment"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Targets.parse_alignment()</span></code></a> except
 the data frames / CSV files all have additional columns indicating
 name of each query set (<cite>name_cols</cite>) as well as any <cite>group_cols</cite>.</p>
 </dd>
@@ -699,7 +700,7 @@ targets.</p>
       &copy;2019--2019.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
