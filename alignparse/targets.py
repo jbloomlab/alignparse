@@ -770,7 +770,7 @@ class Targets:
         Returns
         -------
         (readstats, aligned, filtered) : tuple
-            Same meaning as for :meth:`Targets.parse_alignments` except
+            Same meaning as for :meth:`Targets.parse_alignment` except
             the data frames / CSV files all have additional columns indicating
             name of each query set (`name_cols`) as well as any `group_cols`.
 
@@ -1280,7 +1280,7 @@ class Targets:
         Note
         ----
         This method returns the same information that can be better
-        obtained via :meth:`Targets.parse_alignments` by setting
+        obtained via :meth:`Targets.parse_alignment` by setting
         to return 'cs', 'clip5', 'clip3' for every feature. It is
         currently retained only for debugging / testing purposes,
         and may eventually be removed.
