@@ -26,4 +26,4 @@ Contents
    examples
    alignparse
    package_index
-   acknowledgments
+   acknowledgements
