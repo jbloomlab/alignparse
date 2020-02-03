@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Installation &#8212; alignparse 0.1.2 documentation</title>
+    <title>Acknowledgements &#8212; alignparse 0.1.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -16,8 +16,7 @@
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="examples.html" />
-    <link rel="prev" title="alignparse documentation" href="index.html" />
+    <link rel="prev" title="Package index" href="package_index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -34,22 +33,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> requires Python 3.6 or higher and is currently tested on Python 3.6 and 3.7.
-A Mac OS X or Linux operating system is also required.</p>
-<p>The easiest way to install <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is from <a class="reference external" href="https://pypi.org/">PyPI</a> using <a class="reference external" href="https://pip.pypa.io">pip</a> with:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">alignparse</span>
-</pre></div>
-</div>
-<p>Note that installing the dependency <a class="reference external" href="https://pysam.readthedocs.io/en/latest/api.html">pysam</a> may require additional packages on the host system.
-See the <a class="reference external" href="https://pysam.readthedocs.io/en/latest/installation.html#pypi-installation">pysam documentation</a> for more details.</p>
-<p>In order to use the <a class="reference internal" href="alignparse.minimap2.html#module-alignparse.minimap2" title="alignparse.minimap2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alignparse.minimap2</span></code></a> module, you need to install the <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> executable (version 2.17 or higher).
-You can do that via the <a class="reference external" href="https://bioconda.github.io/recipes/minimap2/README.html">bioconda recipe</a> or from the program’s release page <a class="reference external" href="https://github.com/lh3/minimap2#install">as described here</a>.</p>
-<p>An <code class="docutils literal notranslate"><span class="pre">environment.yml</span></code> file is provided with the source code. This can be used to create a <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">conda environment</a> that installs <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> and its dependencies using:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">f</span> <span class="n">environment</span><span class="o">.</span><span class="n">yml</span>
-</pre></div>
-</div>
+  <div class="section" id="acknowledgements">
+<h1>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.</p>
+<p>For the full list of contributors to <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a>, <a class="reference external" href="https://github.com/jbloomlab/alignparse/graphs/contributors">see here</a>.</p>
+<p>If you use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> in your research, please cite the following reference:</p>
+<p>Crawford KHD and Bloom JD. <a class="reference external" href="https://doi.org/10.21105/joss.01915">“alignparse: A Python package for parsing complex features from high-throughput long-read sequencing.”</a>. <em>Journal of Open Source Software</em>, 4:44, 1915 (2019).</p>
+<p>If you use the <a class="reference internal" href="alignparse.minimap2.html#module-alignparse.minimap2" title="alignparse.minimap2"><code class="xref py py-mod docutils literal notranslate"><span class="pre">alignparse.minimap2</span></code></a> module to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, please also cite the <a class="reference external" href="https://academic.oup.com/bioinformatics/article/34/18/3094/4994778">reference for minimap2</a>.</p>
 </div>
 
 
@@ -101,19 +91,18 @@ You can do that via the <a class="reference external" href="https://bioconda.git
 <li class="toctree-l1"><a class="reference internal" href="index.html">alignparse documentation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.html">alignparse package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="package_index.html">Package index</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acknowledgements.html">Acknowledgements</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Acknowledgements</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter"><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation</a></li>
-      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
+      <li>Previous: <a href="package_index.html" title="previous chapter">Package index</a></li>
   </ul></li>
 </ul>
 </div>
@@ -147,7 +136,7 @@ You can do that via the <a class="reference external" href="https://bioconda.git
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/installation.rst.txt"
+      <a href="_sources/acknowledgements.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 
