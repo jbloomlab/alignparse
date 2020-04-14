@@ -644,7 +644,13 @@ class Targets:
                 for target in self.targets:
                     f.write(f">{target.name}\n{target.seq}\n")
 
-    def plot(self, *, sharex=True, ax_width=5, ax_height=3, **kwargs):
+    def plot(self,
+             *,
+             sharex=True,
+             ax_width=5,
+             ax_height=3,
+             hspace=0.4,
+             **kwargs):
         """Plot all the targets.
 
         Note
@@ -660,6 +666,8 @@ class Targets:
             Width of each axis in inches.
         ax_height : float
             Height of each axis in inches.
+        hspace : float
+            Vertical space between axes as fraction of `ax_height`.
         ``**kwargs``
             Keyword arguments passed to :meth:`Target.image`.
 
@@ -673,7 +681,7 @@ class Targets:
                                  ncols=1,
                                  sharex=False,
                                  squeeze=False,
-                                 gridspec_kw={'hspace': 0.4},
+                                 gridspec_kw={'hspace': hspace},
                                  figsize=(ax_width,
                                           len(self.targets) * ax_height),
                                  )
