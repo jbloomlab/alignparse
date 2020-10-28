@@ -130,7 +130,7 @@ class Target:
         if ',' in self.name:
             raise ValueError(f"comma not allowed in target name: {self.name}")
         if not hasattr(seqrecord, 'seq'):
-            raise ValueError(f"`seqrecord` does not define a seq")
+            raise ValueError('`seqrecord` does not define a seq')
         self.seq = str(seqrecord.seq)
 
         self.length = len(self.seq)
@@ -180,7 +180,7 @@ class Target:
 
         """
         if not hasattr(seqrecord, 'name'):
-            raise ValueError(f"`seqrecord` does not define a name")
+            raise ValueError('`seqrecord` does not define a name')
         else:
             return seqrecord.name
 
