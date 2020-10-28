@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>ccs &#8212; alignparse 0.1.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ccs &#8212; alignparse 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +40,9 @@
 <h1>ccs<a class="headerlink" href="#ccs" title="Permalink to this headline">¶</a></h1>
 <p>Tools for inspecting output of the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program:
 <a class="reference external" href="https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md">https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md</a></p>
-<dl class="class">
+<dl class="py class">
 <dt id="alignparse.ccs.Summaries">
-<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summaries</code><span class="sig-paren">(</span><em class="sig-param">df</em>, <em class="sig-param">*</em>, <em class="sig-param">name_col='name'</em>, <em class="sig-param">fastq_col='fastq'</em>, <em class="sig-param">report_col='report'</em>, <em class="sig-param">ncpus=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summaries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">name_col</span><span class="o">=</span><span class="default_value">'name'</span></em>, <em class="sig-param"><span class="n">fastq_col</span><span class="o">=</span><span class="default_value">'fastq'</span></em>, <em class="sig-param"><span class="n">report_col</span><span class="o">=</span><span class="default_value">'report'</span></em>, <em class="sig-param"><span class="n">ncpus</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Summaries of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> runs.</p>
 <dl class="field-list simple">
@@ -58,7 +60,7 @@ all the FASTQ files to compute read accuracies can take a while.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summaries.summaries">
 <code class="sig-name descname">summaries</code><a class="headerlink" href="#alignparse.ccs.Summaries.summaries" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of <a class="reference internal" href="#alignparse.ccs.Summary" title="alignparse.ccs.Summary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summary</span></code></a> objects for each run.</p>
@@ -69,9 +71,9 @@ all the FASTQ files to compute read accuracies can take a while.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.ccs_stats">
-<code class="sig-name descname">ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.ccs_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ccs_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.ccs_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get CCS stats for all runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -88,9 +90,9 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.has_stat">
-<code class="sig-name descname">has_stat</code><span class="sig-paren">(</span><em class="sig-param">variable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_stat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">has_stat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_stat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do the summaries contain a statistic?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -106,7 +108,7 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.has_zmw_stats">
 <code class="sig-name descname">has_zmw_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_zmw_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Are ZMW stats available?</p>
@@ -120,9 +122,9 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.plot_ccs_stats">
-<code class="sig-name descname">plot_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">variable</em>, <em class="sig-param">*</em>, <em class="sig-param">trim_frac=0.005</em>, <em class="sig-param">bins=25</em>, <em class="sig-param">histogram_stat='count'</em>, <em class="sig-param">maxcol=None</em>, <em class="sig-param">panelsize=1.75</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variable</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">trim_frac</span><span class="o">=</span><span class="default_value">0.005</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">25</span></em>, <em class="sig-param"><span class="n">histogram_stat</span><span class="o">=</span><span class="default_value">'count'</span></em>, <em class="sig-param"><span class="n">maxcol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">panelsize</span><span class="o">=</span><span class="default_value">1.75</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_ccs_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot histograms of CCS stats for all runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -146,9 +148,9 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.plot_zmw_stats">
-<code class="sig-name descname">plot_zmw_stats</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_zmw_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_zmw_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_zmw_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot of ZMW stats for all runs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -167,9 +169,9 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.ccs.Summaries.zmw_stats">
-<code class="sig-name descname">zmw_stats</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">minfailfrac=0.01</em>, <em class="sig-param">groupsuccess=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.zmw_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">zmw_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">minfailfrac</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">groupsuccess</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.zmw_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summaries.zmw_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get ZMW stats for all runs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -193,9 +195,9 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="alignparse.ccs.Summary">
-<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summary</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">fastqfile</em>, <em class="sig-param">reportfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summary" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">Summary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">fastqfile</span></em>, <em class="sig-param"><span class="n">reportfile</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.Summary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Summary of a single <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
 <dl class="field-list simple">
@@ -210,7 +212,7 @@ None if no such report available.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#alignparse.ccs.Summary.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
@@ -221,7 +223,7 @@ None if no such report available.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.fastqfile">
 <code class="sig-name descname">fastqfile</code><a class="headerlink" href="#alignparse.ccs.Summary.fastqfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>FASTQ file with the circular consensus sequences.</p>
@@ -232,7 +234,7 @@ None if no such report available.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.reportfile">
 <code class="sig-name descname">reportfile</code><a class="headerlink" href="#alignparse.ccs.Summary.reportfile" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">ccs</span></code> report file. Currently handles reports in formats generated
@@ -244,7 +246,7 @@ by <code class="docutils literal notranslate"><span class="pre">ccs</span></code
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.zmw_stats">
 <code class="sig-name descname">zmw_stats</code><a class="headerlink" href="#alignparse.ccs.Summary.zmw_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stats on ZMW extracted from <cite>reportfile</cite>.</p>
@@ -255,7 +257,7 @@ by <code class="docutils literal notranslate"><span class="pre">ccs</span></code
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.passes">
 <code class="sig-name descname">passes</code><a class="headerlink" href="#alignparse.ccs.Summary.passes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists number of passes for all circular consensus sequences, or
@@ -268,7 +270,7 @@ in <cite>fastqfile</cite>.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.accuracy">
 <code class="sig-name descname">accuracy</code><a class="headerlink" href="#alignparse.ccs.Summary.accuracy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists accuracies for all circular consensus sequences. This is the
@@ -280,7 +282,7 @@ average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.<
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.ccs.Summary.length">
 <code class="sig-name descname">length</code><a class="headerlink" href="#alignparse.ccs.Summary.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lists lengths for all circular consensus sequences.</p>
@@ -293,9 +295,9 @@ average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.<
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="alignparse.ccs.get_ccs_stats">
-<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">get_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param">fastqfile</em>, <em class="sig-param">*</em>, <em class="sig-param">pass_tag='np'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#get_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.get_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">get_ccs_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fastqfile</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">pass_tag</span><span class="o">=</span><span class="default_value">'np'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#get_ccs_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.get_ccs_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get basic statistics about circular consensus sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -318,7 +320,7 @@ as <cite>None</cite> if that tag is missing from any read in <cite>fastqfile</ci
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fastqfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194373/ccs np:i:18</span>
 <span class="gp">... </span><span class="s1">  GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA</span>
@@ -338,7 +340,7 @@ as <cite>None</cite> if that tag is missing from any read in <cite>fastqfile</ci
 </pre></div>
 </div>
 <p>Similar test without <code class="docutils literal notranslate"><span class="pre">np</span></code> tag in FASTQ file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">fastqfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">  @m54228_190118_102822/4194373/ccs</span>
 <span class="gp">... </span><span class="s1">  GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA</span>
@@ -359,14 +361,15 @@ as <cite>None</cite> if that tag is missing from any read in <cite>fastqfile</ci
 </div>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="alignparse.ccs.report_to_stats">
-<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">report_to_stats</code><span class="sig-paren">(</span><em class="sig-param">reportfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#report_to_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.report_to_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">alignparse.ccs.</code><code class="sig-name descname">report_to_stats</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reportfile</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#report_to_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.ccs.report_to_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse ZMW statistics from report file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>reportfile</strong> (<em>str</em>) – Report file generatedy by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> using <code class="docutils literal notranslate"><span class="pre">--reportFile</span></code> flag.
-Handles formats generated <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.* and 4.0.</p>
+<dd class="field-odd"><p><strong>reportfile</strong> (<em>str</em>) – Report file generated by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> using <code class="docutils literal notranslate"><span class="pre">--reportFile</span></code> flag
+using <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.* and 4.0, or the <code class="docutils literal notranslate"><span class="pre">--report-file</span></code>
+flag using <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 5.0.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A data frame with the statistics.</p>
@@ -376,8 +379,60 @@ Handles formats generated <code class="docutils literal notranslate"><span class
 </dd>
 </dl>
 <p class="rubric">Example</p>
+<p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 5.0.0 output:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">    ZMWs input               : 535101</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    ZMWs pass filters        : 325574 (60.84%)</span>
+<span class="gp">... </span><span class="s1">    ZMWs fail filters        : 209527 (39.16%)</span>
+<span class="gp">... </span><span class="s1">    ZMWs shortcut filters    : 0 (0.00%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    ZMWs with tandem repeats : 98 (0.02%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    Exclusive counts for ZMWs failing filters:</span>
+<span class="gp">... </span><span class="s1">    Below SNR threshold      : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Median length filter     : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Lacking full passes      : 94869 (45.28%)</span>
+<span class="gp">... </span><span class="s1">    Heteroduplex insertions  : 4373 (2.09%)</span>
+<span class="gp">... </span><span class="s1">    Coverage drops           : 526 (0.25%)</span>
+<span class="gp">... </span><span class="s1">    Insufficient draft cov   : 2783 (1.33%)</span>
+<span class="gp">... </span><span class="s1">    Draft too different      : 1436 (0.69%)</span>
+<span class="gp">... </span><span class="s1">    Draft generation error   : 5426 (2.59%)</span>
+<span class="gp">... </span><span class="s1">    Draft above --max-length : 469 (0.22%)</span>
+<span class="gp">... </span><span class="s1">    Draft below --min-length : 152 (0.07%)</span>
+<span class="gp">... </span><span class="s1">    Reads failed polishing   : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    Empty coverage windows   : 136 (0.06%)</span>
+<span class="gp">... </span><span class="s1">    CCS did not converge     : 44 (0.02%)</span>
+<span class="gp">... </span><span class="s1">    CCS below minimum RQ     : 99782 (47.62%)</span>
+<span class="gp">... </span><span class="s1">    Unknown error            : 0 (0.00%)</span>
+<span class="gp">... </span><span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="go">                                status  number  fraction</span>
+<span class="go">0             Success -- CCS generated  325574  0.607902</span>
+<span class="go">1        Failed -- Below SNR threshold       0  0.000000</span>
+<span class="go">2       Failed -- Median length filter       0  0.000000</span>
+<span class="go">3        Failed -- Lacking full passes   94869  0.177137</span>
+<span class="go">4    Failed -- Heteroduplex insertions    4373  0.008165</span>
+<span class="go">5             Failed -- Coverage drops     526  0.000982</span>
+<span class="go">6     Failed -- Insufficient draft cov    2783  0.005196</span>
+<span class="go">7        Failed -- Draft too different    1436  0.002681</span>
+<span class="go">8     Failed -- Draft generation error    5426  0.010131</span>
+<span class="go">9   Failed -- Draft above --max-length     469  0.000876</span>
+<span class="go">10  Failed -- Draft below --min-length     152  0.000284</span>
+<span class="go">11    Failed -- Reads failed polishing       0  0.000000</span>
+<span class="go">12    Failed -- Empty coverage windows     136  0.000254</span>
+<span class="go">13      Failed -- CCS did not converge      44  0.000082</span>
+<span class="go">14      Failed -- CCS below minimum RQ   99782  0.186310</span>
+<span class="go">15             Failed -- Unknown error       0  0.000000</span>
+<span class="go">16           Failed -- shortcut filter       0  0.000000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 4.0.0 output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">    ZMWs input          (A)  : 686919</span>
@@ -418,7 +473,7 @@ Handles formats generated <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 <p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.1.0 output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">    ZMW Yield</span>
 <span class="gp">... </span><span class="s1">    Success -- CCS generated,242220,45.57%</span>
@@ -461,7 +516,7 @@ Handles formats generated <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 <p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 3.4.1 output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">    ZMW Yield</span>
 <span class="gp">... </span><span class="s1">    Success (without retry) -- CCS generated,202033,29.44%</span>
@@ -579,7 +634,7 @@ Handles formats generated <code class="docutils literal notranslate"><span class
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -596,7 +651,7 @@ Handles formats generated <code class="docutils literal notranslate"><span class
       &copy;2019--2020.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

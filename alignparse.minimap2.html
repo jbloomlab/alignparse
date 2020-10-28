@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>minimap2 &#8212; alignparse 0.1.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>minimap2 &#8212; alignparse 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -38,9 +40,9 @@
 <h1>minimap2<a class="headerlink" href="#minimap2" title="Permalink to this headline">¶</a></h1>
 <p>Runs <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a> aligner.
 <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> must be version 2.17 or higher.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="alignparse.minimap2.Mapper">
-<em class="property">class </em><code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">Mapper</code><span class="sig-paren">(</span><em class="sig-param">options</em>, <em class="sig-param">*</em>, <em class="sig-param">prog='minimap2'</em>, <em class="sig-param">min_version='2.17'</em>, <em class="sig-param">check_cs=True</em>, <em class="sig-param">retain_tags=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">Mapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">options</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prog</span><span class="o">=</span><span class="default_value">'minimap2'</span></em>, <em class="sig-param"><span class="n">min_version</span><span class="o">=</span><span class="default_value">'2.17'</span></em>, <em class="sig-param"><span class="n">check_cs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">retain_tags</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Run <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a>.</p>
 <dl class="field-list simple">
@@ -56,7 +58,7 @@ been tested with versions &gt;= 2.17.</p></li>
 </ul>
 </dd>
 </dl>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.minimap2.Mapper.options">
 <code class="sig-name descname">options</code><a class="headerlink" href="#alignparse.minimap2.Mapper.options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Options to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
@@ -67,7 +69,7 @@ been tested with versions &gt;= 2.17.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.minimap2.Mapper.prog">
 <code class="sig-name descname">prog</code><a class="headerlink" href="#alignparse.minimap2.Mapper.prog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> executable.</p>
@@ -78,7 +80,7 @@ been tested with versions &gt;= 2.17.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.minimap2.Mapper.version">
 <code class="sig-name descname">version</code><a class="headerlink" href="#alignparse.minimap2.Mapper.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version of <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
@@ -89,7 +91,7 @@ been tested with versions &gt;= 2.17.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="alignparse.minimap2.Mapper.retain_tags">
 <code class="sig-name descname">retain_tags</code><a class="headerlink" href="#alignparse.minimap2.Mapper.retain_tags" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of tags to retain.</p>
@@ -113,7 +115,7 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </div>
 <p class="rubric">Examples</p>
 <p>First, create toy example target and query file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">targetfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;targets.fasta&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">queryfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;queries.fastq&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -131,7 +133,7 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </pre></div>
 </div>
 <p>Now map <strong>not</strong> retaining tags from the FASTQ (this is default behavior):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments.sam&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments.sam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span> <span class="o">=</span> <span class="n">Mapper</span><span class="p">(</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mapper</span><span class="o">.</span><span class="n">map_to_sam</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="n">queryfile</span><span class="p">,</span> <span class="n">samfile</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">samfile</span><span class="p">):</span>
@@ -147,7 +149,7 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </pre></div>
 </div>
 <p>Now map retaining the <cite>np</cite> tag in the FASTQ:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile_tags</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments_tags.sam&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">samfile_tags</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tempdir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;alignments_tags.sam&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mapper_tags</span> <span class="o">=</span> <span class="n">Mapper</span><span class="p">(</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">,</span> <span class="n">retain_tags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;np&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mapper_tags</span><span class="o">.</span><span class="n">map_to_sam</span><span class="p">(</span><span class="n">targetfile</span><span class="p">,</span> <span class="n">queryfile</span><span class="p">,</span> <span class="n">samfile_tags</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">samfile_tags</span><span class="p">):</span>
@@ -163,12 +165,12 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </pre></div>
 </div>
 <p>Remove the temporary directory for the example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tempdir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="method">
+<dl class="py method">
 <dt id="alignparse.minimap2.Mapper.map_to_sam">
-<code class="sig-name descname">map_to_sam</code><span class="sig-paren">(</span><em class="sig-param">targetfile</em>, <em class="sig-param">queryfile</em>, <em class="sig-param">samfile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper.map_to_sam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper.map_to_sam" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">map_to_sam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">targetfile</span></em>, <em class="sig-param"><span class="n">queryfile</span></em>, <em class="sig-param"><span class="n">samfile</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper.map_to_sam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper.map_to_sam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map query sequences to targets and output SAM file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -183,7 +185,7 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="alignparse.minimap2.OPTIONS_CODON_DMS">
 <code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_CODON_DMS</code><em class="property"> = ('-A2', '-B4', '-O12', '-E2', '--end-bonus=13', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_CODON_DMS" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for codon-mutant libraries.</p>
@@ -211,7 +213,7 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </dl>
 </dd></dl>
 
-<dl class="data">
+<dl class="py data">
 <dt id="alignparse.minimap2.OPTIONS_VIRUS_W_DEL">
 <code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_VIRUS_W_DEL</code><em class="property"> = ('-xsplice:hq', '-un', '-C0', '--splice-flank=no', '-M=1', '--for-only', '--end-seed-pen=2', '--end-bonus=2', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_VIRUS_W_DEL" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for viral genes.</p>
@@ -325,7 +327,7 @@ parsed like deletions.</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -342,7 +344,7 @@ parsed like deletions.</p>
       &copy;2019--2020.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

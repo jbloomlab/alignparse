@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -39,16 +41,16 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput,
-div.nbinput div.prompt,
-div.nbinput div.input_area,
-div.nbinput div[class*=highlight],
-div.nbinput div[class*=highlight] pre,
-div.nboutput,
-div.nbinput div.prompt,
-div.nbinput div.output_area,
-div.nboutput div[class*=highlight],
-div.nboutput div[class*=highlight] pre {
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
     background: none;
     border: none;
     padding: 0 0;
@@ -57,13 +59,13 @@ div.nboutput div[class*=highlight] pre {
 }
 
 /* avoid gaps between output lines */
-div.nboutput div[class*=highlight] pre {
+div.nboutput.container div[class*=highlight] pre {
     line-height: normal;
 }
 
 /* input/output containers */
-div.nbinput,
-div.nboutput {
+div.nbinput.container,
+div.nboutput.container {
     display: -webkit-flex;
     display: flex;
     align-items: flex-start;
@@ -71,92 +73,104 @@ div.nboutput {
     width: 100%;
 }
 @media (max-width: 540px) {
-    div.nbinput,
-    div.nboutput {
+    div.nbinput.container,
+    div.nboutput.container {
         flex-direction: column;
     }
 }
 
 /* input container */
-div.nbinput {
+div.nbinput.container {
     padding-top: 5px;
 }
 
 /* last container */
-div.nblast {
+div.nblast.container {
     padding-bottom: 5px;
 }
 
 /* input prompt */
-div.nbinput div.prompt pre {
+div.nbinput.container div.prompt pre {
     color: #307FC1;
 }
 
 /* output prompt */
-div.nboutput div.prompt pre {
+div.nboutput.container div.prompt pre {
     color: #BF5B3D;
 }
 
 /* all prompts */
-div.nbinput div.prompt,
-div.nboutput div.prompt {
-    min-width: 5ex;
-    padding-top: 0.4em;
-    padding-right: 0.4em;
-    text-align: right;
-    flex: 0;
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
 }
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
 @media (max-width: 540px) {
-    div.nbinput div.prompt,
-    div.nboutput div.prompt {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
         text-align: left;
         padding: 0.4em;
     }
-    div.nboutput div.prompt.empty {
+    div.nboutput.container div.prompt.empty {
         padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
     }
 }
 
 /* disable scrollbars on prompts */
-div.nbinput div.prompt pre,
-div.nboutput div.prompt pre {
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
     overflow: hidden;
 }
 
 /* input/output area */
-div.nbinput div.input_area,
-div.nboutput div.output_area {
-    padding: 0.4em;
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
     -webkit-flex: 1;
     flex: 1;
     overflow: auto;
 }
 @media (max-width: 540px) {
-    div.nbinput div.input_area,
-    div.nboutput div.output_area {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
         width: 100%;
     }
 }
 
 /* input area */
-div.nbinput div.input_area {
+div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
     background: #f5f5f5;
 }
 
 /* override MathJax center alignment in output cells */
-div.nboutput div[class*=MathJax] {
+div.nboutput.container div[class*=MathJax] {
     text-align: left !important;
 }
 
 /* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput div.math p {
+div.nboutput.container div.math p {
     text-align: left;
 }
 
 /* standard error */
-div.nboutput div.output_area.stderr {
+div.nboutput.container div.output_area.stderr {
     background: #fdd;
 }
 
@@ -199,6 +213,27 @@ div.nboutput div.output_area.stderr {
 
 .ansi-bold { font-weight: bold; }
 .ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
 
 /* Some additional styling taken form the Jupyter notebook CSS */
 div.rendered_html table {
@@ -314,7 +349,7 @@ sequencing</a> example) or each target can be defined in its own Genbank file (a
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">,</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
 
-<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;input_files/</span><span class="si">{target_file_name}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
+<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;input_files/</span><span class="si">{</span><span class="n">target_file_name</span><span class="si">}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">targetfile</span> <span class="ow">in</span> <span class="n">targetfiles</span><span class="p">:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -640,7 +675,7 @@ LASV_Josiah_OPT: *id001
                     <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
                     <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Here are the names of the retained targets: </span><span class="si">{targets_subset.target_names}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Here are the names of the retained targets: </span><span class="si">{</span><span class="n">targets_subset</span><span class="o">.</span><span class="n">target_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -679,8 +714,8 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 
 <span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
             <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
-             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{name}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
-             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{ccs_dir}</span><span class="s2">/</span><span class="si">{file_name}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
+             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
+             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
              <span class="p">})</span>
 
 <span class="n">pacbio_runs</span>
@@ -843,7 +878,7 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
         <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No information available on CCS </span><span class="si">{stat}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No information available on CCS </span><span class="si">{</span><span class="n">stat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -880,7 +915,7 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{mapper.version}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
       <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -954,7 +989,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aligning </span><span class="si">{tup.fastq}</span><span class="s2"> to create </span><span class="si">{tup.alignments}</span><span class="s2">...&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aligning </span><span class="si">{</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="si">}</span><span class="s2"> to create </span><span class="si">{</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
     <span class="n">targets</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">queryfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span>
                   <span class="n">alignmentfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span>
                   <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">)</span>
@@ -979,7 +1014,7 @@ Aligning input_files/lasv_example_ccs.fastq.gz to create ./output_files/lasv_pil
 <span></span><span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="p">[</span><span class="s1">&#39;alignments&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]:</span>
     <span class="k">with</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First alignment in </span><span class="si">{fname}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First alignment in </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1011,7 +1046,7 @@ sequencing</a>), these CSV files will always be created, even if <code class="do
 
 <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{run.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">run_readstats</span><span class="p">,</span> <span class="n">run_aligned</span><span class="p">,</span> <span class="n">run_filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">parse_alignment</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">filtered_cs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># when concatenating add the run name to keep track of runs for results</span>
@@ -1495,9 +1530,9 @@ LASV_Josiah_OPT
 <span class="n">index_counts_dfs</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">target_name</span><span class="p">]:</span>
-        <span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">_</span><span class="si">{index}</span><span class="s2">&quot;</span><span class="p">])))</span>
-    <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_name}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
+        <span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])))</span>
+    <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
                                                           <span class="nb">sum</span><span class="p">(</span><span class="n">idx_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_tup</span> <span class="ow">in</span> <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">]))))</span>
     <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
 </pre></div>
@@ -1872,7 +1907,7 @@ LASV_Josiah_OPT_GAGACG
                         <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
                         <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ variable&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
                         <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{target_idx}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
+                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
                         <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
                               <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
                               <span class="p">)</span>
@@ -2000,7 +2035,7 @@ LASV_Josiah_OPT_GAGACG
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -2017,7 +2052,7 @@ LASV_Josiah_OPT_GAGACG
       &copy;2019--2020.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

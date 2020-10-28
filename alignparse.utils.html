@@ -1,18 +1,20 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>utils &#8212; alignparse 0.1.3 documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>utils &#8212; alignparse 0.1.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,9 +38,9 @@
             
   <span class="target" id="module-alignparse.utils"></span><div class="section" id="utils">
 <h1>utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="alignparse.utils.qvals_to_accuracy">
-<code class="sig-prename descclassname">alignparse.utils.</code><code class="sig-name descname">qvals_to_accuracy</code><span class="sig-paren">(</span><em class="sig-param">qvals</em>, <em class="sig-param">encoding='numbers'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#qvals_to_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.qvals_to_accuracy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">alignparse.utils.</code><code class="sig-name descname">qvals_to_accuracy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qvals</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'numbers'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#qvals_to_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.qvals_to_accuracy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert set of quality scores into average accuracy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -62,7 +64,7 @@ is a string, with the Q-value being the ASCII value minus 33.</p></li>
 <p>The probability <span class="math notranslate nohighlight">\(p\)</span> of an error at a given site is related to
 the Q-value <span class="math notranslate nohighlight">\(Q\)</span> by <span class="math notranslate nohighlight">\(Q = -10 \log_{10} p\)</span>. The accuracy
 is one minus the average error rate.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qvals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">93</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qvals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">93</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">0.983</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">[</span><span class="mi">1</span> <span class="p">:</span> <span class="p">]),</span> <span class="mi">3</span><span class="p">)</span>
@@ -71,12 +73,12 @@ is one minus the average error rate.</p>
 <span class="go">nan</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qvals_str</span> <span class="o">=</span> <span class="s1">&#39;.n~&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qvals_str</span> <span class="o">=</span> <span class="s1">&#39;.n~&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals_str</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;sanger&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">0.983</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">0.968</span>
 </pre></div>
 </div>
@@ -165,7 +167,7 @@ is one minus the average error rate.</p>
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -182,7 +184,7 @@ is one minus the average error rate.</p>
       &copy;2019--2020.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
