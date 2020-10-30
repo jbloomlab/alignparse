@@ -747,6 +747,28 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
 
     Example
     -------
+    Test with ``np`` tag in format from ``ccs`` version 5.0.
+
+    >>> fastqfile = tempfile.NamedTemporaryFile(mode='w')
+    >>> _ = fastqfile.write(textwrap.dedent('''
+    ...   @m54228_190118_102822/4194373/ccs np=18
+    ...   GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA
+    ...   +
+    ...   ~~~~{~~~~~~~c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~i~~~~~~~(
+    ...   @m54228_190118_102822/4194374/ccs np=51
+    ...   GCACGGCGTCACACTTTGCTATGCCATAGCATGTTTATCCATAAGATTAGCGGATCCTACCT
+    ...   +
+    ...   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ...   ''').lstrip())
+    >>> fastqfile.flush()
+    >>> get_ccs_stats(fastqfile.name)  # doctest: +NORMALIZE_WHITESPACE
+    CCS_Stats(passes=array([18, 51]),
+              accuracy=array([0.99672907, 1.        ]),
+              length=array([61, 62]))
+    >>> fastqfile.close()
+
+    Test with ``np`` tag in format from ``ccs`` version 4.0.
+
     >>> fastqfile = tempfile.NamedTemporaryFile(mode='w')
     >>> _ = fastqfile.write(textwrap.dedent('''
     ...   @m54228_190118_102822/4194373/ccs np:i:18
@@ -788,7 +810,7 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
     """
     if pass_tag:
         passmatch = re.compile(r'(?:^|\s)'  # start of str or space
-                               rf"{pass_tag}:i:(?P<pass>\d+)"
+                               rf"{pass_tag}(?::i:|=)(?P<pass>\d+)"
                                r'(?:\s|$)'  # end of str or space
                                )
         passes = []
