@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.ccs &#8212; alignparse 0.1.4 documentation</title>
+    <title>alignparse.ccs &#8212; alignparse 0.1.5 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -784,6 +784,28 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
+<span class="sd">    Test with ``np`` tag in format from ``ccs`` version 5.0.</span>
+
+<span class="sd">    &gt;&gt;&gt; fastqfile = tempfile.NamedTemporaryFile(mode=&#39;w&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; _ = fastqfile.write(textwrap.dedent(&#39;&#39;&#39;</span>
+<span class="sd">    ...   @m54228_190118_102822/4194373/ccs np=18</span>
+<span class="sd">    ...   GGTACCACACTCTTTCCCTACACGACGCTCTGCCGATCTCGGCCATTACGTGTTTTATCTA</span>
+<span class="sd">    ...   +</span>
+<span class="sd">    ...   ~~~~{~~~~~~~c~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~i~~~~~~~(</span>
+<span class="sd">    ...   @m54228_190118_102822/4194374/ccs np=51</span>
+<span class="sd">    ...   GCACGGCGTCACACTTTGCTATGCCATAGCATGTTTATCCATAAGATTAGCGGATCCTACCT</span>
+<span class="sd">    ...   +</span>
+<span class="sd">    ...   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+<span class="sd">    ...   &#39;&#39;&#39;).lstrip())</span>
+<span class="sd">    &gt;&gt;&gt; fastqfile.flush()</span>
+<span class="sd">    &gt;&gt;&gt; get_ccs_stats(fastqfile.name)  # doctest: +NORMALIZE_WHITESPACE</span>
+<span class="sd">    CCS_Stats(passes=array([18, 51]),</span>
+<span class="sd">              accuracy=array([0.99672907, 1.        ]),</span>
+<span class="sd">              length=array([61, 62]))</span>
+<span class="sd">    &gt;&gt;&gt; fastqfile.close()</span>
+
+<span class="sd">    Test with ``np`` tag in format from ``ccs`` version 4.0.</span>
+
 <span class="sd">    &gt;&gt;&gt; fastqfile = tempfile.NamedTemporaryFile(mode=&#39;w&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; _ = fastqfile.write(textwrap.dedent(&#39;&#39;&#39;</span>
 <span class="sd">    ...   @m54228_190118_102822/4194373/ccs np:i:18</span>
@@ -825,7 +847,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">pass_tag</span><span class="p">:</span>
         <span class="n">passmatch</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?:^|\s)&#39;</span>  <span class="c1"># start of str or space</span>
-                               <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pass_tag</span><span class="si">}</span><span class="s2">:i:(?P&lt;pass&gt;\d+)&quot;</span>
+                               <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pass_tag</span><span class="si">}</span><span class="s2">(?::i:|=)(?P&lt;pass&gt;\d+)&quot;</span>
                                <span class="sa">r</span><span class="s1">&#39;(?:\s|$)&#39;</span>  <span class="c1"># end of str or space</span>
                                <span class="p">)</span>
         <span class="n">passes</span> <span class="o">=</span> <span class="p">[]</span>
