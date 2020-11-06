@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Single-cell virus sequencing &#8212; alignparse 0.1.5 documentation</title>
+    <title>Single-cell virus sequencing &#8212; alignparse 0.1.6 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -714,7 +714,7 @@ or gene alignment. Therefore:</p>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Using `minimap2` 2.17-r941 with these options:
--xsplice:hq -un -C0 --splice-flank=no -M=1 --for-only --end-seed-pen=2 --end-bonus=2 --secondary=no --cs
+-xsplice:hq -un -C0 --splice-flank=no -M=1 --end-seed-pen=2 --end-bonus=2 --secondary=no --cs
 </pre></div></div>
 </div>
 <p>Now use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> to align and parse the CCSs. First, create the output directory:</p>
@@ -806,25 +806,25 @@ Using `minimap2` 2.17-r941 with these options:
       <th>3</th>
       <td>flu_WSN</td>
       <td>aligned fluPB1</td>
-      <td>162</td>
+      <td>165</td>
     </tr>
     <tr>
       <th>4</th>
       <td>flu_WSN</td>
       <td>filtered fluPA</td>
-      <td>35</td>
+      <td>36</td>
     </tr>
     <tr>
       <th>5</th>
       <td>flu_WSN</td>
       <td>aligned fluPA</td>
-      <td>169</td>
+      <td>173</td>
     </tr>
     <tr>
       <th>6</th>
       <td>flu_WSN</td>
       <td>filtered fluHA</td>
-      <td>1</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>7</th>
@@ -908,7 +908,7 @@ Using `minimap2` 2.17-r941 with these options:
       <th>20</th>
       <td>flu_WSN</td>
       <td>unmapped</td>
-      <td>117</td>
+      <td>108</td>
     </tr>
   </tbody>
 </table>
@@ -1295,6 +1295,23 @@ First few entries in `aligned` for fluPB1:
     <tr>
       <th>2</th>
       <td>flu_WSN</td>
+      <td>m54228_171201_172448/4915675/ccs</td>
+      <td>0</td>
+      <td>0</td>
+      <td>del171to2016 del2070to2070</td>
+      <td>1.000000</td>
+      <td>CACAAACTAT</td>
+      <td>1.000000</td>
+      <td>GCACAGCTGACTGATC</td>
+      <td>1.000000</td>
+      <td>T</td>
+      <td>C</td>
+      <td>C</td>
+      <td>T</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>flu_WSN</td>
       <td>m54228_171201_172448/5111911/ccs</td>
       <td>0</td>
       <td>0</td>
@@ -1310,7 +1327,7 @@ First few entries in `aligned` for fluPB1:
       <td>T</td>
     </tr>
     <tr>
-      <th>3</th>
+      <th>4</th>
       <td>flu_WSN</td>
       <td>m54228_171201_172448/5112319/ccs</td>
       <td>0</td>
@@ -1325,23 +1342,6 @@ First few entries in `aligned` for fluPB1:
       <td>C</td>
       <td>C</td>
       <td>T</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>flu_WSN</td>
-      <td>m54228_171201_172448/5112383/ccs</td>
-      <td>0</td>
-      <td>0</td>
-      <td>del362to2140</td>
-      <td>1.000000</td>
-      <td>ATAAGTGTAG</td>
-      <td>1.000000</td>
-      <td>TAGGTAGCTAGCATAA</td>
-      <td>1.000000</td>
-      <td>T</td>
-      <td>C</td>
-      <td></td>
-      <td></td>
     </tr>
   </tbody>
 </table>
@@ -1620,15 +1620,6 @@ First few entries in `aligned` for fluHA:
   </tbody>
 </table>
 </div></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
 </div>
 </div>
 </div>
