@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>utils &#8212; alignparse 0.1.6 documentation</title>
+    <title>utils &#8212; alignparse 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -38,6 +38,81 @@
             
   <span class="target" id="module-alignparse.utils"></span><div class="section" id="utils">
 <h1>utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="alignparse.utils.MutationRenumber">
+<em class="property">class </em><code class="sig-prename descclassname">alignparse.utils.</code><code class="sig-name descname">MutationRenumber</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number_mapping</span></em>, <em class="sig-param"><span class="n">old_num_col</span></em>, <em class="sig-param"><span class="n">new_num_col</span></em>, <em class="sig-param"><span class="n">wt_nt_col</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">err_suffix</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#MutationRenumber"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.MutationRenumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Re-number mutations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number_mapping</strong> (<em>pandas.DataFrame</em>) – Data frame giving mapping from old to new numbering scheme.</p></li>
+<li><p><strong>old_num_col</strong> (<em>str</em>) – Column in <cite>number_mapping</cite> giving old site number.</p></li>
+<li><p><strong>new_num_col</strong> (<em>str</em>) – Column in <cite>number_mapping</cite> giving new site number.</p></li>
+<li><p><strong>wt_nt_col</strong> (<em>str</em><em> or </em><em>None</em>) – Column in <cite>number_mapping</cite> giving wildtype nucleotide at each site,
+or <cite>None</cite> to not check identity.</p></li>
+<li><p><strong>err_suffix</strong> (<em>str</em>) – Append this message to any errors raised about invalid sites or
+mutation strings. Can be useful for debugging.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="alignparse.utils.MutationRenumber.old_to_new_site">
+<code class="sig-name descname">old_to_new_site</code><a class="headerlink" href="#alignparse.utils.MutationRenumber.old_to_new_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps old site number to new one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="alignparse.utils.MutationRenumber.old_to_wt">
+<code class="sig-name descname">old_to_wt</code><a class="headerlink" href="#alignparse.utils.MutationRenumber.old_to_wt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps old site number to wildtype nucleotide if using <cite>wt_nt_col</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">number_mapping</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;old&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>                               <span class="s1">&#39;new&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+<span class="gp">... </span>                               <span class="s1">&#39;wt_nt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">renumberer</span> <span class="o">=</span> <span class="n">MutationRenumber</span><span class="p">(</span><span class="n">number_mapping</span><span class="o">=</span><span class="n">number_mapping</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">old_num_col</span><span class="o">=</span><span class="s1">&#39;old&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">new_num_col</span><span class="o">=</span><span class="s1">&#39;new&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                              <span class="n">wt_nt_col</span><span class="o">=</span><span class="s1">&#39;wt_nt&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">renumberer</span><span class="o">.</span><span class="n">old_to_new_site</span>
+<span class="go">{1: 5, 2: 6, 3: 7}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">renumberer</span><span class="o">.</span><span class="n">old_to_wt</span>
+<span class="go">{1: &#39;A&#39;, 2: &#39;C&#39;, 3: &#39;G&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">renumberer</span><span class="o">.</span><span class="n">renumber_muts</span><span class="p">(</span><span class="s1">&#39;A1C del2to3 ins3GC&#39;</span><span class="p">)</span>
+<span class="go">&#39;A5C del6to7 ins7GC&#39;</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="alignparse.utils.MutationRenumber.renumber_muts">
+<code class="sig-name descname">renumber_muts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mut_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#MutationRenumber.renumber_muts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.MutationRenumber.renumber_muts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get re-numbered mutation string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mut_str</strong> (<em>str</em>) – Mutations in format ‘A1C del2to3 ins3GG’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A version of <cite>mut_str</cite> where sites have been renumbered.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="alignparse.utils.qvals_to_accuracy">
 <code class="sig-prename descclassname">alignparse.utils.</code><code class="sig-name descname">qvals_to_accuracy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">qvals</span></em>, <em class="sig-param"><span class="n">encoding</span><span class="o">=</span><span class="default_value">'numbers'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#qvals_to_accuracy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.qvals_to_accuracy" title="Permalink to this definition">¶</a></dt>

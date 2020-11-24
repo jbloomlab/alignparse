@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.utils &#8212; alignparse 0.1.6 documentation</title>
+    <title>alignparse.utils &#8212; alignparse 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -45,8 +45,11 @@
 
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>  <span class="c1"># noqa: F401</span>
 
 
 <div class="viewcode-block" id="qvals_to_accuracy"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.qvals_to_accuracy">[docs]</a><span class="k">def</span> <span class="nf">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;numbers&#39;</span><span class="p">):</span>
@@ -106,6 +109,153 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `encoding`: </span><span class="si">{</span><span class="n">encoding</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">qvals</span> <span class="o">/</span> <span class="o">-</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">qvals</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MutationRenumber"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber">[docs]</a><span class="k">class</span> <span class="nc">MutationRenumber</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Re-number mutations.</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ----------</span>
+<span class="sd">    number_mapping : pandas.DataFrame</span>
+<span class="sd">        Data frame giving mapping from old to new numbering scheme.</span>
+<span class="sd">    old_num_col : str</span>
+<span class="sd">        Column in `number_mapping` giving old site number.</span>
+<span class="sd">    new_num_col : str</span>
+<span class="sd">        Column in `number_mapping` giving new site number.</span>
+<span class="sd">    wt_nt_col : str or None</span>
+<span class="sd">        Column in `number_mapping` giving wildtype nucleotide at each site,</span>
+<span class="sd">        or `None` to not check identity.</span>
+<span class="sd">    err_suffix : str</span>
+<span class="sd">        Append this message to any errors raised about invalid sites or</span>
+<span class="sd">        mutation strings. Can be useful for debugging.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    old_to_new_site : dict</span>
+<span class="sd">        Maps old site number to new one.</span>
+<span class="sd">    old_to_wt : dict or None</span>
+<span class="sd">        Maps old site number to wildtype nucleotide if using `wt_nt_col`.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; number_mapping = pd.DataFrame({&#39;old&#39;: [1, 2, 3],</span>
+<span class="sd">    ...                                &#39;new&#39;: [5, 6, 7],</span>
+<span class="sd">    ...                                &#39;wt_nt&#39;: [&#39;A&#39;, &#39;C&#39;, &#39;G&#39;]})</span>
+<span class="sd">    &gt;&gt;&gt; renumberer = MutationRenumber(number_mapping=number_mapping,</span>
+<span class="sd">    ...                               old_num_col=&#39;old&#39;,</span>
+<span class="sd">    ...                               new_num_col=&#39;new&#39;,</span>
+<span class="sd">    ...                               wt_nt_col=&#39;wt_nt&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; renumberer.old_to_new_site</span>
+<span class="sd">    {1: 5, 2: 6, 3: 7}</span>
+<span class="sd">    &gt;&gt;&gt; renumberer.old_to_wt</span>
+<span class="sd">    {1: &#39;A&#39;, 2: &#39;C&#39;, 3: &#39;G&#39;}</span>
+<span class="sd">    &gt;&gt;&gt; renumberer.renumber_muts(&#39;A1C del2to3 ins3GC&#39;)</span>
+<span class="sd">    &#39;A5C del6to7 ins7GC&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number_mapping</span><span class="p">,</span> <span class="n">old_num_col</span><span class="p">,</span> <span class="n">new_num_col</span><span class="p">,</span> <span class="n">wt_nt_col</span><span class="p">,</span>
+                 <span class="o">*</span><span class="p">,</span> <span class="n">err_suffix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span> <span class="o">=</span> <span class="n">err_suffix</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="n">old_num_col</span><span class="p">,</span> <span class="n">new_num_col</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">number_mapping</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`number_mapping` lacks column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">number_mapping</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`number_mapping` column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> not integer&quot;</span> <span class="o">+</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_to_new_site</span> <span class="o">=</span> <span class="p">(</span><span class="n">number_mapping</span>
+                                <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">old_num_col</span><span class="p">)</span>
+                                <span class="p">[</span><span class="n">new_num_col</span><span class="p">]</span>
+                                <span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                                <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_to_new_site</span><span class="p">)</span> <span class="o">==</span>
+                <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_to_new_site</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span> <span class="o">==</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">number_mapping</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;site numbers not unique&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_new_site_str</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">):</span> <span class="nb">str</span><span class="p">(</span><span class="n">new</span><span class="p">)</span> <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span>
+                                     <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_to_new_site</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+        <span class="k">if</span> <span class="n">wt_nt_col</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wt_nt_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">number_mapping</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`number_mapping` lacks column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">nt</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">nt</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                       <span class="k">for</span> <span class="n">nt</span> <span class="ow">in</span> <span class="n">number_mapping</span><span class="p">[</span><span class="n">wt_nt_col</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`number_mapping` column </span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2"> not letters&quot;</span> <span class="o">+</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span> <span class="o">=</span> <span class="p">(</span><span class="n">number_mapping</span>
+                              <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">old_num_col</span><span class="p">)</span>
+                              <span class="p">[</span><span class="n">wt_nt_col</span><span class="p">]</span>
+                              <span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                              <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_wt_str</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">old</span><span class="p">):</span> <span class="n">wt</span> <span class="k">for</span> <span class="n">old</span><span class="p">,</span> <span class="n">wt</span>
+                                   <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="MutationRenumber.renumber_muts"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber.renumber_muts">[docs]</a>    <span class="k">def</span> <span class="nf">renumber_muts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get re-numbered mutation string.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mut_str : str</span>
+<span class="sd">            Mutations in format &#39;A1C del2to3 ins3GG&#39;.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            A version of `mut_str` where sites have been renumbered.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_muts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">mut</span> <span class="ow">in</span> <span class="n">mut_str</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># try to match substitutions</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?P&lt;wt&gt;[A-Z])(?P&lt;site&gt;\d+)(?P&lt;mut&gt;[A-Z])&#39;</span><span class="p">,</span>
+                                 <span class="n">mut</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">site</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_wt_str</span><span class="p">[</span><span class="n">site</span><span class="p">]</span> <span class="o">!=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;wt&#39;</span><span class="p">):</span>
+                            <span class="n">expected_wt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_wt_str</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site&#39;</span><span class="p">)]</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutation </span><span class="si">{</span><span class="n">mut</span><span class="si">}</span><span class="s2"> invalid wt, &quot;</span>
+                                             <span class="sa">f</span><span class="s2">&quot;expected </span><span class="si">{</span><span class="n">expected_wt</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+                    <span class="n">new_muts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="o">+</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_new_site_str</span><span class="p">[</span><span class="n">site</span><span class="p">]</span> <span class="o">+</span>
+                            <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;mut&#39;</span><span class="p">)</span>
+                            <span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="c1"># try to match insertion</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(?P&lt;site&gt;\d+)(?P&lt;insertion&gt;[A-Z]+)&#39;</span><span class="p">,</span> <span class="n">mut</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">new_muts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s1">&#39;ins&#39;</span> <span class="o">+</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_new_site_str</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site&#39;</span><span class="p">)]</span> <span class="o">+</span>
+                            <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;insertion&#39;</span><span class="p">)</span>
+                            <span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="c1"># try to match deletion</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;site1&gt;\d+)to(?P&lt;site2&gt;\d+)&#39;</span><span class="p">,</span> <span class="n">mut</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                    <span class="n">new_muts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="s1">&#39;del&#39;</span> <span class="o">+</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_new_site_str</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site1&#39;</span><span class="p">)]</span> <span class="o">+</span>
+                            <span class="s1">&#39;to&#39;</span> <span class="o">+</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_old_to_new_site_str</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site2&#39;</span><span class="p">)]</span>
+                            <span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="c1"># problem if we made it here, couldn&#39;t match anything</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot match </span><span class="si">{</span><span class="n">mut</span><span class="si">}</span><span class="s2"> in </span><span class="si">{</span><span class="n">mut_str</span><span class="si">}</span><span class="s2">&quot;</span> <span class="o">+</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutation </span><span class="si">{</span><span class="n">mut</span><span class="si">}</span><span class="s2"> site out of numbering range&quot;</span>
+                                 <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_muts</span><span class="p">)</span></div></div>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
