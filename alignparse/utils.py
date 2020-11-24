@@ -8,8 +8,11 @@ utils
 
 import math
 import numbers
+import re
 
 import numpy
+
+import pandas as pd  # noqa: F401
 
 
 def qvals_to_accuracy(qvals, encoding='numbers'):
@@ -69,6 +72,153 @@ def qvals_to_accuracy(qvals, encoding='numbers'):
         raise ValueError(f"invalid `encoding`: {encoding}")
 
     return (1 - 10**(qvals / -10)).sum() / len(qvals)
+
+
+class MutationRenumber:
+    """Re-number mutations.
+
+    Arguments
+    ----------
+    number_mapping : pandas.DataFrame
+        Data frame giving mapping from old to new numbering scheme.
+    old_num_col : str
+        Column in `number_mapping` giving old site number.
+    new_num_col : str
+        Column in `number_mapping` giving new site number.
+    wt_nt_col : str or None
+        Column in `number_mapping` giving wildtype nucleotide at each site,
+        or `None` to not check identity.
+    err_suffix : str
+        Append this message to any errors raised about invalid sites or
+        mutation strings. Can be useful for debugging.
+
+    Attributes
+    ----------
+    old_to_new_site : dict
+        Maps old site number to new one.
+    old_to_wt : dict or None
+        Maps old site number to wildtype nucleotide if using `wt_nt_col`.
+
+    Example
+    --------
+    >>> number_mapping = pd.DataFrame({'old': [1, 2, 3],
+    ...                                'new': [5, 6, 7],
+    ...                                'wt_nt': ['A', 'C', 'G']})
+    >>> renumberer = MutationRenumber(number_mapping=number_mapping,
+    ...                               old_num_col='old',
+    ...                               new_num_col='new',
+    ...                               wt_nt_col='wt_nt')
+    >>> renumberer.old_to_new_site
+    {1: 5, 2: 6, 3: 7}
+    >>> renumberer.old_to_wt
+    {1: 'A', 2: 'C', 3: 'G'}
+    >>> renumberer.renumber_muts('A1C del2to3 ins3GC')
+    'A5C del6to7 ins7GC'
+
+    """
+
+    def __init__(self, number_mapping, old_num_col, new_num_col, wt_nt_col,
+                 *, err_suffix=''):
+        """See main class docstring."""
+        self._err_suffix = err_suffix
+        for col in [old_num_col, new_num_col]:
+            if col not in number_mapping.columns:
+                raise ValueError(f"`number_mapping` lacks column {col}" +
+                                 self._err_suffix)
+            if number_mapping[col].dtype != int:
+                raise ValueError(f"`number_mapping` column {col} not integer" +
+                                 self._err_suffix)
+        self.old_to_new_site = (number_mapping
+                                .set_index(old_num_col)
+                                [new_num_col]
+                                .to_dict()
+                                )
+        if not (len(self.old_to_new_site) ==
+                len(set(self.old_to_new_site.values())) ==
+                len(number_mapping)):
+            raise ValueError('site numbers not unique' + self._err_suffix)
+
+        self._old_to_new_site_str = {str(old): str(new) for old, new
+                                     in self.old_to_new_site.items()}
+
+        if wt_nt_col:
+            if wt_nt_col not in number_mapping.columns:
+                raise ValueError(f"`number_mapping` lacks column {col}" +
+                                 self._err_suffix)
+            if not all(isinstance(nt, str) and len(nt) == 1
+                       for nt in number_mapping[wt_nt_col]):
+                raise ValueError(f"`number_mapping` column {col} not letters" +
+                                 self._err_suffix)
+            self.old_to_wt = (number_mapping
+                              .set_index(old_num_col)
+                              [wt_nt_col]
+                              .to_dict()
+                              )
+            self._old_to_wt_str = {str(old): wt for old, wt
+                                   in self.old_to_wt.items()}
+        else:
+            self.old_to_wt = None
+
+    def renumber_muts(self, mut_str):
+        """Get re-numbered mutation string.
+
+        Parameters
+        ----------
+        mut_str : str
+            Mutations in format 'A1C del2to3 ins3GG'.
+
+        Returns
+        -------
+        str
+            A version of `mut_str` where sites have been renumbered.
+
+        """
+        new_muts = []
+        for mut in mut_str.split():
+            try:
+                # try to match substitutions
+                m = re.fullmatch(r'(?P<wt>[A-Z])(?P<site>\d+)(?P<mut>[A-Z])',
+                                 mut)
+                if m:
+                    site = m.group('site')
+                    if self.old_to_wt is not None:
+                        if self._old_to_wt_str[site] != m.group('wt'):
+                            expected_wt = self._old_to_wt_str[m.group('site')]
+                            raise ValueError(f"Mutation {mut} invalid wt, "
+                                             f"expected {expected_wt}" +
+                                             self._err_suffix)
+                    new_muts.append(
+                            m.group('wt') +
+                            self._old_to_new_site_str[site] +
+                            m.group('mut')
+                            )
+                    continue
+                # try to match insertion
+                m = re.fullmatch(r'ins(?P<site>\d+)(?P<insertion>[A-Z]+)', mut)
+                if m:
+                    new_muts.append(
+                            'ins' +
+                            self._old_to_new_site_str[m.group('site')] +
+                            m.group('insertion')
+                            )
+                    continue
+                # try to match deletion
+                m = re.fullmatch(r'del(?P<site1>\d+)to(?P<site2>\d+)', mut)
+                if m:
+                    new_muts.append(
+                            'del' +
+                            self._old_to_new_site_str[m.group('site1')] +
+                            'to' +
+                            self._old_to_new_site_str[m.group('site2')]
+                            )
+                    continue
+                # problem if we made it here, couldn't match anything
+                raise ValueError(f"Cannot match {mut} in {mut_str}" +
+                                 self._err_suffix)
+            except KeyError:
+                raise ValueError(f"Mutation {mut} site out of numbering range"
+                                 + self._err_suffix)
+        return ' '.join(new_muts)
 
 
 if __name__ == '__main__':
