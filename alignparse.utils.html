@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>utils &#8212; alignparse 0.2.0 documentation</title>
+    <title>utils &#8212; alignparse 0.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -139,6 +139,8 @@ is a string, with the Q-value being the ASCII value minus 33.</p></li>
 <p>The probability <span class="math notranslate nohighlight">\(p\)</span> of an error at a given site is related to
 the Q-value <span class="math notranslate nohighlight">\(Q\)</span> by <span class="math notranslate nohighlight">\(Q = -10 \log_{10} p\)</span>. The accuracy
 is one minus the average error rate.</p>
+</div>
+<p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">qvals</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">13</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">93</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">round</span><span class="p">(</span><span class="n">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 <span class="go">0.983</span>
@@ -157,6 +159,33 @@ is one minus the average error rate.</p>
 <span class="go">0.968</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="alignparse.utils.sort_mutations">
+<code class="sig-prename descclassname">alignparse.utils.</code><code class="sig-name descname">sort_mutations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mut_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/utils.html#sort_mutations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.utils.sort_mutations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort mutation string by site, and combine multiple mutation strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mut_strs</strong> (<em>str</em><em> or </em><em>list</em>) – A single mutation string or a list of such strings.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single mutation string with all mutations sorted by site.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Sort a single mutation string:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sort_mutations</span><span class="p">(</span><span class="s1">&#39;ins7GC A5C del2to3&#39;</span><span class="p">)</span>
+<span class="go">&#39;del2to3 A5C ins7GC&#39;</span>
+</pre></div>
+</div>
+<p>Sort a list of two mutation strings:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sort_mutations</span><span class="p">([</span><span class="s1">&#39;ins7GC&#39;</span><span class="p">,</span> <span class="s1">&#39;A5C del2to3&#39;</span><span class="p">])</span>
+<span class="go">&#39;del2to3 A5C ins7GC&#39;</span>
+</pre></div>
 </div>
 </dd></dl>
 
