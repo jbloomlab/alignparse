@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.2.1
+-----
+* ``sort_mutations`` function to sort mutations by site, and optionally concatenate them.
+
 0.2.0
 ------
 

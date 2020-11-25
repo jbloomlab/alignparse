@@ -39,6 +39,9 @@ def qvals_to_accuracy(qvals, encoding='numbers'):
     the Q-value :math:`Q` by :math:`Q = -10 \log_{10} p`. The accuracy
     is one minus the average error rate.
 
+    Example
+    -------
+
     >>> qvals = numpy.array([13, 77, 93])
     >>> round(qvals_to_accuracy(qvals), 3)
     0.983
@@ -72,6 +75,48 @@ def qvals_to_accuracy(qvals, encoding='numbers'):
         raise ValueError(f"invalid `encoding`: {encoding}")
 
     return (1 - 10**(qvals / -10)).sum() / len(qvals)
+
+
+def sort_mutations(mut_strs):
+    """Sort mutation string by site, and combine multiple mutation strings.
+
+    Parameters
+    ----------
+    mut_strs : str or list
+        A single mutation string or a list of such strings.
+
+    Returns
+    -------
+    str
+        A single mutation string with all mutations sorted by site.
+
+    Example
+    -------
+    Sort a single mutation string:
+
+    >>> sort_mutations('ins7GC A5C del2to3')
+    'del2to3 A5C ins7GC'
+
+    Sort a list of two mutation strings:
+
+    >>> sort_mutations(['ins7GC', 'A5C del2to3'])
+    'del2to3 A5C ins7GC'
+
+    """
+    if isinstance(mut_strs, str):
+        mut_strs = [mut_strs]
+    decorated_list = []
+    for mut_str in mut_strs:
+        for mut in mut_str.split():
+            m = re.fullmatch(r'ins(\d+)[A-Z]+|[A-Z](\d+)[A-Z]|del(\d+)to\d+',
+                             mut)
+            if not m:
+                raise ValueError(f"failed to match {mut} in:\n{mut_str}")
+            site = [site for site in m.groups() if site is not None]
+            assert len(site) == 1
+            site = int(site[0])
+            decorated_list.append((site, mut))
+    return ' '.join(mut for _, mut in sorted(decorated_list))
 
 
 class MutationRenumber:
