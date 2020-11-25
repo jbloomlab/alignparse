@@ -110,7 +110,7 @@ def sort_mutations(mut_strs):
         for mut in mut_str.split():
             m = re.fullmatch(r'ins(\-?\d+)[A-Z]+|'
                              r'[A-Z](\-?\d+)[A-Z]|'
-                             r'del(\-?\d+)to\d+',
+                             r'del(\-?\d+)to\-?\d+',
                              mut)
             if not m:
                 raise ValueError(f"failed to match {mut} in:\n{mut_str}")
