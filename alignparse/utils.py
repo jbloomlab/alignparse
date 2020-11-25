@@ -97,10 +97,10 @@ def sort_mutations(mut_strs):
     >>> sort_mutations('ins7GC A5C del2to3')
     'del2to3 A5C ins7GC'
 
-    Sort a list of two mutation strings:
+    Sort a list of two mutation strings, including a negative site:
 
-    >>> sort_mutations(['ins7GC', 'A5C del2to3'])
-    'del2to3 A5C ins7GC'
+    >>> sort_mutations(['ins7GC', 'A-5C del2to3'])
+    'A-5C del2to3 ins7GC'
 
     """
     if isinstance(mut_strs, str):
@@ -108,7 +108,9 @@ def sort_mutations(mut_strs):
     decorated_list = []
     for mut_str in mut_strs:
         for mut in mut_str.split():
-            m = re.fullmatch(r'ins(\d+)[A-Z]+|[A-Z](\d+)[A-Z]|del(\d+)to\d+',
+            m = re.fullmatch(r'ins(\-?\d+)[A-Z]+|'
+                             r'[A-Z](\-?\d+)[A-Z]|'
+                             r'del(\-?\d+)to\d+',
                              mut)
             if not m:
                 raise ValueError(f"failed to match {mut} in:\n{mut_str}")
@@ -222,8 +224,9 @@ class MutationRenumber:
         for mut in mut_str.split():
             try:
                 # try to match substitutions
-                m = re.fullmatch(r'(?P<wt>[A-Z])(?P<site>\d+)(?P<mut>[A-Z])',
-                                 mut)
+                m = re.fullmatch(
+                        r'(?P<wt>[A-Z])(?P<site>\-?\d+)(?P<mut>[A-Z])',
+                        mut)
                 if m:
                     site = m.group('site')
                     if self.old_to_wt is not None:
@@ -239,7 +242,8 @@ class MutationRenumber:
                             )
                     continue
                 # try to match insertion
-                m = re.fullmatch(r'ins(?P<site>\d+)(?P<insertion>[A-Z]+)', mut)
+                m = re.fullmatch(r'ins(?P<site>\-?\d+)(?P<insertion>[A-Z]+)',
+                                 mut)
                 if m:
                     new_muts.append(
                             'ins' +
@@ -248,7 +252,8 @@ class MutationRenumber:
                             )
                     continue
                 # try to match deletion
-                m = re.fullmatch(r'del(?P<site1>\d+)to(?P<site2>\d+)', mut)
+                m = re.fullmatch(r'del(?P<site1>\-?\d+)to(?P<site2>\-?\d+)',
+                                 mut)
                 if m:
                     new_muts.append(
                             'del' +
