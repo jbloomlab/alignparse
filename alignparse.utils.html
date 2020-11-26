@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>utils &#8212; alignparse 0.2.1 documentation</title>
+    <title>utils &#8212; alignparse 0.2.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -182,9 +182,9 @@ is one minus the average error rate.</p>
 <span class="go">&#39;del2to3 A5C ins7GC&#39;</span>
 </pre></div>
 </div>
-<p>Sort a list of two mutation strings:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sort_mutations</span><span class="p">([</span><span class="s1">&#39;ins7GC&#39;</span><span class="p">,</span> <span class="s1">&#39;A5C del2to3&#39;</span><span class="p">])</span>
-<span class="go">&#39;del2to3 A5C ins7GC&#39;</span>
+<p>Sort a list of two mutation strings, including a negative site:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sort_mutations</span><span class="p">([</span><span class="s1">&#39;ins7GC&#39;</span><span class="p">,</span> <span class="s1">&#39;A-5C del2to3&#39;</span><span class="p">])</span>
+<span class="go">&#39;A-5C del2to3 ins7GC&#39;</span>
 </pre></div>
 </div>
 </dd></dl>

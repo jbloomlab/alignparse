@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.utils &#8212; alignparse 0.2.1 documentation</title>
+    <title>alignparse.utils &#8212; alignparse 0.2.2 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -134,10 +134,10 @@
 <span class="sd">    &gt;&gt;&gt; sort_mutations(&#39;ins7GC A5C del2to3&#39;)</span>
 <span class="sd">    &#39;del2to3 A5C ins7GC&#39;</span>
 
-<span class="sd">    Sort a list of two mutation strings:</span>
+<span class="sd">    Sort a list of two mutation strings, including a negative site:</span>
 
-<span class="sd">    &gt;&gt;&gt; sort_mutations([&#39;ins7GC&#39;, &#39;A5C del2to3&#39;])</span>
-<span class="sd">    &#39;del2to3 A5C ins7GC&#39;</span>
+<span class="sd">    &gt;&gt;&gt; sort_mutations([&#39;ins7GC&#39;, &#39;A-5C del2to3&#39;])</span>
+<span class="sd">    &#39;A-5C del2to3 ins7GC&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mut_strs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -145,7 +145,9 @@
     <span class="n">decorated_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">mut_str</span> <span class="ow">in</span> <span class="n">mut_strs</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">mut</span> <span class="ow">in</span> <span class="n">mut_str</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(\d+)[A-Z]+|[A-Z](\d+)[A-Z]|del(\d+)to\d+&#39;</span><span class="p">,</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(\-?\d+)[A-Z]+|&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;[A-Z](\-?\d+)[A-Z]|&#39;</span>
+                             <span class="sa">r</span><span class="s1">&#39;del(\-?\d+)to\-?\d+&#39;</span><span class="p">,</span>
                              <span class="n">mut</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;failed to match </span><span class="si">{</span><span class="n">mut</span><span class="si">}</span><span class="s2"> in:</span><span class="se">\n</span><span class="si">{</span><span class="n">mut_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -259,8 +261,9 @@
         <span class="k">for</span> <span class="n">mut</span> <span class="ow">in</span> <span class="n">mut_str</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="c1"># try to match substitutions</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?P&lt;wt&gt;[A-Z])(?P&lt;site&gt;\d+)(?P&lt;mut&gt;[A-Z])&#39;</span><span class="p">,</span>
-                                 <span class="n">mut</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span>
+                        <span class="sa">r</span><span class="s1">&#39;(?P&lt;wt&gt;[A-Z])(?P&lt;site&gt;\-?\d+)(?P&lt;mut&gt;[A-Z])&#39;</span><span class="p">,</span>
+                        <span class="n">mut</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
                     <span class="n">site</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s1">&#39;site&#39;</span><span class="p">)</span>
                     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -276,7 +279,8 @@
                             <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="c1"># try to match insertion</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(?P&lt;site&gt;\d+)(?P&lt;insertion&gt;[A-Z]+)&#39;</span><span class="p">,</span> <span class="n">mut</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(?P&lt;site&gt;\-?\d+)(?P&lt;insertion&gt;[A-Z]+)&#39;</span><span class="p">,</span>
+                                 <span class="n">mut</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
                     <span class="n">new_muts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="s1">&#39;ins&#39;</span> <span class="o">+</span>
@@ -285,7 +289,8 @@
                             <span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="c1"># try to match deletion</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;site1&gt;\d+)to(?P&lt;site2&gt;\d+)&#39;</span><span class="p">,</span> <span class="n">mut</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;site1&gt;\-?\d+)to(?P&lt;site2&gt;\-?\d+)&#39;</span><span class="p">,</span>
+                                 <span class="n">mut</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
                     <span class="n">new_muts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="s1">&#39;del&#39;</span> <span class="o">+</span>
