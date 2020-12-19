@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.2.3
+-----
+
+Fixed
++++++
+* ``consensus`` module handles negative site numbers.
+
 0.2.2
 -----
 

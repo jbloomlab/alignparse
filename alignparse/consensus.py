@@ -30,9 +30,9 @@ Mutations = collections.namedtuple(
 
 
 _MUT_REGEX = {
-    'substitution': re.compile(r'[ACGTN](?P<start>\d+)[ACGTN]'),
-    'deletion': re.compile(r'del(?P<start>\d+)to\d+'),
-    'insertion': re.compile(r'ins(?P<start>\d+)(?:len\d+|[ACGTN]+)'),
+    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN]'),
+    'deletion': re.compile(r'del(?P<start>\-?\d+)to\-?\d+'),
+    'insertion': re.compile(r'ins(?P<start>\-?\d+)(?:len\d+|[ACGTN]+)'),
     }
 """dict: Mutation regular expression matches."""
 
@@ -45,6 +45,7 @@ def process_mut_str(s):
     s : str
         Space-delimited mutations. Substitutions in form 'A6T'. Deletions
         in form 'del5to7'. Insertions in form 'ins6len2' or 'ins6TA'.
+        Negative site numbers are allowed.
 
     Returns
     -------
@@ -61,11 +62,11 @@ def process_mut_str(s):
     Mutations(substitutions=['A1T', 'G9C'],
               deletions=['del5to7', 'del12to12'],
               insertions=['ins6len2'])
-    >>> s = 'A11T del5to7 G9C ins6GA del12to15 ins13AAT'
+    >>> s = 'A11T del5to7 G-9C ins-6GA del12to15 ins13AAT'
     >>> process_mut_str(s)  # doctest: +NORMALIZE_WHITESPACE
-    Mutations(substitutions=['G9C', 'A11T'],
+    Mutations(substitutions=['G-9C', 'A11T'],
               deletions=['del5to7', 'del12to15'],
-              insertions=['ins6GA', 'ins13AAT'])
+              insertions=['ins-6GA', 'ins13AAT'])
 
     """
     mut_lists = collections.defaultdict(list)
@@ -563,10 +564,10 @@ def simple_mutconsensus(df,
     ...        lib_1,AG,A2C del5to7
     ...        lib_1,AG,A2C
     ...        lib_1,TA,G3A ins4len3
-    ...        lib_2,TA,C5A T6C
-    ...        lib_2,TA,ins5len1 T6C
-    ...        lib_2,TA,T6C
-    ...        lib_2,TA,A4G T6C
+    ...        lib_2,TA,C5A T-6C
+    ...        lib_2,TA,ins5len1 T-6C
+    ...        lib_2,TA,T-6C
+    ...        lib_2,TA,A4G T-6C
     ...        lib_2,TG,T6A
     ...        lib_2,TG,A2G
     ...        lib_2,GG,del1to4
@@ -593,7 +594,7 @@ def simple_mutconsensus(df,
     0   lib_1      AG           A2C                     2
     1   lib_1      TA  G3A ins4len3                     1
     2   lib_2      GG                                   2
-    3   lib_2      TA           T6C                     4
+    3   lib_2      TA          T-6C                     4
     >>> dropped
       library barcode              drop_reason  nseqs
     0   lib_2      AA  minor subs too frequent      4
