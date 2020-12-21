@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>consensus &#8212; alignparse 0.2.2 documentation</title>
+    <title>consensus &#8212; alignparse 0.2.3 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -240,7 +240,8 @@ with barcodes found multiple times:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>s</strong> (<em>str</em>) – Space-delimited mutations. Substitutions in form ‘A6T’. Deletions
-in form ‘del5to7’. Insertions in form ‘ins6len2’ or ‘ins6TA’.</p>
+in form ‘del5to7’. Insertions in form ‘ins6len2’ or ‘ins6TA’.
+Negative site numbers are allowed.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><dl class="simple">
@@ -263,11 +264,11 @@ in form ‘del5to7’. Insertions in form ‘ins6len2’ or ‘ins6TA’.</p>
 <span class="go">Mutations(substitutions=[&#39;A1T&#39;, &#39;G9C&#39;],</span>
 <span class="go">          deletions=[&#39;del5to7&#39;, &#39;del12to12&#39;],</span>
 <span class="go">          insertions=[&#39;ins6len2&#39;])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;A11T del5to7 G9C ins6GA del12to15 ins13AAT&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;A11T del5to7 G-9C ins-6GA del12to15 ins13AAT&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">process_mut_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  
-<span class="go">Mutations(substitutions=[&#39;G9C&#39;, &#39;A11T&#39;],</span>
+<span class="go">Mutations(substitutions=[&#39;G-9C&#39;, &#39;A11T&#39;],</span>
 <span class="go">          deletions=[&#39;del5to7&#39;, &#39;del12to15&#39;],</span>
-<span class="go">          insertions=[&#39;ins6GA&#39;, &#39;ins13AAT&#39;])</span>
+<span class="go">          insertions=[&#39;ins-6GA&#39;, &#39;ins13AAT&#39;])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -340,10 +341,10 @@ and the number of variants (sequences) in that group.</p></li>
 <span class="gp">... </span><span class="s1">       lib_1,AG,A2C del5to7</span>
 <span class="gp">... </span><span class="s1">       lib_1,AG,A2C</span>
 <span class="gp">... </span><span class="s1">       lib_1,TA,G3A ins4len3</span>
-<span class="gp">... </span><span class="s1">       lib_2,TA,C5A T6C</span>
-<span class="gp">... </span><span class="s1">       lib_2,TA,ins5len1 T6C</span>
-<span class="gp">... </span><span class="s1">       lib_2,TA,T6C</span>
-<span class="gp">... </span><span class="s1">       lib_2,TA,A4G T6C</span>
+<span class="gp">... </span><span class="s1">       lib_2,TA,C5A T-6C</span>
+<span class="gp">... </span><span class="s1">       lib_2,TA,ins5len1 T-6C</span>
+<span class="gp">... </span><span class="s1">       lib_2,TA,T-6C</span>
+<span class="gp">... </span><span class="s1">       lib_2,TA,A4G T-6C</span>
 <span class="gp">... </span><span class="s1">       lib_2,TG,T6A</span>
 <span class="gp">... </span><span class="s1">       lib_2,TG,A2G</span>
 <span class="gp">... </span><span class="s1">       lib_2,GG,del1to4</span>
@@ -370,7 +371,7 @@ are read as such rather than as <cite>na</cite> values:</p>
 <span class="go">0   lib_1      AG           A2C                     2</span>
 <span class="go">1   lib_1      TA  G3A ins4len3                     1</span>
 <span class="go">2   lib_2      GG                                   2</span>
-<span class="go">3   lib_2      TA           T6C                     4</span>
+<span class="go">3   lib_2      TA          T-6C                     4</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dropped</span>
 <span class="go">  library barcode              drop_reason  nseqs</span>
 <span class="go">0   lib_2      AA  minor subs too frequent      4</span>
