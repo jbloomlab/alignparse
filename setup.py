@@ -47,7 +47,7 @@ setup(
             'biopython>=1.73',
             'dna_features_viewer>=1.0.0',
             'matplotlib>=3.0.0',
-            'numpy>=0.17',
+            'numpy>=1.17',
             'packaging',
             'pandas>=0.25.1',
             'pathos>=0.2.4',
