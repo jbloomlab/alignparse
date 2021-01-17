@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>consensus &#8212; alignparse 0.2.3 documentation</title>
+    <title>consensus &#8212; alignparse 0.2.4 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -379,6 +379,15 @@ are read as such rather than as <cite>na</cite> values:</p>
 <span class="go">2   lib_3      AA    indels diff too large      2</span>
 </pre></div>
 </div>
+<p>Get the consensus just for library 1:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">lib1_consensus</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">simple_mutconsensus</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;library == &quot;lib_1&quot;&#39;</span><span class="p">),</span>
+<span class="gp">... </span>                                        <span class="n">group_cols</span><span class="o">=</span><span class="s1">&#39;barcode&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lib1_consensus</span>
+<span class="go">  barcode     mutations  variant_call_support</span>
+<span class="go">0      AG           A2C                     2</span>
+<span class="go">1      TA  G3A ins4len3                     1</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
@@ -477,7 +486,7 @@ are read as such rather than as <cite>na</cite> values:</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2020.
+      &copy;2019--2021.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>

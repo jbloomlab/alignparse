@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.consensus &#8212; alignparse 0.2.3 documentation</title>
+    <title>alignparse.consensus &#8212; alignparse 0.2.4 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -638,6 +638,15 @@
 <span class="sd">    1   lib_2      TG      subs diff too large      2</span>
 <span class="sd">    2   lib_3      AA    indels diff too large      2</span>
 
+<span class="sd">    Get the consensus just for library 1:</span>
+
+<span class="sd">    &gt;&gt;&gt; lib1_consensus, _ = simple_mutconsensus(df.query(&#39;library == &quot;lib_1&quot;&#39;),</span>
+<span class="sd">    ...                                         group_cols=&#39;barcode&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; lib1_consensus</span>
+<span class="sd">      barcode     mutations  variant_call_support</span>
+<span class="sd">    0      AG           A2C                     2</span>
+<span class="sd">    1      TA  G3A ins4len3                     1</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">group_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">group_cols</span><span class="p">]</span>
@@ -703,6 +712,9 @@
 
             <span class="c1"># consensus for mutation type</span>
             <span class="n">g_consensus</span> <span class="o">+=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">half_nseqs</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">drop_reason</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dropped</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">drop_reason</span><span class="p">,</span> <span class="n">nseqs</span><span class="p">))</span>
@@ -809,7 +821,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2020.
+      &copy;2019--2021.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
