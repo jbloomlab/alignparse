@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.2.4
+-----
+
+Fixed
++++++
+* ``consensus.simple_mutconsensus`` works with just one grouping column.
+
 0.2.3
 -----
 

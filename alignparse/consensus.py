@@ -601,6 +601,15 @@ def simple_mutconsensus(df,
     1   lib_2      TG      subs diff too large      2
     2   lib_3      AA    indels diff too large      2
 
+    Get the consensus just for library 1:
+
+    >>> lib1_consensus, _ = simple_mutconsensus(df.query('library == "lib_1"'),
+    ...                                         group_cols='barcode')
+    >>> lib1_consensus
+      barcode     mutations  variant_call_support
+    0      AG           A2C                     2
+    1      TA  G3A ins4len3                     1
+
     """
     if isinstance(group_cols, str):
         group_cols = [group_cols]
@@ -666,6 +675,9 @@ def simple_mutconsensus(df,
 
             # consensus for mutation type
             g_consensus += [m for m, c in counts.items() if c > half_nseqs]
+
+        if len(group_cols) == 1:
+            g = [g]
 
         if drop_reason is not None:
             dropped.append((*g, drop_reason, nseqs))
