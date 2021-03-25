@@ -14,6 +14,8 @@ import numpy
 
 import pandas as pd  # noqa: F401
 
+import alignparse.consensus
+
 
 def qvals_to_accuracy(qvals, encoding='numbers'):
     r"""Convert set of quality scores into average accuracy.
@@ -119,6 +121,74 @@ def sort_mutations(mut_strs):
             site = int(site[0])
             decorated_list.append((site, mut))
     return ' '.join(mut for _, mut in sorted(decorated_list))
+
+
+def merge_dels(s):
+    """Merge consecutive deletions
+
+    Parameters
+    ----------
+    s : str
+        A single string of mutations.
+
+    Returns
+    -------
+    str
+        A list of mutation strings where consecutive
+         deletion strings have been merged .
+
+    Example
+    -------
+    Merge consecutive deletions:
+
+    >>> merge_dels('del1390to1701 del1702to1909 del1920to1930 G885T G85T')
+    ['G85T', 'G885T', 'del1390to1909', 'del1920to1930']
+
+    """
+    # parse mutations
+    df = alignparse.consensus.process_mut_str(s)
+
+    # extract position and from:to deletion list
+    mut_list = []
+    for i in df[1]:
+        mut = i.split()
+        mut_pair = re.findall(r'\d+', str(mut))
+        for i in range(0, len(mut_pair)):
+            mut_pair[i] = int(mut_pair[i])
+        mut_list.append(mut_pair)
+
+    # merge consecutive ranges
+    mut_list.sort(key=lambda interval: interval[0])
+    merged = [mut_list[0]]
+    merged_2 = []
+    for current in mut_list:
+        previous = merged[-1]
+        if current[0] == previous[1]+1:
+            previous[1] = max(previous[1], current[1])
+        else:
+            merged_2.append(current)
+
+    # remove duplications from above loop
+    new_range = []
+    for elem1 in merged_2:
+        for _elem2 in elem1:
+            if elem1 not in new_range:
+                new_range.append(elem1)
+
+    # create range-corrected (RC) deletion list
+    deletion_RC = []
+    for elem1 in new_range:
+        range_str = [str(x) for x in elem1]
+        mut = ['del' + range_str[0] + 'to' + range_str[1]]
+        mut = ''.join(mut)
+        deletion_RC.append(mut)
+
+    # overwrite mutation tuple with new range
+    x = df
+    y = list(df)
+    y[1] = deletion_RC
+    x = tuple(y)
+    return(sum(x, []))
 
 
 class MutationRenumber:
