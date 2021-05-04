@@ -6,7 +6,7 @@ alignparse
         :target: https://pypi.python.org/pypi/alignparse
 
 .. image:: https://img.shields.io/travis/jbloomlab/alignparse.svg
-        :target: https://travis-ci.org/jbloomlab/alignparse
+        :target: https://travis-ci.com/jbloomlab/alignparse
 
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://mybinder.org/v2/gh/jbloomlab/alignparse/master?filepath=notebooks
