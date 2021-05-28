@@ -141,29 +141,32 @@ def merge_dels(s):
     -------
     Merge consecutive deletions:
 
-    >>> merge_dels('del12to15 del16to20 del21to30 del210to300 del1702to1909 del1910to1930 G885T G85T')
+    >>> merge_dels('del12to15 del16to20 del21to30 del210to300 '
+    ...            'del1702to1909 del1910to1930 G885T G85T')
     ['G85T', 'G885T', 'del12to30', 'del210to300', 'del1702to1930']
 
     """
     # parse deletions
-    _, deletions, _  = alignparse.consensus.process_mut_str(s)
+    _, deletions, _ = alignparse.consensus.process_mut_str(s)
 
     # extract position and from:to deletion list
     mut_list = []
     for deletion in deletions:
-        mut_sites = re.fullmatch('del(?P<start>\-?\d+)to(?P<end>\-?\d+)', str(deletion))
+        mut_sites = re.fullmatch(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)',
+                                 deletion)
         if not mut_sites:
             raise ValueError(f"cannot match deletion {deletion}")
-        mut_list.append([int(mut_sites.group('start')), int(mut_sites.group('end'))])
+        mut_list.append([int(mut_sites.group('start')),
+                         int(mut_sites.group('end'))])
 
     # merge consecutive ranges
     new_ranges = []
     left, right = mut_list[0]
-    for range in mut_list[1:]:
-        next_left, next_right = range
+    for del_range in mut_list[1:]:
+        next_left, next_right = del_range
         if right + 1 < next_left:
             new_ranges.append([left, right])
-            left, right = range
+            left, right = del_range
         else:
             right = max(right, next_right)
     new_ranges.append([left, right])
