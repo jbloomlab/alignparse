@@ -141,13 +141,13 @@ def merge_dels(s):
     -------
     Merge consecutive deletions:
 
-    >>> merge_dels('del12to15 del16to20 del21to30 del210to300 '
+    >>> merge_dels('del12to15 del21to30 del210to300 del16to20 '
     ...            'del1702to1909 del1910to1930 G885T G85T')
     ['G85T', 'G885T', 'del12to30', 'del210to300', 'del1702to1930']
 
     """
     # parse deletions
-    _, deletions, _ = alignparse.consensus.process_mut_str(s)
+    subs, deletions, insertions = alignparse.consensus.process_mut_str(s)
 
     # extract position and from:to deletion list
     mut_list = []
@@ -160,31 +160,23 @@ def merge_dels(s):
                          int(mut_sites.group('end'))])
 
     # merge consecutive ranges
+    mut_list.sort()
     new_ranges = []
     left, right = mut_list[0]
     for del_range in mut_list[1:]:
         next_left, next_right = del_range
         if right + 1 < next_left:
             new_ranges.append([left, right])
-            left, right = del_range
+            left, right = next_left, next_right
         else:
             right = max(right, next_right)
     new_ranges.append([left, right])
 
     # create range-corrected (RC) deletion list
-    deletion_RC = []
-    for elem1 in new_ranges:
-        range_str = [str(x) for x in elem1]
-        mut = ['del' + range_str[0] + 'to' + range_str[1]]
-        mut = ''.join(mut)
-        deletion_RC.append(mut)
+    deletion_RC = [f"del{left}to{right}" for left, right in new_ranges]
 
     # overwrite mutation tuple with new range
-    x = alignparse.consensus.process_mut_str(s)
-    y = list(x)
-    y[1] = deletion_RC
-    x = tuple(y)
-    return(sum(x, []))
+    return [*subs, *deletion_RC, *insertions]
 
 
 class MutationRenumber:
