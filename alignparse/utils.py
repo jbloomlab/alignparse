@@ -151,7 +151,7 @@ def merge_dels(s):
 
     # if no deletions are available return current mutation 
     if not deletions:
-        return(s)
+        return[s]
 
     else:
         # extract position and from:to deletion list
