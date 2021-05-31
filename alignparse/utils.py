@@ -149,34 +149,39 @@ def merge_dels(s):
     # parse deletions
     subs, deletions, insertions = alignparse.consensus.process_mut_str(s)
 
-    # extract position and from:to deletion list
-    mut_list = []
-    for deletion in deletions:
-        mut_sites = re.fullmatch(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)',
-                                 deletion)
-        if not mut_sites:
-            raise ValueError(f"cannot match deletion {deletion}")
-        mut_list.append([int(mut_sites.group('start')),
-                         int(mut_sites.group('end'))])
+    # if no deletions are available return current mutation 
+    if not deletions:
+        return(s)
 
-    # merge consecutive ranges
-    mut_list.sort()
-    new_ranges = []
-    left, right = mut_list[0]
-    for del_range in mut_list[1:]:
-        next_left, next_right = del_range
-        if right + 1 < next_left:
-            new_ranges.append([left, right])
-            left, right = next_left, next_right
-        else:
-            right = max(right, next_right)
-    new_ranges.append([left, right])
+    else:
+        # extract position and from:to deletion list
+        mut_list = []
+        for deletion in deletions:
+            mut_sites = re.fullmatch(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)',
+                                     deletion)
+            if not mut_sites:
+                raise ValueError(f"cannot match deletion {deletion}")
+            mut_list.append([int(mut_sites.group('start')),
+                             int(mut_sites.group('end'))])
 
-    # create range-corrected (RC) deletion list
-    deletion_RC = [f"del{left}to{right}" for left, right in new_ranges]
+        # merge consecutive ranges
+        mut_list.sort()
+        new_ranges = []
+        left, right = mut_list[0]
+        for del_range in mut_list[1:]:
+            next_left, next_right = del_range
+            if right + 1 < next_left:
+                new_ranges.append([left, right])
+                left, right = next_left, next_right
+            else:
+                right = max(right, next_right)
+        new_ranges.append([left, right])
 
-    # overwrite mutation tuple with new range
-    return [*subs, *deletion_RC, *insertions]
+        # create range-corrected (RC) deletion list
+        deletion_RC = [f"del{left}to{right}" for left, right in new_ranges]
+
+        # overwrite mutation tuple with new range
+        return [*subs, *deletion_RC, *insertions]
 
 
 class MutationRenumber:
