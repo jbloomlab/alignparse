@@ -151,7 +151,7 @@ def merge_dels(s):
 
     # if no deletions are available return current mutation 
     if not deletions:
-        return[s]
+        return(s)
 
     else:
         # extract position and from:to deletion list
@@ -181,7 +181,7 @@ def merge_dels(s):
         deletion_RC = [f"del{left}to{right}" for left, right in new_ranges]
 
         # overwrite mutation tuple with new range
-        return [*subs, *deletion_RC, *insertions]
+        return ' '.join([*subs, *deletion_RC, *insertions])
 
 
 class MutationRenumber:
