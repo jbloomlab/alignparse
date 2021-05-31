@@ -149,7 +149,7 @@ def merge_dels(s):
     # parse deletions
     subs, deletions, insertions = alignparse.consensus.process_mut_str(s)
 
-    # if no deletions are available return current mutation 
+    # if no deletions are available return current mutation
     if not deletions:
         return(s)
 
