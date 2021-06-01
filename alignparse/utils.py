@@ -134,8 +134,8 @@ def merge_dels(s):
     Returns
     -------
     str
-        A list of mutation strings where consecutive
-         deletion strings have been merged .
+        A mutation strings where consecutive deletions have been merged,
+        and all mutations are sorted by site.
 
     Example
     -------
@@ -143,7 +143,7 @@ def merge_dels(s):
 
     >>> merge_dels('del12to15 del21to30 del210to300 del16to20 '
     ...            'del1702to1909 del1910to1930 G885T G85T')
-    ['G85T', 'G885T', 'del12to30', 'del210to300', 'del1702to1930']
+    'del12to30 G85T del210to300 G885T del1702to1930'
 
     """
     # parse deletions
@@ -151,7 +151,7 @@ def merge_dels(s):
 
     # if no deletions are available return current mutation
     if not deletions:
-        return(s)
+        return sort_mutations(s)
 
     else:
         # extract position and from:to deletion list
@@ -181,7 +181,7 @@ def merge_dels(s):
         deletion_RC = [f"del{left}to{right}" for left, right in new_ranges]
 
         # overwrite mutation tuple with new range
-        return ' '.join([*subs, *deletion_RC, *insertions])
+        return sort_mutations([*subs, *deletion_RC, *insertions])
 
 
 class MutationRenumber:
