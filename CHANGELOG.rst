@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.2.6
+-----
+
+Fixed
++++++
+* Fixed bug in ``add_mut_info_cols`` when index is not unique.
+
 0.2.5
 -----
 

@@ -173,6 +173,8 @@ def add_mut_info_cols(df,
     2  seq3  T5A ins5AAT del8to9      1      1     1        2
 
     """
+    df = df.reset_index(drop=True)
+
     if mutation_col not in df.columns:
         raise ValueError(f"`df` lacks `mutation_col` {mutation_col}")
 
