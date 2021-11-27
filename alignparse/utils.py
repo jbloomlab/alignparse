@@ -17,6 +17,80 @@ import pandas as pd  # noqa: F401
 import alignparse.consensus
 
 
+class InFrameDeletionsToSubs:
+    """Convert in-frame codon-length deletions to substitutions.
+
+    Also shifts deletions to put them in frame when possible.
+    Deletions that are not in-frame and codon length are left as
+    deletions.
+
+    Parameters
+    ----------
+    geneseq : str
+        The sequence of the "wildtype" gene.
+
+    Example
+    --------
+    First, a case where deletions are already in frame:
+
+    >>> geneseq = 'ATG GCG TCA GTA CCG CAT CTA'.replace(' ', '')
+    >>> deltosubs = InFrameDeletionsToSubs(geneseq)
+
+    >>> deltosubs.dels_to_subs('A1C del4to6')
+    'A1C G4- C5- G6-'
+
+    >>> deltosubs.dels_to_subs('A1C del4to6 del9to11 del13to15 del19to20')
+    'A1C G4- C5- G6- del9to11 C13- C14- G15- del19to20'
+
+    Now case where deletions need to be shifted to in frame:
+
+    >>> mut_str = 'A1C del3to5 ins11GGG del14to16 del19to20'
+    >>> deltosubs.dels_to_subs(mut_str)
+    'A1C G4- C4- G4- ins11GGG C13- C14- G14- del19to20'
+    
+    Now case where deletions cannot be shifted to in frame:
+
+    >>> geneseq2 = 'ATG ATC TCA ATA CAG GAT CTA'.replace(' ', '')
+    >>> deltosubs2 = InFrameDeletionsToSubs(geneseq2)
+    >>> deltosubs2.dels_to_subs(mut_str)
+    'A1C del3to5 ins11GGG del14to16 del19to20'
+
+    """
+    def __init__(self, geneseq):
+        """See main class docstring."""
+        if len(geneseq) % 3:
+            raise ValueError(f"{len(geneseq)} not a multiple of 3")
+        self._nt_sites = dict(enumerate(geneseq, start=1))
+
+    def dels_to_subs(self, mut_str):
+        """str: Copy of ``mut_str`` with in-frame deletions as substitutions"""
+        muts = alignparse.consensus.process_mut_str(mut_str)
+
+        codon_len_deletions = []
+        for deletion in muts.deletions:
+            m = alignparse.consensus._MUT_REGEX['deletion'].fullmatch(deletion)
+            (start, end) = (int(m.group('start')), int(m.group('end')))
+            assert end >= start, f"{deletion=}, {start=}, {end=}"
+            if 0 == (((end - start) + 1) % 3):
+                codon_len_deletions.append((start, end, deletion))
+
+        if not codon_len_deletions:
+            return mut_str
+
+        for start, end, deletion in codon_len_deletions:
+            if (start % 3) == 1:  # already in frame
+                assert (end % 3) == 0
+                new_subs = ' '.join(f"{self._nt_sites[i]}{i}-" for i in
+                                    range(start, end + 1))
+                assert mut_str.count(deletion) == 1
+                mut_str = mut_str.replace(deletion, new_subs)
+                assert mut_str.count(deletion) == 0
+            else:
+                raise NotImplementedError
+
+        return mut_str
+
+
 def qvals_to_accuracy(qvals, encoding='numbers'):
     r"""Convert set of quality scores into average accuracy.
 

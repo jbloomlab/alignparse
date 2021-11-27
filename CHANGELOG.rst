@@ -11,7 +11,7 @@ The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
 Added
 +++++
-* ``indels_in_frame`` function
+* ``InFrameDeletionsToSubs`` class.
 
 0.2.6
 -----
