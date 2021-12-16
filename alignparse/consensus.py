@@ -30,7 +30,7 @@ Mutations = collections.namedtuple(
 
 
 _MUT_REGEX = {
-    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN]'),
+    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN\-]'),
     'deletion': re.compile(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)'),
     'insertion': re.compile(r'ins(?P<start>\-?\d+)(?:len\d+|[ACGTN]+)'),
     }
