@@ -511,13 +511,14 @@ def simple_mutconsensus(df,
         Group all sequences that share values in these column(s) of `df`.
     mutation_col : str
         Column in `df` with mutations in form that can be processed by
-        :func:`processe_mut_str`.
-    max_sub_diffs : int
+        :func:`process_mut_str`.
+    max_sub_diffs : int or None
         Drop groups where any variant differs from all other variants
         by more than this many substitution (point mutation) differences.
-    max_indel_diffs : int
+        Set to ``None`` if no limit.
+    max_indel_diffs : int or None
         Drop groups where any variant differs from all other variants
-        by more than this many indel differences.
+        by more than this many indel differences. Set to ``None`` if no limit.
     max_minor_sub_frac : float
         Drop groups with a minor (non-consensus) substitution in more than the
         **ceiling** of this fraction times the number of sequences in group.
@@ -612,6 +613,21 @@ def simple_mutconsensus(df,
     0      AG           A2C                     2
     1      TA  G3A ins4len3                     1
 
+    Set ``max_sub_diffs`` to None:
+
+    >>> consensus, dropped = simple_mutconsensus(df, max_sub_diffs=None)
+    >>> consensus
+      library barcode     mutations  variant_call_support
+    0   lib_1      AG           A2C                     2
+    1   lib_1      TA  G3A ins4len3                     1
+    2   lib_2      GG                                   2
+    3   lib_2      TA          T-6C                     4
+    4   lib_2      TG                                   2
+    >>> dropped
+      library barcode              drop_reason  nseqs
+    0   lib_2      AA  minor subs too frequent      4
+    1   lib_3      AA    indels diff too large      2
+
     """
     if isinstance(group_cols, str):
         group_cols = [group_cols]
@@ -652,18 +668,19 @@ def simple_mutconsensus(df,
                         ('subs', max_sub_diffs, max_minor_sub_frac),
                         ('indels', max_indel_diffs, max_minor_indel_frac),
                         ]:
-
-            # are max_sub_diffs and max_indel_diffs satisfied?
-            ndiffs_by_seq = collections.defaultdict(list)
-            for (i1, m1set), (i2, m2set) in itertools.combinations(
-                        enumerate(mutlists[mtype]), 2):
-                ndiffs = len(numpy.setxor1d(m1set, m2set, assume_unique=True))
-                ndiffs_by_seq[i1].append(ndiffs)
-                ndiffs_by_seq[i2].append(ndiffs)
-            if any(min(ndifflist) > maxd for ndifflist
-                   in ndiffs_by_seq.values()):
-                drop_reason = f"{mtype} diff too large"
-                break
+            if maxd is not None:
+                # is max_sub_diffs or max_indel_diffs satisfied?
+                ndiffs_by_seq = collections.defaultdict(list)
+                for (i1, m1set), (i2, m2set) in itertools.combinations(
+                         enumerate(mutlists[mtype]), 2):
+                    ndiffs = len(numpy.setxor1d(m1set, m2set,
+                                                assume_unique=True))
+                    ndiffs_by_seq[i1].append(ndiffs)
+                    ndiffs_by_seq[i2].append(ndiffs)
+                if any(min(ndifflist) > maxd for ndifflist
+                       in ndiffs_by_seq.values()):
+                    drop_reason = f"{mtype} diff too large"
+                    break
 
             # see if max_minor_mut_frac is satisfied
             max_muts = math.ceil(max_frac * nseqs)

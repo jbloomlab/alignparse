@@ -13,6 +13,8 @@ Added
 +++++
 * ``InFrameDeletionsToSubs`` class.
 
+* ``simple_mutconsensus`` takes ``None`` as parameter for ``max_sub_diffs`` and ``max_indel_diffs``
+
 0.2.6
 -----
 
