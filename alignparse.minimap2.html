@@ -4,18 +4,17 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>minimap2 &#8212; alignparse 0.2.5 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>minimap2 &#8212; alignparse 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="targets" href="alignparse.targets.html" />
@@ -36,13 +35,13 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-alignparse.minimap2"></span><div class="section" id="minimap2">
+  <span class="target" id="module-alignparse.minimap2"></span><section id="minimap2">
 <h1>minimap2<a class="headerlink" href="#minimap2" title="Permalink to this headline">¶</a></h1>
 <p>Runs <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a> aligner.
 <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> must be version 2.17 or higher.</p>
 <dl class="py class">
-<dt id="alignparse.minimap2.Mapper">
-<em class="property">class </em><code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">Mapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">options</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">prog</span><span class="o">=</span><span class="default_value">'minimap2'</span></em>, <em class="sig-param"><span class="n">min_version</span><span class="o">=</span><span class="default_value">'2.17'</span></em>, <em class="sig-param"><span class="n">check_cs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">retain_tags</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">alignparse.minimap2.</span></span><span class="sig-name descname"><span class="pre">Mapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'minimap2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2.17'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retain_tags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.minimap2.Mapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Run <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a>.</p>
 <dl class="field-list simple">
@@ -59,8 +58,8 @@ been tested with versions &gt;= 2.17.</p></li>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="alignparse.minimap2.Mapper.options">
-<code class="sig-name descname">options</code><a class="headerlink" href="#alignparse.minimap2.Mapper.options" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper.options">
+<span class="sig-name descname"><span class="pre">options</span></span><a class="headerlink" href="#alignparse.minimap2.Mapper.options" title="Permalink to this definition">¶</a></dt>
 <dd><p>Options to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -70,8 +69,8 @@ been tested with versions &gt;= 2.17.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="alignparse.minimap2.Mapper.prog">
-<code class="sig-name descname">prog</code><a class="headerlink" href="#alignparse.minimap2.Mapper.prog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper.prog">
+<span class="sig-name descname"><span class="pre">prog</span></span><a class="headerlink" href="#alignparse.minimap2.Mapper.prog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to <code class="docutils literal notranslate"><span class="pre">minimap2</span></code> executable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -81,8 +80,8 @@ been tested with versions &gt;= 2.17.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="alignparse.minimap2.Mapper.version">
-<code class="sig-name descname">version</code><a class="headerlink" href="#alignparse.minimap2.Mapper.version" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper.version">
+<span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#alignparse.minimap2.Mapper.version" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version of <code class="docutils literal notranslate"><span class="pre">minimap2</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -92,8 +91,8 @@ been tested with versions &gt;= 2.17.</p></li>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="alignparse.minimap2.Mapper.retain_tags">
-<code class="sig-name descname">retain_tags</code><a class="headerlink" href="#alignparse.minimap2.Mapper.retain_tags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper.retain_tags">
+<span class="sig-name descname"><span class="pre">retain_tags</span></span><a class="headerlink" href="#alignparse.minimap2.Mapper.retain_tags" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of tags to retain.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -169,8 +168,8 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </pre></div>
 </div>
 <dl class="py method">
-<dt id="alignparse.minimap2.Mapper.map_to_sam">
-<code class="sig-name descname">map_to_sam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">targetfile</span></em>, <em class="sig-param"><span class="n">queryfile</span></em>, <em class="sig-param"><span class="n">samfile</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper.map_to_sam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#alignparse.minimap2.Mapper.map_to_sam" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.Mapper.map_to_sam">
+<span class="sig-name descname"><span class="pre">map_to_sam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targetfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/minimap2.html#Mapper.map_to_sam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.minimap2.Mapper.map_to_sam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map query sequences to targets and output SAM file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -186,8 +185,8 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="alignparse.minimap2.OPTIONS_CODON_DMS">
-<code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_CODON_DMS</code><em class="property"> = ('-A2', '-B4', '-O12', '-E2', '--end-bonus=13', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_CODON_DMS" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.OPTIONS_CODON_DMS">
+<span class="sig-prename descclassname"><span class="pre">alignparse.minimap2.</span></span><span class="sig-name descname"><span class="pre">OPTIONS_CODON_DMS</span></span><em class="property"> <span class="pre">=</span> <span class="pre">('-A2',</span> <span class="pre">'-B4',</span> <span class="pre">'-O12',</span> <span class="pre">'-E2',</span> <span class="pre">'--end-bonus=13',</span> <span class="pre">'--secondary=no',</span> <span class="pre">'--cs')</span></em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_CODON_DMS" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for codon-mutant libraries.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -214,8 +213,8 @@ the above header, you’d use <cite>retain_tags=[‘np’]</cite>.</p>
 </dd></dl>
 
 <dl class="py data">
-<dt id="alignparse.minimap2.OPTIONS_VIRUS_W_DEL">
-<code class="sig-prename descclassname">alignparse.minimap2.</code><code class="sig-name descname">OPTIONS_VIRUS_W_DEL</code><em class="property"> = ('-xsplice:hq', '-un', '-C0', '--splice-flank=no', '-M=1', '--end-seed-pen=2', '--end-bonus=2', '--secondary=no', '--cs')</em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_VIRUS_W_DEL" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="alignparse.minimap2.OPTIONS_VIRUS_W_DEL">
+<span class="sig-prename descclassname"><span class="pre">alignparse.minimap2.</span></span><span class="sig-name descname"><span class="pre">OPTIONS_VIRUS_W_DEL</span></span><em class="property"> <span class="pre">=</span> <span class="pre">('-xsplice:hq',</span> <span class="pre">'-un',</span> <span class="pre">'-C0',</span> <span class="pre">'--splice-flank=no',</span> <span class="pre">'-M=1',</span> <span class="pre">'--end-seed-pen=2',</span> <span class="pre">'--end-bonus=2',</span> <span class="pre">'--secondary=no',</span> <span class="pre">'--cs')</span></em><a class="headerlink" href="#alignparse.minimap2.OPTIONS_VIRUS_W_DEL" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">minimap2</span></code> options for viral genes.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -245,7 +244,7 @@ parsed like deletions.</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
           </div>
@@ -322,7 +321,7 @@ parsed like deletions.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -344,7 +343,7 @@ parsed like deletions.</p>
       &copy;2019--2021.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

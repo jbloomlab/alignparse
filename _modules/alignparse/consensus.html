@@ -5,17 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.consensus &#8212; alignparse 0.2.5 documentation</title>
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <title>alignparse.consensus &#8212; alignparse 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
@@ -67,8 +65,8 @@
 
 
 <span class="n">_MUT_REGEX</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;substitution&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[ACGTN](?P&lt;start&gt;\-?\d+)[ACGTN]&#39;</span><span class="p">),</span>
-    <span class="s1">&#39;deletion&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;start&gt;\-?\d+)to\-?\d+&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;substitution&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[ACGTN](?P&lt;start&gt;\-?\d+)[ACGTN\-]&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;deletion&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;del(?P&lt;start&gt;\-?\d+)to(?P&lt;end&gt;\-?\d+)&#39;</span><span class="p">),</span>
     <span class="s1">&#39;insertion&#39;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;ins(?P&lt;start&gt;\-?\d+)(?:len\d+|[ACGTN]+)&#39;</span><span class="p">),</span>
     <span class="p">}</span>
 <span class="sd">&quot;&quot;&quot;dict: Mutation regular expression matches.&quot;&quot;&quot;</span>
@@ -210,6 +208,8 @@
 <span class="sd">    2  seq3  T5A ins5AAT del8to9      1      1     1        2</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">mutation_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`df` lacks `mutation_col` </span><span class="si">{</span><span class="n">mutation_col</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -534,6 +534,8 @@
                         <span class="n">max_indel_diffs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                         <span class="n">max_minor_sub_frac</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                         <span class="n">max_minor_indel_frac</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+                        <span class="n">max_minor_greater_or_equal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">min_support</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                         <span class="n">support_col</span><span class="o">=</span><span class="s1">&#39;variant_call_support&#39;</span><span class="p">,</span>
                         <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Get simple consensus of mutations with group (i.e., barcode).</span>
@@ -546,19 +548,26 @@
 <span class="sd">        Group all sequences that share values in these column(s) of `df`.</span>
 <span class="sd">    mutation_col : str</span>
 <span class="sd">        Column in `df` with mutations in form that can be processed by</span>
-<span class="sd">        :func:`processe_mut_str`.</span>
-<span class="sd">    max_sub_diffs : int</span>
+<span class="sd">        :func:`process_mut_str`.</span>
+<span class="sd">    max_sub_diffs : int or None</span>
 <span class="sd">        Drop groups where any variant differs from all other variants</span>
 <span class="sd">        by more than this many substitution (point mutation) differences.</span>
-<span class="sd">    max_indel_diffs : int</span>
+<span class="sd">        Set to ``None`` if no limit.</span>
+<span class="sd">    max_indel_diffs : int or None</span>
 <span class="sd">        Drop groups where any variant differs from all other variants</span>
-<span class="sd">        by more than this many indel differences.</span>
+<span class="sd">        by more than this many indel differences. Set to ``None`` if no limit.</span>
 <span class="sd">    max_minor_sub_frac : float</span>
-<span class="sd">        Drop groups with a minor (non-consensus) substitution in more than the</span>
+<span class="sd">        Drop groups with a minor (non-consensus) substitution in &gt; the</span>
 <span class="sd">        **ceiling** of this fraction times the number of sequences in group.</span>
 <span class="sd">    max_minor_indel_frac : float</span>
-<span class="sd">        Drop groups with a minor (non-consensus) indel in more than the</span>
+<span class="sd">        Drop groups with a minor (non-consensus) indel in &gt; the</span>
 <span class="sd">        **ceiling** of this fraction times the number of sequences in group.</span>
+<span class="sd">    max_minor_greater_or_equal : bool</span>
+<span class="sd">        For ``max_minor_sub_frac`` and ``max_minor_indel_frac``, use &gt;= rather</span>
+<span class="sd">        than &gt;. This is may help if you want to be conservative in</span>
+<span class="sd">        avoiding bad consensuses. But don&#39;t reject if zero differences.</span>
+<span class="sd">    min_support : int</span>
+<span class="sd">        Require at least this many supporting sequences to call consensus.</span>
 <span class="sd">    support_col : str</span>
 <span class="sd">          Name of column in returned `consensus` data frame with number</span>
 <span class="sd">          of sequences supporting the consensus call.</span>
@@ -601,6 +610,8 @@
 <span class="sd">    ...        lib_1,AG,A2C del5to7</span>
 <span class="sd">    ...        lib_1,AG,A2C</span>
 <span class="sd">    ...        lib_1,TA,G3A ins4len3</span>
+<span class="sd">    ...        lib_1,TA,G3A ins4len3</span>
+<span class="sd">    ...        lib_1,TA,G3A ins4len3</span>
 <span class="sd">    ...        lib_2,TA,C5A T-6C</span>
 <span class="sd">    ...        lib_2,TA,ins5len1 T-6C</span>
 <span class="sd">    ...        lib_2,TA,T-6C</span>
@@ -629,7 +640,7 @@
 <span class="sd">    &gt;&gt;&gt; consensus</span>
 <span class="sd">      library barcode     mutations  variant_call_support</span>
 <span class="sd">    0   lib_1      AG           A2C                     2</span>
-<span class="sd">    1   lib_1      TA  G3A ins4len3                     1</span>
+<span class="sd">    1   lib_1      TA  G3A ins4len3                     3</span>
 <span class="sd">    2   lib_2      GG                                   2</span>
 <span class="sd">    3   lib_2      TA          T-6C                     4</span>
 <span class="sd">    &gt;&gt;&gt; dropped</span>
@@ -645,7 +656,53 @@
 <span class="sd">    &gt;&gt;&gt; lib1_consensus</span>
 <span class="sd">      barcode     mutations  variant_call_support</span>
 <span class="sd">    0      AG           A2C                     2</span>
-<span class="sd">    1      TA  G3A ins4len3                     1</span>
+<span class="sd">    1      TA  G3A ins4len3                     3</span>
+
+<span class="sd">    Set ``max_sub_diffs`` to None:</span>
+
+<span class="sd">    &gt;&gt;&gt; consensus, dropped = simple_mutconsensus(df, max_sub_diffs=None)</span>
+<span class="sd">    &gt;&gt;&gt; consensus</span>
+<span class="sd">      library barcode     mutations  variant_call_support</span>
+<span class="sd">    0   lib_1      AG           A2C                     2</span>
+<span class="sd">    1   lib_1      TA  G3A ins4len3                     3</span>
+<span class="sd">    2   lib_2      GG                                   2</span>
+<span class="sd">    3   lib_2      TA          T-6C                     4</span>
+<span class="sd">    4   lib_2      TG                                   2</span>
+<span class="sd">    &gt;&gt;&gt; dropped</span>
+<span class="sd">      library barcode              drop_reason  nseqs</span>
+<span class="sd">    0   lib_2      AA  minor subs too frequent      4</span>
+<span class="sd">    1   lib_3      AA    indels diff too large      2</span>
+
+<span class="sd">    Set ``max_minor_greater_or_equal`` to True:</span>
+
+<span class="sd">    &gt;&gt;&gt; consensus, dropped = simple_mutconsensus(</span>
+<span class="sd">    ...         df, max_minor_greater_or_equal=True)</span>
+<span class="sd">    &gt;&gt;&gt; consensus</span>
+<span class="sd">      library barcode     mutations  variant_call_support</span>
+<span class="sd">    0   lib_1      TA  G3A ins4len3                     3</span>
+<span class="sd">    &gt;&gt;&gt; dropped</span>
+<span class="sd">      library barcode                drop_reason  nseqs</span>
+<span class="sd">    0   lib_1      AG  minor indels too frequent      2</span>
+<span class="sd">    1   lib_2      AA    minor subs too frequent      4</span>
+<span class="sd">    2   lib_2      GG    minor subs too frequent      2</span>
+<span class="sd">    3   lib_2      TA    minor subs too frequent      4</span>
+<span class="sd">    4   lib_2      TG        subs diff too large      2</span>
+<span class="sd">    5   lib_3      AA      indels diff too large      2</span>
+
+<span class="sd">    Use ``min_support``:</span>
+
+<span class="sd">    &gt;&gt;&gt; consensus, dropped = simple_mutconsensus(df, min_support=3)</span>
+<span class="sd">    &gt;&gt;&gt; consensus</span>
+<span class="sd">      library barcode     mutations  variant_call_support</span>
+<span class="sd">    0   lib_1      TA  G3A ins4len3                     3</span>
+<span class="sd">    1   lib_2      TA          T-6C                     4</span>
+<span class="sd">    &gt;&gt;&gt; dropped</span>
+<span class="sd">      library barcode              drop_reason  nseqs</span>
+<span class="sd">    0   lib_1      AG        too few sequences      2</span>
+<span class="sd">    1   lib_2      AA  minor subs too frequent      4</span>
+<span class="sd">    2   lib_2      GG        too few sequences      2</span>
+<span class="sd">    3   lib_2      TG        too few sequences      2</span>
+<span class="sd">    4   lib_3      AA        too few sequences      2</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -670,9 +727,16 @@
     <span class="n">consensus</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">g</span><span class="p">,</span> <span class="n">g_df</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">group_cols</span><span class="p">,</span> <span class="n">observed</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="n">mutation_col</span><span class="p">]:</span>
 
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span>
+
         <span class="n">nseqs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">g_df</span><span class="p">)</span>
         <span class="n">half_nseqs</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">nseqs</span>
         <span class="k">assert</span> <span class="n">nseqs</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">nseqs</span> <span class="o">&lt;</span> <span class="n">min_support</span><span class="p">:</span>
+            <span class="n">dropped</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="s1">&#39;too few sequences&#39;</span><span class="p">,</span> <span class="n">nseqs</span><span class="p">))</span>
+            <span class="k">continue</span>
 
         <span class="n">mutations</span> <span class="o">=</span> <span class="p">[</span><span class="n">process_mut_str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g_df</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
 
@@ -687,34 +751,38 @@
                         <span class="p">(</span><span class="s1">&#39;subs&#39;</span><span class="p">,</span> <span class="n">max_sub_diffs</span><span class="p">,</span> <span class="n">max_minor_sub_frac</span><span class="p">),</span>
                         <span class="p">(</span><span class="s1">&#39;indels&#39;</span><span class="p">,</span> <span class="n">max_indel_diffs</span><span class="p">,</span> <span class="n">max_minor_indel_frac</span><span class="p">),</span>
                         <span class="p">]:</span>
-
-            <span class="c1"># are max_sub_diffs and max_indel_diffs satisfied?</span>
-            <span class="n">ndiffs_by_seq</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-            <span class="k">for</span> <span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">m1set</span><span class="p">),</span> <span class="p">(</span><span class="n">i2</span><span class="p">,</span> <span class="n">m2set</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span>
-                        <span class="nb">enumerate</span><span class="p">(</span><span class="n">mutlists</span><span class="p">[</span><span class="n">mtype</span><span class="p">]),</span> <span class="mi">2</span><span class="p">):</span>
-                <span class="n">ndiffs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">setxor1d</span><span class="p">(</span><span class="n">m1set</span><span class="p">,</span> <span class="n">m2set</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-                <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
-                <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ndifflist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxd</span> <span class="k">for</span> <span class="n">ndifflist</span>
-                   <span class="ow">in</span> <span class="n">ndiffs_by_seq</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-                <span class="n">drop_reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> diff too large&quot;</span>
-                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">maxd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># is max_sub_diffs or max_indel_diffs satisfied?</span>
+                <span class="n">ndiffs_by_seq</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+                <span class="k">for</span> <span class="p">(</span><span class="n">i1</span><span class="p">,</span> <span class="n">m1set</span><span class="p">),</span> <span class="p">(</span><span class="n">i2</span><span class="p">,</span> <span class="n">m2set</span><span class="p">)</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span>
+                         <span class="nb">enumerate</span><span class="p">(</span><span class="n">mutlists</span><span class="p">[</span><span class="n">mtype</span><span class="p">]),</span> <span class="mi">2</span><span class="p">):</span>
+                    <span class="n">ndiffs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">setxor1d</span><span class="p">(</span><span class="n">m1set</span><span class="p">,</span> <span class="n">m2set</span><span class="p">,</span>
+                                                <span class="n">assume_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                    <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
+                    <span class="n">ndiffs_by_seq</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ndiffs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ndifflist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">maxd</span> <span class="k">for</span> <span class="n">ndifflist</span>
+                       <span class="ow">in</span> <span class="n">ndiffs_by_seq</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                    <span class="n">drop_reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> diff too large&quot;</span>
+                    <span class="k">break</span>
 
             <span class="c1"># see if max_minor_mut_frac is satisfied</span>
             <span class="n">max_muts</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">max_frac</span> <span class="o">*</span> <span class="n">nseqs</span><span class="p">)</span>
             <span class="n">nseqs_minus_max_muts</span> <span class="o">=</span> <span class="n">nseqs</span> <span class="o">-</span> <span class="n">max_muts</span>
             <span class="n">counts</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
                             <span class="n">mutlists</span><span class="p">[</span><span class="n">mtype</span><span class="p">]))</span>
-            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">max_muts</span> <span class="o">&lt;</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">nseqs_minus_max_muts</span> <span class="k">for</span> <span class="n">count</span>
-                   <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">max_minor_greater_or_equal</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">((</span><span class="n">max_muts</span> <span class="o">&lt;=</span> <span class="n">count</span> <span class="o">&lt;=</span> <span class="n">nseqs_minus_max_muts</span><span class="p">)</span>
+                       <span class="ow">and</span> <span class="p">(</span><span class="n">count</span> <span class="o">!=</span> <span class="n">nseqs</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                    <span class="n">drop_reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;minor </span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> too frequent&quot;</span>
+                    <span class="k">break</span>
+            <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="n">max_muts</span> <span class="o">&lt;</span> <span class="n">count</span> <span class="o">&lt;</span> <span class="n">nseqs_minus_max_muts</span> <span class="k">for</span> <span class="n">count</span>
+                     <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="n">drop_reason</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;minor </span><span class="si">{</span><span class="n">mtype</span><span class="si">}</span><span class="s2"> too frequent&quot;</span>
                 <span class="k">break</span>
 
             <span class="c1"># consensus for mutation type</span>
             <span class="n">g_consensus</span> <span class="o">+=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">half_nseqs</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">g</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="n">drop_reason</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dropped</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">drop_reason</span><span class="p">,</span> <span class="n">nseqs</span><span class="p">))</span>
@@ -802,7 +870,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -824,7 +892,7 @@
       &copy;2019--2021.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

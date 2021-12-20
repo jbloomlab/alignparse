@@ -4,18 +4,19 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Single-cell virus sequencing &#8212; alignparse 0.2.5 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Single-cell virus sequencing &#8212; alignparse 0.3.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="alignparse package" href="alignparse.html" />
@@ -41,21 +42,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -156,7 +171,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -222,6 +237,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -269,11 +285,11 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Single-cell-virus-sequencing">
+<section id="Single-cell-virus-sequencing">
 <h1>Single-cell virus sequencing<a class="headerlink" href="#Single-cell-virus-sequencing" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process full-length PacBio CCSs of viral cDNAs generated in single-cell virus sequencing of influenza-infected cells. Specifically, it processes a snippet of data taking from <a class="reference external" href="https://jvi.asm.org/content/93/14/e00500-19">Russell et al, 2019</a>, which was generated by PacBio sequencing of viral cDNAs with unique molecular identifiers (UMIS) and cell barcodes added using a 10X Chromium (v2 reagents). This
 notebook aligns these CCSs to the influenza transcripts and parses the barcodes / UMIs and viral mutations.</p>
-<div class="section" id="Set-up-for-analysis">
+<section id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
 <div class="nbinput nblast docutils container">
@@ -332,8 +348,8 @@ notebook aligns these CCSs to the influenza transcripts and parses the barcodes 
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Target-amplicons">
+</section>
+<section id="Target-amplicons">
 <h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Permalink to this headline">¶</a></h2>
 <p>The alignment targets consist of PCR amplicons covering the influenza virus mRNAs (WSN strain) with a 5’ termini corresponding to the primer binding site, the 3’ polyA tail used for reverse transcription, the UMI and cell barcode, and the common 3’ termini. There are also variant tags distinguishing the synonymously tagged viral variants (see <a class="reference external" href="https://jvi.asm.org/content/93/14/e00500-19">Russell et al, 2019</a>).</p>
 <p>First, let’s look at the Genbank file holding the targets. The targets are defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a> Below we show the first 85 lines (the actual file is quite large as it defined all 10 influenza mRNAs):</p>
@@ -588,8 +604,8 @@ or gene alignment. Therefore:</p>
 <li><p>We define the polyA to be just 28 nucleotides in the alignment even though the length in the primer is 30, so that deletions don’t affect the UMI.</p></li>
 </ul>
 <p>These empirically help with the alilgnments.</p>
-</div>
-<div class="section" id="PacBio-CCSs">
+</section>
+<section id="PacBio-CCSs">
 <h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s look at the PacBio CCSs. First, define a data frame with the information on the PacBio runs (here we just have one):</p>
 <div class="nbinput docutils container">
@@ -691,8 +707,8 @@ or gene alignment. Therefore:</p>
 <img alt="_images/flu_virus_seq_example_23_2.png" src="_images/flu_virus_seq_example_23_2.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Align-and-parse">
+</section>
+<section id="Align-and-parse">
 <h2>Align and parse<a class="headerlink" href="#Align-and-parse" title="Permalink to this headline">¶</a></h2>
 <p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for viruses with potentially large internal deletions (which are handled like spliced introns); these options are specified by
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_VIRUS_W_DEL">alignparse.minimap2.OPTIONS_VIRUS_W_DEL</a>:</p>
@@ -1621,8 +1637,8 @@ First few entries in `aligned` for fluHA:
 </table>
 </div></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -1700,7 +1716,7 @@ First few entries in `aligned` for fluHA:
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -1722,7 +1738,7 @@ First few entries in `aligned` for fluHA:
       &copy;2019--2021.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
