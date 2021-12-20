@@ -15,7 +15,7 @@ Added
 
 * ``simple_mutconsensus`` takes ``None`` as parameter for ``max_sub_diffs`` and ``max_indel_diffs``
 
-* ``simple_mutconsensus`` can take argument ``max_minor_greater_or_equal``.
+* ``simple_mutconsensus`` takes arguments ``min_support`` and ``max_minor_greater_or_equal``
 
 0.2.6
 -----
