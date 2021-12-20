@@ -17,6 +17,149 @@ import pandas as pd  # noqa: F401
 import alignparse.consensus
 
 
+class InFrameDeletionsToSubs:
+    """Convert in-frame codon-length deletions to substitutions.
+
+    Also shifts deletions to put them in frame when possible.
+    Deletions that are not in-frame and codon length are left as
+    deletions.
+
+    Parameters
+    ----------
+    geneseq : str
+        The sequence of the "wildtype" gene.
+
+    Attributes
+    ----------
+    geneseq : str
+
+    Example
+    --------
+    First, a case where deletions are already in frame:
+
+    >>> geneseq = 'ATG GCG TCA GTA CCG CAT CTA'.replace(' ', '')
+    >>> deltosubs = InFrameDeletionsToSubs(geneseq)
+
+    >>> deltosubs.dels_to_subs('A1C del4to6')
+    'A1C G4- C5- G6-'
+
+    >>> deltosubs.dels_to_subs('A1C del4to6 del9to11 del13to15 del19to20')
+    'A1C G4- C5- G6- G10- T11- A12- C13- C14- G15- del19to20'
+
+    Now case where deletions need to be shifted to in frame:
+
+    >>> mut_str = 'A1C del3to5 ins11GGG del14to16 del19to20'
+    >>> deltosubs.dels_to_subs(mut_str)
+    'A1C G4- C5- G6- ins11GGG C13- C14- G15- del19to20'
+
+    Now case where deletions cannot be shifted to in frame:
+
+    >>> geneseq2 = 'ATG ATC TCA ATA CAG GAT CTA'.replace(' ', '')
+    >>> deltosubs2 = InFrameDeletionsToSubs(geneseq2)
+    >>> deltosubs2.dels_to_subs(mut_str)
+    'A1C del3to5 ins11GGG del14to16 del19to20'
+
+    You can also just directly test if any given deletion can be shifted
+    up or down in position while retaining the same sequence:
+
+    >>> deltosubs.shiftable(13, 13, 0)
+    True
+
+    >>> deltosubs.shiftable(13, 13, 1)
+    True
+
+    >>> deltosubs.shiftable(13, 13, -1)
+    False
+
+    """
+
+    def __init__(self, geneseq):
+        """See main class docstring."""
+        if len(geneseq) % 3:
+            raise ValueError(f"{len(geneseq)} not a multiple of 3")
+        self.geneseq = geneseq
+        self._nt_sites = dict(enumerate(geneseq, start=1))
+        self._geneseq_list = list(geneseq)
+        assert list(self._nt_sites.values()) == self._geneseq_list
+
+    def shiftable(self, start, end, shift):
+        """Can deletion be shifted in sequence?
+
+        Parameters
+        ----------
+        start : int
+            Start of deletion in 1, 2, ... numbering.
+        end: int
+            End of deletion in 1, 2, ... numbering (inclusive).
+        shift : int
+            Amount we try to shift deletion.
+
+        Returns
+        -------
+        bool
+            Can deletion be shifted?
+
+        """
+        if not (1 <= start <= end <= len(self.geneseq)):
+            raise ValueError(f"invalid `start` / `end` of {start} / {end}")
+        orig = ''.join(self.geneseq[: start - 1] + self.geneseq[end:])
+        shifted = ''.join(self.geneseq[: start - 1 + shift] +
+                          self.geneseq[end + shift:])
+        assert len(orig) == len(shifted) == len(self.geneseq) - end + start - 1
+        return orig == shifted
+
+    def dels_to_subs(self, mut_str):
+        """str: Copy of ``mut_str`` with in-frame deletions as substitutions"""
+        muts = alignparse.consensus.process_mut_str(mut_str)
+
+        codon_len_deletions = []
+        for deletion in muts.deletions:
+            m = alignparse.consensus._MUT_REGEX['deletion'].fullmatch(deletion)
+            (start, end) = (int(m.group('start')), int(m.group('end')))
+            assert end >= start, f"{deletion=}, {start=}, {end=}"
+            if 0 == (((end - start) + 1) % 3):
+                codon_len_deletions.append((start, end, deletion))
+
+        if not codon_len_deletions:
+            return mut_str
+
+        # make sure deletion doesn't overlap with substitution or insertion
+        mutated_sites = set()
+        for sub in muts.substitutions:
+            m = alignparse.consensus._MUT_REGEX['substitution'].fullmatch(sub)
+            mutated_sites.add(int(m.group('start')))
+        for ins in muts.insertions:
+            m = alignparse.consensus._MUT_REGEX['insertion'].fullmatch(ins)
+            mutated_sites.add(int(m.group('start')))
+
+        for start, end, deletion in codon_len_deletions:
+            frame = start % 3 if (start % 3 != 0) else 3
+            if frame == 1:  # already in frame
+                assert (end % 3) == 0
+                new_subs = ' '.join(f"{self._nt_sites[i]}{i}-" for i in
+                                    range(start, end + 1))
+                assert mut_str.count(deletion) == 1
+                mut_str = mut_str.replace(deletion, new_subs)
+                assert mut_str.count(deletion) == 0
+            else:
+                shifts = {2: (-1, 2), 3: (-2, 1)}[frame]
+                for shift in shifts:
+                    if mutated_sites.intersection(range(start + shift,
+                                                        end + shift + 1)):
+                        continue
+                    if self.shiftable(start, end, shift):
+                        new_subs = ' '.join(f"{self._nt_sites[i]}{i}-" for i in
+                                            range(start + shift,
+                                                  end + shift + 1)
+                                            )
+                        assert mut_str.count(deletion) == 1
+                        mut_str = mut_str.replace(deletion, new_subs)
+                        assert mut_str.count(deletion) == 0
+                        break
+
+        return mut_str
+
+
 def qvals_to_accuracy(qvals, encoding='numbers'):
     r"""Convert set of quality scores into average accuracy.
 

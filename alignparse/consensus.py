@@ -30,8 +30,8 @@ Mutations = collections.namedtuple(
 
 
 _MUT_REGEX = {
-    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN]'),
-    'deletion': re.compile(r'del(?P<start>\-?\d+)to\-?\d+'),
+    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN\-]'),
+    'deletion': re.compile(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)'),
     'insertion': re.compile(r'ins(?P<start>\-?\d+)(?:len\d+|[ACGTN]+)'),
     }
 """dict: Mutation regular expression matches."""
@@ -499,6 +499,8 @@ def simple_mutconsensus(df,
                         max_indel_diffs=2,
                         max_minor_sub_frac=0.1,
                         max_minor_indel_frac=0.25,
+                        max_minor_greater_or_equal=False,
+                        min_support=1,
                         support_col='variant_call_support',
                         ):
     """Get simple consensus of mutations with group (i.e., barcode).
@@ -511,19 +513,26 @@ def simple_mutconsensus(df,
         Group all sequences that share values in these column(s) of `df`.
     mutation_col : str
         Column in `df` with mutations in form that can be processed by
-        :func:`processe_mut_str`.
-    max_sub_diffs : int
+        :func:`process_mut_str`.
+    max_sub_diffs : int or None
         Drop groups where any variant differs from all other variants
         by more than this many substitution (point mutation) differences.
-    max_indel_diffs : int
+        Set to ``None`` if no limit.
+    max_indel_diffs : int or None
         Drop groups where any variant differs from all other variants
-        by more than this many indel differences.
+        by more than this many indel differences. Set to ``None`` if no limit.
     max_minor_sub_frac : float
-        Drop groups with a minor (non-consensus) substitution in more than the
+        Drop groups with a minor (non-consensus) substitution in > the
         **ceiling** of this fraction times the number of sequences in group.
     max_minor_indel_frac : float
-        Drop groups with a minor (non-consensus) indel in more than the
+        Drop groups with a minor (non-consensus) indel in > the
         **ceiling** of this fraction times the number of sequences in group.
+    max_minor_greater_or_equal : bool
+        For ``max_minor_sub_frac`` and ``max_minor_indel_frac``, use >= rather
+        than >. This is may help if you want to be conservative in
+        avoiding bad consensuses. But don't reject if zero differences.
+    min_support : int
+        Require at least this many supporting sequences to call consensus.
     support_col : str
           Name of column in returned `consensus` data frame with number
           of sequences supporting the consensus call.
@@ -566,6 +575,8 @@ def simple_mutconsensus(df,
     ...        lib_1,AG,A2C del5to7
     ...        lib_1,AG,A2C
     ...        lib_1,TA,G3A ins4len3
+    ...        lib_1,TA,G3A ins4len3
+    ...        lib_1,TA,G3A ins4len3
     ...        lib_2,TA,C5A T-6C
     ...        lib_2,TA,ins5len1 T-6C
     ...        lib_2,TA,T-6C
@@ -594,7 +605,7 @@ def simple_mutconsensus(df,
     >>> consensus
       library barcode     mutations  variant_call_support
     0   lib_1      AG           A2C                     2
-    1   lib_1      TA  G3A ins4len3                     1
+    1   lib_1      TA  G3A ins4len3                     3
     2   lib_2      GG                                   2
     3   lib_2      TA          T-6C                     4
     >>> dropped
@@ -610,7 +621,53 @@ def simple_mutconsensus(df,
     >>> lib1_consensus
       barcode     mutations  variant_call_support
     0      AG           A2C                     2
-    1      TA  G3A ins4len3                     1
+    1      TA  G3A ins4len3                     3
+
+    Set ``max_sub_diffs`` to None:
+
+    >>> consensus, dropped = simple_mutconsensus(df, max_sub_diffs=None)
+    >>> consensus
+      library barcode     mutations  variant_call_support
+    0   lib_1      AG           A2C                     2
+    1   lib_1      TA  G3A ins4len3                     3
+    2   lib_2      GG                                   2
+    3   lib_2      TA          T-6C                     4
+    4   lib_2      TG                                   2
+    >>> dropped
+      library barcode              drop_reason  nseqs
+    0   lib_2      AA  minor subs too frequent      4
+    1   lib_3      AA    indels diff too large      2
+
+    Set ``max_minor_greater_or_equal`` to True:
+
+    >>> consensus, dropped = simple_mutconsensus(
+    ...         df, max_minor_greater_or_equal=True)
+    >>> consensus
+      library barcode     mutations  variant_call_support
+    0   lib_1      TA  G3A ins4len3                     3
+    >>> dropped
+      library barcode                drop_reason  nseqs
+    0   lib_1      AG  minor indels too frequent      2
+    1   lib_2      AA    minor subs too frequent      4
+    2   lib_2      GG    minor subs too frequent      2
+    3   lib_2      TA    minor subs too frequent      4
+    4   lib_2      TG        subs diff too large      2
+    5   lib_3      AA      indels diff too large      2
+
+    Use ``min_support``:
+
+    >>> consensus, dropped = simple_mutconsensus(df, min_support=3)
+    >>> consensus
+      library barcode     mutations  variant_call_support
+    0   lib_1      TA  G3A ins4len3                     3
+    1   lib_2      TA          T-6C                     4
+    >>> dropped
+      library barcode              drop_reason  nseqs
+    0   lib_1      AG        too few sequences      2
+    1   lib_2      AA  minor subs too frequent      4
+    2   lib_2      GG        too few sequences      2
+    3   lib_2      TG        too few sequences      2
+    4   lib_3      AA        too few sequences      2
 
     """
     if isinstance(group_cols, str):
@@ -635,9 +692,16 @@ def simple_mutconsensus(df,
     consensus = []
     for g, g_df in df.groupby(group_cols, observed=True)[mutation_col]:
 
+        if len(group_cols) == 1:
+            g = [g]
+
         nseqs = len(g_df)
         half_nseqs = 0.5 * nseqs
         assert nseqs > 0
+
+        if nseqs < min_support:
+            dropped.append((*g, 'too few sequences', nseqs))
+            continue
 
         mutations = [process_mut_str(s) for s in g_df.values]
 
@@ -652,34 +716,38 @@ def simple_mutconsensus(df,
                         ('subs', max_sub_diffs, max_minor_sub_frac),
                         ('indels', max_indel_diffs, max_minor_indel_frac),
                         ]:
-
-            # are max_sub_diffs and max_indel_diffs satisfied?
-            ndiffs_by_seq = collections.defaultdict(list)
-            for (i1, m1set), (i2, m2set) in itertools.combinations(
-                        enumerate(mutlists[mtype]), 2):
-                ndiffs = len(numpy.setxor1d(m1set, m2set, assume_unique=True))
-                ndiffs_by_seq[i1].append(ndiffs)
-                ndiffs_by_seq[i2].append(ndiffs)
-            if any(min(ndifflist) > maxd for ndifflist
-                   in ndiffs_by_seq.values()):
-                drop_reason = f"{mtype} diff too large"
-                break
+            if maxd is not None:
+                # is max_sub_diffs or max_indel_diffs satisfied?
+                ndiffs_by_seq = collections.defaultdict(list)
+                for (i1, m1set), (i2, m2set) in itertools.combinations(
+                         enumerate(mutlists[mtype]), 2):
+                    ndiffs = len(numpy.setxor1d(m1set, m2set,
+                                                assume_unique=True))
+                    ndiffs_by_seq[i1].append(ndiffs)
+                    ndiffs_by_seq[i2].append(ndiffs)
+                if any(min(ndifflist) > maxd for ndifflist
+                       in ndiffs_by_seq.values()):
+                    drop_reason = f"{mtype} diff too large"
+                    break
 
             # see if max_minor_mut_frac is satisfied
             max_muts = math.ceil(max_frac * nseqs)
             nseqs_minus_max_muts = nseqs - max_muts
             counts = collections.Counter(itertools.chain.from_iterable(
                             mutlists[mtype]))
-            if any(max_muts < count < nseqs_minus_max_muts for count
-                   in counts.values()):
+            if max_minor_greater_or_equal:
+                if any((max_muts <= count <= nseqs_minus_max_muts)
+                       and (count != nseqs)
+                       for count in counts.values()):
+                    drop_reason = f"minor {mtype} too frequent"
+                    break
+            elif any(max_muts < count < nseqs_minus_max_muts for count
+                     in counts.values()):
                 drop_reason = f"minor {mtype} too frequent"
                 break
 
             # consensus for mutation type
             g_consensus += [m for m, c in counts.items() if c > half_nseqs]
-
-        if len(group_cols) == 1:
-            g = [g]
 
         if drop_reason is not None:
             dropped.append((*g, drop_reason, nseqs))

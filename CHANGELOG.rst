@@ -6,6 +6,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.3.0
+------
+
+Added
++++++
+* ``InFrameDeletionsToSubs`` class.
+
+* ``simple_mutconsensus`` takes ``None`` as parameter for ``max_sub_diffs`` and ``max_indel_diffs``
+
+* ``simple_mutconsensus`` takes arguments ``min_support`` and ``max_minor_greater_or_equal``
+
 0.2.6
 -----
 
