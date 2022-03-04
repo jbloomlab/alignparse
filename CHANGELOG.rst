@@ -13,6 +13,8 @@ Added
 ++++++
 * ``MutationRenumber`` accepts gap (``-``) and stop codo (``*``) characters.
 
+* Started requring ``black`` formatting
+
 0.3.0
 ------
 

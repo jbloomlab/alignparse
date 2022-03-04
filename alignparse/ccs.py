@@ -89,13 +89,15 @@ class Summary:
             if not os.path.isfile(reportfile):
                 raise IOError(f"cannot find `reportfile` {reportfile}")
             self.zmw_stats = report_to_stats(self.reportfile)
-            zmw_stats_nccs = (self.zmw_stats[
-                              self.zmw_stats['status'].str.match("^Success")]
-                              ['number'].sum())
+            zmw_stats_nccs = self.zmw_stats[
+                self.zmw_stats["status"].str.match("^Success")
+            ]["number"].sum()
             if len(self.length) != zmw_stats_nccs:
-                raise ValueError('`fastqfile`, `reportfile` differ on number '
-                                 f"CCSs.\n{fastqfile} has {len(self.passes)}\n"
-                                 f"{reportfile} has {zmw_stats_nccs}")
+                raise ValueError(
+                    "`fastqfile`, `reportfile` differ on number "
+                    f"CCSs.\n{fastqfile} has {len(self.passes)}\n"
+                    f"{reportfile} has {zmw_stats_nccs}"
+                )
 
         else:
             self.zmw_stats = None
@@ -129,15 +131,15 @@ class Summaries:
 
     """
 
-    def __init__(self, df, *,
-                 name_col='name', fastq_col='fastq', report_col='report',
-                 ncpus=-1):
+    def __init__(
+        self, df, *, name_col="name", fastq_col="fastq", report_col="report", ncpus=-1
+    ):
         """See main class docstring."""
         cols = [name_col, fastq_col]
         if report_col:
             cols.append(report_col)
         if len(cols) != len(set(cols)):
-            raise ValueError('repeated column names in `df`')
+            raise ValueError("repeated column names in `df`")
         for col in cols:
             if col not in df.columns:
                 raise ValueError(f"`df` lacks column {col}")
@@ -151,28 +153,37 @@ class Summaries:
         else:
             ncpus = min(pathos.multiprocessing.cpu_count(), ncpus)
         if ncpus < 1:
-            raise ValueError('`ncpus` must be >= 1')
+            raise ValueError("`ncpus` must be >= 1")
         elif ncpus > 1:
             pool = pathos.pools.ProcessPool(ncpus)
             map_func = pool.map
         else:
+
             def map_func(f, *args):
                 return [f(*argtup) for argtup in zip(*args)]
-        self.summaries = map_func(Summary,
-                                  df[name_col],
-                                  df[fastq_col],
-                                  (df[report_col] if report_col else
-                                   itertools.repeat(None)),
-                                  )
+
+        self.summaries = map_func(
+            Summary,
+            df[name_col],
+            df[fastq_col],
+            (df[report_col] if report_col else itertools.repeat(None)),
+        )
         # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
         if ncpus > 1:
             pool.close()
             pool.join()
             pool.clear()
 
-    def plot_ccs_stats(self, variable, *,
-                       trim_frac=0.005, bins=25, histogram_stat='count',
-                       maxcol=None, panelsize=1.75):
+    def plot_ccs_stats(
+        self,
+        variable,
+        *,
+        trim_frac=0.005,
+        bins=25,
+        histogram_stat="count",
+        maxcol=None,
+        panelsize=1.75,
+    ):
         """Plot histograms of CCS stats for all runs.
 
         Parameters
@@ -198,32 +209,35 @@ class Summaries:
             A panel of histograms.
 
         """
-        df = (self.ccs_stats(variable)
-              .assign(lower=lambda x: x[variable].quantile(trim_frac),
-                      upper=lambda x: x[variable].quantile(1 - trim_frac),
-                      trim=lambda x: ((x[variable] > x['upper']) |
-                                      (x[variable] < x['lower']))
-                      )
-              .query('not trim')
-              )
+        df = (
+            self.ccs_stats(variable)
+            .assign(
+                lower=lambda x: x[variable].quantile(trim_frac),
+                upper=lambda x: x[variable].quantile(1 - trim_frac),
+                trim=lambda x: (
+                    (x[variable] > x["upper"]) | (x[variable] < x["lower"])
+                ),
+            )
+            .query("not trim")
+        )
 
-        npanels = len(df['name'].unique())
+        npanels = len(df["name"].unique())
         if maxcol is None:
             ncol = npanels
         else:
             ncol = min(maxcol, npanels)
         nrow = math.ceil(npanels / ncol)
 
-        p = (p9.ggplot(df, p9.aes(variable, y=f"..{histogram_stat}..")) +
-             p9.geom_histogram(bins=bins) +
-             p9.facet_wrap('~ name', ncol=ncol) +
-             p9.theme(figure_size=(panelsize * ncol, panelsize * nrow),
-                      axis_text_x=p9.element_text(angle=90,
-                                                  vjust=1,
-                                                  hjust=0.5)
-                      ) +
-             p9.ylab('number of CCSs')
-             )
+        p = (
+            p9.ggplot(df, p9.aes(variable, y=f"..{histogram_stat}.."))
+            + p9.geom_histogram(bins=bins)
+            + p9.facet_wrap("~ name", ncol=ncol)
+            + p9.theme(
+                figure_size=(panelsize * ncol, panelsize * nrow),
+                axis_text_x=p9.element_text(angle=90, vjust=1, hjust=0.5),
+            )
+            + p9.ylab("number of CCSs")
+        )
 
         return p
 
@@ -248,15 +262,15 @@ class Summaries:
 
         df_list = []
         for summary in self.summaries:
-            df_list.append(pd.DataFrame({'name': summary.name,
-                                         variable: getattr(summary, variable)
-                                         }))
-
-        return (pd.concat(df_list, sort=False, ignore_index=True)
-                .assign(name=lambda x: pd.Categorical(x['name'],
-                                                      x['name'].unique(),
-                                                      ordered=True))
+            df_list.append(
+                pd.DataFrame(
+                    {"name": summary.name, variable: getattr(summary, variable)}
                 )
+            )
+
+        return pd.concat(df_list, sort=False, ignore_index=True).assign(
+            name=lambda x: pd.Categorical(x["name"], x["name"].unique(), ordered=True)
+        )
 
     def has_stat(self, variable):
         """Do the summaries contain a statistic?
@@ -273,12 +287,12 @@ class Summaries:
             `False` otherwise.
 
         """
-        valid_variables = {'length', 'passes', 'accuracy'}
+        valid_variables = {"length", "passes", "accuracy"}
         if variable not in valid_variables:
-            raise ValueError(f"Invalid `variable` {variable}. Must be one "
-                             f"of: {valid_variables}")
-        return all(getattr(summary, variable) is not None for
-                   summary in self.summaries)
+            raise ValueError(
+                f"Invalid `variable` {variable}. Must be one " f"of: {valid_variables}"
+            )
+        return all(getattr(summary, variable) is not None for summary in self.summaries)
 
     def plot_zmw_stats(self, **kwargs):
         """Plot of ZMW stats for all runs.
@@ -300,18 +314,18 @@ class Summaries:
         """
         df = self.zmw_stats(**kwargs)
 
-        p = (p9.ggplot(df, p9.aes(x='name', y='number', fill='status')) +
-             p9.geom_col(position=p9.position_stack(reverse=True), width=0.8) +
-             p9.theme(axis_text_x=p9.element_text(angle=90,
-                                                  vjust=1,
-                                                  hjust=0.5),
-                      figure_size=(0.4 * len(df['name'].unique()), 2.5)
-                      ) +
-             p9.ylab('number of ZMWs') +
-             p9.xlab('')
-             )
+        p = (
+            p9.ggplot(df, p9.aes(x="name", y="number", fill="status"))
+            + p9.geom_col(position=p9.position_stack(reverse=True), width=0.8)
+            + p9.theme(
+                axis_text_x=p9.element_text(angle=90, vjust=1, hjust=0.5),
+                figure_size=(0.4 * len(df["name"].unique()), 2.5),
+            )
+            + p9.ylab("number of ZMWs")
+            + p9.xlab("")
+        )
 
-        if len(df['status'].unique()) < len(CBPALETTE):
+        if len(df["status"].unique()) < len(CBPALETTE):
             p = p + p9.scale_fill_manual(CBPALETTE[1:])
 
         return p
@@ -337,71 +351,57 @@ class Summaries:
 
         """
         if not self.has_zmw_stats():
-            raise ValueError('ZMW stats not available')
+            raise ValueError("ZMW stats not available")
 
-        df = (pd.concat([summary.zmw_stats.assign(name=summary.name)
-                         for summary in self.summaries],
-                        sort=False, ignore_index=True)
-              [['name', 'status', 'number', 'fraction']]
-              .assign(max_fraction=lambda x: (x.groupby('status')
-                                              ['fraction']
-                                              .transform(max)
-                                              ),
-                      failed=lambda x: x['status'].str.contains('Failed'),
-                      other=lambda x: ((x['max_fraction'] < minfailfrac) &
-                                       x['failed'])
-                      )
-              )
+        df = pd.concat(
+            [summary.zmw_stats.assign(name=summary.name) for summary in self.summaries],
+            sort=False,
+            ignore_index=True,
+        )[["name", "status", "number", "fraction"]].assign(
+            max_fraction=lambda x: (x.groupby("status")["fraction"].transform(max)),
+            failed=lambda x: x["status"].str.contains("Failed"),
+            other=lambda x: ((x["max_fraction"] < minfailfrac) & x["failed"]),
+        )
 
-        other_df = (df.query('other')
-                    .groupby('name')
-                    .aggregate({'number': sum, 'fraction': sum, 'failed': any})
-                    .assign(status='Failed -- Other reason')
-                    .reset_index()
-                    .assign(max_fraction=lambda x: (x.groupby('status')
-                                                    ['fraction']
-                                                    .transform(max)
-                                                    ))
-                    )
+        other_df = (
+            df.query("other")
+            .groupby("name")
+            .aggregate({"number": sum, "fraction": sum, "failed": any})
+            .assign(status="Failed -- Other reason")
+            .reset_index()
+            .assign(
+                max_fraction=lambda x: (x.groupby("status")["fraction"].transform(max))
+            )
+        )
 
-        df = (df
-              .query('not other')
-              .drop(columns='other')
-              .merge(other_df, how='outer')
-              )
+        df = df.query("not other").drop(columns="other").merge(other_df, how="outer")
 
         if groupsuccess:
-            success_df = (df[df['status'].str.match("^Success")]
-                          .groupby('name')
-                          .aggregate({'number': sum, 'fraction': sum,
-                                      'failed': any, 'max_fraction': max})
-                          .reset_index()
-                          .assign(status='Success -- CCS generated')
-                          )
-            df = (df[~df['status'].str.match("^Success")]
-                  .merge(success_df, how='outer')
-                  )
+            success_df = (
+                df[df["status"].str.match("^Success")]
+                .groupby("name")
+                .aggregate(
+                    {"number": sum, "fraction": sum, "failed": any, "max_fraction": max}
+                )
+                .reset_index()
+                .assign(status="Success -- CCS generated")
+            )
+            df = df[~df["status"].str.match("^Success")].merge(success_df, how="outer")
 
         # order columns
         names = [summary.name for summary in self.summaries]
-        statuses = (df
-                    .sort_values(['failed', 'max_fraction'],
-                                 ascending=[True, False])
-                    ['status']
-                    .unique()
-                    )
-        df = (df
-              .assign(name=lambda x: pd.Categorical(x['name'],
-                                                    names,
-                                                    ordered=True),
-                      status=lambda x: pd.Categorical(x['status'],
-                                                      statuses,
-                                                      ordered=True),
-                      )
-              .sort_values(['name', 'status'])
-              .drop(columns=['max_fraction', 'failed'])
-              .reset_index(drop=True)
-              )
+        statuses = df.sort_values(["failed", "max_fraction"], ascending=[True, False])[
+            "status"
+        ].unique()
+        df = (
+            df.assign(
+                name=lambda x: pd.Categorical(x["name"], names, ordered=True),
+                status=lambda x: pd.Categorical(x["status"], statuses, ordered=True),
+            )
+            .sort_values(["name", "status"])
+            .drop(columns=["max_fraction", "failed"])
+            .reset_index(drop=True)
+        )
 
         return df
 
@@ -414,8 +414,7 @@ class Summaries:
             `True` if all runs have ZMW stats, `False` otherwise.
 
         """
-        return all(summary.zmw_stats is not None for
-                   summary in self.summaries)
+        return all(summary.zmw_stats is not None for summary in self.summaries)
 
 
 def report_to_stats(reportfile):
@@ -607,9 +606,7 @@ def report_to_stats(reportfile):
     >>> reportfile.close()
 
     """
-    for func in [_report_to_stats_v5,
-                 _report_to_stats_v4,
-                 _report_to_stats_v3]:
+    for func in [_report_to_stats_v5, _report_to_stats_v4, _report_to_stats_v3]:
         df = func(reportfile)
         if df is not None:
             return df
@@ -627,36 +624,42 @@ def _report_to_stats_v5(reportfile):
 
     """
     reportmatch = re.compile(
-            r'^ZMWs input\s+:\s+\d+[\s\n]+'
-            r'ZMWs pass filters\s+:\s+(?P<n_generated>\d+) \S+\n'
-            r'ZMWs fail filters\s+:\s+(?P<n_fail>\d+) \S+\n'
-            r'ZMWs shortcut filters\s+:\s+(?P<n_shortcut_filters>\d+) \S+\n'
-            '\n'
-            r'ZMWs with tandem repeats\s+:\s+\d+ \S+\n'
-            '\n'
-            r'Exclusive counts for ZMWs failing filters:\n'
-            r'(?P<failed_text>([\w \-]+\s+: \d+ \S+\n)+)$'
-            )
+        r"^ZMWs input\s+:\s+\d+[\s\n]+"
+        r"ZMWs pass filters\s+:\s+(?P<n_generated>\d+) \S+\n"
+        r"ZMWs fail filters\s+:\s+(?P<n_fail>\d+) \S+\n"
+        r"ZMWs shortcut filters\s+:\s+(?P<n_shortcut_filters>\d+) \S+\n"
+        "\n"
+        r"ZMWs with tandem repeats\s+:\s+\d+ \S+\n"
+        "\n"
+        r"Exclusive counts for ZMWs failing filters:\n"
+        r"(?P<failed_text>([\w \-]+\s+: \d+ \S+\n)+)$"
+    )
     with open(reportfile) as f:
         report = f.read()
     m = reportmatch.search(report)
     if m is not None:
-        failed_records = [('Failed -- ' + line.split(':')[0].strip(),
-                           int(line.split(':')[1].split()[0]))
-                          for line in m.group('failed_text').split('\n')
-                          if line]
-        failed_records.append(('Failed -- shortcut filter',
-                               int(m.group('n_shortcut_filters')))
-                              )
-        return (pd.DataFrame({'status': ['Success -- CCS generated'],
-                              'number': [int(m.group('n_generated'))]
-                              })
-                .append(pd.DataFrame(failed_records,
-                                     columns=['status', 'number'])
-                        )
-                .reset_index(drop=True)
-                .assign(fraction=lambda x: x['number'] / x['number'].sum())
-                )
+        failed_records = [
+            (
+                "Failed -- " + line.split(":")[0].strip(),
+                int(line.split(":")[1].split()[0]),
+            )
+            for line in m.group("failed_text").split("\n")
+            if line
+        ]
+        failed_records.append(
+            ("Failed -- shortcut filter", int(m.group("n_shortcut_filters")))
+        )
+        return (
+            pd.DataFrame(
+                {
+                    "status": ["Success -- CCS generated"],
+                    "number": [int(m.group("n_generated"))],
+                }
+            )
+            .append(pd.DataFrame(failed_records, columns=["status", "number"]))
+            .reset_index(drop=True)
+            .assign(fraction=lambda x: x["number"] / x["number"].sum())
+        )
     else:
         return None
 
@@ -671,35 +674,41 @@ def _report_to_stats_v4(reportfile):
 
     """
     reportmatch = re.compile(
-            r'^ZMWs input\s+\(A\)\s+:\s+\d+[\s\n]+'
-            r'ZMWs generating CCS\s+\(B\)\s+:\s+(?P<n_generated>\d+) \S+\n'
-            r'ZMWs filtered\s+\(C\)\s+:\s+\d+ \S+\n'
-            '\n'
-            r'Exclusive ZMW counts for \(C\):\n'
-            r'(?P<failed_text>([\w \-]+: \d+ \S+\n)+)$'
-            )
+        r"^ZMWs input\s+\(A\)\s+:\s+\d+[\s\n]+"
+        r"ZMWs generating CCS\s+\(B\)\s+:\s+(?P<n_generated>\d+) \S+\n"
+        r"ZMWs filtered\s+\(C\)\s+:\s+\d+ \S+\n"
+        "\n"
+        r"Exclusive ZMW counts for \(C\):\n"
+        r"(?P<failed_text>([\w \-]+: \d+ \S+\n)+)$"
+    )
     with open(reportfile) as f:
         report = f.read()
     m = reportmatch.search(report)
     if m is not None:
-        failed_records = [('Failed -- ' + line.split(':')[0].strip(),
-                           int(line.split(':')[1].split()[0]))
-                          for line in m.group('failed_text').split('\n')
-                          if line]
-        return (pd.DataFrame({'status': ['Success -- CCS generated'],
-                              'number': [int(m.group('n_generated'))]
-                              })
-                .append(pd.DataFrame(failed_records,
-                                     columns=['status', 'number'])
-                        )
-                .reset_index(drop=True)
-                .assign(fraction=lambda x: x['number'] / x['number'].sum())
-                )
+        failed_records = [
+            (
+                "Failed -- " + line.split(":")[0].strip(),
+                int(line.split(":")[1].split()[0]),
+            )
+            for line in m.group("failed_text").split("\n")
+            if line
+        ]
+        return (
+            pd.DataFrame(
+                {
+                    "status": ["Success -- CCS generated"],
+                    "number": [int(m.group("n_generated"))],
+                }
+            )
+            .append(pd.DataFrame(failed_records, columns=["status", "number"]))
+            .reset_index(drop=True)
+            .assign(fraction=lambda x: x["number"] / x["number"].sum())
+        )
     else:
         return None
 
 
-def _report_to_stats_v3(reportfile, *, stat_type='zmw'):
+def _report_to_stats_v3(reportfile, *, stat_type="zmw"):
     """Implement :func:`report_to_stats` for ``ccs`` 3.* output.
 
     Returns
@@ -708,23 +717,25 @@ def _report_to_stats_v3(reportfile, *, stat_type='zmw'):
         Returns `None` if cannot match `reportfile`.
 
     """
-    reportmatch = re.compile('^ZMW Yield\n(?P<zmw>(.+\n)+)\n\n'
-                             '(?:Subread Yield\n(?P<subread>(.+\n)+))?$')
+    reportmatch = re.compile(
+        "^ZMW Yield\n(?P<zmw>(.+\n)+)\n\n" "(?:Subread Yield\n(?P<subread>(.+\n)+))?$"
+    )
     with open(reportfile) as f:
         report = f.read()
     m = reportmatch.search(report)
     if m:
-        return (pd.read_csv(io.StringIO(m.group(stat_type)),
-                            names=['status', 'number', 'percent'])
-                .assign(fraction=lambda x: (x.percent.str.slice(None, -1)
-                                            .astype(float) / 100))
-                [['status', 'number', 'fraction']]
-                )
+        return pd.read_csv(
+            io.StringIO(m.group(stat_type)), names=["status", "number", "percent"]
+        ).assign(
+            fraction=lambda x: (x.percent.str.slice(None, -1).astype(float) / 100)
+        )[
+            ["status", "number", "fraction"]
+        ]
     else:
         return None
 
 
-def get_ccs_stats(fastqfile, *, pass_tag='np'):
+def get_ccs_stats(fastqfile, *, pass_tag="np"):
     """Get basic statistics about circular consensus sequences.
 
     Parameters
@@ -809,10 +820,11 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
 
     """
     if pass_tag:
-        passmatch = re.compile(r'(?:^|\s)'  # start of str or space
-                               rf"{pass_tag}(?::i:|=)(?P<pass>\d+)"
-                               r'(?:\s|$)'  # end of str or space
-                               )
+        passmatch = re.compile(
+            r"(?:^|\s)"  # start of str or space
+            rf"{pass_tag}(?::i:|=)(?P<pass>\d+)"
+            r"(?:\s|$)"  # end of str or space
+        )
         passes = []
     else:
         passes = None
@@ -821,8 +833,9 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
     accuracy = []
     for rec in pysam.FastxFile(fastqfile):
         length.append(len(rec.sequence))
-        accuracy.append(alignparse.utils.qvals_to_accuracy(
-                            numpy.array(rec.get_quality_array())))
+        accuracy.append(
+            alignparse.utils.qvals_to_accuracy(numpy.array(rec.get_quality_array()))
+        )
         if passes is not None:
             if not rec.comment:
                 passes = None
@@ -831,17 +844,19 @@ def get_ccs_stats(fastqfile, *, pass_tag='np'):
                 if not m:
                     passes = None
                 else:
-                    passes.append(m.group('pass'))
+                    passes.append(m.group("pass"))
 
     if passes is not None:
-        passes = numpy.array(passes, dtype='int')
-    CCS_Stats = collections.namedtuple('CCS_Stats', 'passes accuracy length')
-    return CCS_Stats(passes=passes,
-                     accuracy=numpy.array(accuracy, dtype='float'),
-                     length=numpy.array(length, dtype='int'),
-                     )
+        passes = numpy.array(passes, dtype="int")
+    CCS_Stats = collections.namedtuple("CCS_Stats", "passes accuracy length")
+    return CCS_Stats(
+        passes=passes,
+        accuracy=numpy.array(accuracy, dtype="float"),
+        length=numpy.array(length, dtype="int"),
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

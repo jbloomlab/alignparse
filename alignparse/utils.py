@@ -102,9 +102,10 @@ class InFrameDeletionsToSubs:
         """
         if not (1 <= start <= end <= len(self.geneseq)):
             raise ValueError(f"invalid `start` / `end` of {start} / {end}")
-        orig = ''.join(self.geneseq[: start - 1] + self.geneseq[end:])
-        shifted = ''.join(self.geneseq[: start - 1 + shift] +
-                          self.geneseq[end + shift:])
+        orig = "".join(self.geneseq[: start - 1] + self.geneseq[end:])
+        shifted = "".join(
+            self.geneseq[: start - 1 + shift] + self.geneseq[end + shift :]
+        )
         assert len(orig) == len(shifted) == len(self.geneseq) - end + start - 1
         return orig == shifted
 
@@ -114,8 +115,8 @@ class InFrameDeletionsToSubs:
 
         codon_len_deletions = []
         for deletion in muts.deletions:
-            m = alignparse.consensus._MUT_REGEX['deletion'].fullmatch(deletion)
-            (start, end) = (int(m.group('start')), int(m.group('end')))
+            m = alignparse.consensus._MUT_REGEX["deletion"].fullmatch(deletion)
+            (start, end) = (int(m.group("start")), int(m.group("end")))
             assert end >= start, f"{deletion=}, {start=}, {end=}"
             if 0 == (((end - start) + 1) % 3):
                 codon_len_deletions.append((start, end, deletion))
@@ -126,32 +127,34 @@ class InFrameDeletionsToSubs:
         # make sure deletion doesn't overlap with substitution or insertion
         mutated_sites = set()
         for sub in muts.substitutions:
-            m = alignparse.consensus._MUT_REGEX['substitution'].fullmatch(sub)
-            mutated_sites.add(int(m.group('start')))
+            m = alignparse.consensus._MUT_REGEX["substitution"].fullmatch(sub)
+            mutated_sites.add(int(m.group("start")))
         for ins in muts.insertions:
-            m = alignparse.consensus._MUT_REGEX['insertion'].fullmatch(ins)
-            mutated_sites.add(int(m.group('start')))
+            m = alignparse.consensus._MUT_REGEX["insertion"].fullmatch(ins)
+            mutated_sites.add(int(m.group("start")))
 
         for start, end, deletion in codon_len_deletions:
             frame = start % 3 if (start % 3 != 0) else 3
             if frame == 1:  # already in frame
                 assert (end % 3) == 0
-                new_subs = ' '.join(f"{self._nt_sites[i]}{i}-" for i in
-                                    range(start, end + 1))
+                new_subs = " ".join(
+                    f"{self._nt_sites[i]}{i}-" for i in range(start, end + 1)
+                )
                 assert mut_str.count(deletion) == 1
                 mut_str = mut_str.replace(deletion, new_subs)
                 assert mut_str.count(deletion) == 0
             else:
                 shifts = {2: (-1, 2), 3: (-2, 1)}[frame]
                 for shift in shifts:
-                    if mutated_sites.intersection(range(start + shift,
-                                                        end + shift + 1)):
+                    if mutated_sites.intersection(
+                        range(start + shift, end + shift + 1)
+                    ):
                         continue
                     if self.shiftable(start, end, shift):
-                        new_subs = ' '.join(f"{self._nt_sites[i]}{i}-" for i in
-                                            range(start + shift,
-                                                  end + shift + 1)
-                                            )
+                        new_subs = " ".join(
+                            f"{self._nt_sites[i]}{i}-"
+                            for i in range(start + shift, end + shift + 1)
+                        )
                         assert mut_str.count(deletion) == 1
                         mut_str = mut_str.replace(deletion, new_subs)
                         assert mut_str.count(deletion) == 0
@@ -160,7 +163,7 @@ class InFrameDeletionsToSubs:
         return mut_str
 
 
-def qvals_to_accuracy(qvals, encoding='numbers'):
+def qvals_to_accuracy(qvals, encoding="numbers"):
     r"""Convert set of quality scores into average accuracy.
 
     Parameters
@@ -203,7 +206,7 @@ def qvals_to_accuracy(qvals, encoding='numbers'):
     0.968
 
     """
-    if encoding == 'numbers':
+    if encoding == "numbers":
         if isinstance(qvals, numbers.Number):
             qvals = numpy.array([qvals])
         elif isinstance(qvals, list):
@@ -212,14 +215,14 @@ def qvals_to_accuracy(qvals, encoding='numbers'):
     if len(qvals) == 0:
         return math.nan
 
-    if encoding == 'numbers':
+    if encoding == "numbers":
         pass
-    if encoding == 'sanger':
+    if encoding == "sanger":
         qvals = numpy.array([ord(q) - 33 for q in qvals])
-    elif encoding != 'numbers':
+    elif encoding != "numbers":
         raise ValueError(f"invalid `encoding`: {encoding}")
 
-    return (1 - 10**(qvals / -10)).sum() / len(qvals)
+    return (1 - 10 ** (qvals / -10)).sum() / len(qvals)
 
 
 def sort_mutations(mut_strs):
@@ -253,17 +256,16 @@ def sort_mutations(mut_strs):
     decorated_list = []
     for mut_str in mut_strs:
         for mut in mut_str.split():
-            m = re.fullmatch(r'ins(\-?\d+)[A-Z]+|'
-                             r'[A-Z](\-?\d+)[A-Z]|'
-                             r'del(\-?\d+)to\-?\d+',
-                             mut)
+            m = re.fullmatch(
+                r"ins(\-?\d+)[A-Z]+|" r"[A-Z](\-?\d+)[A-Z]|" r"del(\-?\d+)to\-?\d+", mut
+            )
             if not m:
                 raise ValueError(f"failed to match {mut} in:\n{mut_str}")
             site = [site for site in m.groups() if site is not None]
             assert len(site) == 1
             site = int(site[0])
             decorated_list.append((site, mut))
-    return ' '.join(mut for _, mut in sorted(decorated_list))
+    return " ".join(mut for _, mut in sorted(decorated_list))
 
 
 def merge_dels(s):
@@ -300,12 +302,12 @@ def merge_dels(s):
         # extract position and from:to deletion list
         mut_list = []
         for deletion in deletions:
-            mut_sites = re.fullmatch(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)',
-                                     deletion)
+            mut_sites = re.fullmatch(r"del(?P<start>\-?\d+)to(?P<end>\-?\d+)", deletion)
             if not mut_sites:
                 raise ValueError(f"cannot match deletion {deletion}")
-            mut_list.append([int(mut_sites.group('start')),
-                             int(mut_sites.group('end'))])
+            mut_list.append(
+                [int(mut_sites.group("start")), int(mut_sites.group("end"))]
+            )
 
         # merge consecutive ranges
         mut_list.sort()
@@ -381,45 +383,47 @@ class MutationRenumber:
 
     """
 
-    def __init__(self, number_mapping, old_num_col, new_num_col, wt_nt_col,
-                 *, err_suffix=''):
+    def __init__(
+        self, number_mapping, old_num_col, new_num_col, wt_nt_col, *, err_suffix=""
+    ):
         """See main class docstring."""
         self._err_suffix = err_suffix
         for col in [old_num_col, new_num_col]:
             if col not in number_mapping.columns:
-                raise ValueError(f"`number_mapping` lacks column {col}" +
-                                 self._err_suffix)
+                raise ValueError(
+                    f"`number_mapping` lacks column {col}" + self._err_suffix
+                )
             if number_mapping[col].dtype != int:
-                raise ValueError(f"`number_mapping` column {col} not integer" +
-                                 self._err_suffix)
-        self.old_to_new_site = (number_mapping
-                                .set_index(old_num_col)
-                                [new_num_col]
-                                .to_dict()
-                                )
-        if not (len(self.old_to_new_site) ==
-                len(set(self.old_to_new_site.values())) ==
-                len(number_mapping)):
-            raise ValueError('site numbers not unique' + self._err_suffix)
+                raise ValueError(
+                    f"`number_mapping` column {col} not integer" + self._err_suffix
+                )
+        self.old_to_new_site = number_mapping.set_index(old_num_col)[
+            new_num_col
+        ].to_dict()
+        if not (
+            len(self.old_to_new_site)
+            == len(set(self.old_to_new_site.values()))
+            == len(number_mapping)
+        ):
+            raise ValueError("site numbers not unique" + self._err_suffix)
 
-        self._old_to_new_site_str = {str(old): str(new) for old, new
-                                     in self.old_to_new_site.items()}
+        self._old_to_new_site_str = {
+            str(old): str(new) for old, new in self.old_to_new_site.items()
+        }
 
         if wt_nt_col:
             if wt_nt_col not in number_mapping.columns:
-                raise ValueError(f"`number_mapping` lacks column {col}" +
-                                 self._err_suffix)
-            if not all(isinstance(nt, str) and len(nt) == 1
-                       for nt in number_mapping[wt_nt_col]):
-                raise ValueError(f"`number_mapping` column {col} not letters" +
-                                 self._err_suffix)
-            self.old_to_wt = (number_mapping
-                              .set_index(old_num_col)
-                              [wt_nt_col]
-                              .to_dict()
-                              )
-            self._old_to_wt_str = {str(old): wt for old, wt
-                                   in self.old_to_wt.items()}
+                raise ValueError(
+                    f"`number_mapping` lacks column {col}" + self._err_suffix
+                )
+            if not all(
+                isinstance(nt, str) and len(nt) == 1 for nt in number_mapping[wt_nt_col]
+            ):
+                raise ValueError(
+                    f"`number_mapping` column {col} not letters" + self._err_suffix
+                )
+            self.old_to_wt = number_mapping.set_index(old_num_col)[wt_nt_col].to_dict()
+            self._old_to_wt_str = {str(old): wt for old, wt in self.old_to_wt.items()}
         else:
             self.old_to_wt = None
 
@@ -451,55 +455,50 @@ class MutationRenumber:
                 if allow_stop:
                     chars += r"\*"
                 m = re.fullmatch(
-                    rf"(?P<wt>[{chars}])(?P<site>\-?\d+)(?P<mut>[{chars}])",
-                    mut
+                    rf"(?P<wt>[{chars}])(?P<site>\-?\d+)(?P<mut>[{chars}])", mut
                 )
                 if m:
-                    site = m.group('site')
+                    site = m.group("site")
                     if self.old_to_wt is not None:
-                        if self._old_to_wt_str[site] != m.group('wt'):
-                            expected_wt = self._old_to_wt_str[m.group('site')]
-                            raise ValueError(f"Mutation {mut} invalid wt, "
-                                             f"expected {expected_wt}" +
-                                             self._err_suffix)
-                    new_muts.append(
-                            m.group('wt') +
-                            self._old_to_new_site_str[site] +
-                            m.group('mut')
+                        if self._old_to_wt_str[site] != m.group("wt"):
+                            expected_wt = self._old_to_wt_str[m.group("site")]
+                            raise ValueError(
+                                f"Mutation {mut} invalid wt, "
+                                f"expected {expected_wt}" + self._err_suffix
                             )
+                    new_muts.append(
+                        m.group("wt") + self._old_to_new_site_str[site] + m.group("mut")
+                    )
                     continue
                 # try to match insertion
-                m = re.fullmatch(
-                    rf"ins(?P<site>\-?\d+)(?P<insertion>[{chars}]+)",
-                    mut
-                )
+                m = re.fullmatch(rf"ins(?P<site>\-?\d+)(?P<insertion>[{chars}]+)", mut)
                 if m:
                     new_muts.append(
-                            'ins' +
-                            self._old_to_new_site_str[m.group('site')] +
-                            m.group('insertion')
-                            )
+                        "ins"
+                        + self._old_to_new_site_str[m.group("site")]
+                        + m.group("insertion")
+                    )
                     continue
                 # try to match deletion
-                m = re.fullmatch(r'del(?P<site1>\-?\d+)to(?P<site2>\-?\d+)',
-                                 mut)
+                m = re.fullmatch(r"del(?P<site1>\-?\d+)to(?P<site2>\-?\d+)", mut)
                 if m:
                     new_muts.append(
-                            'del' +
-                            self._old_to_new_site_str[m.group('site1')] +
-                            'to' +
-                            self._old_to_new_site_str[m.group('site2')]
-                            )
+                        "del"
+                        + self._old_to_new_site_str[m.group("site1")]
+                        + "to"
+                        + self._old_to_new_site_str[m.group("site2")]
+                    )
                     continue
                 # problem if we made it here, couldn't match anything
-                raise ValueError(f"Cannot match {mut} in {mut_str}" +
-                                 self._err_suffix)
+                raise ValueError(f"Cannot match {mut} in {mut_str}" + self._err_suffix)
             except KeyError:
-                raise ValueError(f"Mutation {mut} site out of numbering range"
-                                 + self._err_suffix)
-        return ' '.join(new_muts)
+                raise ValueError(
+                    f"Mutation {mut} site out of numbering range" + self._err_suffix
+                )
+        return " ".join(new_muts)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

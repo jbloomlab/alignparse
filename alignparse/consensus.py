@@ -25,15 +25,15 @@ import scipy.special
 
 
 Mutations = collections.namedtuple(
-                        'Mutations',
-                        ['substitutions', 'deletions', 'insertions'])
+    "Mutations", ["substitutions", "deletions", "insertions"]
+)
 
 
 _MUT_REGEX = {
-    'substitution': re.compile(r'[ACGTN](?P<start>\-?\d+)[ACGTN\-]'),
-    'deletion': re.compile(r'del(?P<start>\-?\d+)to(?P<end>\-?\d+)'),
-    'insertion': re.compile(r'ins(?P<start>\-?\d+)(?:len\d+|[ACGTN]+)'),
-    }
+    "substitution": re.compile(r"[ACGTN](?P<start>\-?\d+)[ACGTN\-]"),
+    "deletion": re.compile(r"del(?P<start>\-?\d+)to(?P<end>\-?\d+)"),
+    "insertion": re.compile(r"ins(?P<start>\-?\d+)(?:len\d+|[ACGTN]+)"),
+}
 """dict: Mutation regular expression matches."""
 
 
@@ -74,7 +74,7 @@ def process_mut_str(s):
         for mut_type, regex in _MUT_REGEX.items():
             match = regex.fullmatch(mut_str)
             if match:
-                start = int(match.group('start'))
+                start = int(match.group("start"))
                 mut_lists[mut_type].append((start, mut_str))
                 break
         else:
@@ -84,25 +84,26 @@ def process_mut_str(s):
         raise ValueError(f"duplicate mutation in: {s}")
 
     return Mutations(
-            substitutions=[m for _, m in sorted(mut_lists['substitution'])],
-            deletions=[m for _, m in sorted(mut_lists['deletion'])],
-            insertions=[m for _, m in sorted(mut_lists['insertion'])],
-            )
+        substitutions=[m for _, m in sorted(mut_lists["substitution"])],
+        deletions=[m for _, m in sorted(mut_lists["deletion"])],
+        insertions=[m for _, m in sorted(mut_lists["insertion"])],
+    )
 
 
-def add_mut_info_cols(df,
-                      *,
-                      mutation_col='mutations',
-                      sub_str_col=None,
-                      del_str_col=None,
-                      ins_str_col=None,
-                      indel_str_col=None,
-                      n_sub_col=None,
-                      n_del_col=None,
-                      n_ins_col=None,
-                      n_indel_col=None,
-                      overwrite_cols=False,
-                      ):
+def add_mut_info_cols(
+    df,
+    *,
+    mutation_col="mutations",
+    sub_str_col=None,
+    del_str_col=None,
+    ins_str_col=None,
+    indel_str_col=None,
+    n_sub_col=None,
+    n_del_col=None,
+    n_ins_col=None,
+    n_indel_col=None,
+    overwrite_cols=False,
+):
     """Expand information about mutations in a data frame.
 
     Parameters
@@ -179,18 +180,23 @@ def add_mut_info_cols(df,
         raise ValueError(f"`df` lacks `mutation_col` {mutation_col}")
 
     new_cols = collections.OrderedDict(
-                [(key, val)
-                 for key, val in [('substitutions_str', sub_str_col),
-                                  ('deletions_str', del_str_col),
-                                  ('insertions_str', ins_str_col),
-                                  ('indel_str', indel_str_col),
-                                  ('substitutions_n', n_sub_col),
-                                  ('deletions_n', n_del_col),
-                                  ('insertions_n', n_ins_col),
-                                  ('indel_n', n_indel_col)]
-                 if val is not None])
+        [
+            (key, val)
+            for key, val in [
+                ("substitutions_str", sub_str_col),
+                ("deletions_str", del_str_col),
+                ("insertions_str", ins_str_col),
+                ("indel_str", indel_str_col),
+                ("substitutions_n", n_sub_col),
+                ("deletions_n", n_del_col),
+                ("insertions_n", n_ins_col),
+                ("indel_n", n_indel_col),
+            ]
+            if val is not None
+        ]
+    )
     if mutation_col in set(new_cols.values()):
-        raise ValueError('`mutation_col` also name of col to add')
+        raise ValueError("`mutation_col` also name of col to add")
     already_has = set(new_cols.values()).intersection(set(df.columns))
     if already_has and not overwrite_cols:
         raise ValueError(f"`df` already has these columns: {already_has}")
@@ -199,28 +205,23 @@ def add_mut_info_cols(df,
         m = process_mut_str(s)
         returnlist = []
         for col in new_cols.keys():
-            mut_type, col_type = col.split('_')
-            if mut_type == 'indel':
+            mut_type, col_type = col.split("_")
+            if mut_type == "indel":
                 mlist = m.deletions + m.insertions
             else:
                 mlist = getattr(m, mut_type)
-            if col_type == 'str':
-                returnlist.append(' '.join(mlist))
+            if col_type == "str":
+                returnlist.append(" ".join(mlist))
             else:
-                assert col_type == 'n'
+                assert col_type == "n"
                 returnlist.append(len(mlist))
         return returnlist
 
-    mut_info_df = (pd.DataFrame(
-                        [_mut_info(m) for m in df[mutation_col].values],
-                        columns=new_cols.values())
-                   .reindex(index=df.index)
-                   )
+    mut_info_df = pd.DataFrame(
+        [_mut_info(m) for m in df[mutation_col].values], columns=new_cols.values()
+    ).reindex(index=df.index)
 
-    return (df
-            .drop(columns=new_cols.values(), errors='ignore')
-            .join(mut_info_df)
-            )
+    return df.drop(columns=new_cols.values(), errors="ignore").join(mut_info_df)
 
 
 class _LnL_error_rate:
@@ -261,26 +262,25 @@ class _LnL_error_rate:
 
     def __init__(self, df, *, n_col, u_col, count_col):
         """See main class docstring."""
-        self._df = (
-            df
-            .assign(
-                n=lambda x: x[n_col],
-                u=lambda x: x[u_col],
-                count=lambda x: x[count_col],
-                binom=lambda x: scipy.special.binom(x['n'], x['u'] - 1),
-                delta_un=lambda x: (x['n'] == x['u']).astype(int),
-                )
-            )
+        self._df = df.assign(
+            n=lambda x: x[n_col],
+            u=lambda x: x[u_col],
+            count=lambda x: x[count_col],
+            binom=lambda x: scipy.special.binom(x["n"], x["u"] - 1),
+            delta_un=lambda x: (x["n"] == x["u"]).astype(int),
+        )
 
     def lnlik(self, eps):
         """Log likelihood for error rate `eps`."""
-        return sum(self._df['count'] *
-                   numpy.log(self._df['binom'] *
-                             (1 - eps)**(self._df['n'] - self._df['u'] + 1) *
-                             eps**(self._df['u'] - 1) +
-                             self._df['delta_un'] * eps**self._df['n']
-                             )
-                   )
+        return sum(
+            self._df["count"]
+            * numpy.log(
+                self._df["binom"]
+                * (1 - eps) ** (self._df["n"] - self._df["u"] + 1)
+                * eps ** (self._df["u"] - 1)
+                + self._df["delta_un"] * eps ** self._df["n"]
+            )
+        )
 
     def neg_lnlik(self, eps):
         """Negative log likelihood for error rate `epsilon`."""
@@ -288,22 +288,23 @@ class _LnL_error_rate:
 
     def maxlik_eps(self):
         """Maximum likelihood value of error rate `epsilon`."""
-        res = scipy.optimize.minimize_scalar(self.neg_lnlik,
-                                             bounds=(1e-8, 1 - 1e-8),
-                                             method='bounded')
+        res = scipy.optimize.minimize_scalar(
+            self.neg_lnlik, bounds=(1e-8, 1 - 1e-8), method="bounded"
+        )
         if not res.success:
             raise RuntimeError(f"optimization failed:\n{res}")
         return res.x
 
 
-def empirical_accuracy(df,
-                       *,
-                       group_cols='barcode',
-                       upstream_group_cols='library',
-                       mutation_col='mutations',
-                       accuracy_col='accuracy',
-                       sort_mutations=True,
-                       ):
+def empirical_accuracy(
+    df,
+    *,
+    group_cols="barcode",
+    upstream_group_cols="library",
+    mutation_col="mutations",
+    accuracy_col="accuracy",
+    sort_mutations=True,
+):
     r"""Accuracy from number of identical sequences in a group (i.e., barcode).
 
     Note
@@ -422,7 +423,7 @@ def empirical_accuracy(df,
     1  s3    0.6667
 
     """
-    reserved_cols = ['_n', '_u', '_ngroups', '_dummy']
+    reserved_cols = ["_n", "_u", "_ngroups", "_dummy"]
     for col in reserved_cols:
         if col in df.columns:
             raise ValueError(f"`df` cannot have column named {col}")
@@ -434,8 +435,8 @@ def empirical_accuracy(df,
         group_cols = [group_cols]
     if (upstream_group_cols is None) or upstream_group_cols == []:
         drop_upstream_col = True
-        upstream_group_cols = '_dummy'
-        df = df.assign(**{upstream_group_cols: 'dummy'})
+        upstream_group_cols = "_dummy"
+        df = df.assign(**{upstream_group_cols: "dummy"})
     else:
         drop_upstream_col = False
     if isinstance(upstream_group_cols, str):
@@ -443,7 +444,7 @@ def empirical_accuracy(df,
 
     cols = group_cols + upstream_group_cols
     if len(set(cols)) != len(cols):
-        raise ValueError('duplicate in `group_cols` / `upstream_group_cols`')
+        raise ValueError("duplicate in `group_cols` / `upstream_group_cols`")
     if mutation_col in cols:
         raise ValueError(f"`mutation_col` {mutation_col} also grouping column")
     for col in cols + [mutation_col]:
@@ -453,56 +454,58 @@ def empirical_accuracy(df,
     result = (
         df
         # number of sequences in each group
-        .assign(_n=lambda x: x.groupby(cols)[mutation_col].transform('count'))
+        .assign(_n=lambda x: x.groupby(cols)[mutation_col].transform("count"))
         # only retain groups with >1 sequence
-        .query('_n > 1')
+        .query("_n > 1")
         # sort mutations
-        .assign(**{mutation_col: (lambda x:
-                                  x[mutation_col]
-                                  .map(lambda s: ' '.join(sorted(s.split())))
-                                  if sort_mutations else x[mutation_col]
-                                  )}
+        .assign(
+            **{
+                mutation_col: (
+                    lambda x: x[mutation_col].map(lambda s: " ".join(sorted(s.split())))
+                    if sort_mutations
+                    else x[mutation_col]
                 )
+            }
+        )
         # number of unique sequences in each group
-        .assign(_u=lambda x: (x.groupby(cols)[mutation_col]
-                              .transform('nunique'))
-                )
+        .assign(_u=lambda x: (x.groupby(cols)[mutation_col].transform("nunique")))
         # number of groups with each combination of n and u
-        .groupby(upstream_group_cols + ['_n', '_u'])
+        .groupby(upstream_group_cols + ["_n", "_u"])
         .size()
-        .rename('_ngroups')
+        .rename("_ngroups")
         .reset_index()
         # get error rate
         .groupby(upstream_group_cols)
-        .apply(lambda x: 1 - _LnL_error_rate(x,
-                                             n_col='_n',
-                                             u_col='_u',
-                                             count_col='_ngroups'
-                                             ).maxlik_eps()
-               )
+        .apply(
+            lambda x: 1
+            - _LnL_error_rate(
+                x, n_col="_n", u_col="_u", count_col="_ngroups"
+            ).maxlik_eps()
+        )
         .rename(accuracy_col)
         .reset_index()
-        )
+    )
 
     if drop_upstream_col:
         assert len(upstream_group_cols) == 1
-        result = result.drop(upstream_group_cols, axis='columns')
+        result = result.drop(upstream_group_cols, axis="columns")
 
     return result
 
 
-def simple_mutconsensus(df,
-                        *,
-                        group_cols=('library', 'barcode'),
-                        mutation_col='mutations',
-                        max_sub_diffs=1,
-                        max_indel_diffs=2,
-                        max_minor_sub_frac=0.1,
-                        max_minor_indel_frac=0.25,
-                        max_minor_greater_or_equal=False,
-                        min_support=1,
-                        support_col='variant_call_support',
-                        ):
+def simple_mutconsensus(
+    df,
+    *,
+    group_cols=("library", "barcode"),
+    mutation_col="mutations",
+    max_sub_diffs=1,
+    max_indel_diffs=2,
+    max_minor_sub_frac=0.1,
+    max_minor_indel_frac=0.25,
+    max_minor_greater_or_equal=False,
+    min_support=1,
+    support_col="variant_call_support",
+):
     """Get simple consensus of mutations with group (i.e., barcode).
 
     Parameters
@@ -683,10 +686,12 @@ def simple_mutconsensus(df,
 
     df = df[group_cols + [mutation_col]]
     if df.isnull().values.any():
-        raise ValueError('`df` contains `na` (null) entries. It is possible '
-                         'that you read a CSV without using `na_filter=False` '
-                         'so that empty mutation strings were read as `na` '
-                         'rather than empty strings.')
+        raise ValueError(
+            "`df` contains `na` (null) entries. It is possible "
+            "that you read a CSV without using `na_filter=False` "
+            "so that empty mutation strings were read as `na` "
+            "rather than empty strings."
+        )
 
     dropped = []
     consensus = []
@@ -700,7 +705,7 @@ def simple_mutconsensus(df,
         assert nseqs > 0
 
         if nseqs < min_support:
-            dropped.append((*g, 'too few sequences', nseqs))
+            dropped.append((*g, "too few sequences", nseqs))
             continue
 
         mutations = [process_mut_str(s) for s in g_df.values]
@@ -708,41 +713,42 @@ def simple_mutconsensus(df,
         drop_reason = None
         g_consensus = []
 
-        mutlists = {'subs': [m.substitutions for m in mutations],
-                    'indels': [m.deletions + m.insertions for m in mutations],
-                    }
+        mutlists = {
+            "subs": [m.substitutions for m in mutations],
+            "indels": [m.deletions + m.insertions for m in mutations],
+        }
 
         for mtype, maxd, max_frac in [
-                        ('subs', max_sub_diffs, max_minor_sub_frac),
-                        ('indels', max_indel_diffs, max_minor_indel_frac),
-                        ]:
+            ("subs", max_sub_diffs, max_minor_sub_frac),
+            ("indels", max_indel_diffs, max_minor_indel_frac),
+        ]:
             if maxd is not None:
                 # is max_sub_diffs or max_indel_diffs satisfied?
                 ndiffs_by_seq = collections.defaultdict(list)
                 for (i1, m1set), (i2, m2set) in itertools.combinations(
-                         enumerate(mutlists[mtype]), 2):
-                    ndiffs = len(numpy.setxor1d(m1set, m2set,
-                                                assume_unique=True))
+                    enumerate(mutlists[mtype]), 2
+                ):
+                    ndiffs = len(numpy.setxor1d(m1set, m2set, assume_unique=True))
                     ndiffs_by_seq[i1].append(ndiffs)
                     ndiffs_by_seq[i2].append(ndiffs)
-                if any(min(ndifflist) > maxd for ndifflist
-                       in ndiffs_by_seq.values()):
+                if any(min(ndifflist) > maxd for ndifflist in ndiffs_by_seq.values()):
                     drop_reason = f"{mtype} diff too large"
                     break
 
             # see if max_minor_mut_frac is satisfied
             max_muts = math.ceil(max_frac * nseqs)
             nseqs_minus_max_muts = nseqs - max_muts
-            counts = collections.Counter(itertools.chain.from_iterable(
-                            mutlists[mtype]))
+            counts = collections.Counter(itertools.chain.from_iterable(mutlists[mtype]))
             if max_minor_greater_or_equal:
-                if any((max_muts <= count <= nseqs_minus_max_muts)
-                       and (count != nseqs)
-                       for count in counts.values()):
+                if any(
+                    (max_muts <= count <= nseqs_minus_max_muts) and (count != nseqs)
+                    for count in counts.values()
+                ):
                     drop_reason = f"minor {mtype} too frequent"
                     break
-            elif any(max_muts < count < nseqs_minus_max_muts for count
-                     in counts.values()):
+            elif any(
+                max_muts < count < nseqs_minus_max_muts for count in counts.values()
+            ):
                 drop_reason = f"minor {mtype} too frequent"
                 break
 
@@ -752,16 +758,17 @@ def simple_mutconsensus(df,
         if drop_reason is not None:
             dropped.append((*g, drop_reason, nseqs))
         else:
-            consensus.append((*g, ' '.join(g_consensus), nseqs))
+            consensus.append((*g, " ".join(g_consensus), nseqs))
 
-    consensus = pd.DataFrame(consensus,
-                             columns=group_cols + [mutation_col, support_col])
-    dropped = pd.DataFrame(dropped,
-                           columns=group_cols + ['drop_reason', 'nseqs'])
+    consensus = pd.DataFrame(
+        consensus, columns=group_cols + [mutation_col, support_col]
+    )
+    dropped = pd.DataFrame(dropped, columns=group_cols + ["drop_reason", "nseqs"])
 
     return consensus, dropped
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

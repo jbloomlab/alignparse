@@ -20,14 +20,15 @@ import packaging.version
 import pysam
 
 
-OPTIONS_CODON_DMS = ('-A2',
-                     '-B4',
-                     '-O12',
-                     '-E2',
-                     '--end-bonus=13',
-                     '--secondary=no',
-                     '--cs',
-                     )
+OPTIONS_CODON_DMS = (
+    "-A2",
+    "-B4",
+    "-O12",
+    "-E2",
+    "--end-bonus=13",
+    "--secondary=no",
+    "--cs",
+)
 """tuple: ``minimap2`` options for codon-mutant libraries.
 
 Note
@@ -46,16 +47,17 @@ Options have the following meaning / rationale:
 
 """
 
-OPTIONS_VIRUS_W_DEL = ('-xsplice:hq',
-                       '-un',
-                       '-C0',
-                       '--splice-flank=no',
-                       '-M=1',
-                       '--end-seed-pen=2',
-                       '--end-bonus=2',
-                       '--secondary=no',
-                       '--cs',
-                       )
+OPTIONS_VIRUS_W_DEL = (
+    "-xsplice:hq",
+    "-un",
+    "-C0",
+    "--splice-flank=no",
+    "-M=1",
+    "--end-seed-pen=2",
+    "--end-bonus=2",
+    "--secondary=no",
+    "--cs",
+)
 """tuple: ``minimap2`` options for viral genes.
 
 Note
@@ -177,21 +179,30 @@ class Mapper:
 
     """
 
-    def __init__(self, options, *, prog='minimap2', min_version='2.17',
-                 check_cs=True, retain_tags=None):
+    def __init__(
+        self,
+        options,
+        *,
+        prog="minimap2",
+        min_version="2.17",
+        check_cs=True,
+        retain_tags=None,
+    ):
         """See main :class:`Mapper` doc string."""
         try:
-            version = subprocess.check_output([prog, '--version'])
+            version = subprocess.check_output([prog, "--version"])
         except Exception:
             raise ValueError(f"Can't execute `prog` {prog}. Is it installed?")
-        self.version = version.strip().decode('utf-8')
+        self.version = version.strip().decode("utf-8")
         min_version = packaging.version.parse(min_version)
         if packaging.version.parse(self.version) < min_version:
-            raise ValueError(f"You have `minimap2` version {self.version}, "
-                             f"but need >= {min_version}")
+            raise ValueError(
+                f"You have `minimap2` version {self.version}, "
+                f"but need >= {min_version}"
+            )
         self.prog = prog
         self.options = list(options)
-        if check_cs and not any('--cs' == opt for opt in self.options):
+        if check_cs and not any("--cs" == opt for opt in self.options):
             raise ValueError(f"`options` do not include `--cs`:\n{options}")
         if retain_tags:
             if isinstance(retain_tags, str):
@@ -214,15 +225,15 @@ class Mapper:
             Name of created SAM file (should have suffix ``.sam``).
 
         """
-        for fname, f in [('target', targetfile), ('query', queryfile)]:
+        for fname, f in [("target", targetfile), ("query", queryfile)]:
             if not os.path.isfile(f):
                 raise IOError(f"cannot find `{fname}file` {f}")
 
-        if os.path.splitext(samfile)[1] != '.sam':
+        if os.path.splitext(samfile)[1] != ".sam":
             raise ValueError(f"`samfile` lacks extension '.sam': {samfile}")
 
-        if not any('-a' == opt for opt in self.options):
-            options = self.options + ['-a']
+        if not any("-a" == opt for opt in self.options):
+            options = self.options + ["-a"]
 
         cmds = [self.prog] + options + [targetfile, queryfile]
 
@@ -230,15 +241,14 @@ class Mapper:
             # if retaining tags, we initially align to temporary file
             # then add tags to final alignment file
             if self.retain_tags:
-                untagged_samfile = os.path.join(tempdir,
-                                                os.path.basename(samfile))
+                untagged_samfile = os.path.join(tempdir, os.path.basename(samfile))
             else:
                 untagged_samfile = samfile
 
             # do the alignment
             with contextlib.ExitStack() as stack:
-                sam = stack.enter_context(open(untagged_samfile, 'w'))
-                err = stack.enter_context(tempfile.TemporaryFile(mode='w'))
+                sam = stack.enter_context(open(untagged_samfile, "w"))
+                err = stack.enter_context(tempfile.TemporaryFile(mode="w"))
                 try:
                     _ = subprocess.check_call(cmds, stdout=sam, stderr=err)
                 except Exception as exc:
@@ -246,26 +256,30 @@ class Mapper:
                         os.remove(untagged_samfile)
                     exc_type = type(exc).__name__
                     err.seek(0)
-                    raise RuntimeError(f"Error running commands:\n{cmds}\n\n"
-                                       f"Exception:\n{exc_type}: {exc}\n\n"
-                                       f"Error message:\n{err.read()}\n\n")
+                    raise RuntimeError(
+                        f"Error running commands:\n{cmds}\n\n"
+                        f"Exception:\n{exc_type}: {exc}\n\n"
+                        f"Error message:\n{err.read()}\n\n"
+                    )
 
             # if needed, add retained tags from queries FASTQ file
             if self.retain_tags:
-                matchers = {tag: re.compile(
-                                    r'(?:^|\s)'  # start or space
-                                    rf"{tag}:(?P<valtype>\w):(?P<val>\S+)"
-                                    r'(?:\s|$)'  # end or space
-                                    )
-                            for tag in self.retain_tags}
+                matchers = {
+                    tag: re.compile(
+                        r"(?:^|\s)"  # start or space
+                        rf"{tag}:(?P<valtype>\w):(?P<val>\S+)"
+                        r"(?:\s|$)"  # end or space
+                    )
+                    for tag in self.retain_tags
+                }
                 with contextlib.ExitStack() as tagstack:
                     untagged_sam = tagstack.enter_context(
-                                    pysam.AlignmentFile(untagged_samfile))
+                        pysam.AlignmentFile(untagged_samfile)
+                    )
                     tagged_sam = tagstack.enter_context(
-                                    pysam.AlignmentFile(samfile, mode='w',
-                                                        template=untagged_sam))
-                    queries = tagstack.enter_context(
-                                    pysam.FastxFile(queryfile))
+                        pysam.AlignmentFile(samfile, mode="w", template=untagged_sam)
+                    )
+                    queries = tagstack.enter_context(pysam.FastxFile(queryfile))
 
                     query = next(queries)
                     for a in untagged_sam:
@@ -274,33 +288,39 @@ class Mapper:
                             while query.name != name:
                                 query = next(queries)
                             if self.retain_tags and not query.comment:
-                                raise ValueError('specified `retain_tags` but '
-                                                 'no tags in `queryfile` '
-                                                 f"{queryfile}")
+                                raise ValueError(
+                                    "specified `retain_tags` but "
+                                    "no tags in `queryfile` "
+                                    f"{queryfile}"
+                                )
                             for tag in self.retain_tags:
                                 m = matchers[tag].search(query.comment)
                                 if not m:
                                     raise ValueError(f"no tag {tag}:\n{query}")
-                                valtype = m.group('valtype')
-                                if valtype == 'i':
-                                    val = int(m.group('val'))
-                                elif valtype == 'f':
-                                    val = float(m.group('val'))
-                                elif valtype in {'A', 'Z'}:
-                                    val = m.group('val')
+                                valtype = m.group("valtype")
+                                if valtype == "i":
+                                    val = int(m.group("val"))
+                                elif valtype == "f":
+                                    val = float(m.group("val"))
+                                elif valtype in {"A", "Z"}:
+                                    val = m.group("val")
                                 else:
-                                    raise ValueError(f"bad tag type {valtype} "
-                                                     f"for tag {tag}")
+                                    raise ValueError(
+                                        f"bad tag type {valtype} " f"for tag {tag}"
+                                    )
                                 a.set_tag(tag, val, valtype)
                         except StopIteration:
-                            raise ValueError(f"No entry in {queryfile} for "
-                                             f"query {name}\nMaybe alignment "
-                                             f"is not sorted in query order?")
+                            raise ValueError(
+                                f"No entry in {queryfile} for "
+                                f"query {name}\nMaybe alignment "
+                                f"is not sorted in query order?"
+                            )
                         tagged_sam.write(a)
 
         assert os.path.isfile(samfile)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

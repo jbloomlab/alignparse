@@ -33,12 +33,13 @@ import pysam
 import yaml
 
 from alignparse.constants import CBPALETTE
-from alignparse.cs_tag import (Alignment,
-                               cs_to_mutation_str,
-                               cs_to_nt_mutation_count,
-                               cs_to_op_mutation_count,
-                               cs_to_sequence,
-                               )
+from alignparse.cs_tag import (
+    Alignment,
+    cs_to_mutation_str,
+    cs_to_nt_mutation_count,
+    cs_to_op_mutation_count,
+    cs_to_sequence,
+)
 
 
 class Feature:
@@ -73,19 +74,21 @@ class Feature:
     def __init__(self, *, name, seq, start, end):
         """See main class docstring."""
         self.name = name
-        if ',' in self.name:
+        if "," in self.name:
             raise ValueError(f"comma not allowed in feature name: {self.name}")
         self.seq = seq
         if end - start != len(seq):
-            raise ValueError('length of `seq` not equal to `end` - `start`')
+            raise ValueError("length of `seq` not equal to `end` - `start`")
         self.end = end
         self.start = start
         self.length = end - start
 
     def __repr__(self):
         """Get string representation."""
-        return (f"{self.__class__.__name__}(name={self.name}, seq={self.seq}, "
-                f"start={self.start}, end={self.end})")
+        return (
+            f"{self.__class__.__name__}(name={self.name}, seq={self.seq}, "
+            f"start={self.start}, end={self.end})"
+        )
 
 
 class Target:
@@ -120,17 +123,25 @@ class Target:
 
     def __repr__(self):
         """Get string representation."""
-        return (f"{self.__class__.__name__}(name={self.name}, seq={self.seq}, "
-                f"features={self.features})")
+        return (
+            f"{self.__class__.__name__}(name={self.name}, seq={self.seq}, "
+            f"features={self.features})"
+        )
 
-    def __init__(self, *, seqrecord, req_features=frozenset(),
-                 opt_features=frozenset(), allow_extra_features=False):
+    def __init__(
+        self,
+        *,
+        seqrecord,
+        req_features=frozenset(),
+        opt_features=frozenset(),
+        allow_extra_features=False,
+    ):
         """See main class docstring."""
         self.name = self.get_name(seqrecord)
-        if ',' in self.name:
+        if "," in self.name:
             raise ValueError(f"comma not allowed in target name: {self.name}")
-        if not hasattr(seqrecord, 'seq'):
-            raise ValueError('`seqrecord` does not define a seq')
+        if not hasattr(seqrecord, "seq"):
+            raise ValueError("`seqrecord` does not define a seq")
         self.seq = str(seqrecord.seq)
 
         self.length = len(self.seq)
@@ -143,19 +154,24 @@ class Target:
         for bio_feature in seqrecord.features:
             feature_name = bio_feature.type
             if feature_name in self._features_dict:
-                raise ValueError(f"duplicate feature {feature_name} when "
-                                 f"creating Target {self.name}")
+                raise ValueError(
+                    f"duplicate feature {feature_name} when "
+                    f"creating Target {self.name}"
+                )
             if not (allow_extra_features or (feature_name in allow_features)):
                 raise ValueError(f"feature {feature_name} not allowed feature")
             if bio_feature.strand != 1:
-                raise ValueError(f"feature {feature_name} of {self.name} is - "
-                                 'strand, but only + strand features handled')
+                raise ValueError(
+                    f"feature {feature_name} of {self.name} is - "
+                    "strand, but only + strand features handled"
+                )
             feature_seq = str(bio_feature.location.extract(seqrecord).seq)
-            feature = Feature(name=feature_name,
-                              seq=feature_seq,
-                              start=bio_feature.location.start,
-                              end=bio_feature.location.end,
-                              )
+            feature = Feature(
+                name=feature_name,
+                seq=feature_seq,
+                start=bio_feature.location.start,
+                end=bio_feature.location.end,
+            )
             self.features.append(feature)
             self.feature_names.append(feature_name)
             self._features_dict[feature_name] = feature
@@ -179,8 +195,8 @@ class Target:
             Name parsed from `seqrecord`.
 
         """
-        if not hasattr(seqrecord, 'name'):
-            raise ValueError('`seqrecord` does not define a name')
+        if not hasattr(seqrecord, "name"):
+            raise ValueError("`seqrecord` does not define a name")
         else:
             return seqrecord.name
 
@@ -198,7 +214,7 @@ class Target:
             `True` if target has feature of this name, `False` otherwise.
 
         """
-        return (name in self._features_dict)
+        return name in self._features_dict
 
     def get_feature(self, name):
         """Get :class:`Feature` by name.
@@ -219,8 +235,7 @@ class Target:
         else:
             raise ValueError(f"Target {self.name} has no feature {name}")
 
-    def image(self, *, color_map=None, feature_labels=None,
-              plots_indexing='genbank'):
+    def image(self, *, color_map=None, feature_labels=None, plots_indexing="genbank"):
         """Get image of the target.
 
         Parameters
@@ -244,16 +259,22 @@ class Target:
         """
         if color_map is None:
             if len(self.features) < len(CBPALETTE):
-                color_map = {feature.name: CBPALETTE[i + 1] for
-                             i, feature in enumerate(self.features)}
+                color_map = {
+                    feature.name: CBPALETTE[i + 1]
+                    for i, feature in enumerate(self.features)
+                }
             else:
                 cmap = matplotlib.cm.jet
-                color_map = {feature.name: matplotlib.colors.to_hex(
-                                           cmap(i / len(self.features)))
-                             for i, feature in enumerate(self.features)}
+                color_map = {
+                    feature.name: matplotlib.colors.to_hex(cmap(i / len(self.features)))
+                    for i, feature in enumerate(self.features)
+                }
         else:
-            missing_colors = [feature.name for feature in self.features
-                              if feature.name not in color_map]
+            missing_colors = [
+                feature.name
+                for feature in self.features
+                if feature.name not in color_map
+            ]
             if missing_colors:
                 raise ValueError(f"no `color_map` entry for {missing_colors}")
 
@@ -272,15 +293,15 @@ class Target:
                     label=feature_labels[feature.name],
                     color=color_map[feature.name],
                     strand=1,
-                    )
                 )
+            )
 
         graph_record = dna_features_viewer.GraphicRecord(
-                sequence_length=self.length,
-                features=graph_features,
-                sequence=self.seq,
-                plots_indexing=plots_indexing,
-                )
+            sequence_length=self.length,
+            features=graph_features,
+            sequence=self.seq,
+            plots_indexing=plots_indexing,
+        )
 
         return graph_record
 
@@ -361,12 +382,17 @@ class Targets:
         """Get string representation."""
         return f"{self.__class__.__name__}(targets={self.targets})"
 
-    def __init__(self, *, seqsfile, feature_parse_specs,
-                 allow_extra_features=False, seqsfileformat='genbank',
-                 allow_clipped_muts_seqs=False,
-                 ignore_feature_parse_specs_keys=None,
-                 select_target_names=None,
-                 ):
+    def __init__(
+        self,
+        *,
+        seqsfile,
+        feature_parse_specs,
+        allow_extra_features=False,
+        seqsfileformat="genbank",
+        allow_clipped_muts_seqs=False,
+        ignore_feature_parse_specs_keys=None,
+        select_target_names=None,
+    ):
         """See main class docstring."""
         # read feature_parse_specs
         if isinstance(feature_parse_specs, str):
@@ -380,29 +406,38 @@ class Targets:
                 if key in self._feature_parse_specs:
                     del self._feature_parse_specs[key]
                 else:
-                    raise KeyError(f"`feature_parse_specs` lacks key {key} "
-                                   'in `ignore_feature_parse_specs_keys`')
+                    raise KeyError(
+                        f"`feature_parse_specs` lacks key {key} "
+                        "in `ignore_feature_parse_specs_keys`"
+                    )
 
         # names of parse alignment columns with clipping
-        self._clip_cols = ['query_clip5', 'query_clip3']
+        self._clip_cols = ["query_clip5", "query_clip3"]
 
         # reserved columns for parsing, cannot be name of a feature
-        self._reserved_cols = ['query_name'] + self._clip_cols
+        self._reserved_cols = ["query_name"] + self._clip_cols
 
         # suffixes in feature columns returned parse_alignment
-        self._return_suffixes = ['_mutations', '_sequence', '_accuracy', '_cs',
-                                 '_clip5', '_clip3']
+        self._return_suffixes = [
+            "_mutations",
+            "_sequence",
+            "_accuracy",
+            "_cs",
+            "_clip5",
+            "_clip3",
+        ]
 
         # valid filtering keys
-        self._filterkeys = ['clip5', 'clip3', 'mutation_nt_count',
-                            'mutation_op_count']
+        self._filterkeys = ["clip5", "clip3", "mutation_nt_count", "mutation_op_count"]
 
         # get targets from seqsfile
         if select_target_names is not None:
-            if not (isinstance(select_target_names, list) and
-                    len(select_target_names) >= 1):
-                raise ValueError('`select_target_names` must be none or '
-                                 'non-empty list')
+            if not (
+                isinstance(select_target_names, list) and len(select_target_names) >= 1
+            ):
+                raise ValueError(
+                    "`select_target_names` must be none or " "non-empty list"
+                )
         if isinstance(seqsfile, str):
             seqrecords = list(Bio.SeqIO.parse(seqsfile, format=seqsfileformat))
         else:
@@ -415,10 +450,11 @@ class Targets:
             tname = Target.get_name(seqrecord)
             if select_target_names and (tname not in select_target_names):
                 continue
-            target = Target(seqrecord=seqrecord,
-                            req_features=self.features_to_parse(tname, 'name'),
-                            allow_extra_features=allow_extra_features,
-                            )
+            target = Target(
+                seqrecord=seqrecord,
+                req_features=self.features_to_parse(tname, "name"),
+                allow_extra_features=allow_extra_features,
+            )
             if target.name in self._target_dict:
                 raise ValueError(f"duplicate target name of {target.name}")
             self.targets.append(target)
@@ -427,26 +463,33 @@ class Targets:
             for feature in target.features:
                 if feature.name in self._reserved_cols:
                     raise ValueError(f"feature cannot be named {feature.name}")
-                if re.search('|'.join(s + '$' for s in self._return_suffixes),
-                             feature.name):
-                    raise ValueError('feature name cannot end in ' +
-                                     str(self._return_suffixes))
+                if re.search(
+                    "|".join(s + "$" for s in self._return_suffixes), feature.name
+                ):
+                    raise ValueError(
+                        "feature name cannot end in " + str(self._return_suffixes)
+                    )
         self.target_names = [target.name for target in self.targets]
         self.target_seqs = {target.name: target.seq for target in self.targets}
         if not self.targets:
-            raise ValueError('no targets found')
+            raise ValueError("no targets found")
 
         # check needed for `to_csv` option of `parse_alignment`.
-        if len(self.target_names) != len({tname.replace(' ', '_') for
-                                         tname in self.target_names}):
-            raise ValueError('target names must be unique even after '
-                             'replacing spaces with underscores.')
+        if len(self.target_names) != len(
+            {tname.replace(" ", "_") for tname in self.target_names}
+        ):
+            raise ValueError(
+                "target names must be unique even after "
+                "replacing spaces with underscores."
+            )
 
         # make sure we have all targets to parse
         extra_targets = set(self._feature_parse_specs) - set(self.target_names)
         if extra_targets:
-            raise ValueError('`feature_parse_specs` includes non-existent '
-                             f"targets {extra_targets}")
+            raise ValueError(
+                "`feature_parse_specs` includes non-existent "
+                f"targets {extra_targets}"
+            )
 
         self._set_feature_parse_specs_defaults()
 
@@ -456,17 +499,22 @@ class Targets:
         # features unless flag to do this explicitly set
         if not allow_clipped_muts_seqs:
             for t in self.target_names:
-                for f in self.features_to_parse(t, 'name'):
-                    for return_name in ['sequence', 'mutations']:
+                for f in self.features_to_parse(t, "name"):
+                    for return_name in ["sequence", "mutations"]:
                         if return_name in self._parse_returnvals(t, f):
                             filt = self._parse_filters[t][f]
-                            if any(map(lambda c: c not in filt or filt[c] > 0,
-                                       ['clip5', 'clip3'])):
+                            if any(
+                                map(
+                                    lambda c: c not in filt or filt[c] > 0,
+                                    ["clip5", "clip3"],
+                                )
+                            ):
                                 raise ValueError(
-                                        f"You asked to return {return_name} "
-                                        f"for {t}, {f}, but clipping is not "
-                                        '0 for this feature. To do this, set'
-                                        '`allow_clipped_muts_seqs` to `True`')
+                                    f"You asked to return {return_name} "
+                                    f"for {t}, {f}, but clipping is not "
+                                    "0 for this feature. To do this, set"
+                                    "`allow_clipped_muts_seqs` to `True`"
+                                )
 
     def _set_parse_filters(self):
         """Set `_parse_filters` attribute.
@@ -482,15 +530,17 @@ class Targets:
         self._parse_filters = {}
         for tname in self.target_names:
             self._parse_filters[tname] = {}
-            for fname in self.features_to_parse(tname, 'name'):
+            for fname in self.features_to_parse(tname, "name"):
                 self._parse_filters[tname][fname] = {}
-                filterspecs = self._feature_parse_specs[tname][fname]['filter']
+                filterspecs = self._feature_parse_specs[tname][fname]["filter"]
                 for k, v in filterspecs.items():
                     if v is not None:
                         if not isinstance(v, int):
-                            raise ValueError('`feature_parse_spec` filter for'
-                                             f" {tname}, {fname}, {k} is not "
-                                             f"`None` or an integer: {v}")
+                            raise ValueError(
+                                "`feature_parse_spec` filter for"
+                                f" {tname}, {fname}, {k} is not "
+                                f"`None` or an integer: {v}"
+                            )
                         self._parse_filters[tname][fname][k] = v
 
     def _set_feature_parse_specs_defaults(self):
@@ -501,37 +551,44 @@ class Targets:
         """
         for tname, tspecs in self._feature_parse_specs.items():
             if set(self._clip_cols) - set(tspecs):
-                raise ValueError(f"`feature_parse_specs` for {tname} "
-                                 f"lacks {self._clip_cols}")
+                raise ValueError(
+                    f"`feature_parse_specs` for {tname} " f"lacks {self._clip_cols}"
+                )
             for fname, fdict in tspecs.items():
                 if fname in self._clip_cols:
                     continue
-                if set(fdict.keys()) - {'return', 'filter'}:
-                    raise ValueError(f"`feature_parse_specs` for {tname} "
-                                     f"{fname} has extra keys: only 'return' "
-                                     "and 'filter' are allowed.")
-                if 'return' not in fdict:
-                    fdict['return'] = []
+                if set(fdict.keys()) - {"return", "filter"}:
+                    raise ValueError(
+                        f"`feature_parse_specs` for {tname} "
+                        f"{fname} has extra keys: only 'return' "
+                        "and 'filter' are allowed."
+                    )
+                if "return" not in fdict:
+                    fdict["return"] = []
                 else:
-                    if isinstance(fdict['return'], str):
-                        fdict['return'] = [fdict['return']]
-                    for returnval in fdict['return']:
-                        if returnval not in [suffix[1:] for suffix in
-                                             self._return_suffixes]:
+                    if isinstance(fdict["return"], str):
+                        fdict["return"] = [fdict["return"]]
+                    for returnval in fdict["return"]:
+                        if returnval not in [
+                            suffix[1:] for suffix in self._return_suffixes
+                        ]:
                             raise ValueError(
-                                    f"`feature_parse_specs` of {tname} {fname}"
-                                    f" has invalid return type {returnval}")
-                if 'filter' not in fdict:
-                    fdict['filter'] = {}
-                if set(fdict['filter'].keys()) - set(self._filterkeys):
-                    raise ValueError(f"`feature_parse_specs` for {tname} "
-                                     f"{fname} has invalid filter type. Only "
-                                     f"{self._filterkeys} are allowed.")
+                                f"`feature_parse_specs` of {tname} {fname}"
+                                f" has invalid return type {returnval}"
+                            )
+                if "filter" not in fdict:
+                    fdict["filter"] = {}
+                if set(fdict["filter"].keys()) - set(self._filterkeys):
+                    raise ValueError(
+                        f"`feature_parse_specs` for {tname} "
+                        f"{fname} has invalid filter type. Only "
+                        f"{self._filterkeys} are allowed."
+                    )
                 for filterkey in self._filterkeys:
-                    if filterkey not in fdict['filter']:
-                        fdict['filter'][filterkey] = 0
+                    if filterkey not in fdict["filter"]:
+                        fdict["filter"][filterkey] = 0
 
-    def features_to_parse(self, targetname, feature_or_name='feature'):
+    def features_to_parse(self, targetname, feature_or_name="feature"):
         """Features to parse for a target.
 
         Parameters
@@ -548,30 +605,29 @@ class Targets:
             :meth:`Targets.feature_parse_specs`.
 
         """
-        if feature_or_name == 'name':
-            if not hasattr(self, '_fnames_to_parse'):
+        if feature_or_name == "name":
+            if not hasattr(self, "_fnames_to_parse"):
                 self._fnames_to_parse = {}
                 for tname, tdict in self._feature_parse_specs.items():
-                    self._fnames_to_parse[tname] = [f for f in tdict if
-                                                    f not in self._clip_cols]
+                    self._fnames_to_parse[tname] = [
+                        f for f in tdict if f not in self._clip_cols
+                    ]
             try:
                 return self._fnames_to_parse[targetname]
             except KeyError:
-                raise ValueError(f"target {targetname} not in "
-                                 '`feature_parse_specs`')
-        elif feature_or_name == 'feature':
-            if not hasattr(self, '_features_to_parse'):
+                raise ValueError(f"target {targetname} not in " "`feature_parse_specs`")
+        elif feature_or_name == "feature":
+            if not hasattr(self, "_features_to_parse"):
                 self._features_to_parse = {}
                 for tname, tdict in self._feature_parse_specs.items():
                     target = self.get_target(tname)
-                    self._features_to_parse[tname] = [target.get_feature(f)
-                                                      for f in tdict if
-                                                      f not in self._clip_cols]
+                    self._features_to_parse[tname] = [
+                        target.get_feature(f) for f in tdict if f not in self._clip_cols
+                    ]
             try:
                 return self._features_to_parse[targetname]
             except KeyError:
-                raise ValueError(f"target {targetname} not in "
-                                 '`feature_parse_specs`')
+                raise ValueError(f"target {targetname} not in " "`feature_parse_specs`")
         else:
             raise ValueError(f"invalid `feature_or_name` {feature_or_name}")
 
@@ -598,12 +654,12 @@ class Targets:
             values explicitly filled in.
 
         """
-        if returntype == 'dict':
+        if returntype == "dict":
             return copy.deepcopy(self._feature_parse_specs)
-        elif returntype == 'yaml':
-            return yaml.dump(self._feature_parse_specs,
-                             default_flow_style=False,
-                             sort_keys=False)
+        elif returntype == "yaml":
+            return yaml.dump(
+                self._feature_parse_specs, default_flow_style=False, sort_keys=False
+            )
         else:
             raise ValueError(f"invalid `returntype` of {returntype}")
 
@@ -640,17 +696,11 @@ class Targets:
                 fastafile.write(f">{target.name}\n{target.seq}\n")
             fastafile.flush()
         except AttributeError:
-            with open(fastafile, 'w') as f:
+            with open(fastafile, "w") as f:
                 for target in self.targets:
                     f.write(f">{target.name}\n{target.seq}\n")
 
-    def plot(self,
-             *,
-             sharex=True,
-             ax_width=5,
-             ax_height=3,
-             hspace=0.4,
-             **kwargs):
+    def plot(self, *, sharex=True, ax_width=5, ax_height=3, hspace=0.4, **kwargs):
         """Plot all the targets.
 
         Note
@@ -677,14 +727,14 @@ class Targets:
             Figure showing all targets.
 
         """
-        fig, axes = plt.subplots(nrows=len(self.targets),
-                                 ncols=1,
-                                 sharex=False,
-                                 squeeze=False,
-                                 gridspec_kw={'hspace': hspace},
-                                 figsize=(ax_width,
-                                          len(self.targets) * ax_height),
-                                 )
+        fig, axes = plt.subplots(
+            nrows=len(self.targets),
+            ncols=1,
+            sharex=False,
+            squeeze=False,
+            gridspec_kw={"hspace": hspace},
+            figsize=(ax_width, len(self.targets) * ax_height),
+        )
         for ax, target in zip(axes.ravel(), self.targets):
             image = target.image(**kwargs)
             image.plot(ax=ax)
@@ -707,25 +757,26 @@ class Targets:
             this mapper.
 
         """
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.fa') as targetfile:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".fa") as targetfile:
             self.write_fasta(targetfile)
             mapper.map_to_sam(targetfile.name, queryfile, alignmentfile)
 
-    def align_and_parse(self,
-                        df,
-                        mapper,
-                        outdir,
-                        *,
-                        name_col='name',
-                        queryfile_col='queryfile',
-                        group_cols=None,
-                        to_csv=False,
-                        overwrite=False,
-                        multi_align='primary',
-                        filtered_cs=False,
-                        skip_sups=True,
-                        ncpus=-1
-                        ):
+    def align_and_parse(
+        self,
+        df,
+        mapper,
+        outdir,
+        *,
+        name_col="name",
+        queryfile_col="queryfile",
+        group_cols=None,
+        to_csv=False,
+        overwrite=False,
+        multi_align="primary",
+        filtered_cs=False,
+        skip_sups=True,
+        ncpus=-1,
+    ):
         """Align query sequences and then parse alignments.
 
         Note
@@ -792,40 +843,44 @@ class Targets:
                 group_cols = [group_cols]
             addtl_cols = group_cols + [name_col]
             if len(set(addtl_cols)) != len(addtl_cols):
-                raise ValueError('`name_col` and `group_cols` have redundant '
-                                 f"entries: {addtl_cols}")
+                raise ValueError(
+                    "`name_col` and `group_cols` have redundant "
+                    f"entries: {addtl_cols}"
+                )
         expected_cols = addtl_cols + [queryfile_col]
         if not set(df.columns).issuperset(set(expected_cols)):
-            raise ValueError('`df` does not contain all expected columns: ' +
-                             str(expected_cols))
+            raise ValueError(
+                "`df` does not contain all expected columns: " + str(expected_cols)
+            )
 
         os.makedirs(outdir, exist_ok=True)
 
         # For each query we create a "full name" that includes name +
         # grouping cols, a subdirectory that holds all files
         # for this query, and the samfile for the alignments.
-        reserved_cols = {'fullname', 'subdir', 'samfile'}
+        reserved_cols = {"fullname", "subdir", "samfile"}
         if set(expected_cols).intersection(reserved_cols):
             raise ValueError(f"`df` cannot have columns: {reserved_cols}")
         df = (
-            df
-            [expected_cols]
+            df[expected_cols]
             .astype(str)
             .assign(
-                fullname=lambda x: x.apply(lambda r: '_'.join(r[c] for c
-                                                              in addtl_cols),
-                                           axis=1),
-                subdir=lambda x: x['fullname'].map(lambda n: os.path.join(
-                                                   outdir, n)),
-                samfile=lambda x: x['subdir'].map(lambda d: os.path.join(
-                                                  d, 'alignments.sam')),
-                )
-            .reset_index(drop=True)
+                fullname=lambda x: x.apply(
+                    lambda r: "_".join(r[c] for c in addtl_cols), axis=1
+                ),
+                subdir=lambda x: x["fullname"].map(lambda n: os.path.join(outdir, n)),
+                samfile=lambda x: x["subdir"].map(
+                    lambda d: os.path.join(d, "alignments.sam")
+                ),
             )
-        if len(df) != df['fullname'].nunique():
-            raise ValueError('Names the queries are not unique even after '
-                             'adding grouping columns.')
-        if any(df[col].str.contains(',').any() for col in df.columns):
+            .reset_index(drop=True)
+        )
+        if len(df) != df["fullname"].nunique():
+            raise ValueError(
+                "Names the queries are not unique even after "
+                "adding grouping columns."
+            )
+        if any(df[col].str.contains(",").any() for col in df.columns):
             raise ValueError('`name_col` and `group_cols` entry contains ","')
 
         # set up multiprocessing pool
@@ -834,11 +889,12 @@ class Targets:
         else:
             ncpus = min(pathos.multiprocessing.cpu_count(), ncpus)
         if ncpus < 1:
-            raise ValueError('`ncpus` must be >= 1')
+            raise ValueError("`ncpus` must be >= 1")
         if ncpus > 1:
             pool = pathos.pools.ProcessPool(ncpus)
             map_func = pool.map
         else:
+
             def map_func(f, *args):
                 return [f(*argtup) for argtup in zip(*args)]
 
@@ -850,22 +906,22 @@ class Targets:
                     os.remove(tup.samfile)
                 else:
                     raise IOError(f"file {tup.samfile} already exists")
-        _ = map_func(self.align,
-                     df[queryfile_col],
-                     df['samfile'],
-                     itertools.repeat(mapper))
-        assert all(os.path.isfile(f) for f in df['samfile'])
+        _ = map_func(
+            self.align, df[queryfile_col], df["samfile"], itertools.repeat(mapper)
+        )
+        assert all(os.path.isfile(f) for f in df["samfile"])
 
         # now parse the alignments
-        parse_results = map_func(self.parse_alignment,
-                                 df['samfile'],
-                                 itertools.repeat(multi_align),
-                                 itertools.repeat(True),
-                                 df['subdir'],
-                                 itertools.repeat(overwrite),
-                                 itertools.repeat(filtered_cs),
-                                 itertools.repeat(skip_sups)
-                                 )
+        parse_results = map_func(
+            self.parse_alignment,
+            df["samfile"],
+            itertools.repeat(multi_align),
+            itertools.repeat(True),
+            df["subdir"],
+            itertools.repeat(overwrite),
+            itertools.repeat(filtered_cs),
+            itertools.repeat(skip_sups),
+        )
 
         # close, clear pool: https://github.com/uqfoundation/pathos/issues/111
         if ncpus > 1:
@@ -875,26 +931,29 @@ class Targets:
 
         # Set up to gather overall readstats, aligned, and filtered by
         # getting and checking column names:
-        readstatcols = ['category', 'count']
+        readstatcols = ["category", "count"]
         alignedcols = {t: self._parse_returnvals(t) for t in self.target_names}
-        filteredcols = ['query_name', 'filter_reason']
+        filteredcols = ["query_name", "filter_reason"]
         disallowedcols = readstatcols + filteredcols
         for tc in alignedcols.values():
             disallowedcols += tc
         if set(addtl_cols).intersection(set(disallowedcols)):
-            raise ValueError('`name_col`, `group_cols` cannot have any of ' +
-                             str(disallowedcols))
+            raise ValueError(
+                "`name_col`, `group_cols` cannot have any of " + str(disallowedcols)
+            )
         alignedcols = {t: addtl_cols + tc for t, tc in alignedcols.items()}
         filteredcols = addtl_cols + filteredcols
 
         # set up data frames or names of files
         readstats = pd.DataFrame([], columns=addtl_cols + readstatcols)
-        filtered = {t: os.path.join(outdir, t.replace(' ', '_') +
-                                    '_filtered.csv')
-                    for t in self.target_names}
-        aligned = {t: os.path.join(outdir, t.replace(' ', '_') +
-                                   '_aligned.csv')
-                   for t in self.target_names}
+        filtered = {
+            t: os.path.join(outdir, t.replace(" ", "_") + "_filtered.csv")
+            for t in self.target_names
+        }
+        aligned = {
+            t: os.path.join(outdir, t.replace(" ", "_") + "_aligned.csv")
+            for t in self.target_names
+        }
         for f in list(filtered.values()) + list(aligned.values()):
             if os.path.isfile(f):
                 if not overwrite:
@@ -905,14 +964,15 @@ class Targets:
         # collect read stats for all runs
         for i, (ireadstats, _, _) in enumerate(parse_results):
             readstats = readstats.append(
-                    (ireadstats
-                     .assign(**{c: df.at[i, c] for c in addtl_cols})
-                     [readstats.columns]
-                     ),
-                    ignore_index=True,
-                    sort=False,
-                    )
-        readstats = readstats.assign(count=lambda x: x['count'].astype(int))
+                (
+                    ireadstats.assign(**{c: df.at[i, c] for c in addtl_cols})[
+                        readstats.columns
+                    ]
+                ),
+                ignore_index=True,
+                sort=False,
+            )
+        readstats = readstats.assign(count=lambda x: x["count"].astype(int))
 
         # collect aligned and filtered for all runs
         for t in self.target_names:
@@ -925,39 +985,46 @@ class Targets:
                         if os.path.isfile(fname):
                             os.remove(fname)
 
-                alignedfile = stack.enter_context(open(aligned[t], 'w'))
-                filteredfile = stack.enter_context(open(filtered[t], 'w'))
-                alignedfile.write(','.join(alignedcols[t]) + '\n')
-                filteredfile.write(','.join(filteredcols) + '\n')
+                alignedfile = stack.enter_context(open(aligned[t], "w"))
+                filteredfile = stack.enter_context(open(filtered[t], "w"))
+                alignedfile.write(",".join(alignedcols[t]) + "\n")
+                filteredfile.write(",".join(filteredcols) + "\n")
 
                 for i, (_, ialigned, ifiltered) in enumerate(parse_results):
-                    addtl_text = ','.join(df.at[i, c] for c in addtl_cols)
+                    addtl_text = ",".join(df.at[i, c] for c in addtl_cols)
                     for fin_name, fout, cols in [
-                            (ialigned[t], alignedfile, alignedcols[t]),
-                            (ifiltered[t], filteredfile, filteredcols),
-                            ]:
+                        (ialigned[t], alignedfile, alignedcols[t]),
+                        (ifiltered[t], filteredfile, filteredcols),
+                    ]:
                         with open(fin_name) as fin:
                             firstline = fin.readline()
-                            assert (firstline[: -1].split(',') ==
-                                    cols[len(addtl_cols):]), fin_name
+                            assert (
+                                firstline[:-1].split(",") == cols[len(addtl_cols) :]
+                            ), fin_name
                             for line in fin:
                                 fout.write(addtl_text)
-                                fout.write(',')
+                                fout.write(",")
                                 fout.write(line)
                             fout.flush()
 
                 stack.pop_all()  # no callback to delete files if reached here
 
         if not to_csv:
-            aligned = {t: pd.read_csv(f).fillna('')
-                       for t, f in aligned.items()}
+            aligned = {t: pd.read_csv(f).fillna("") for t, f in aligned.items()}
             filtered = {t: pd.read_csv(f) for t, f in filtered.items()}
 
         return readstats, aligned, filtered
 
-    def parse_alignment(self, samfile, multi_align='primary',
-                        to_csv=False, csv_dir=None, overwrite_csv=False,
-                        filtered_cs=False, skip_sups=True):
+    def parse_alignment(
+        self,
+        samfile,
+        multi_align="primary",
+        to_csv=False,
+        csv_dir=None,
+        overwrite_csv=False,
+        filtered_cs=False,
+        skip_sups=True,
+    ):
         """Parse alignment features as specified in `feature_parse_specs`.
 
         Parameters
@@ -1040,32 +1107,33 @@ class Targets:
         there are no aligned query sites.
 
         """
-        if multi_align == 'primary':
+        if multi_align == "primary":
             primary_only = True
         else:
             raise ValueError(f"invalid `multi_align` {multi_align}")
 
         if csv_dir is None:
-            csv_dir = ''
+            csv_dir = ""
         elif csv_dir:
             os.makedirs(csv_dir, exist_ok=True)
 
         unmapped = 0
-        readstats = {t: {'filtered': 0, 'aligned': 0}
-                     for t in self.target_names}
+        readstats = {t: {"filtered": 0, "aligned": 0} for t in self.target_names}
 
         if filtered_cs:
-            filtered_cols = ['query_name', 'filter_reason', 'filter_cs']
+            filtered_cols = ["query_name", "filter_reason", "filter_cs"]
         else:
-            filtered_cols = ['query_name', 'filter_reason']
+            filtered_cols = ["query_name", "filter_reason"]
 
         if to_csv:
-            filtered = {t: os.path.join(csv_dir, t.replace(' ', '_') +
-                                        '_filtered.csv')
-                        for t in self.target_names}
-            aligned = {t: os.path.join(csv_dir, t.replace(' ', '_') +
-                                       '_aligned.csv')
-                       for t in self.target_names}
+            filtered = {
+                t: os.path.join(csv_dir, t.replace(" ", "_") + "_filtered.csv")
+                for t in self.target_names
+            }
+            aligned = {
+                t: os.path.join(csv_dir, t.replace(" ", "_") + "_aligned.csv")
+                for t in self.target_names
+            }
             filenames = list(filtered.values()) + list(aligned.values())
             if (not overwrite_csv) and any(map(os.path.isfile, filenames)):
                 raise IOError(f"existing file with name in: {filenames}")
@@ -1087,14 +1155,16 @@ class Targets:
             if to_csv:
                 # add files to stack so they are closed at end:
                 # https://stackoverflow.com/a/19412700
-                filtered_files = {t: stack.enter_context(open(f, 'w'))
-                                  for t, f in filtered.items()}
+                filtered_files = {
+                    t: stack.enter_context(open(f, "w")) for t, f in filtered.items()
+                }
                 for f in filtered_files.values():
-                    f.write(','.join(filtered_cols) + '\n')
-                aligned_files = {t: stack.enter_context(open(f, 'w'))
-                                 for t, f in aligned.items()}
+                    f.write(",".join(filtered_cols) + "\n")
+                aligned_files = {
+                    t: stack.enter_context(open(f, "w")) for t, f in aligned.items()
+                }
                 for t, f in aligned_files.items():
-                    f.write(','.join(self._parse_returnvals(t)) + '\n')
+                    f.write(",".join(self._parse_returnvals(t)) + "\n")
 
             # iterate over samfile and process each alignment
             for aligned_seg in pysam.AlignmentFile(samfile):
@@ -1109,52 +1179,52 @@ class Targets:
                 if aligned_seg.is_secondary and primary_only:
                     continue
 
-                a = Alignment(aligned_seg, introns_to_deletions=True,
-                              target_seqs=self.target_seqs)
+                a = Alignment(
+                    aligned_seg, introns_to_deletions=True, target_seqs=self.target_seqs
+                )
                 tname = a.target_name
 
                 is_filtered, parse_tup = self._parse_single_Alignment(
-                                                                a,
-                                                                tname,
-                                                                filtered_cs)
+                    a, tname, filtered_cs
+                )
 
                 if is_filtered:
-                    readstats[tname]['filtered'] += 1
+                    readstats[tname]["filtered"] += 1
                     if to_csv:
-                        filtered_files[tname].write(','.join(map(str,
-                                                                 parse_tup)))
-                        filtered_files[tname].write('\n')
+                        filtered_files[tname].write(",".join(map(str, parse_tup)))
+                        filtered_files[tname].write("\n")
                     else:
                         filtered[tname].append(parse_tup)
 
                 else:
-                    readstats[tname]['aligned'] += 1
+                    readstats[tname]["aligned"] += 1
                     if to_csv:
-                        aligned_files[tname].write(','.join(map(str,
-                                                                parse_tup)))
-                        aligned_files[tname].write('\n')
+                        aligned_files[tname].write(",".join(map(str, parse_tup)))
+                        aligned_files[tname].write("\n")
                     else:
                         aligned[tname].append(parse_tup)
 
             # Done iterating over `samfile`, get values ready to return
-            readstats = (pd.DataFrame(readstats)
-                         .reset_index()
-                         .melt(id_vars='index', value_name='count')
-                         .assign(category=lambda x: (x['index'] + ' ' +
-                                                     x['variable']))
-                         [['category', 'count']]
-                         .append({'category': 'unmapped', 'count': unmapped},
-                                 ignore_index=True)
-                         )
+            readstats = (
+                pd.DataFrame(readstats)
+                .reset_index()
+                .melt(id_vars="index", value_name="count")
+                .assign(category=lambda x: (x["index"] + " " + x["variable"]))[
+                    ["category", "count"]
+                ]
+                .append({"category": "unmapped", "count": unmapped}, ignore_index=True)
+            )
             if not to_csv:
-                filtered = {t: pd.DataFrame(tlist, columns=filtered_cols)
-                            for t, tlist in filtered.items()}
-                aligned = {t: pd.DataFrame(tlist,
-                                           columns=self._parse_returnvals(t))
-                           for t, tlist in aligned.items()}
+                filtered = {
+                    t: pd.DataFrame(tlist, columns=filtered_cols)
+                    for t, tlist in filtered.items()
+                }
+                aligned = {
+                    t: pd.DataFrame(tlist, columns=self._parse_returnvals(t))
+                    for t, tlist in aligned.items()
+                }
             else:
-                for f in (list(aligned_files.values()) +
-                          list(filtered_files.values())):
+                for f in list(aligned_files.values()) + list(filtered_files.values()):
                     f.flush()
 
             stack.pop_all()  # no callback to delete CSV files if reached here
@@ -1179,13 +1249,13 @@ class Targets:
 
         """
         if featurename is None:
-            returnlist = ['query_name', 'query_clip5', 'query_clip3']
-            for featurename in self.features_to_parse(targetname, 'name'):
+            returnlist = ["query_name", "query_clip5", "query_clip3"]
+            for featurename in self.features_to_parse(targetname, "name"):
                 for val in self._parse_returnvals(targetname, featurename):
                     returnlist.append(f"{featurename}_{val}")
             return returnlist
         else:
-            return self._feature_parse_specs[targetname][featurename]['return']
+            return self._feature_parse_specs[targetname][featurename]["return"]
 
     def _parse_single_Alignment(self, a, targetname, filtered_cs=False):
         """Parse a single alignment.
@@ -1212,7 +1282,7 @@ class Targets:
         parse_tup = [query_name]
 
         # get and filter on query clipping
-        for clip in ['query_clip5', 'query_clip3']:
+        for clip in ["query_clip5", "query_clip3"]:
             clipval = getattr(a, clip)
             clipmax = self._feature_parse_specs[targetname][clip]
             if (clipmax is None) or clipval <= clipmax:
@@ -1229,28 +1299,29 @@ class Targets:
                 if a.target_clip5 >= feature.end:
                     clip5 = feature.length
                     clip3 = 0
-                    cs = ''
+                    cs = ""
                 elif a.target_lastpos <= feature.start:
                     clip5 = 0
                     clip3 = feature.length
-                    cs = ''
+                    cs = ""
                 else:
                     raise ValueError(
-                            f"Should not get here:\ntarget = {targetname}:\n"
-                            f"feature = {feature}\n"
-                            f"target_clip5 = {a.target_clip5}\n"
-                            f"lastpos = {a.target_lastpos}\n"
-                            )
+                        f"Should not get here:\ntarget = {targetname}:\n"
+                        f"feature = {feature}\n"
+                        f"target_clip5 = {a.target_clip5}\n"
+                        f"lastpos = {a.target_lastpos}\n"
+                    )
             else:
                 cs, clip5, clip3 = feat_info
 
             # apply filters
             featurename = feature.name
-            filter_vals = {'clip5': clip5,
-                           'clip3': clip3,
-                           'mutation_nt_count': cs_to_nt_mutation_count(cs),
-                           'mutation_op_count': cs_to_op_mutation_count(cs),
-                           }
+            filter_vals = {
+                "clip5": clip5,
+                "clip3": clip3,
+                "mutation_nt_count": cs_to_nt_mutation_count(cs),
+                "mutation_op_count": cs_to_op_mutation_count(cs),
+            }
             for key, valmax in target_parse_filters[featurename].items():
                 if filter_vals[key] > valmax:
                     if filtered_cs:
@@ -1260,30 +1331,30 @@ class Targets:
 
             # get return values
             for return_name in self._parse_returnvals(targetname, featurename):
-                if return_name == 'clip5':
+                if return_name == "clip5":
                     parse_tup.append(clip5)
-                elif return_name == 'clip3':
+                elif return_name == "clip3":
                     parse_tup.append(clip3)
-                elif return_name == 'mutations':
+                elif return_name == "mutations":
                     parse_tup.append(cs_to_mutation_str(cs, clip5))
-                elif return_name == 'cs':
+                elif return_name == "cs":
                     parse_tup.append(cs)
-                elif return_name == 'sequence':
-                    clippedseq = feature.seq[clip5: feature.length - clip3]
+                elif return_name == "sequence":
+                    clippedseq = feature.seq[clip5 : feature.length - clip3]
                     parse_tup.append(cs_to_sequence(cs, clippedseq))
-                elif return_name == 'accuracy':
-                    parse_tup.append(a.get_accuracy(feature.start,
-                                                    feature.end))
+                elif return_name == "accuracy":
+                    parse_tup.append(a.get_accuracy(feature.start, feature.end))
                 else:
                     allowednames = [name[1:] for name in self._return_suffixes]
-                    raise ValueError(f"invalid `return_name` {return_name}, "
-                                     f"should be one of {allowednames}")
+                    raise ValueError(
+                        f"invalid `return_name` {return_name}, "
+                        f"should be one of {allowednames}"
+                    )
 
         # if here, alignment not filtered: return it
         return False, parse_tup
 
-    def _parse_alignment_cs(self, samfile, *, multi_align='primary',
-                            skip_sups=True):
+    def _parse_alignment_cs(self, samfile, *, multi_align="primary", skip_sups=True):
         """Parse alignment feature ``cs`` strings for aligned queries.
 
         Note
@@ -1336,26 +1407,27 @@ class Targets:
         """
         suffixes = self._return_suffixes[3:]
         d = {target: None for target in self.target_names}
-        if 'unmapped' in self.target_names:
+        if "unmapped" in self.target_names:
             raise ValueError('cannot have a target named "unmapped"')
         else:
-            d['unmapped'] = 0
+            d["unmapped"] = 0
 
-        if multi_align == 'primary':
+        if multi_align == "primary":
             primary_only = True
         else:
             raise ValueError(f"invalid `multi_align` {multi_align}")
 
         for aligned_seg in pysam.AlignmentFile(samfile):
             if aligned_seg.is_unmapped:
-                d['unmapped'] += 1
+                d["unmapped"] += 1
             else:
                 if primary_only and aligned_seg.is_secondary:
                     continue
                 if skip_sups and aligned_seg.is_supplementary:
                     continue
-                a = Alignment(aligned_seg, introns_to_deletions=True,
-                              target_seqs=self.target_seqs)
+                a = Alignment(
+                    aligned_seg, introns_to_deletions=True, target_seqs=self.target_seqs
+                )
                 tname = a.target_name
                 if d[tname] is None:
                     d[tname] = {col: [] for col in self._reserved_cols}
@@ -1364,41 +1436,42 @@ class Targets:
                         for suffix in suffixes:
                             d[tname][fname + suffix] = []
 
-                d[tname]['query_name'].append(a.query_name)
-                d[tname]['query_clip5'].append(a.query_clip5)
-                d[tname]['query_clip3'].append(a.query_clip3)
+                d[tname]["query_name"].append(a.query_name)
+                d[tname]["query_clip5"].append(a.query_clip5)
+                d[tname]["query_clip3"].append(a.query_clip3)
 
                 for feature in self.features_to_parse(tname):
                     feat_info = a.extract_cs(feature.start, feature.end)
                     fname = feature.name
                     if feat_info is None:
-                        d[tname][fname + '_cs'].append('')
+                        d[tname][fname + "_cs"].append("")
                         if a.target_clip5 >= feature.end:
-                            d[tname][fname + '_clip5'].append(feature.length)
-                            d[tname][fname + '_clip3'].append(0)
+                            d[tname][fname + "_clip5"].append(feature.length)
+                            d[tname][fname + "_clip3"].append(0)
                         elif a.target_lastpos <= feature.start:
-                            d[tname][fname + '_clip5'].append(0)
-                            d[tname][fname + '_clip3'].append(feature.length)
+                            d[tname][fname + "_clip5"].append(0)
+                            d[tname][fname + "_clip3"].append(feature.length)
                         else:
                             raise ValueError(
                                 f"Should never get here for target {tname}:\n"
                                 f"feature = {feature}\n"
                                 f"target_clip5 = {a.target_clip5}\n"
                                 f"lastpos = {a.target_lastpos}\n"
-                                )
+                            )
                     else:
-                        d[tname][fname + '_cs'].append(feat_info[0])
-                        d[tname][fname + '_clip5'].append(feat_info[1])
-                        d[tname][fname + '_clip3'].append(feat_info[2])
+                        d[tname][fname + "_cs"].append(feat_info[0])
+                        d[tname][fname + "_clip5"].append(feat_info[1])
+                        d[tname][fname + "_clip3"].append(feat_info[2])
 
         for target in d.keys():
-            if target != 'unmapped':
+            if target != "unmapped":
                 if d[target] is not None:
                     d[target] = pd.DataFrame.from_dict(d[target])
 
         return d
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()

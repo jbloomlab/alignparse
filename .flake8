@@ -1,4 +1,5 @@
 [flake8]
 exclude = build, dist, docs/_build
-ignore = E121,E123,E126,E226,E24,E704,W503,W504,D205,D400,RST303,RST304
+ignore = E121,E123,E126,E203,E226,E24,E704,W503,W504,D205,D400,D401,RST303,RST304,RST307
 application-import-names = alignparse
+max-line-length = 88
