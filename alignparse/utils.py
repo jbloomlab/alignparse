@@ -340,7 +340,7 @@ class MutationRenumber:
         Column in `number_mapping` giving new site number.
     wt_nt_col : str or None
         Column in `number_mapping` giving wildtype nucleotide at each site,
-        or `None` to not check identity.
+        or `None` to not check identity. Is also allowed to be an amino acid.
     err_suffix : str
         Append this message to any errors raised about invalid sites or
         mutation strings. Can be useful for debugging.
@@ -367,6 +367,17 @@ class MutationRenumber:
     {1: 'A', 2: 'C', 3: 'G'}
     >>> renumberer.renumber_muts('A1C del2to3 ins3GC')
     'A5C del6to7 ins7GC'
+
+    Try to renumber with gaps and stop codons, allowed if flags set:
+
+    >>> renumberer.renumber_muts("A1F C2- G3*")
+    Traceback (most recent call last):
+      ...
+    ValueError: Cannot match C2- in A1F C2- G3*
+    >>> renumberer.renumber_muts("A1F C2- G3*",
+    ...                          allow_gaps=True,
+    ...                          allow_stop=True)
+    'A5F C6- G7*'
 
     """
 
@@ -412,13 +423,17 @@ class MutationRenumber:
         else:
             self.old_to_wt = None
 
-    def renumber_muts(self, mut_str):
+    def renumber_muts(self, mut_str, allow_gaps=False, allow_stop=False):
         """Get re-numbered mutation string.
 
         Parameters
         ----------
         mut_str : str
             Mutations in format 'A1C del2to3 ins3GG'.
+        allow_gaps : bool
+            Allow gap (``-``) characters
+        allow_stop : bool
+            Allow stop (``*``) characters
 
         Returns
         -------
@@ -430,9 +445,15 @@ class MutationRenumber:
         for mut in mut_str.split():
             try:
                 # try to match substitutions
+                chars = "A-Z"
+                if allow_gaps:
+                    chars += r"\-"
+                if allow_stop:
+                    chars += r"\*"
                 m = re.fullmatch(
-                        r'(?P<wt>[A-Z])(?P<site>\-?\d+)(?P<mut>[A-Z])',
-                        mut)
+                    rf"(?P<wt>[{chars}])(?P<site>\-?\d+)(?P<mut>[{chars}])",
+                    mut
+                )
                 if m:
                     site = m.group('site')
                     if self.old_to_wt is not None:
@@ -448,8 +469,10 @@ class MutationRenumber:
                             )
                     continue
                 # try to match insertion
-                m = re.fullmatch(r'ins(?P<site>\-?\d+)(?P<insertion>[A-Z]+)',
-                                 mut)
+                m = re.fullmatch(
+                    rf"ins(?P<site>\-?\d+)(?P<insertion>[{chars}]+)",
+                    mut
+                )
                 if m:
                     new_muts.append(
                             'ins' +
