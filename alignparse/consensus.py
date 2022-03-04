@@ -392,7 +392,7 @@ def empirical_accuracy(df,
     >>> df = pd.DataFrame({
     ...         'barcode': ['AT', 'AT', 'TG', 'TA', 'TA', 'TA'],
     ...         'mutations': ['A1G', 'A1G', '', 'T2A C6G', 'T5C', 'C6G T2A']})
-    >>> with pd.option_context('precision', 4):
+    >>> with pd.option_context('display.precision', 4):
     ...     empirical_accuracy(df, upstream_group_cols=None)
        accuracy
     0    0.7692
@@ -400,7 +400,7 @@ def empirical_accuracy(df,
     If we do the same without sorting the mutations, we get lower values
     as 'T2A C6G' and 'C6G T2A' are then considered as different:
 
-    >>> with pd.option_context('precision', 4):
+    >>> with pd.option_context('display.precision', 4):
     ...     empirical_accuracy(df, upstream_group_cols=None,
     ...                        sort_mutations=False)
        accuracy
@@ -414,7 +414,7 @@ def empirical_accuracy(df,
     ...     'bc'  :['AT', 'AT', 'TG', 'TA', 'TA', 'TA', 'TA'],
     ...     'var' :['v1', 'v1', 'v2', 'v3', 'v4', 'v3', 'v3'],
     ...     'lib' :['s1', 's1', 's2', 's3', 's3', 's3', 's4']})
-    >>> with pd.option_context('precision', 4):
+    >>> with pd.option_context('display.precision', 4):
     ...     empirical_accuracy(df2, upstream_group_cols='lib', group_cols='bc',
     ...                        mutation_col='var', sort_mutations=False)
       lib  accuracy
