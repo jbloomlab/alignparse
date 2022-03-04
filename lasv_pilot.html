@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.3.0 documentation</title>
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.4.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
@@ -327,7 +327,7 @@ steps. This illustrates an additional use case and shows how this package could 
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -337,7 +337,7 @@ steps. This illustrates an additional use case and shows how this package could 
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./output_files/&#39;</span>
+<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;./output_files/&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -348,7 +348,7 @@ steps. This illustrates an additional use case and shows how this package could 
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">CBPALETTE</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;#999999&#39;</span><span class="p">,</span> <span class="s1">&#39;#E69F00&#39;</span><span class="p">,</span> <span class="s1">&#39;#56B4E9&#39;</span><span class="p">,</span> <span class="s1">&#39;#009E73&#39;</span><span class="p">)</span>
+<span></span><span class="n">CBPALETTE</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;#999999&quot;</span><span class="p">,</span> <span class="s2">&quot;#E69F00&quot;</span><span class="p">,</span> <span class="s2">&quot;#56B4E9&quot;</span><span class="p">,</span> <span class="s2">&quot;#009E73&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -363,9 +363,11 @@ sequencing</a> example) or each target can be defined in its own Genbank file (a
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">,</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
+<span></span><span class="n">target_file_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LASV_Josiah_WT&quot;</span><span class="p">,</span> <span class="s2">&quot;LASV_Josiah_OPT&quot;</span><span class="p">]</span>
 
-<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;input_files/</span><span class="si">{</span><span class="n">target_file_name</span><span class="si">}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span><span class="p">]</span>
+<span class="n">targetfiles</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">f</span><span class="s2">&quot;input_files/</span><span class="si">{</span><span class="n">target_file_name</span><span class="si">}</span><span class="s2">.gb&quot;</span> <span class="k">for</span> <span class="n">target_file_name</span> <span class="ow">in</span> <span class="n">target_file_names</span>
+<span class="p">]</span>
 
 <span class="k">for</span> <span class="n">targetfile</span> <span class="ow">in</span> <span class="n">targetfiles</span><span class="p">:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -527,7 +529,7 @@ mutations that are arising in these samples.</p>
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">lasv_parse_specs_file</span> <span class="o">=</span> <span class="s1">&#39;input_files/lasv_feature_parse_specs.yaml&#39;</span>
+<span></span><span class="n">lasv_parse_specs_file</span> <span class="o">=</span> <span class="s2">&quot;input_files/lasv_feature_parse_specs.yaml&quot;</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">lasv_parse_specs_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
@@ -577,9 +579,11 @@ LASV_Josiah_OPT: *LASV_target_parse_specs
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span><span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
-                  <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
-                  <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
+    <span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
+    <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
+    <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -589,7 +593,7 @@ LASV_Josiah_OPT: *LASV_target_parse_specs
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s1">&#39;yaml&#39;</span><span class="p">))</span>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s2">&quot;yaml&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -684,12 +688,12 @@ LASV_Josiah_OPT: *id001
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">targets_subset</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
-                    <span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
-                    <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
-                    <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">select_target_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">],</span>
-                    <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">]</span>
-                    <span class="p">)</span>
+    <span class="n">seqsfile</span><span class="o">=</span><span class="n">targetfiles</span><span class="p">,</span>
+    <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">lasv_parse_specs_file</span><span class="p">,</span>
+    <span class="n">allow_extra_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">select_target_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;LASV_Josiah_WT&quot;</span><span class="p">],</span>
+    <span class="n">ignore_feature_parse_specs_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;LASV_Josiah_OPT&quot;</span><span class="p">],</span>
+<span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Here are the names of the retained targets: </span><span class="si">{</span><span class="n">targets_subset</span><span class="o">.</span><span class="n">target_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -724,15 +728,17 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;lasv_pilot&#39;</span><span class="p">]</span>
-<span class="n">ccs_dir</span> <span class="o">=</span> <span class="s1">&#39;input_files&#39;</span>
-<span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;lasv_example&#39;</span>
+<span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lasv_pilot&quot;</span><span class="p">]</span>
+<span class="n">ccs_dir</span> <span class="o">=</span> <span class="s2">&quot;input_files&quot;</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;lasv_example&quot;</span>
 
 <span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
-             <span class="s1">&#39;report&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
-             <span class="s1">&#39;fastq&#39;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">]</span>
-             <span class="p">})</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">run_names</span><span class="p">,</span>
+        <span class="s2">&quot;report&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_report.txt&quot;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run_names</span><span class="p">],</span>
+        <span class="s2">&quot;fastq&quot;</span><span class="p">:</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ccs_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">_ccs.fastq.gz&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 <span class="n">pacbio_runs</span>
 </pre></div>
@@ -889,7 +895,7 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;passes&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">]:</span>
+<span></span><span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;passes&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">has_stat</span><span class="p">(</span><span class="n">stat</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
@@ -931,8 +937,10 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-      <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span>
+    <span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mapper</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -951,7 +959,9 @@ Using `minimap2` 2.17-r941 with these options:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">alignments</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outdir</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;_alignments.sam&#39;</span><span class="p">)</span>
+<span></span><span class="n">pacbio_runs</span> <span class="o">=</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">alignments</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">outdir</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_alignments.sam&quot;</span>
+<span class="p">)</span>
 
 <span class="n">pacbio_runs</span>
 </pre></div>
@@ -1006,9 +1016,7 @@ Using `minimap2` 2.17-r941 with these options:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Aligning </span><span class="si">{</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="si">}</span><span class="s2"> to create </span><span class="si">{</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
-    <span class="n">targets</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">queryfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span>
-                  <span class="n">alignmentfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span>
-                  <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">)</span>
+    <span class="n">targets</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">queryfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">fastq</span><span class="p">,</span> <span class="n">alignmentfile</span><span class="o">=</span><span class="n">tup</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1027,10 +1035,10 @@ Aligning input_files/lasv_example_ccs.fastq.gz to create ./output_files/lasv_pil
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="p">[</span><span class="s1">&#39;alignments&#39;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]:</span>
+<span></span><span class="k">for</span> <span class="n">fname</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="p">[</span><span class="s2">&quot;alignments&quot;</span><span class="p">][:</span><span class="mi">1</span><span class="p">]:</span>
     <span class="k">with</span> <span class="n">pysam</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">a</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First alignment in </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s1">&#39;cs&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First alignment in </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> has `cs` tag:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(</span><span class="s2">&quot;cs&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1063,25 +1071,23 @@ sequencing</a>), these CSV files will always be created, even if <code class="do
 <span class="k">for</span> <span class="n">run</span> <span class="ow">in</span> <span class="n">pacbio_runs</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parsing PacBio run </span><span class="si">{</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">run_readstats</span><span class="p">,</span> <span class="n">run_aligned</span><span class="p">,</span> <span class="n">run_filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">parse_alignment</span><span class="p">(</span><span class="n">run</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">filtered_cs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">run_readstats</span><span class="p">,</span> <span class="n">run_aligned</span><span class="p">,</span> <span class="n">run_filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">parse_alignment</span><span class="p">(</span>
+        <span class="n">run</span><span class="o">.</span><span class="n">alignments</span><span class="p">,</span> <span class="n">filtered_cs</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
 
     <span class="c1"># when concatenating add the run name to keep track of runs for results</span>
-    <span class="n">readstats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_readstats</span>
-                     <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                     <span class="p">)</span>
+    <span class="n">readstats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_readstats</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
-        <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
-                                   <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                                   <span class="p">)</span>
-        <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
-                                    <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-                                    <span class="p">)</span>
+        <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">run_filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">run_name</span><span class="o">=</span><span class="n">run</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
 <span class="c1"># now concatenate the data frames for each run</span>
 <span class="n">readstats</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1173,13 +1179,13 @@ Parsing PacBio run lasv_pilot
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">))</span> <span class="o">+</span>
-    <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">)</span> <span class="o">+</span>
-    <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ run_name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
-    <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
-          <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">)</span>
-          <span class="p">)</span>
+    <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">))</span>
+    <span class="o">+</span> <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s2">&quot;identity&quot;</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">facet_wrap</span><span class="p">(</span><span class="s2">&quot;~ run_name&quot;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">theme</span><span class="p">(</span>
+        <span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">)</span>
     <span class="p">)</span>
+<span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1277,16 +1283,17 @@ Parsing PacBio run lasv_pilot
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="n">target_filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
-    <span class="n">nreasons</span> <span class="o">=</span> <span class="n">target_filtered</span><span class="p">[</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+    <span class="n">nreasons</span> <span class="o">=</span> <span class="n">target_filtered</span><span class="p">[</span><span class="s2">&quot;filter_reason&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
     <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_filtered</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;filter_reason&#39;</span><span class="p">))</span> <span class="o">+</span>
-        <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
-        <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ run_name&#39;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">targetname</span><span class="p">)</span> <span class="o">+</span>
-        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
-              <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">nreasons</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
-              <span class="p">)</span>
+        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_filtered</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s2">&quot;filter_reason&quot;</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">geom_bar</span><span class="p">()</span>
+        <span class="o">+</span> <span class="n">facet_wrap</span><span class="p">(</span><span class="s2">&quot;~ run_name&quot;</span><span class="p">,</span> <span class="n">nrow</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">targetname</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">theme</span><span class="p">(</span>
+            <span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+            <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span> <span class="o">*</span> <span class="n">nreasons</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">),</span> <span class="mf">2.5</span><span class="p">),</span>
         <span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1321,28 +1328,26 @@ Parsing PacBio run lasv_pilot
 <span class="n">error_cutoff</span> <span class="o">=</span> <span class="mf">1e-4</span>
 
 <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
-    <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                  <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
-                  <span class="o">.</span><span class="n">assign</span><span class="p">(</span>
-                          <span class="n">gene_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;gene_accuracy&#39;</span><span class="p">],</span>
-                                                          <span class="n">error_rate_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-                          <span class="p">)</span>
-                  <span class="p">)</span>
+    <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+        <span class="n">gene_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;gene_accuracy&quot;</span><span class="p">],</span> <span class="n">error_rate_floor</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
-         <span class="n">ggplot</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
-                <span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;run_name&#39;</span><span class="p">],</span>
-                      <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;gene_error&#39;</span><span class="p">],</span>
-                      <span class="n">var_name</span><span class="o">=</span><span class="s1">&#39;feature_type&#39;</span><span class="p">,</span> <span class="n">value_name</span><span class="o">=</span><span class="s1">&#39;error rate&#39;</span><span class="p">),</span>
-                <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;error rate&#39;</span><span class="p">))</span> <span class="o">+</span>
-         <span class="n">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="o">+</span>
-         <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">error_cutoff</span><span class="p">,</span>
-                    <span class="n">linetype</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">,</span>
-                    <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span>
-         <span class="n">facet_grid</span><span class="p">(</span><span class="s1">&#39;~ feature_type&#39;</span><span class="p">)</span> <span class="o">+</span>
-         <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span>
-         <span class="n">labs</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;number of CCSs&#39;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="p">(</span><span class="n">targetname</span><span class="p">))</span> <span class="o">+</span>
-         <span class="n">scale_x_log10</span><span class="p">()</span>
-         <span class="p">)</span>
+        <span class="n">ggplot</span><span class="p">(</span>
+            <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
+                <span class="n">id_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;run_name&quot;</span><span class="p">],</span>
+                <span class="n">value_vars</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gene_error&quot;</span><span class="p">],</span>
+                <span class="n">var_name</span><span class="o">=</span><span class="s2">&quot;feature_type&quot;</span><span class="p">,</span>
+                <span class="n">value_name</span><span class="o">=</span><span class="s2">&quot;error rate&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">aes</span><span class="p">(</span><span class="s2">&quot;error rate&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="n">geom_histogram</span><span class="p">(</span><span class="n">bins</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">geom_vline</span><span class="p">(</span><span class="n">xintercept</span><span class="o">=</span><span class="n">error_cutoff</span><span class="p">,</span> <span class="n">linetype</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="o">+</span> <span class="n">facet_grid</span><span class="p">(</span><span class="s2">&quot;~ feature_type&quot;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">theme</span><span class="p">(</span><span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">labs</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;number of CCSs&quot;</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="p">(</span><span class="n">targetname</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">scale_x_log10</span><span class="p">()</span>
+    <span class="p">)</span>
 
     <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
@@ -1371,7 +1376,9 @@ Parsing PacBio run lasv_pilot
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">retained</span> <span class="o">=</span> <span class="p">{</span><span class="n">targetname</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">}</span>
 <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
-    <span class="n">target_retained</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="s1">&#39;gene_error&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">target_retained</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span>
+        <span class="n">aligned</span><span class="p">[</span><span class="n">targetname</span><span class="p">][</span><span class="s2">&quot;gene_error&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span>
+    <span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">retained</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_retained</span>
 </pre></div>
 </div>
@@ -1386,7 +1393,7 @@ Parsing PacBio run lasv_pilot
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">display_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;query_name&#39;</span><span class="p">,</span> <span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span> <span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span>
+<span></span><span class="n">display_columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;query_name&quot;</span><span class="p">,</span> <span class="s2">&quot;gene_mutations&quot;</span><span class="p">,</span> <span class="s2">&quot;index_sequence&quot;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">target_name</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">display_columns</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
@@ -1540,17 +1547,33 @@ LASV_Josiah_OPT
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">indices</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;LASV_Josiah_WT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;AGACAC&#39;</span><span class="p">,</span> <span class="s1">&#39;GGTATG&#39;</span><span class="p">],</span> <span class="s1">&#39;LASV_Josiah_OPT&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ACGACC&#39;</span><span class="p">,</span> <span class="s1">&#39;CTTCAC&#39;</span><span class="p">,</span> <span class="s1">&#39;GAGACG&#39;</span><span class="p">]}</span>
+<span></span><span class="n">indices</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;LASV_Josiah_WT&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;AGACAC&quot;</span><span class="p">,</span> <span class="s2">&quot;GGTATG&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;LASV_Josiah_OPT&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ACGACC&quot;</span><span class="p">,</span> <span class="s2">&quot;CTTCAC&quot;</span><span class="p">,</span> <span class="s2">&quot;GAGACG&quot;</span><span class="p">],</span>
+<span class="p">}</span>
 <span class="n">target_idx_retained</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">index_counts</span> <span class="o">=</span> <span class="p">{</span><span class="n">target</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">}</span>
 <span class="n">index_counts_dfs</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">[</span><span class="n">target_name</span><span class="p">]:</span>
-        <span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s1">&#39;index_sequence&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])))</span>
-    <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;invalid&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span> <span class="o">-</span>
-                                                          <span class="nb">sum</span><span class="p">(</span><span class="n">idx_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_tup</span> <span class="ow">in</span> <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">]))))</span>
-    <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
+        <span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span>
+            <span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">][</span><span class="s2">&quot;index_sequence&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">index</span>
+        <span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]))</span>
+        <span class="p">)</span>
+    <span class="n">index_counts</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="s2">&quot;invalid&quot;</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">retained</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span>
+                <span class="o">-</span> <span class="nb">sum</span><span class="p">(</span><span class="n">idx_tup</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx_tup</span> <span class="ow">in</span> <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">])</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="n">index_counts</span><span class="p">[</span><span class="n">target_name</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1562,17 +1585,20 @@ LASV_Josiah_OPT
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">target_name</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">index_counts_dfs</span><span class="p">[</span><span class="n">target_name</span><span class="p">]</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;target&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_name</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    <span class="n">id_order</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;invalid&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-    <span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;index&#39;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">id_order</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">index_count_plot</span> <span class="o">=</span> <span class="p">(</span><span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;target&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">))</span> <span class="o">+</span>
-                        <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;identity&#39;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s1">&#39;stack&#39;</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">vjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hjust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span>
-                        <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span>
-                        <span class="n">ylab</span><span class="p">(</span><span class="s1">&#39;Reads&#39;</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">xlab</span><span class="p">(</span><span class="s1">&#39;Target&#39;</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">ggtitle</span><span class="p">(</span><span class="s1">&#39;Reads per Sample Index&#39;</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;target&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">target_name</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+    <span class="n">id_order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;invalid&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span> <span class="n">categories</span><span class="o">=</span><span class="n">id_order</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">index_count_plot</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ggplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;count&quot;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s2">&quot;identity&quot;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;stack&quot;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">scale_fill_manual</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">CBPALETTE</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">theme</span><span class="p">(</span>
+            <span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span> <span class="n">vjust</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hjust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">),</span> <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="o">+</span> <span class="n">ylab</span><span class="p">(</span><span class="s2">&quot;Reads&quot;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">xlab</span><span class="p">(</span><span class="s2">&quot;Target&quot;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">ggtitle</span><span class="p">(</span><span class="s2">&quot;Reads per Sample Index&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
 
     <span class="n">_</span> <span class="o">=</span> <span class="n">index_count_plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
@@ -1901,10 +1927,12 @@ LASV_Josiah_OPT_GAGACG
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
-    <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span><span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">],</span>
-                                                                              <span class="n">mutation_col</span><span class="o">=</span><span class="s1">&#39;gene_mutations&#39;</span><span class="p">,</span>
-                                                                              <span class="n">n_sub_col</span><span class="o">=</span><span class="s1">&#39;n_gene_subs&#39;</span><span class="p">,</span>
-                                                                              <span class="n">n_indel_col</span><span class="o">=</span><span class="s1">&#39;n_gene_indels&#39;</span><span class="p">)</span>
+    <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
+        <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">],</span>
+        <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span><span class="p">,</span>
+        <span class="n">n_sub_col</span><span class="o">=</span><span class="s2">&quot;n_gene_subs&quot;</span><span class="p">,</span>
+        <span class="n">n_indel_col</span><span class="o">=</span><span class="s2">&quot;n_gene_indels&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1915,18 +1943,19 @@ LASV_Josiah_OPT_GAGACG
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">mut_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;n_gene_subs&#39;</span><span class="p">,</span> <span class="s1">&#39;n_gene_indels&#39;</span><span class="p">]</span>
+<span></span><span class="n">mut_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;n_gene_subs&quot;</span><span class="p">,</span> <span class="s2">&quot;n_gene_indels&quot;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">target_idx</span> <span class="ow">in</span> <span class="n">target_idx_retained</span><span class="p">:</span>
     <span class="n">target_idx_plot_muts</span> <span class="o">=</span> <span class="n">target_idx_retained</span><span class="p">[</span><span class="n">target_idx</span><span class="p">][</span><span class="n">mut_cols</span><span class="p">]</span><span class="o">.</span><span class="n">melt</span><span class="p">()</span>
     <span class="n">mut_counts_plot</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_idx_plot_muts</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">))</span> <span class="o">+</span>
-                        <span class="n">geom_bar</span><span class="p">()</span> <span class="o">+</span>
-                        <span class="n">facet_wrap</span><span class="p">(</span><span class="s1">&#39;~ variable&#39;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="o">+</span>
-                        <span class="n">theme</span><span class="p">(</span><span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
-                              <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
-                              <span class="p">)</span>
+        <span class="n">ggplot</span><span class="p">(</span><span class="n">target_idx_plot_muts</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">))</span>
+        <span class="o">+</span> <span class="n">geom_bar</span><span class="p">()</span>
+        <span class="o">+</span> <span class="n">facet_wrap</span><span class="p">(</span><span class="s2">&quot;~ variable&quot;</span><span class="p">,</span> <span class="n">ncol</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">labs</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_idx</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="o">+</span> <span class="n">theme</span><span class="p">(</span>
+            <span class="n">axis_text_x</span><span class="o">=</span><span class="n">element_text</span><span class="p">(</span><span class="n">angle</span><span class="o">=</span><span class="mi">90</span><span class="p">),</span>
+            <span class="n">figure_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+        <span class="p">)</span>
     <span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">mut_counts_plot</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </pre></div>
@@ -2065,7 +2094,7 @@ LASV_Josiah_OPT_GAGACG
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2021.
+      &copy;2019--2022.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
