@@ -155,7 +155,7 @@ def add_mut_info_cols(df,
 
     Get info on substitutions and indels:
 
-    >>> pd.set_option('max_columns', 10)
+    >>> pd.set_option('display.max_columns', 10)
     >>> add_mut_info_cols(df, sub_str_col='subs', n_sub_col='nsubs',
     ...                   indel_str_col='indels', n_indel_col='nindels')
        name            mutations     subs           indels  nsubs  nindels
