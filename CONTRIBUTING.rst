@@ -36,6 +36,13 @@ For more elaborate functionality, put unit tests in tests_.
 Note also that the `Jupyter notebooks`_ in notebooks_ are tested via nbval_.
 If you are getting errors on these notebook tests due to testing cells that output objects that can't be properly tested (such as widgets), see the *nbval-ignore-output* tag option discussed in the nbval_ docs.
 
+Formatting
+++++++++++
+The code is formatted using `Black <https://black.readthedocs.io/en/stable/index.html>`_, which you can install using `pip install "black[jupyter]"`.
+You may also wish to install a Black extension in your editor to, for example, auto-format upon save.
+In any case, please run Black using `black .` before submitting your PR, because the Travis tests will not pass unless the files have been formatted.
+Note that this will change files/notebooks that you may be actively editing.
+
 Versions and CHANGELOG
 ++++++++++++++++++++++
 The version is `single sourced <https://packaging.python.org/guides/single-sourcing-package-version/>`_ in `__init__.py`_.

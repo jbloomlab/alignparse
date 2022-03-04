@@ -21,43 +21,46 @@ import regex
 import alignparse.utils
 
 _CS_OPS = {
-    'identity': ':[0-9]+',
-    'substitution': r'\*[acgtn][acgtn]',
-    'insertion': r'\+[acgtn]+',
-    'deletion': r'\-[acgtn]+'
-    }
+    "identity": ":[0-9]+",
+    "substitution": r"\*[acgtn][acgtn]",
+    "insertion": r"\+[acgtn]+",
+    "deletion": r"\-[acgtn]+",
+}
 """dict: Short ``cs`` tag operation regular expression matches."""
 
-_INTRON_OP = r'\~[acgtn]{2}\d+[acgtn]{2}'
+_INTRON_OP = r"\~[acgtn]{2}\d+[acgtn]{2}"
 """str: Short ``cs`` tag operation regular expression for intron."""
 
 _INTRON_OP_REGEX = regex.compile(_INTRON_OP)
 """regex.Regex: matches short ``cs`` tag operation for intron."""
 
-_CS_OPS_W_INTRON = {key: val for key, val in
-                    list(_CS_OPS.items()) + [('intron', _INTRON_OP)]}
+_CS_OPS_W_INTRON = {
+    key: val for key, val in list(_CS_OPS.items()) + [("intron", _INTRON_OP)]
+}
 """dict: ``cs`` tag operation regular expression matches including introns."""
 
-_CS_STR_REGEX = regex.compile('(' + '|'.join(list(_CS_OPS.values())) + ')*')
+_CS_STR_REGEX = regex.compile("(" + "|".join(list(_CS_OPS.values())) + ")*")
 """regex.Regex: matches full-length short ``cs`` tags."""
 
 _CS_STR_REGEX_W_INTRON = regex.compile(
-            '(' + '|'.join(list(_CS_OPS_W_INTRON.values())) + ')*')
+    "(" + "|".join(list(_CS_OPS_W_INTRON.values())) + ")*"
+)
 """regex.Regex: matches full-length short ``cs`` tags including introns."""
 
-_CS_OP_REGEX = regex.compile('|'.join(f"(?P<{op_name}>{op_str})" for
-                                      op_name, op_str in _CS_OPS.items()))
+_CS_OP_REGEX = regex.compile(
+    "|".join(f"(?P<{op_name}>{op_str})" for op_name, op_str in _CS_OPS.items())
+)
 """regex.Regex: matches single ``cs`` operation, group name is operation."""
 
 _CS_OP_REGEX_W_INTRON = regex.compile(
-            '|'.join(f"(?P<{op_name}>{op_str})" for
-                     op_name, op_str in _CS_OPS_W_INTRON.items()))
+    "|".join(f"(?P<{op_name}>{op_str})" for op_name, op_str in _CS_OPS_W_INTRON.items())
+)
 """regex.Regex: matches single ``cs`` operation including introns,
 group name is operation."""
 
 
 @functools.lru_cache(maxsize=16384)
-def split_cs(cs_string, *, invalid='raise', allow_intron=False):
+def split_cs(cs_string, *, invalid="raise", allow_intron=False):
     """Split a short ``cs`` tag into its constituent operations.
 
     Parameters
@@ -95,9 +98,9 @@ def split_cs(cs_string, *, invalid='raise', allow_intron=False):
     else:
         m = _CS_STR_REGEX.fullmatch(cs_string)
     if m is None:
-        if invalid == 'ignore':
+        if invalid == "ignore":
             return None
-        elif invalid == 'raise':
+        elif invalid == "raise":
             raise ValueError(f"invalid `cs_string` of {cs_string}")
         else:
             raise ValueError(f"invalid `invalid` of {invalid}")
@@ -106,7 +109,7 @@ def split_cs(cs_string, *, invalid='raise', allow_intron=False):
 
 
 @functools.lru_cache(maxsize=16384)
-def cs_op_type(cs_op, *, invalid='raise'):
+def cs_op_type(cs_op, *, invalid="raise"):
     """Get type of ``cs`` operation.
 
     Parameters
@@ -139,9 +142,9 @@ def cs_op_type(cs_op, *, invalid='raise'):
     """
     m = _CS_OP_REGEX.fullmatch(cs_op)
     if m is None:
-        if invalid == 'ignore':
+        if invalid == "ignore":
             return None
-        elif invalid == 'raise':
+        elif invalid == "raise":
             raise ValueError(f"invalid `cs_op` of {cs_op}")
         else:
             raise ValueError(f"invalid `invalid` of {invalid}")
@@ -150,7 +153,7 @@ def cs_op_type(cs_op, *, invalid='raise'):
 
 
 @functools.lru_cache(maxsize=16384)
-def cs_op_len_target(cs_op, *, invalid='raise'):
+def cs_op_len_target(cs_op, *, invalid="raise"):
     """Get length of valid ``cs`` operation.
 
     Parameters
@@ -188,13 +191,13 @@ def cs_op_len_target(cs_op, *, invalid='raise'):
 
     """
     op_type = cs_op_type(cs_op, invalid=invalid)
-    if op_type == 'identity':
+    if op_type == "identity":
         return int(cs_op[1:])
-    elif op_type == 'substitution':
+    elif op_type == "substitution":
         return 1
-    elif op_type == 'deletion':
+    elif op_type == "deletion":
         return len(cs_op) - 1
-    elif op_type == 'insertion':
+    elif op_type == "insertion":
         return 0
     elif op_type is None:
         return None
@@ -235,17 +238,18 @@ def cs_introns_to_deletions(cs, targetseq):
     new_cs = []
     for op in split_cs(cs, allow_intron=True):
         if _INTRON_OP_REGEX.fullmatch(op):
-            op_len = int(op[3: -2])
+            op_len = int(op[3:-2])
             target_subseq = _ambiguous_to_n(
-                        targetseq[itarget: itarget + op_len]).lower()
+                targetseq[itarget : itarget + op_len]
+            ).lower()
             itarget += op_len
             new_cs.append(f"-{target_subseq}")
-            assert target_subseq[: 2] == op[1: 3], "{target_subseq}\n{op}"
+            assert target_subseq[:2] == op[1:3], "{target_subseq}\n{op}"
             assert target_subseq[-2:] == op[-2:], "{target_subseq}\n{op}"
         else:
             new_cs.append(op)
             itarget += cs_op_len_target(op)
-    return ''.join(new_cs)
+    return "".join(new_cs)
 
 
 def _ambiguous_to_n(seq):
@@ -268,7 +272,7 @@ def _ambiguous_to_n(seq):
     'ATGNCANac'
 
     """
-    return regex.sub('[MmRrWwSsYyKkVvHhDdBb]', 'N', seq)
+    return regex.sub("[MmRrWwSsYyKkVvHhDdBb]", "N", seq)
 
 
 class Alignment:
@@ -308,49 +312,55 @@ class Alignment:
 
     """
 
-    def __init__(self, sam_alignment, *,
-                 introns_to_deletions=False, target_seqs=None):
+    def __init__(self, sam_alignment, *, introns_to_deletions=False, target_seqs=None):
         """See main class docstring."""
         if sam_alignment.is_unmapped:
-            raise ValueError(f"`sam_alignment` {sam_alignment.query_name} "
-                             'is unmapped')
+            raise ValueError(
+                f"`sam_alignment` {sam_alignment.query_name} " "is unmapped"
+            )
 
         self.query_name = sam_alignment.query_name
         self.target_name = sam_alignment.reference_name
         self.query_clip5 = sam_alignment.query_alignment_start
-        self.query_clip3 = (sam_alignment.query_length -
-                            sam_alignment.query_alignment_end)
+        self.query_clip3 = (
+            sam_alignment.query_length - sam_alignment.query_alignment_end
+        )
         self.target_clip5 = sam_alignment.reference_start
         self.target_lastpos = sam_alignment.reference_end
         if sam_alignment.is_reverse:
-            self.orientation = '-'
+            self.orientation = "-"
         else:
-            self.orientation = '+'
-        self.cs = str(sam_alignment.get_tag('cs'))
+            self.orientation = "+"
+        self.cs = str(sam_alignment.get_tag("cs"))
 
         if introns_to_deletions:
             if target_seqs is None:
-                raise ValueError('must set `target_seqs`')
-            targetseq = target_seqs[self.target_name][self.target_clip5:
-                                                      self.target_lastpos]
+                raise ValueError("must set `target_seqs`")
+            targetseq = target_seqs[self.target_name][
+                self.target_clip5 : self.target_lastpos
+            ]
             self.cs = cs_introns_to_deletions(self.cs, targetseq)
 
         self._cs_ops = split_cs(self.cs)
-        self._cs_ops_lengths_target = numpy.array([cs_op_len_target(op)
-                                                   for op in self._cs_ops])
+        self._cs_ops_lengths_target = numpy.array(
+            [cs_op_len_target(op) for op in self._cs_ops]
+        )
 
         # sites are 0-indexed and exclusive
-        self._cs_ops_ends = (self.target_clip5 +
-                             numpy.cumsum(self._cs_ops_lengths_target))
-        self._cs_ops_starts = numpy.append(numpy.array(self.target_clip5),
-                                           self._cs_ops_ends[:-1])
+        self._cs_ops_ends = self.target_clip5 + numpy.cumsum(
+            self._cs_ops_lengths_target
+        )
+        self._cs_ops_starts = numpy.append(
+            numpy.array(self.target_clip5), self._cs_ops_ends[:-1]
+        )
 
         self._nops = len(self._cs_ops)
         assert self._nops == len(self._cs_ops_lengths_target)
         assert self._nops == len(self._cs_ops_ends)
         assert self._nops == len(self._cs_ops_starts)
-        assert (self._cs_ops_ends - self._cs_ops_starts ==
-                self._cs_ops_lengths_target).all()
+        assert (
+            self._cs_ops_ends - self._cs_ops_starts == self._cs_ops_lengths_target
+        ).all()
 
         self._sam_alignment = sam_alignment
 
@@ -373,19 +383,17 @@ class Alignment:
 
         """
         if targetstart >= targetend:
-            raise ValueError('`targetstart` must be < `targetend`')
+            raise ValueError("`targetstart` must be < `targetend`")
 
         # if function hasn't yet been called, set up necessary variables
-        if not hasattr(self, '_qs'):
+        if not hasattr(self, "_qs"):
             # array of all Q values in query
-            self._qs = numpy.asarray(self._sam_alignment.query_qualities,
-                                     dtype='int')
+            self._qs = numpy.asarray(self._sam_alignment.query_qualities, dtype="int")
             # arrays of query and target sites that are aligned
             self._aligned_query, self._aligned_target = map(
-                    numpy.array,
-                    zip(*self._sam_alignment
-                        .get_aligned_pairs(matches_only=True))
-                    )
+                numpy.array,
+                zip(*self._sam_alignment.get_aligned_pairs(matches_only=True)),
+            )
             assert len(self._aligned_query) == len(self._aligned_target)
 
         # get index of first aligned site >= targetstart, and last
@@ -400,8 +408,8 @@ class Alignment:
 
         # compute accuracy
         return alignparse.utils.qvals_to_accuracy(
-                self._qs[self._aligned_query[istart]:
-                         self._aligned_query[iend]])
+            self._qs[self._aligned_query[istart] : self._aligned_query[iend]]
+        )
 
     def extract_cs(self, start, end):
         """Extract ``cs`` tag corresponding to feature in target.
@@ -443,7 +451,7 @@ class Alignment:
 
         # Get `start_idx` as index of cs op that contains feature start
         # add to `feature_cs` overlapping part of first cs op
-        start_idx = numpy.searchsorted(self._cs_ops_ends, start, side='right')
+        start_idx = numpy.searchsorted(self._cs_ops_ends, start, side="right")
         start_op_start = self._cs_ops_starts[start_idx]
         start_op = self._cs_ops[start_idx]
         assert start_idx < self._nops
@@ -460,21 +468,19 @@ class Alignment:
             start_op_type = cs_op_type(start_op)
             if start_op_start == start and end >= start_op_end:
                 feature_cs.append(start_op)
-            elif start_op_type == 'identity':
+            elif start_op_type == "identity":
                 feature_cs.append(f":{start_op_end - start}")
-            elif start_op_type == 'deletion':
+            elif start_op_type == "deletion":
                 feature_cs.append(f"-{start_op[start - start_op_end:]}")
-            elif start_op_type == 'insertion':
-                raise RuntimeError('insertion should not be feature start')
+            elif start_op_type == "insertion":
+                raise RuntimeError("insertion should not be feature start")
             else:
                 raise RuntimeError(f"unrecognized op type of {start_op_type}")
 
         # Get `end_idx` as index of cs op that contains feature end, and
         # make `feat_cs_end` the overlapping part of this last cs op
-        end_idx = max(0, numpy.searchsorted(self._cs_ops_ends, end,
-                                            side='right') - 1)
-        while ((end > self._cs_ops_ends[end_idx]) and
-               (end_idx + 1 < self._nops)):
+        end_idx = max(0, numpy.searchsorted(self._cs_ops_ends, end, side="right") - 1)
+        while (end > self._cs_ops_ends[end_idx]) and (end_idx + 1 < self._nops):
             end_idx += 1
         end_op_start = self._cs_ops_starts[end_idx]
         end_op_end = self._cs_ops_ends[end_idx]
@@ -483,7 +489,7 @@ class Alignment:
         assert end <= end_op_end or end_idx == self._nops - 1
         assert end >= end_op_start
         if end > end_op_end:
-            assert end_idx == self._nops - 1, 'clip3 not at end'
+            assert end_idx == self._nops - 1, "clip3 not at end"
             clip3 = end - end_op_end
             feat_cs_end = end_op
         elif end == end_op_end:
@@ -493,12 +499,12 @@ class Alignment:
             # feature ends within specific cs op
             end_overlap = end - end_op_start
             end_op_type = cs_op_type(end_op)
-            if end_op_type == 'identity':
+            if end_op_type == "identity":
                 feat_cs_end = f":{end_overlap}"
-            elif end_op_type == 'deletion':
+            elif end_op_type == "deletion":
                 feat_cs_end = end_op[: end_overlap + 1]
-            elif end_op_type == 'insertion':
-                raise RuntimeError('should not get here as end == end_op_end')
+            elif end_op_type == "insertion":
+                raise RuntimeError("should not get here as end == end_op_end")
             else:
                 raise RuntimeError(f"unrecognized op type of {end_op_type}")
 
@@ -506,26 +512,28 @@ class Alignment:
             # avoid double-counting feature, clip properly
             assert start_op == end_op
             op_type = cs_op_type(start_op)
-            if op_type == 'identity':
+            if op_type == "identity":
                 feature_cs = f":{end - start - clip5 - clip3}"
-            elif op_type == 'substitution':
+            elif op_type == "substitution":
                 feature_cs = end_op
-            elif op_type == 'deletion':
+            elif op_type == "deletion":
                 del_start = max(0, start - start_op_start)
                 del_end = end_op_end - end_op_start - max(0, end_op_end - end)
-                feature_cs = '-' + end_op[del_start + 1: del_end + 1]
-            elif op_type == 'insertion':
-                raise RuntimeError('start_idx != end_idx for insertion')
+                feature_cs = "-" + end_op[del_start + 1 : del_end + 1]
+            elif op_type == "insertion":
+                raise RuntimeError("start_idx != end_idx for insertion")
             else:
                 raise RuntimeError(f"unrecognized op type of {op_type}")
         else:
-            feature_cs.extend(self._cs_ops[start_idx + 1: end_idx])
+            feature_cs.extend(self._cs_ops[start_idx + 1 : end_idx])
             feature_cs.append(feat_cs_end)
-            feature_cs = ''.join(feature_cs)
+            feature_cs = "".join(feature_cs)
 
         # this next assert might be costly, so maybe remove eventually
-        assert (sum(cs_op_len_target(op) for op in split_cs(feature_cs)) +
-                clip5 + clip3 == end - start), f"{feature_cs},{clip5},{clip3}"
+        assert (
+            sum(cs_op_len_target(op) for op in split_cs(feature_cs)) + clip5 + clip3
+            == end - start
+        ), f"{feature_cs},{clip5},{clip3}"
 
         return (feature_cs, clip5, clip3)
 
@@ -556,21 +564,21 @@ def cs_to_sequence(cs, seq):
     seq_list = []
     for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
-        if op_type == 'identity':
+        if op_type == "identity":
             op_len = cs_op_len_target(cs_op)
-            seq_list.append(seq[seq_loc: seq_loc + op_len])
+            seq_list.append(seq[seq_loc : seq_loc + op_len])
             seq_loc += op_len
-        elif op_type == 'substitution':
+        elif op_type == "substitution":
             seq_list.append(cs_op[2])
             seq_loc += 1
-        elif op_type == 'insertion':
+        elif op_type == "insertion":
             seq_list.append(cs_op[1:])
-        elif op_type == 'deletion':
+        elif op_type == "deletion":
             seq_loc += len(cs_op) - 1
         else:
             raise ValueError(f"Invalid cs `op_type` of {op_type}")
 
-    return ''.join(seq_list).upper()
+    return "".join(seq_list).upper()
 
 
 @functools.lru_cache(maxsize=16384)
@@ -614,25 +622,26 @@ def cs_to_mutation_str(cs, offset=0):
     mut_strs_list = []
     for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
-        if op_type == 'identity':
+        if op_type == "identity":
             seq_loc += cs_op_len_target(cs_op)
-        elif op_type == 'substitution':
-            if cs_op[1] != 'n':
-                sub = ''.join([cs_op[1], str(seq_loc), cs_op[2]]).upper()
+        elif op_type == "substitution":
+            if cs_op[1] != "n":
+                sub = "".join([cs_op[1], str(seq_loc), cs_op[2]]).upper()
                 mut_strs_list.append(sub)
             seq_loc += 1
-        elif op_type == 'insertion':
-            ins = ''.join(['ins', str(seq_loc), cs_op[1:].upper()])
+        elif op_type == "insertion":
+            ins = "".join(["ins", str(seq_loc), cs_op[1:].upper()])
             mut_strs_list.append(ins)
-        elif op_type == 'deletion':
-            deletion = ''.join(['del', str(seq_loc), 'to',
-                                str(seq_loc+len(cs_op)-2)])
+        elif op_type == "deletion":
+            deletion = "".join(
+                ["del", str(seq_loc), "to", str(seq_loc + len(cs_op) - 2)]
+            )
             mut_strs_list.append(deletion)
             seq_loc += len(cs_op) - 1
         else:
             raise ValueError(f"Invalid cs `op_type` of {op_type}")
 
-    return ' '.join(mut_strs_list)
+    return " ".join(mut_strs_list)
 
 
 @functools.lru_cache(maxsize=16384)
@@ -663,13 +672,13 @@ def cs_to_nt_mutation_count(cs):
     nt_mut_count = 0
     for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
-        if op_type == 'substitution':
-            if cs_op[1] != 'n':
+        if op_type == "substitution":
+            if cs_op[1] != "n":
                 nt_mut_count += 1
-        elif op_type == 'insertion' or op_type == 'deletion':
+        elif op_type == "insertion" or op_type == "deletion":
             nt_mut_count += len(cs_op) - 1
-        elif op_type != 'identity':
-            raise ValueError(f'Invalid cs `op_type` of {op_type}.')
+        elif op_type != "identity":
+            raise ValueError(f"Invalid cs `op_type` of {op_type}.")
 
     return nt_mut_count
 
@@ -702,17 +711,18 @@ def cs_to_op_mutation_count(cs):
     op_mut_count = 0
     for cs_op in split_cs(cs):
         op_type = cs_op_type(cs_op)
-        if op_type == 'substitution':
-            if cs_op[1] != 'n':
+        if op_type == "substitution":
+            if cs_op[1] != "n":
                 op_mut_count += 1
-        elif op_type == 'insertion' or op_type == 'deletion':
+        elif op_type == "insertion" or op_type == "deletion":
             op_mut_count += 1
-        elif op_type != 'identity':
-            raise ValueError(f'Invalid cs `op_type` of {op_type}.')
+        elif op_type != "identity":
+            raise ValueError(f"Invalid cs `op_type` of {op_type}.")
 
     return op_mut_count
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
