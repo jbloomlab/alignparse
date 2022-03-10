@@ -414,7 +414,7 @@ class MutationRenumber:
         if wt_nt_col:
             if wt_nt_col not in number_mapping.columns:
                 raise ValueError(
-                    f"`number_mapping` lacks column {col}" + self._err_suffix
+                    f"`number_mapping` lacks column {wt_nt_col}" + self._err_suffix
                 )
             if not all(
                 isinstance(nt, str) and len(nt) == 1 for nt in number_mapping[wt_nt_col]
