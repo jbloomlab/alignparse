@@ -945,7 +945,6 @@ class Targets:
         filteredcols = addtl_cols + filteredcols
 
         # set up data frames or names of files
-        readstats = pd.DataFrame([], columns=addtl_cols + readstatcols)
         filtered = {
             t: os.path.join(outdir, t.replace(" ", "_") + "_filtered.csv")
             for t in self.target_names
@@ -962,17 +961,16 @@ class Targets:
                     os.remove(f)
 
         # collect read stats for all runs
+        readstats = []
         for i, (ireadstats, _, _) in enumerate(parse_results):
-            readstats = readstats.append(
-                (
-                    ireadstats.assign(**{c: df.at[i, c] for c in addtl_cols})[
-                        readstats.columns
-                    ]
-                ),
-                ignore_index=True,
-                sort=False,
+            readstats.append(
+                ireadstats.assign(**{c: df.at[i, c] for c in addtl_cols})[
+                    addtl_cols + readstatcols
+                ]
             )
-        readstats = readstats.assign(count=lambda x: x["count"].astype(int))
+        readstats = pd.concat(readstats, ignore_index=True).assign(
+            count=lambda x: x["count"].astype(int)
+        )
 
         # collect aligned and filtered for all runs
         for t in self.target_names:
@@ -1205,14 +1203,17 @@ class Targets:
                         aligned[tname].append(parse_tup)
 
             # Done iterating over `samfile`, get values ready to return
-            readstats = (
-                pd.DataFrame(readstats)
-                .reset_index()
-                .melt(id_vars="index", value_name="count")
-                .assign(category=lambda x: (x["index"] + " " + x["variable"]))[
-                    ["category", "count"]
-                ]
-                .append({"category": "unmapped", "count": unmapped}, ignore_index=True)
+            readstats = pd.concat(
+                [
+                    pd.DataFrame(readstats)
+                    .reset_index()
+                    .melt(id_vars="index", value_name="count")
+                    .assign(category=lambda x: (x["index"] + " " + x["variable"]))[
+                        ["category", "count"]
+                    ],
+                    pd.DataFrame({"category": "unmapped", "count": [unmapped]}),
+                ],
+                ignore_index=True,
             )
             if not to_csv:
                 filtered = {

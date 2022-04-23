@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.4.1
+-----
+
+Fixed
++++++
+* Remove deprecated ``pandas.DataFrame.append``
+
 0.4.0
 ------
 
