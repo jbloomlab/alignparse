@@ -650,13 +650,17 @@ def _report_to_stats_v5(reportfile):
             ("Failed -- shortcut filter", int(m.group("n_shortcut_filters")))
         )
         return (
-            pd.DataFrame(
-                {
-                    "status": ["Success -- CCS generated"],
-                    "number": [int(m.group("n_generated"))],
-                }
+            pd.concat(
+                [
+                    pd.DataFrame(
+                        {
+                            "status": ["Success -- CCS generated"],
+                            "number": [int(m.group("n_generated"))],
+                        }
+                    ),
+                    pd.DataFrame(failed_records, columns=["status", "number"]),
+                ]
             )
-            .append(pd.DataFrame(failed_records, columns=["status", "number"]))
             .reset_index(drop=True)
             .assign(fraction=lambda x: x["number"] / x["number"].sum())
         )
@@ -694,13 +698,17 @@ def _report_to_stats_v4(reportfile):
             if line
         ]
         return (
-            pd.DataFrame(
-                {
-                    "status": ["Success -- CCS generated"],
-                    "number": [int(m.group("n_generated"))],
-                }
+            pd.concat(
+                [
+                    pd.DataFrame(
+                        {
+                            "status": ["Success -- CCS generated"],
+                            "number": [int(m.group("n_generated"))],
+                        }
+                    ),
+                    pd.DataFrame(failed_records, columns=["status", "number"]),
+                ]
             )
-            .append(pd.DataFrame(failed_records, columns=["status", "number"]))
             .reset_index(drop=True)
             .assign(fraction=lambda x: x["number"] / x["number"].sum())
         )
