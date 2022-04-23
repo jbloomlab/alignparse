@@ -1211,7 +1211,7 @@ class Targets:
                     .assign(category=lambda x: (x["index"] + " " + x["variable"]))[
                         ["category", "count"]
                     ],
-                    pd.DataFrame({"category": "unmapped", "count": unmapped}),
+                    pd.DataFrame({"category": "unmapped", "count": [unmapped]}),
                 ],
                 ignore_index=True,
             )
