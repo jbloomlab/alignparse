@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.5.0
+-----
+
+Added
++++++
+* ``MutationRenumber`` accepts parameter ``allow_letter_suffixed_numbers`` to allow sites with lowercase letter suffixes (e.g, ``214a``)
+
 0.4.1
 -----
 

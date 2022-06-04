@@ -346,6 +346,9 @@ class MutationRenumber:
     err_suffix : str
         Append this message to any errors raised about invalid sites or
         mutation strings. Can be useful for debugging.
+    allow_letter_suffixed_numbers : bool
+        Allow site numbers in `number_mapping` to have lowercase letter suffixes
+        as in ``214a``.
 
     Attributes
     ----------
@@ -381,10 +384,36 @@ class MutationRenumber:
     ...                          allow_stop=True)
     'A5F C6- G7*'
 
+    Use ``allow_letter_suffixed_numbers``
+    >>> suffixed_number_mapping = pd.DataFrame({'old': [1, 2, 3],
+    ...                                         'new': ["5", "6", "6a"],
+    ...                                         'wt_nt': ['A', 'C', 'G']})
+    >>> suffixed_renumberer = MutationRenumber(number_mapping=suffixed_number_mapping,
+    ...                                        old_num_col='old',
+    ...                                        new_num_col='new',
+    ...                                        wt_nt_col='wt_nt')
+    Traceback (most recent call last):
+      ...
+    ValueError: `number_mapping` column new not integer
+    >>> suffixed_renumberer = MutationRenumber(number_mapping=suffixed_number_mapping,
+    ...                                        old_num_col='old',
+    ...                                        new_num_col='new',
+    ...                                        wt_nt_col='wt_nt',
+    ...                                        allow_letter_suffixed_numbers=True)
+    >>> suffixed_renumberer.renumber_muts('A1C del2to3 ins3GC')
+    'A5C del6to6a ins6aGC'
+
     """
 
     def __init__(
-        self, number_mapping, old_num_col, new_num_col, wt_nt_col, *, err_suffix=""
+        self,
+        number_mapping,
+        old_num_col,
+        new_num_col,
+        wt_nt_col,
+        *,
+        err_suffix="",
+        allow_letter_suffixed_numbers=False,
     ):
         """See main class docstring."""
         self._err_suffix = err_suffix
@@ -394,9 +423,18 @@ class MutationRenumber:
                     f"`number_mapping` lacks column {col}" + self._err_suffix
                 )
             if number_mapping[col].dtype != int:
-                raise ValueError(
-                    f"`number_mapping` column {col} not integer" + self._err_suffix
-                )
+                if allow_letter_suffixed_numbers:
+                    if not all(
+                        re.fullmatch("\-?\d+[a-z]*", r) for r in number_mapping[col]
+                    ):
+                        raise ValueError(
+                            f"`number_mapping` column {col} not integer or integer "
+                            "suffixed by lower-case letter" + self._err_suffix
+                        )
+                else:
+                    raise ValueError(
+                        f"`number_mapping` column {col} not integer" + self._err_suffix
+                    )
         self.old_to_new_site = number_mapping.set_index(old_num_col)[
             new_num_col
         ].to_dict()
