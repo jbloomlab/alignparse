@@ -384,7 +384,8 @@ class MutationRenumber:
     ...                          allow_stop=True)
     'A5F C6- G7*'
 
-    Use ``allow_letter_suffixed_numbers``
+    Use ``allow_letter_suffixed_numbers``:
+
     >>> suffixed_number_mapping = pd.DataFrame({'old': [1, 2, 3],
     ...                                         'new': ["5", "6", "6a"],
     ...                                         'wt_nt': ['A', 'C', 'G']})
@@ -425,7 +426,7 @@ class MutationRenumber:
             if number_mapping[col].dtype != int:
                 if allow_letter_suffixed_numbers:
                     if not all(
-                        re.fullmatch("\-?\d+[a-z]*", r) for r in number_mapping[col]
+                        re.fullmatch(r"\-?\d+[a-z]*", r) for r in number_mapping[col]
                     ):
                         raise ValueError(
                             f"`number_mapping` column {col} not integer or integer "

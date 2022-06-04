@@ -504,10 +504,7 @@ class Targets:
                         if return_name in self._parse_returnvals(t, f):
                             filt = self._parse_filters[t][f]
                             if any(
-                                map(
-                                    lambda c: c not in filt or filt[c] > 0,
-                                    ["clip5", "clip3"],
-                                )
+                                c not in filt or filt[c] > 0 for c in ["clip5", "clip3"]
                             ):
                                 raise ValueError(
                                     f"You asked to return {return_name} "
