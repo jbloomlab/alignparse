@@ -296,19 +296,32 @@ class Mapper:
                             for tag in self.retain_tags:
                                 m = matchers[tag].search(query.comment)
                                 if not m:
-                                    raise ValueError(f"no tag {tag}:\n{query}")
+                                    if tag == 'MM':
+                                        continue
+                                    else:
+                                        raise ValueError(f"no tag {tag}:\n{query}")
                                 valtype = m.group("valtype")
-                                if valtype == "i":
-                                    val = int(m.group("val"))
-                                elif valtype == "f":
-                                    val = float(m.group("val"))
-                                elif valtype in {"A", "Z"}:
-                                    val = m.group("val")
+                                if valtype == 'B':
+                                    val_temp = m.group("val")
+                                    val_ints = val_temp[2:]
+                                    # skip if the B-type tag if only a letter and no ints, then it is an empty tag
+                                    if val_ints == '':
+                                        continue
+                                    val_list = val_ints.split(',')
+                                    val_list_int = list(map(int, val_list))
+                                    a.set_tag(tag, val_list_int)
                                 else:
-                                    raise ValueError(
-                                        f"bad tag type {valtype} " f"for tag {tag}"
-                                    )
-                                a.set_tag(tag, val, valtype)
+                                    if valtype == "i":
+                                        val = int(m.group("val"))
+                                    elif valtype == "f":
+                                        val = float(m.group("val"))
+                                    elif valtype in {"A", "Z"}:
+                                        val = m.group("val")
+                                    else:
+                                        raise ValueError(
+                                            f"bad tag type {valtype} " f"for tag {tag}"
+                                        )
+                                    a.set_tag(tag, val, valtype)
                         except StopIteration:
                             raise ValueError(
                                 f"No entry in {queryfile} for "
