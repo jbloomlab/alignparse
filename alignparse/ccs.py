@@ -469,7 +469,7 @@ def report_to_stats(reportfile):
     ...     ZMWs missing adapters    : 403623 (24.17%)
     ...     ''').lstrip())
     >>> reportfile.flush()
-    >>> report_to_stats(reportfile.name)
+    >>> report_to_stats(reportfile.name) # doctest: +NORMALIZE_WHITESPACE
                                     status  number  fraction
     0             Success -- CCS generated 1669857  0.446604
     1        Failed -- Below SNR threshold   53110  0.014204
