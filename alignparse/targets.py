@@ -974,12 +974,12 @@ class Targets:
             with contextlib.ExitStack() as stack:
                 # Define callback to delete CSV files on error. See here:
                 # https://docs.python.org/3/library/contextlib.html#replacing-any-use-of-try-finally-and-flag-variables
-                @stack.callback
-                def delete_files_on_err():
+                def delete_files_on_err(t):
                     for fname in [aligned[t], filtered[t]]:
                         if os.path.isfile(fname):
                             os.remove(fname)
 
+                stack.callback(delete_files_on_err, t=t)
                 alignedfile = stack.enter_context(open(aligned[t], "w"))
                 filteredfile = stack.enter_context(open(filtered[t], "w"))
                 alignedfile.write(",".join(alignedcols[t]) + "\n")
