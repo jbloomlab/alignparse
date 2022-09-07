@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>ccs &#8212; alignparse 0.5.0 documentation</title>
+    <title>ccs &#8212; alignparse 0.6.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
@@ -399,6 +399,61 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
 </dd>
 </dl>
 <p class="rubric">Example</p>
+<p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 6.0.0 output:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_</span> <span class="o">=</span> <span class="n">reportfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">    ZMWs input               : 3739007</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    ZMWs pass filters        : 1669857 (44.66%)</span>
+<span class="gp">... </span><span class="s1">    ZMWs fail filters        : 2069150 (55.34%)</span>
+<span class="gp">... </span><span class="s1">    ZMWs shortcut filters    : 0 (0.000%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    ZMWs with tandem repeats : 1096 (0.053%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    Exclusive failed counts</span>
+<span class="gp">... </span><span class="s1">    Below SNR threshold      : 53110 (2.567%)</span>
+<span class="gp">... </span><span class="s1">    Median length filter     : 0 (0.000%)</span>
+<span class="gp">... </span><span class="s1">    Lacking full passes      : 1382995 (66.84%)</span>
+<span class="gp">... </span><span class="s1">    Heteroduplex insertions  : 30137 (1.456%)</span>
+<span class="gp">... </span><span class="s1">    Coverage drops           : 2193 (0.106%)</span>
+<span class="gp">... </span><span class="s1">    Insufficient draft cov   : 9055 (0.438%)</span>
+<span class="gp">... </span><span class="s1">    Draft too different      : 71 (0.003%)</span>
+<span class="gp">... </span><span class="s1">    Draft generation error   : 22575 (1.091%)</span>
+<span class="gp">... </span><span class="s1">    Draft above --max-length : 235 (0.011%)</span>
+<span class="gp">... </span><span class="s1">    Draft below --min-length : 227 (0.011%)</span>
+<span class="gp">... </span><span class="s1">    Reads failed polishing   : 0 (0.000%)</span>
+<span class="gp">... </span><span class="s1">    Empty coverage windows   : 264 (0.013%)</span>
+<span class="gp">... </span><span class="s1">    CCS did not converge     : 525 (0.025%)</span>
+<span class="gp">... </span><span class="s1">    CCS below minimum RQ     : 567763 (27.44%)</span>
+<span class="gp">... </span><span class="s1">    Unknown error            : 0 (0.000%)</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    Additional passing metrics</span>
+<span class="gp">... </span><span class="s1">    ZMWs missing adapters    : 403623 (24.17%)</span>
+<span class="gp">... </span><span class="s1">    &#39;&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> 
+<span class="go">                                status  number  fraction</span>
+<span class="go">0             Success -- CCS generated 1669857  0.446604</span>
+<span class="go">1        Failed -- Below SNR threshold   53110  0.014204</span>
+<span class="go">2       Failed -- Median length filter       0  0.000000</span>
+<span class="go">3        Failed -- Lacking full passes 1382995  0.369883</span>
+<span class="go">4    Failed -- Heteroduplex insertions   30137  0.008060</span>
+<span class="go">5             Failed -- Coverage drops    2193  0.000587</span>
+<span class="go">6     Failed -- Insufficient draft cov    9055  0.002422</span>
+<span class="go">7        Failed -- Draft too different      71  0.000019</span>
+<span class="go">8     Failed -- Draft generation error   22575  0.006038</span>
+<span class="go">9   Failed -- Draft above --max-length     235  0.000063</span>
+<span class="go">10  Failed -- Draft below --min-length     227  0.000061</span>
+<span class="go">11    Failed -- Reads failed polishing       0  0.000000</span>
+<span class="go">12    Failed -- Empty coverage windows     264  0.000071</span>
+<span class="go">13      Failed -- CCS did not converge     525  0.000140</span>
+<span class="go">14      Failed -- CCS below minimum RQ  567763  0.151849</span>
+<span class="go">15             Failed -- Unknown error       0  0.000000</span>
+<span class="go">16           Failed -- shortcut filter       0  0.000000</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>An example of the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> version 5.0.0 output:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>  <span class="c1"># show many columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span>
