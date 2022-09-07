@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.6.0
+-----
+
+Added
++++++
+* Can parse reports from ``pbccs`` version 6.0.
+
 0.5.0
 -----
 
