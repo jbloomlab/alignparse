@@ -5,8 +5,8 @@ alignparse
 .. image:: https://img.shields.io/pypi/v/alignparse.svg
         :target: https://pypi.python.org/pypi/alignparse
 
-.. image:: https://img.shields.io/travis/jbloomlab/alignparse.svg
-        :target: https://travis-ci.com/jbloomlab/alignparse
+.. image:: https://app.travis-ci.com/jbloomlab/alignparse.svg?branch=master
+        :target: https://app.travis-ci.com/github/jbloomlab/alignparse
 
 .. image:: https://mybinder.org/badge_logo.svg
         :target: https://mybinder.org/v2/gh/jbloomlab/alignparse/master?filepath=notebooks
