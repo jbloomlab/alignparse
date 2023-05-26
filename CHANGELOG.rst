@@ -11,7 +11,7 @@ The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
 Fixed
 +++++
-* Pass tests on newer dependency versions, test on python 3.11.
+* Pass tests on newer dependency versions, test on python 3.9.
 
 0.6.0
 -----
