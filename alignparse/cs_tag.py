@@ -34,9 +34,7 @@ _INTRON_OP = r"\~[acgtn]{2}\d+[acgtn]{2}"
 _INTRON_OP_REGEX = regex.compile(_INTRON_OP)
 """regex.Regex: matches short ``cs`` tag operation for intron."""
 
-_CS_OPS_W_INTRON = {
-    key: val for key, val in list(_CS_OPS.items()) + [("intron", _INTRON_OP)]
-}
+_CS_OPS_W_INTRON = dict(list(_CS_OPS.items()) + [("intron", _INTRON_OP)])
 """dict: ``cs`` tag operation regular expression matches including introns."""
 
 _CS_STR_REGEX = regex.compile("(" + "|".join(list(_CS_OPS.values())) + ")*")

@@ -1163,7 +1163,6 @@ class Targets:
 
             # iterate over samfile and process each alignment
             for aligned_seg in pysam.AlignmentFile(samfile):
-
                 if aligned_seg.is_unmapped:
                     unmapped += 1
                     continue

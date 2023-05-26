@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.6.1
+-----
+
+Fixed
++++++
+* Pass tests on newer dependency versions, test on python 3.9.
+
 0.6.0
 -----
 
