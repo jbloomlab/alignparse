@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Single-cell virus sequencing &#8212; alignparse 0.6.0 documentation</title>
+    <title>Single-cell virus sequencing &#8212; alignparse 0.6.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
@@ -291,7 +291,7 @@ div.rendered_html tbody tr:hover {
 notebook aligns these CCSs to the influenza transcripts and parses the barcodes / UMIs and viral mutations.</p>
 <section id="Set-up-for-analysis">
 <h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
-<p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
+<p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -311,9 +311,6 @@ notebook aligns these CCSs to the influenza transcripts and parses the barcodes 
 <span class="kn">import</span> <span class="nn">alignparse.minimap2</span>
 <span class="kn">import</span> <span class="nn">alignparse.targets</span>
 <span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="kn">import</span> <span class="n">CBPALETTE</span>
-
-<span class="kn">import</span> <span class="nn">dms_variants.plotnine_themes</span>
-<span class="kn">import</span> <span class="nn">dms_variants.utils</span>
 </pre></div>
 </div>
 </div>
@@ -327,19 +324,9 @@ notebook aligns these CCSs to the influenza transcripts and parses the barcodes 
 </pre></div>
 </div>
 </div>
-<p>Set <a class="reference external" href="https://plotnine.readthedocs.io/en/stable/">plotnine</a> theme to the one defined in <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">theme_set</span><span class="p">(</span><span class="n">dms_variants</span><span class="o">.</span><span class="n">plotnine_themes</span><span class="o">.</span><span class="n">theme_graygrid</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
 <p>Directory for output:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -354,7 +341,7 @@ notebook aligns these CCSs to the influenza transcripts and parses the barcodes 
 <p>The alignment targets consist of PCR amplicons covering the influenza virus mRNAs (WSN strain) with a 5’ termini corresponding to the primer binding site, the 3’ polyA tail used for reverse transcription, the UMI and cell barcode, and the common 3’ termini. There are also variant tags distinguishing the synonymously tagged viral variants (see <a class="reference external" href="https://jvi.asm.org/content/93/14/e00500-19">Russell et al, 2019</a>).</p>
 <p>First, let’s look at the Genbank file holding the targets. The targets are defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a> Below we show the first 85 lines (the actual file is quite large as it defined all 10 influenza mRNAs):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -461,7 +448,7 @@ ORIGIN
 </div>
 <p>We also have the YAML file specifying how to parse the features in the alignments. Note how this file uses the YAML syntax for defaults to avoid repeating the same specifications for each target:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -567,7 +554,7 @@ fluNS2:
 </div>
 <p>We now read the targets into an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">alignparse.targets.Targets</a> object with the feature-parsing specs (ignoring the keys that define thet defaults):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -582,7 +569,7 @@ fluNS2:
 </div>
 <p>Plot the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -594,7 +581,7 @@ fluNS2:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_16_0.png" src="_images/flu_virus_seq_example_16_0.png" />
+<img alt="_images/flu_virus_seq_example_14_0.png" src="_images/flu_virus_seq_example_14_0.png" />
 </div>
 </div>
 <p>Several things of note about how these targets are defined. These all relate to the fact that the most difficult region to parse is the polyA tail and the UMI / cell barcode–the reason being that the polyA tail is not sequenced very accurately (it is a homopolymer) plus appears to be somewhat impure in the actual primers, so is difficult to align correctly. This is compounded by the fact that we don’t know the actual UMI sequence and so don’t want indels of the polyA tail to “bleed” into the UMI
@@ -609,7 +596,7 @@ or gene alignment. Therefore:</p>
 <h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s look at the PacBio CCSs. First, define a data frame with the information on the PacBio runs (here we just have one):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -622,7 +609,7 @@ or gene alignment. Therefore:</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -660,7 +647,7 @@ or gene alignment. Therefore:</p>
 </div>
 <p>Create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">alignparse.ccs.Summaries</a> object:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -669,8 +656,8 @@ or gene alignment. Therefore:</p>
 </div>
 </div>
 <p>Statistics on the CCSs (length, number of subread passes, quality):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -685,34 +672,13 @@ or gene alignment. Therefore:</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_23_0.png" src="_images/flu_virus_seq_example_23_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_23_1.png" src="_images/flu_virus_seq_example_23_1.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_23_2.png" src="_images/flu_virus_seq_example_23_2.png" />
-</div>
-</div>
 </section>
 <section id="Align-and-parse">
 <h2>Align and parse<a class="headerlink" href="#Align-and-parse" title="Permalink to this headline">¶</a></h2>
 <p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for viruses with potentially large internal deletions (which are handled like spliced introns); these options are specified by
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_VIRUS_W_DEL">alignparse.minimap2.OPTIONS_VIRUS_W_DEL</a>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -736,7 +702,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <p>Now use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> to align and parse the CCSs. First, create the output directory:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -746,7 +712,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <p>Now do the alignments and parsing:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -764,7 +730,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 <p>First, let’s look at the read alignment stats:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -773,7 +739,7 @@ Using `minimap2` 2.17-r941 with these options:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -932,8 +898,8 @@ Using `minimap2` 2.17-r941 with these options:
 </div></div>
 </div>
 <p>Plot these stats:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -961,16 +927,9 @@ Using `minimap2` 2.17-r941 with these options:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_33_0.png" src="_images/flu_virus_seq_example_33_0.png" />
-</div>
-</div>
 <p>Now let’s look at the reason that reads that were filtered failed to align. Recall that <code class="docutils literal notranslate"><span class="pre">filtered</span></code> holds a data frame for each target:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1051,8 +1010,8 @@ First few lines of `filtered` for fluPB2:
 </div></div>
 </div>
 <p>Concatenate the information for all of the targets and plot reasons why mapped reads were filtered:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1077,16 +1036,9 @@ First few lines of `filtered` for fluPB2:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/flu_virus_seq_example_37_0.png" src="_images/flu_virus_seq_example_37_0.png" />
-</div>
-</div>
 <p>Now let’s look at the first few aligned reads for the first few genes:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1742,7 +1694,7 @@ First few entries in `aligned` for fluHA:
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2022.
+      &copy;2019--2023.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>

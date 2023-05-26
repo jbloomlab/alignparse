@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.0 documentation</title>
+    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
@@ -311,7 +311,6 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">alignparse.targets</span>
 <span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="kn">import</span> <span class="n">CBPALETTE</span>
 
-<span class="kn">import</span> <span class="nn">dms_variants.plotnine_themes</span>
 <span class="kn">import</span> <span class="nn">dms_variants.utils</span>
 </pre></div>
 </div>
@@ -326,19 +325,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<p>Set <a class="reference external" href="https://plotnine.readthedocs.io/en/stable/">plotnine</a> theme to the one defined in <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">theme_set</span><span class="p">(</span><span class="n">dms_variants</span><span class="o">.</span><span class="n">plotnine_themes</span><span class="o">.</span><span class="n">theme_graygrid</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
 <p>Directory for output:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -352,7 +341,7 @@ div.rendered_html tbody tr:hover {
 <h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this headline">¶</a></h2>
 <p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a>. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -424,7 +413,7 @@ ORIGIN
 “operations” (indels count as one operation regardless of size). Below the mutation operation filter is all set to <code class="docutils literal notranslate"><span class="pre">null</span></code>, meaning that for this analysis all the filtering is done on the number of mutated nucleotides. When filters are missing for a feature, they are automatically set to zero.</p>
 <p>The YAML file also specifies what information is parsed from alignments that are not filtered. As you can see, for some features we parse the mutations or the full sequence of the feature, along with the accuracy of that feature in the sequencing query (computed from the Q-values):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -472,7 +461,7 @@ RecA_PacBio_amplicon:
 </div>
 <p>We now read the amplicon into an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">alignparse.targets.Targets</a> object with the feature-parsing specs:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -486,7 +475,7 @@ RecA_PacBio_amplicon:
 of this.)</p>
 <p>We can plot the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -498,12 +487,12 @@ of this.)</p>
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/recA_DMS_16_0.png" src="_images/recA_DMS_16_0.png" />
+<img alt="_images/recA_DMS_14_0.png" src="_images/recA_DMS_14_0.png" />
 </div>
 </div>
 <p>We can also look at the featue parsing specifications as a dict or YAML string (here we do it as YAML string). Note that all the defaults that were not specified in the YAML file above have now been filled in:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -595,7 +584,7 @@ RecA_PacBio_amplicon:
 <p>Note that to make this example fast, we have extracted just a few hundred CCSs from the <span class="math notranslate nohighlight">\(&gt;10^5\)</span> typically produced in a single PacBio run.</p>
 <p>Here is a data frame with the names of the FASTQ files and reports generated by the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -617,7 +606,7 @@ RecA_PacBio_amplicon:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -666,7 +655,7 @@ RecA_PacBio_amplicon:
 </div>
 <p>We create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">alignparse.ccs.Summaries</a> object for these CCSs:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -675,7 +664,7 @@ RecA_PacBio_amplicon:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -686,7 +675,7 @@ Name: name, dtype: object
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -695,7 +684,7 @@ Name: name, dtype: object
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -704,7 +693,7 @@ Name: name, dtype: object
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -714,8 +703,8 @@ Name: name, dtype: object
 </div>
 <p>(Note if you did not have the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> reports, you could still do the steps above but would need to set <code class="docutils literal notranslate"><span class="pre">report_col=None</span></code> when creating the <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.ccs.html#alignparse.ccs.Summaries">Summaries</a> object, and then you could not analyze ZMW stats as done below.)</p>
 <p>Plot how many ZMWs yielded CCSs:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -726,16 +715,9 @@ Name: name, dtype: object
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_26_0.png" src="_images/recA_DMS_26_0.png" />
-</div>
-</div>
 <p>We can also get the ZMW stats as numerical values:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -744,7 +726,7 @@ Name: name, dtype: object
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -862,8 +844,8 @@ Name: name, dtype: object
 </div></div>
 </div>
 <p>Statistics on the CCSs (length, number of subread passes, quality):</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -878,30 +860,9 @@ Name: name, dtype: object
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_30_0.png" src="_images/recA_DMS_30_0.png" />
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_30_1.png" src="_images/recA_DMS_30_1.png" />
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_30_2.png" src="_images/recA_DMS_30_2.png" />
-</div>
-</div>
 <p>We can also get these statistics numerically; for instance:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -910,7 +871,7 @@ Name: name, dtype: object
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -973,7 +934,7 @@ Name: name, dtype: object
 <p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -999,7 +960,7 @@ Using `minimap2` 2.17-r941 with these options:
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> separately. An example of this is in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/lasv_pilot.html">Lassa virus glycoprotein</a> example notebook)</p>
 <p>First, we define a directory to place the created files:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1010,7 +971,7 @@ Using `minimap2` 2.17-r941 with these options:
 <p>Now we run <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> on all the CCS sets in the data frame <code class="docutils literal notranslate"><span class="pre">pacbio_runs</span></code>, which we set up above to specify information on each PacBio run. The <code class="docutils literal notranslate"><span class="pre">name_col</span></code> gives the column in the data frame giving the name of each run, the <code class="docutils literal notranslate"><span class="pre">queryfile_col</span></code> gives the column with the FASTQ file for that run, and <code class="docutils literal notranslate"><span class="pre">group_cols</span></code> specifies any columns showing how to group runs when
 aggregating results (here we aggregate results by library):</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1030,7 +991,7 @@ aggregating results (here we aggregate results by library):</p>
 <p>The return value from running the function above is a tuple of three elements: <code class="docutils literal notranslate"><span class="pre">readstats</span></code>, <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, and <code class="docutils literal notranslate"><span class="pre">filtered</span></code>. We go through these one by one.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">readstats</span></code> variable is a data frame that gives summary statistics for each run:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1039,7 +1000,7 @@ aggregating results (here we aggregate results by library):</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1116,8 +1077,8 @@ aggregating results (here we aggregate results by library):</p>
 </div>
 <p>Above we see that all reads mapped to our single target (<code class="docutils literal notranslate"><span class="pre">RecA_PacBio_amplicon</span></code>), and that most could be fully aligned and parsed given our <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>, but that some were filtered for not passing these specs.</p>
 <p>We can plot <code class="docutils literal notranslate"><span class="pre">readstats</span></code> for easy viewing:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1136,16 +1097,9 @@ aggregating results (here we aggregate results by library):</p>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_42_0.png" src="_images/recA_DMS_42_0.png" />
-</div>
-</div>
 <p>The <code class="docutils literal notranslate"><span class="pre">aligned</span></code> variable is a dict that is keyed by each target name, and then gives a data frame with information on all queries (CCSs) that were successfully aligned and parsed:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1276,7 +1230,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
 <p>Since we have just one target, we get the data frame in <code class="docutils literal notranslate"><span class="pre">aligned</span></code> for that single target into a new variable (<code class="docutils literal notranslate"><span class="pre">aligned_df</span></code>) and save it for analysis in the next subsection. We also extract just the columns of interest from the data frame, and rename <code class="docutils literal notranslate"><span class="pre">barcode_sequence</span></code> to the shorter name of <code class="docutils literal notranslate"><span class="pre">barcode</span></code>. Also, since real analyses of the barcode typically involve Illumina sequencing it in the reverse direction, we make this new <code class="docutils literal notranslate"><span class="pre">barcode</span></code> column the <strong>reverse complement</strong> of
 <code class="docutils literal notranslate"><span class="pre">barcode_sequence</span></code>:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1301,7 +1255,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1389,7 +1343,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
 </div>
 <p>Finally, the <code class="docutils literal notranslate"><span class="pre">filtered</span></code> variable gives information on why queries that aligned but were filtered (failed <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code>) were filtered. Like <code class="docutils literal notranslate"><span class="pre">aligned</span></code>, <code class="docutils literal notranslate"><span class="pre">filtered</span></code> is a dict keyed by target name with values being data frames giving the information:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1477,8 +1431,8 @@ First few lines of filtering information for RecA_PacBio_amplicon
 </div>
 <p>As can be seen above, the <code class="docutils literal notranslate"><span class="pre">filter_reason</span></code> column gives which particular specification in <code class="docutils literal notranslate"><span class="pre">feature_parse_specs</span></code> was not met.</p>
 <p>Plot this inforrmation:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1501,17 +1455,10 @@ First few lines of filtering information for RecA_PacBio_amplicon
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_50_0.png" src="_images/recA_DMS_50_0.png" />
-</div>
-</div>
 <p>The example usage of <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> above read all of the information on the parsed alignments into data frames. For large data sets, these data frames might be so large that you don’t want to read them into memory. In that case, use the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> option, which makes
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> simply give the locations of CSV files holding the data frames. Here is an example:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1531,7 +1478,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 </div>
 <p>Now the returned information on the parsed alignments and filtering just gives the locations of the CSV files for the data frames:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1552,7 +1499,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <p>Note that since no mutations are specified as empty strings in these CSV files, if you read them using <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html">pandas.read_csv</a>, you then need to do so using <code class="docutils literal notranslate"><span class="pre">na_filter=None</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">pandas.read_csv(&lt;csv_file&gt;,</span> <span class="pre">na_filter=None)</span></code>) so that empty strings are not converted to <code class="docutils literal notranslate"><span class="pre">nan</span></code> values.</p>
 <p>Here are all of the files created by running <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> (they also include SAM alignments and parsing results for each individual run):</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1586,7 +1533,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <p>In a deep mutational scanning experiment, we typically want to determine the sequence of the gene variant associated with each barcode. In this section, we do that–and also estimate the empirical accuracy of the sequencing by determining how often two sequences with the same barcode are identical.</p>
 <p>We start with the <code class="docutils literal notranslate"><span class="pre">aligned_df</span></code> data frame generated in the previous subsection. First, we want to plot the distribution of accuracies for the barcodes and genes. Because these span a wide range, it’s most convenient to convert the accuracies into error rates (1 - accuracy), and then plot these error rates on a log scale. In order to do this, we also need to set some floor for the error rates since zero can’t be plotted on a log scale. Compute these “floored” error rates:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1603,7 +1550,7 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 <p>We anticipate excluding all CCSs for which the error rate for either the gene or barcode is <span class="math notranslate nohighlight">\(&gt;10^{-4}\)</span>. Specify this cutoff:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1612,8 +1559,8 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 </div>
 <p>Now plot the distributiton of these error rates, drawing an orange vertical line at the cutoff:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1640,17 +1587,10 @@ Contents of ./output_files/RecA_align_and_parse:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_62_0.png" src="_images/recA_DMS_62_0.png" />
-</div>
-</div>
 <p>The plot above shows that a modest number of CCSs fail the error-rate filters (are to the right of the cutoff).</p>
 <p>We mark to retain the CCSs that pass the filters:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1664,7 +1604,7 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 <p>Here are the numbers retained:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1678,7 +1618,7 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1735,8 +1675,8 @@ Contents of ./output_files/RecA_align_and_parse:
 </div></div>
 </div>
 <p>Before getting the consensus sequence for each barcode, we next want to know how many different CCSs we have per barcode among the retained CCSs. Plot this distribution:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1767,13 +1707,6 @@ Contents of ./output_files/RecA_align_and_parse:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/recA_DMS_68_0.png" src="_images/recA_DMS_68_0.png" />
-</div>
-</div>
 <p>We see above that barcodes are often sequenced just once, but are also often sequenced two or more times.</p>
 <p>From the barcodes with multiple CCSs, we can estimate the true (or “empirical”) accuracy of the CCSs. This is different than the purported accuracy returned by the <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program and plotted above. Those <code class="docutils literal notranslate"><span class="pre">ccs</span></code> accuracies are PacBio’s estimation of accuracy from the sequencing, but they may not be fully correct. In addition, not all the “error” comes from pure sequencing errors: we can also have experimental factors such as barcode collisions (two different variants sharing the same barcode)
 or PCR strand exchange make molecules with the same barcode actually different.</p>
@@ -1781,7 +1714,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.empirical_accuracy">alignparse.consensus.empirical_accuracy</a> (see the docs of that function for a full explanation of the calculation).</p>
 <p>In addition, we’d like to split out the analysis by whether or not the CCSs have an indel. The reason is that indels are the main source of error in PacBio sequencing, but we plan to disregard all sequences with indels anyway. So first use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.consensus.html#alignparse.consensus.add_mut_info_cols">alignparse.consensus.add_mut_info_cols</a> to add information about whether the CCSs have indels:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1795,7 +1728,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 <p>Here are the numbers with and without indels among the retained CCSs:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1810,7 +1743,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1868,7 +1801,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 <p>Now we can compute the empirical accuracy. First, among all retained CCSs:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1879,7 +1812,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1922,7 +1855,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 <p>And excluding CCSs with indels:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1933,7 +1866,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1981,7 +1914,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <p>The advantage of this simple method is that it tries to throw away barcodes for which there is likely to be some source of experimental error.</p>
 <p>Build the consensus sequences:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1995,7 +1928,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 <p>Note how we get back two data frames. The <code class="docutils literal notranslate"><span class="pre">consensus</span></code> data frame simply gives the consensus sequences:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2004,7 +1937,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2075,7 +2008,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <p>In addition to the mutations in the consensus, it also gives the <code class="docutils literal notranslate"><span class="pre">variant_call_support</span></code>, which is the number of CCSs supporting the consensus call. When the call support is one, then we expect the accuracy to be equal to the empirical ones we computed above (either with or without indels depending on whether we exclude consensus sequences with indels). When the variant call support is greater than one, the accuracy will be higher as there are more CCSs supporting the consensus call.</p>
 <p>It is often useful to get the mutations in <code class="docutils literal notranslate"><span class="pre">consensus</span></code> that are just substitutions, and also denote which sequences have indels. That can be done as follows:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2092,7 +2025,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2175,7 +2108,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <p>If you filter the data frame above for just those barcodes with no indels, you can then pass the data frame directly into a <a class="reference external" href="https://jbloomlab.github.io/dms_variants/dms_variants.codonvarianttable.html#dms_variants.codonvarianttable.CodonVariantTable">dms_variants.codonvarianttable.CodonVariantTable</a> for further analysis.</p>
 <p>You can also look at what happened to the barcodes for which we could <strong>not</strong> build consensus sequences by looking at the <code class="docutils literal notranslate"><span class="pre">dropped</span></code> data frame:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2184,7 +2117,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2247,7 +2180,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 <p>Or to summarize the drop reasons:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2256,7 +2189,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -2391,7 +2324,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2022.
+      &copy;2019--2023.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
