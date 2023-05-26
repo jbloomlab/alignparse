@@ -696,7 +696,6 @@ def simple_mutconsensus(
     dropped = []
     consensus = []
     for g, g_df in df.groupby(group_cols, observed=True)[mutation_col]:
-
         if len(group_cols) == 1:
             g = [g]
 
