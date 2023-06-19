@@ -7,9 +7,9 @@ import sys
 from setuptools import setup
 
 
-if not (sys.version_info[0] == 3 and sys.version_info[1] >= 7):
+if not (sys.version_info[0] == 3 and sys.version_info[1] >= 8):
     raise RuntimeError(
-        "alignparse requires Python >=3.7.\n"
+        "alignparse requires Python >=3.8.\n"
         f"You are using {sys.version_info[0]}.{sys.version_info[1]}."
     )
 
