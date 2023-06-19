@@ -1,22 +1,21 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.1 documentation</title>
+    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Lassa virus glycoprotein PacBio sequencing" href="lasv_pilot.html" />
@@ -37,266 +36,17 @@
 
           <div class="body" role="main">
             
-  
-<style>
-/* CSS for nbsphinx extension */
-
-/* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
-}
-
-/* avoid gaps between output lines */
-div.nboutput.container div[class*=highlight] pre {
-    line-height: normal;
-}
-
-/* input/output containers */
-div.nbinput.container,
-div.nboutput.container {
-    display: -webkit-flex;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-}
-@media (max-width: 540px) {
-    div.nbinput.container,
-    div.nboutput.container {
-        flex-direction: column;
-    }
-}
-
-/* input container */
-div.nbinput.container {
-    padding-top: 5px;
-}
-
-/* last container */
-div.nblast.container {
-    padding-bottom: 5px;
-}
-
-/* input prompt */
-div.nbinput.container div.prompt pre {
-    color: #307FC1;
-}
-
-/* output prompt */
-div.nboutput.container div.prompt pre {
-    color: #BF5B3D;
-}
-
-/* all prompts */
-div.nbinput.container div.prompt,
-div.nboutput.container div.prompt {
-    width: 4.5ex;
-    padding-top: 5px;
-    position: relative;
-    user-select: none;
-}
-
-div.nbinput.container div.prompt > div,
-div.nboutput.container div.prompt > div {
-    position: absolute;
-    right: 0;
-    margin-right: 0.3ex;
-}
-
-@media (max-width: 540px) {
-    div.nbinput.container div.prompt,
-    div.nboutput.container div.prompt {
-        width: unset;
-        text-align: left;
-        padding: 0.4em;
-    }
-    div.nboutput.container div.prompt.empty {
-        padding: 0;
-    }
-
-    div.nbinput.container div.prompt > div,
-    div.nboutput.container div.prompt > div {
-        position: unset;
-    }
-}
-
-/* disable scrollbars on prompts */
-div.nbinput.container div.prompt pre,
-div.nboutput.container div.prompt pre {
-    overflow: hidden;
-}
-
-/* input/output area */
-div.nbinput.container div.input_area,
-div.nboutput.container div.output_area {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-}
-@media (max-width: 540px) {
-    div.nbinput.container div.input_area,
-    div.nboutput.container div.output_area {
-        width: 100%;
-    }
-}
-
-/* input area */
-div.nbinput.container div.input_area {
-    border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    /*background: #f5f5f5;*/
-}
-
-/* override MathJax center alignment in output cells */
-div.nboutput.container div[class*=MathJax] {
-    text-align: left !important;
-}
-
-/* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput.container div.math p {
-    text-align: left;
-}
-
-/* standard error */
-div.nboutput.container div.output_area.stderr {
-    background: #fdd;
-}
-
-/* ANSI colors */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-default-inverse-fg { color: #FFFFFF; }
-.ansi-default-inverse-bg { background-color: #000000; }
-
-.ansi-bold { font-weight: bold; }
-.ansi-underline { text-decoration: underline; }
-
-
-div.nbinput.container div.input_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight].math,
-div.nboutput.container div.output_area.rendered_html,
-div.nboutput.container div.output_area > div.output_javascript,
-div.nboutput.container div.output_area:not(.rendered_html) > img{
-    padding: 5px;
-    margin: 0;
-}
-
-/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
-div.nbinput.container div.input_area > div[class^='highlight'],
-div.nboutput.container div.output_area > div[class^='highlight']{
-    overflow-y: hidden;
-}
-
-/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
-    display: none;
-}
-
-/* Some additional styling taken form the Jupyter notebook CSS */
-div.rendered_html table {
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  font-size: 12px;
-  table-layout: fixed;
-}
-div.rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-div.rendered_html tr,
-div.rendered_html th,
-div.rendered_html td {
-  text-align: right;
-  vertical-align: middle;
-  padding: 0.5em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-div.rendered_html th {
-  font-weight: bold;
-}
-div.rendered_html tbody tr:nth-child(odd) {
-  background: #f5f5f5;
-}
-div.rendered_html tbody tr:hover {
-  background: rgba(66, 165, 245, 0.2);
-}
-</style>
-<section id="RecA-deep-mutational-scanning-libraries">
-<h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Permalink to this headline">¶</a></h1>
+  <section id="RecA-deep-mutational-scanning-libraries">
+<h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Permalink to this heading">¶</a></h1>
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> to process PacBio circular consensus sequencing of a barcoded library of RecA variants for deep mutational scanning.</p>
 <section id="Set-up-for-analysis">
-<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this headline">¶</a></h2>
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this heading">¶</a></h2>
 <p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -320,8 +70,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -330,22 +79,20 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;./output_files/&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">outdir</span> <span class="o">=</span> <span class="s2">&quot;./output_files/&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
 <section id="Target-amplicon">
-<h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this headline">¶</a></h2>
+<h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this heading">¶</a></h2>
 <p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a>. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">recA_targetfile</span> <span class="o">=</span> <span class="s2">&quot;input_files/recA_amplicon.gb&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">recA_targetfile</span> <span class="o">=</span> <span class="s2">&quot;input_files/recA_amplicon.gb&quot;</span>
 
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">recA_targetfile</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
@@ -416,8 +163,7 @@ ORIGIN
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">recA_parse_specs_file</span> <span class="o">=</span> <span class="s2">&quot;input_files/recA_feature_parse_specs.yaml&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">recA_parse_specs_file</span> <span class="o">=</span> <span class="s2">&quot;input_files/recA_feature_parse_specs.yaml&quot;</span>
 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">recA_parse_specs_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 </pre></div>
@@ -464,8 +210,7 @@ RecA_PacBio_amplicon:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">targets</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">targets</span><span class="o">.</span><span class="n">Targets</span><span class="p">(</span>
     <span class="n">seqsfile</span><span class="o">=</span><span class="n">recA_targetfile</span><span class="p">,</span> <span class="n">feature_parse_specs</span><span class="o">=</span><span class="n">recA_parse_specs_file</span>
 <span class="p">)</span>
 </pre></div>
@@ -478,8 +223,7 @@ of this.)</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax_width</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -495,8 +239,7 @@ of this.)</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s2">&quot;yaml&quot;</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="o">.</span><span class="n">feature_parse_specs</span><span class="p">(</span><span class="s2">&quot;yaml&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -568,7 +311,7 @@ RecA_PacBio_amplicon:
 </div>
 </section>
 <section id="PacBio-CCSs">
-<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this headline">¶</a></h2>
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this heading">¶</a></h2>
 <p>We will align and parse PacBio circular consensus sequences (CCSs). FASTQ files with these CCSs along with associated report files were generated from the PacBio subreads <code class="docutils literal notranslate"><span class="pre">*.bam</span></code> file using the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program, version 4.0.0, (see <a class="reference external" href="https://github.com/PacificBiosciences/ccs">here</a> for details on <code class="docutils literal notranslate"><span class="pre">ccs</span></code>) using a command like the following:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ccs \
     --min-length 50 \
@@ -587,8 +330,7 @@ RecA_PacBio_amplicon:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;recA_lib-1&quot;</span><span class="p">,</span> <span class="s2">&quot;recA_lib-2&quot;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">run_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;recA_lib-1&quot;</span><span class="p">,</span> <span class="s2">&quot;recA_lib-2&quot;</span><span class="p">]</span>
 <span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lib-1&quot;</span><span class="p">,</span> <span class="s2">&quot;lib-2&quot;</span><span class="p">]</span>
 <span class="n">ccs_dir</span> <span class="o">=</span> <span class="s2">&quot;input_files&quot;</span>
 
@@ -658,8 +400,7 @@ RecA_PacBio_amplicon:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">pacbio_runs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pacbio_runs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -678,8 +419,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">tuple</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">tuple</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -696,8 +436,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ccs_summaries</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">ccs</span><span class="o">.</span><span class="n">Summaries</span><span class="p">(</span><span class="n">pacbio_runs</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -707,8 +446,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_zmw_stats</span><span class="p">()</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">theme</span><span class="p">(</span><span class="n">panel_grid_major_x</span><span class="o">=</span><span class="n">element_blank</span><span class="p">())</span>  <span class="c1"># no vertical grid lines</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
@@ -720,8 +458,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -848,8 +585,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="s2">&quot;passes&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">]:</span>
     <span class="k">if</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">has_stat</span><span class="p">(</span><span class="n">stat</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">ccs_summaries</span><span class="o">.</span><span class="n">plot_ccs_stats</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
@@ -865,8 +601,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">ccs_stats</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ccs_summaries</span><span class="o">.</span><span class="n">ccs_stats</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -929,7 +664,7 @@ Name: name, dtype: object
 </div>
 </section>
 <section id="Align-and-parse-CCSs">
-<h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Permalink to this headline">¶</a></h2>
+<h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Permalink to this heading">¶</a></h2>
 <p>Now we align the CCSs using our <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object, and parse the features from queries that align sufficiently well.</p>
 <p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
@@ -937,8 +672,7 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -963,8 +697,7 @@ Using `minimap2` 2.17-r941 with these options:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">align_and_parse_outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;RecA_align_and_parse&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">align_and_parse_outdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;RecA_align_and_parse&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -974,8 +707,7 @@ aggregating results (here we aggregate results by library):</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">readstats</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">readstats</span><span class="p">,</span> <span class="n">aligned</span><span class="p">,</span> <span class="n">filtered</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">pacbio_runs</span><span class="p">,</span>
     <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
     <span class="n">outdir</span><span class="o">=</span><span class="n">align_and_parse_outdir</span><span class="p">,</span>
@@ -994,8 +726,7 @@ aggregating results (here we aggregate results by library):</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">readstats</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">readstats</span>
 </pre></div>
 </div>
 </div>
@@ -1081,8 +812,7 @@ aggregating results (here we aggregate results by library):</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">ggplot</span><span class="p">(</span><span class="n">readstats</span><span class="p">,</span> <span class="n">aes</span><span class="p">(</span><span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">))</span>
     <span class="o">+</span> <span class="n">geom_bar</span><span class="p">(</span><span class="n">stat</span><span class="o">=</span><span class="s2">&quot;identity&quot;</span><span class="p">)</span>
@@ -1102,8 +832,7 @@ aggregating results (here we aggregate results by library):</p>
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First few lines of parsed alignments for </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">aligned</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
@@ -1233,8 +962,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">aligned</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;not just one target&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">aligned</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;not just one target&quot;</span>
 
 <span class="n">aligned_df</span> <span class="o">=</span> <span class="n">aligned</span><span class="p">[</span><span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
     <span class="n">barcode</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;barcode_sequence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">dms_variants</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">reverse_complement</span><span class="p">)</span>
@@ -1346,8 +1074,7 @@ First few lines of parsed alignments for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First few lines of filtering information for </span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">display</span><span class="p">(</span><span class="n">filtered</span><span class="p">[</span><span class="n">target</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
 </pre></div>
@@ -1435,8 +1162,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="k">for</span> <span class="n">targetname</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">target_names</span><span class="p">:</span>
     <span class="n">target_filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[</span><span class="n">targetname</span><span class="p">]</span>
     <span class="n">nreasons</span> <span class="o">=</span> <span class="n">target_filtered</span><span class="p">[</span><span class="s2">&quot;filter_reason&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
@@ -1461,8 +1187,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">readstats_csv</span><span class="p">,</span> <span class="n">aligned_csv</span><span class="p">,</span> <span class="n">filtered_csv</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">readstats_csv</span><span class="p">,</span> <span class="n">aligned_csv</span><span class="p">,</span> <span class="n">filtered_csv</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">align_and_parse</span><span class="p">(</span>
     <span class="n">df</span><span class="o">=</span><span class="n">pacbio_runs</span><span class="p">,</span>
     <span class="n">mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
     <span class="n">outdir</span><span class="o">=</span><span class="n">align_and_parse_outdir</span><span class="p">,</span>
@@ -1481,8 +1206,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">aligned_csv</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">aligned_csv</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">filtered_csv</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1502,8 +1226,7 @@ First few lines of filtering information for RecA_PacBio_amplicon
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contents of </span><span class="si">{</span><span class="n">align_and_parse_outdir</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">48</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Contents of </span><span class="si">{</span><span class="n">align_and_parse_outdir</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">48</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">d</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fs</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">align_and_parse_outdir</span><span class="p">)):</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span> <span class="n">align_and_parse_outdir</span><span class="p">))</span>
@@ -1529,15 +1252,14 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 </section>
 <section id="Per-barcode-consensus-sequences">
-<h2>Per-barcode consensus sequences<a class="headerlink" href="#Per-barcode-consensus-sequences" title="Permalink to this headline">¶</a></h2>
+<h2>Per-barcode consensus sequences<a class="headerlink" href="#Per-barcode-consensus-sequences" title="Permalink to this heading">¶</a></h2>
 <p>In a deep mutational scanning experiment, we typically want to determine the sequence of the gene variant associated with each barcode. In this section, we do that–and also estimate the empirical accuracy of the sequencing by determining how often two sequences with the same barcode are identical.</p>
 <p>We start with the <code class="docutils literal notranslate"><span class="pre">aligned_df</span></code> data frame generated in the previous subsection. First, we want to plot the distribution of accuracies for the barcodes and genes. Because these span a wide range, it’s most convenient to convert the accuracies into error rates (1 - accuracy), and then plot these error rates on a log scale. In order to do this, we also need to set some floor for the error rates since zero can’t be plotted on a log scale. Compute these “floored” error rates:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">error_rate_floor</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># error rates &lt; this set to this</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">error_rate_floor</span> <span class="o">=</span> <span class="mf">1e-7</span>  <span class="c1"># error rates &lt; this set to this</span>
 
 <span class="n">aligned_df</span> <span class="o">=</span> <span class="n">aligned_df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
     <span class="n">barcode_error</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span>
@@ -1553,8 +1275,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">error_cutoff</span> <span class="o">=</span> <span class="mf">1e-4</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">error_cutoff</span> <span class="o">=</span> <span class="mf">1e-4</span>
 </pre></div>
 </div>
 </div>
@@ -1563,8 +1284,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">ggplot</span><span class="p">(</span>
         <span class="n">aligned_df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span>
@@ -1593,8 +1313,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="n">aligned_df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="n">aligned_df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
     <span class="n">retained</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
         <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;gene_error&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;barcode_error&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">error_cutoff</span><span class="p">)</span>
     <span class="p">)</span>
@@ -1607,8 +1326,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;library&quot;</span><span class="p">,</span> <span class="s2">&quot;retained&quot;</span><span class="p">])</span>
     <span class="o">.</span><span class="n">size</span><span class="p">()</span>
     <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;number of CCSs&quot;</span><span class="p">)</span>
@@ -1679,8 +1397,7 @@ Contents of ./output_files/RecA_align_and_parse:
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
 <span class="n">max_CCSs</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># in plot, group barcodes with &gt;= this many CCSs</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="p">(</span>
@@ -1717,8 +1434,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aligned_df</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="p">,</span> <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span><span class="p">,</span> <span class="n">n_indel_col</span><span class="o">=</span><span class="s2">&quot;n_indels&quot;</span>
 <span class="p">)</span>
 
@@ -1731,8 +1447,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;retained&quot;</span><span class="p">)</span>
     <span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;library&quot;</span><span class="p">,</span> <span class="s2">&quot;has_indel&quot;</span><span class="p">])</span>
     <span class="o">.</span><span class="n">size</span><span class="p">()</span>
@@ -1804,8 +1519,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;retained&quot;</span><span class="p">),</span> <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span>
 <span class="p">)</span>
 </pre></div>
@@ -1858,8 +1572,7 @@ or PCR strand exchange make molecules with the same barcode actually different.<
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">empirical_accuracy</span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;retained &amp; not has_indel&quot;</span><span class="p">),</span> <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span>
 <span class="p">)</span>
 </pre></div>
@@ -1917,8 +1630,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">consensus</span><span class="p">,</span> <span class="n">dropped</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">simple_mutconsensus</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">consensus</span><span class="p">,</span> <span class="n">dropped</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">simple_mutconsensus</span><span class="p">(</span>
     <span class="n">aligned_df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;retained&quot;</span><span class="p">),</span>
     <span class="n">group_cols</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;library&quot;</span><span class="p">,</span> <span class="s2">&quot;barcode&quot;</span><span class="p">),</span>
     <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span><span class="p">,</span>
@@ -1931,8 +1643,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">consensus</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">consensus</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -2011,8 +1722,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">consensus</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">consensus</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">add_mut_info_cols</span><span class="p">(</span>
     <span class="n">consensus</span><span class="p">,</span>
     <span class="n">mutation_col</span><span class="o">=</span><span class="s2">&quot;gene_mutations&quot;</span><span class="p">,</span>
     <span class="n">sub_str_col</span><span class="o">=</span><span class="s2">&quot;substitutions&quot;</span><span class="p">,</span>
@@ -2111,8 +1821,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">dropped</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dropped</span>
 </pre></div>
 </div>
 </div>
@@ -2183,8 +1892,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="p">(</span><span class="n">dropped</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;drop_reason&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;number_barcodes&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">dropped</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;drop_reason&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">&quot;number_barcodes&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -2310,7 +2018,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -2327,8 +2035,8 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
       &copy;2019--2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/recA_DMS.nblink.txt"

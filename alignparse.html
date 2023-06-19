@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>alignparse package &#8212; alignparse 0.6.1 documentation</title>
+    <title>alignparse package &#8212; alignparse 0.6.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,21 +34,134 @@
           <div class="body" role="main">
             
   <section id="module-alignparse">
-<span id="alignparse-package"></span><h1>alignparse package<a class="headerlink" href="#module-alignparse" title="Permalink to this headline">¶</a></h1>
+<span id="alignparse-package"></span><h1>alignparse package<a class="headerlink" href="#module-alignparse" title="Permalink to this heading">¶</a></h1>
 <section id="alignparse">
-<h2>alignparse<a class="headerlink" href="#alignparse" title="Permalink to this headline">¶</a></h2>
+<h2>alignparse<a class="headerlink" href="#alignparse" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.ccs.html">ccs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries"><code class="docutils literal notranslate"><span class="pre">Summaries</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.summaries"><code class="docutils literal notranslate"><span class="pre">Summaries.summaries</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.ccs_stats"><code class="docutils literal notranslate"><span class="pre">Summaries.ccs_stats()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.has_stat"><code class="docutils literal notranslate"><span class="pre">Summaries.has_stat()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.has_zmw_stats"><code class="docutils literal notranslate"><span class="pre">Summaries.has_zmw_stats()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.plot_ccs_stats"><code class="docutils literal notranslate"><span class="pre">Summaries.plot_ccs_stats()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.plot_zmw_stats"><code class="docutils literal notranslate"><span class="pre">Summaries.plot_zmw_stats()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summaries.zmw_stats"><code class="docutils literal notranslate"><span class="pre">Summaries.zmw_stats()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary"><code class="docutils literal notranslate"><span class="pre">Summary</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.name"><code class="docutils literal notranslate"><span class="pre">Summary.name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.fastqfile"><code class="docutils literal notranslate"><span class="pre">Summary.fastqfile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.reportfile"><code class="docutils literal notranslate"><span class="pre">Summary.reportfile</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.zmw_stats"><code class="docutils literal notranslate"><span class="pre">Summary.zmw_stats</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.passes"><code class="docutils literal notranslate"><span class="pre">Summary.passes</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.accuracy"><code class="docutils literal notranslate"><span class="pre">Summary.accuracy</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.Summary.length"><code class="docutils literal notranslate"><span class="pre">Summary.length</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.get_ccs_stats"><code class="docutils literal notranslate"><span class="pre">get_ccs_stats()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.ccs.html#alignparse.ccs.report_to_stats"><code class="docutils literal notranslate"><span class="pre">report_to_stats()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html">consensus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.Mutations"><code class="docutils literal notranslate"><span class="pre">Mutations</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.Mutations.deletions"><code class="docutils literal notranslate"><span class="pre">Mutations.deletions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.Mutations.insertions"><code class="docutils literal notranslate"><span class="pre">Mutations.insertions</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.Mutations.substitutions"><code class="docutils literal notranslate"><span class="pre">Mutations.substitutions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.add_mut_info_cols"><code class="docutils literal notranslate"><span class="pre">add_mut_info_cols()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.empirical_accuracy"><code class="docutils literal notranslate"><span class="pre">empirical_accuracy()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.process_mut_str"><code class="docutils literal notranslate"><span class="pre">process_mut_str()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.consensus.html#alignparse.consensus.simple_mutconsensus"><code class="docutils literal notranslate"><span class="pre">simple_mutconsensus()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.constants.html">constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.constants.html#alignparse.constants.CBPALETTE"><code class="docutils literal notranslate"><span class="pre">CBPALETTE</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html">cs_tag</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment"><code class="docutils literal notranslate"><span class="pre">Alignment</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.query_name"><code class="docutils literal notranslate"><span class="pre">Alignment.query_name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.target_name"><code class="docutils literal notranslate"><span class="pre">Alignment.target_name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.cs"><code class="docutils literal notranslate"><span class="pre">Alignment.cs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.query_clip5"><code class="docutils literal notranslate"><span class="pre">Alignment.query_clip5</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.query_clip3"><code class="docutils literal notranslate"><span class="pre">Alignment.query_clip3</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.target_clip5"><code class="docutils literal notranslate"><span class="pre">Alignment.target_clip5</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.target_lastpos"><code class="docutils literal notranslate"><span class="pre">Alignment.target_lastpos</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.orientation"><code class="docutils literal notranslate"><span class="pre">Alignment.orientation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.extract_cs"><code class="docutils literal notranslate"><span class="pre">Alignment.extract_cs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.Alignment.get_accuracy"><code class="docutils literal notranslate"><span class="pre">Alignment.get_accuracy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_introns_to_deletions"><code class="docutils literal notranslate"><span class="pre">cs_introns_to_deletions()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_op_len_target"><code class="docutils literal notranslate"><span class="pre">cs_op_len_target()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_op_type"><code class="docutils literal notranslate"><span class="pre">cs_op_type()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_to_mutation_str"><code class="docutils literal notranslate"><span class="pre">cs_to_mutation_str()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_to_nt_mutation_count"><code class="docutils literal notranslate"><span class="pre">cs_to_nt_mutation_count()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_to_op_mutation_count"><code class="docutils literal notranslate"><span class="pre">cs_to_op_mutation_count()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.cs_to_sequence"><code class="docutils literal notranslate"><span class="pre">cs_to_sequence()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.cs_tag.html#alignparse.cs_tag.split_cs"><code class="docutils literal notranslate"><span class="pre">split_cs()</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.minimap2.html">minimap2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper"><code class="docutils literal notranslate"><span class="pre">Mapper</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper.options"><code class="docutils literal notranslate"><span class="pre">Mapper.options</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper.prog"><code class="docutils literal notranslate"><span class="pre">Mapper.prog</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper.version"><code class="docutils literal notranslate"><span class="pre">Mapper.version</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper.retain_tags"><code class="docutils literal notranslate"><span class="pre">Mapper.retain_tags</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.Mapper.map_to_sam"><code class="docutils literal notranslate"><span class="pre">Mapper.map_to_sam()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS"><code class="docutils literal notranslate"><span class="pre">OPTIONS_CODON_DMS</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.minimap2.html#alignparse.minimap2.OPTIONS_VIRUS_W_DEL"><code class="docutils literal notranslate"><span class="pre">OPTIONS_VIRUS_W_DEL</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.targets.html">targets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature"><code class="docutils literal notranslate"><span class="pre">Feature</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature.name"><code class="docutils literal notranslate"><span class="pre">Feature.name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature.seq"><code class="docutils literal notranslate"><span class="pre">Feature.seq</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature.start"><code class="docutils literal notranslate"><span class="pre">Feature.start</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature.end"><code class="docutils literal notranslate"><span class="pre">Feature.end</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Feature.length"><code class="docutils literal notranslate"><span class="pre">Feature.length</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target"><code class="docutils literal notranslate"><span class="pre">Target</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.seq"><code class="docutils literal notranslate"><span class="pre">Target.seq</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.name"><code class="docutils literal notranslate"><span class="pre">Target.name</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.length"><code class="docutils literal notranslate"><span class="pre">Target.length</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.features"><code class="docutils literal notranslate"><span class="pre">Target.features</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.feature_names"><code class="docutils literal notranslate"><span class="pre">Target.feature_names</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.get_feature"><code class="docutils literal notranslate"><span class="pre">Target.get_feature()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.get_name"><code class="docutils literal notranslate"><span class="pre">Target.get_name()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.has_feature"><code class="docutils literal notranslate"><span class="pre">Target.has_feature()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Target.image"><code class="docutils literal notranslate"><span class="pre">Target.image()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets"><code class="docutils literal notranslate"><span class="pre">Targets</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.targets"><code class="docutils literal notranslate"><span class="pre">Targets.targets</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.target_names"><code class="docutils literal notranslate"><span class="pre">Targets.target_names</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.target_seqs"><code class="docutils literal notranslate"><span class="pre">Targets.target_seqs</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.align"><code class="docutils literal notranslate"><span class="pre">Targets.align()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.align_and_parse"><code class="docutils literal notranslate"><span class="pre">Targets.align_and_parse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.feature_parse_specs"><code class="docutils literal notranslate"><span class="pre">Targets.feature_parse_specs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.features_to_parse"><code class="docutils literal notranslate"><span class="pre">Targets.features_to_parse()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.get_target"><code class="docutils literal notranslate"><span class="pre">Targets.get_target()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.parse_alignment"><code class="docutils literal notranslate"><span class="pre">Targets.parse_alignment()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.plot"><code class="docutils literal notranslate"><span class="pre">Targets.plot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.targets.html#alignparse.targets.Targets.write_fasta"><code class="docutils literal notranslate"><span class="pre">Targets.write_fasta()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html">utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs"><code class="docutils literal notranslate"><span class="pre">InFrameDeletionsToSubs</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.geneseq"><code class="docutils literal notranslate"><span class="pre">InFrameDeletionsToSubs.geneseq</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.dels_to_subs"><code class="docutils literal notranslate"><span class="pre">InFrameDeletionsToSubs.dels_to_subs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.shiftable"><code class="docutils literal notranslate"><span class="pre">InFrameDeletionsToSubs.shiftable()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.MutationRenumber"><code class="docutils literal notranslate"><span class="pre">MutationRenumber</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.MutationRenumber.old_to_new_site"><code class="docutils literal notranslate"><span class="pre">MutationRenumber.old_to_new_site</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.MutationRenumber.old_to_wt"><code class="docutils literal notranslate"><span class="pre">MutationRenumber.old_to_wt</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.MutationRenumber.renumber_muts"><code class="docutils literal notranslate"><span class="pre">MutationRenumber.renumber_muts()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.merge_dels"><code class="docutils literal notranslate"><span class="pre">merge_dels()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.qvals_to_accuracy"><code class="docutils literal notranslate"><span class="pre">qvals_to_accuracy()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="alignparse.utils.html#alignparse.utils.sort_mutations"><code class="docutils literal notranslate"><span class="pre">sort_mutations()</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -134,7 +245,7 @@
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -151,8 +262,8 @@
       &copy;2019--2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/alignparse.rst.txt"

@@ -1,19 +1,17 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>cs_tag &#8212; alignparse 0.6.1 documentation</title>
+    <title>cs_tag &#8212; alignparse 0.6.2 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,18 +34,19 @@
           <div class="body" role="main">
             
   <span class="target" id="module-alignparse.cs_tag"></span><section id="cs-tag">
-<h1>cs_tag<a class="headerlink" href="#cs-tag" title="Permalink to this headline">¶</a></h1>
+<h1>cs_tag<a class="headerlink" href="#cs-tag" title="Permalink to this heading">¶</a></h1>
 <p>Parse SAM entries with <code class="docutils literal notranslate"><span class="pre">cs</span></code> short tag from
 <a class="reference external" href="https://lh3.github.io/minimap2/">minimap2</a> output.</p>
 <p>See <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html">here</a> for details on
 short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag format.</p>
+</section>
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.cs_tag.Alignment">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">Alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_alignment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">introns_to_deletions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.Alignment" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">Alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sam_alignment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">introns_to_deletions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_seqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#Alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.Alignment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Process a SAM alignment with a <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag to extract features.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sam_alignment</strong> (<em>pysam.AlignedSegment</em>) – Aligned segment from <a class="reference external" href="https://pysam.readthedocs.io">pysam</a>,
 must have a short format <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag (see
@@ -64,7 +63,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">query_name</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.query_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of query in alignment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -75,7 +74,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">target_name</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.target_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of alignment target.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -86,7 +85,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">cs</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.cs" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -97,7 +96,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">query_clip5</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.query_clip5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length at 5’ end of query not in alignment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -108,7 +107,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">query_clip3</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.query_clip3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length at 3’ end of query not in alignment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -119,7 +118,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">target_clip5</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.target_clip5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Length at 5’ end of target not in alignment.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -130,7 +129,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">target_lastpos</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.target_lastpos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Last position of alignment in target (exclusive).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -141,7 +140,7 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">orientation</span></span><a class="headerlink" href="#alignparse.cs_tag.Alignment.orientation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does query align to the target (+) or reverse complement (-).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>{‘+’, ‘-‘}</p>
 </dd>
 </dl>
@@ -152,20 +151,20 @@ names with values target sequences as str.</p></li>
 <span class="sig-name descname"><span class="pre">extract_cs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#Alignment.extract_cs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.Alignment.extract_cs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag corresponding to feature in target.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<em>int</em>) – Start of feature in target in 0, 1, … numbering.</p></li>
 <li><p><strong>end</strong> (<em>int</em>) – End of feature in target (not inclusive of this site).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>If feature is not present in alignment, return <cite>None</cite>. Otherwise,
 return <cite>(cs, clip5, clip3)</cite> where <cite>cs</cite> is the <code class="docutils literal notranslate"><span class="pre">cs</span></code> string for
 the aligned portion of the feature, and <cite>clip5</cite> and <cite>clip3</cite> are
 the lengths that must be clipped off the end of the feature to
 get to that alignment.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple or None</p>
 </dd>
 </dl>
@@ -181,18 +180,18 @@ as being at the end of the first feature.</p>
 <span class="sig-name descname"><span class="pre">get_accuracy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targetstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#Alignment.get_accuracy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.Alignment.get_accuracy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get accuracy of part of query aligned to a region of the target.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>targetstart</strong> (<em>int</em>) – Start of region in target in 0, 1, … numbering.</p></li>
 <li><p><strong>targetend</strong> (<em>int</em>) – End of region in target (not inclusive of this site).</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The accuracy of the region, computed as the average of the
 Q-scores for all aligned sites in the query, or <cite>NaN</cite> if
 there are no query sites aligned to this region.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float or NaN</p>
 </dd>
 </dl>
@@ -205,16 +204,16 @@ there are no query sites aligned to this region.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_introns_to_deletions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetseq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_introns_to_deletions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_introns_to_deletions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert introns to deletions in <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs</strong> (<em>str</em>) – Short-format <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
 <li><p><strong>targetseq</strong> (<em>str</em>) – Region of target sequenced covered by <cite>cs</cite> alignment.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Version of <cite>cs</cite> where all introns have been converted to deletions.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -235,20 +234,20 @@ there are no query sites aligned to this region.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_op_len_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs_op</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invalid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_op_len_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_op_len_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get length of valid <code class="docutils literal notranslate"><span class="pre">cs</span></code> operation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs_op</strong> (<em>str</em>) – A <strong>single</strong> operation in a short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
 <li><p><strong>invalid</strong> (<em>{'raise'</em><em>, </em><em>'ignore'}</em>) – If <cite>cs_string</cite> is not a valid string, raise an error or ignore it
 and return <cite>None</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Length of given cs_op. This length is based on the target sequence,
 so insertions in the query have length 0 and deletions are the length
 of the target sequence deleted from the query. ‘None’ if <cite>cs_op</cite>
 is invalid and <cite>invalid</cite> is <cite>ignore</cite>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int or None</p>
 </dd>
 </dl>
@@ -276,18 +275,18 @@ is invalid and <cite>invalid</cite> is <cite>ignore</cite>.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_op_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs_op</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invalid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_op_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_op_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get type of <code class="docutils literal notranslate"><span class="pre">cs</span></code> operation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs_op</strong> (<em>str</em>) – A <strong>single</strong> operation in a short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
 <li><p><strong>invalid</strong> (<em>{'raise'</em><em>, </em><em>'ignore'}</em>) – If <cite>cs_string</cite> is not a valid string, raise an error or ignore it
 and return <cite>None</cite>.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Type of <code class="docutils literal notranslate"><span class="pre">cs</span></code> operation, or <cite>None</cite> if <cite>cs_string</cite> invalid and
 <cite>invalid</cite> is ‘ignore’.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>{‘substitution’, ‘insertion’, ‘deletion’, ‘identity’, None}</p>
 </dd>
 </dl>
@@ -311,17 +310,17 @@ and return <cite>None</cite>.</p></li>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_to_mutation_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_to_mutation_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_to_mutation_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag to a descriptive string of mutations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs</strong> (<em>str</em>) – A <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
 <li><p><strong>offset</strong> (<em>int</em>) – Mutations are numbered in 1, … numbering <strong>plus</strong> this offset.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Space-delimited string of form ‘A5T G86A ins7ACG del19to24’
 for all mutations specified in <cite>cs</cite>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -350,16 +349,16 @@ considered mutations in the returned strings.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_to_nt_mutation_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_to_nt_mutation_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_to_nt_mutation_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Count the number of nucleotide mutations in <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cs</strong> (<em>str</em>) – <cite>cs</cite> string</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Number of nucleotides that are mutated. Insertions / deletions
 are counted as the number of nucleotides in the indel.
 Changes from an ambiguous nucleotide to are <strong>not</strong> considered
 mutations.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -377,16 +376,16 @@ mutations.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_to_op_mutation_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_to_op_mutation_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_to_op_mutation_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Count the number of mutation operations in <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cs</strong> (<em>str</em>) – The <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Number of mutation operations in the query sequence. Each indel or
 substitution is counted as a single mutation operation regardless
 of how many mutations it contains. Changes from ambiguous nucleotides
 to another nucleotide are <strong>not</strong> counted.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
@@ -404,16 +403,16 @@ to another nucleotide are <strong>not</strong> counted.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">cs_to_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#cs_to_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.cs_to_sequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag to a sequence.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs</strong> (<em>str</em>) – <cite>cs</cite> string</p></li>
 <li><p><strong>seq</strong> (<em>str</em>) – Sequence of target for region corresponding to <cite>cs</cite> string.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Nucleotide sequence generated by applying <cite>cs</cite> to <cite>seq</cite>.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
@@ -429,7 +428,7 @@ to another nucleotide are <strong>not</strong> counted.</p>
 <span class="sig-prename descclassname"><span class="pre">alignparse.cs_tag.</span></span><span class="sig-name descname"><span class="pre">split_cs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cs_string</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">invalid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'raise'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_intron</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/cs_tag.html#split_cs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.cs_tag.split_cs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split a short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag into its constituent operations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cs_string</strong> (<em>str</em>) – The short <code class="docutils literal notranslate"><span class="pre">cs</span></code> tag.</p></li>
 <li><p><strong>invalid</strong> (<em>{'raise'</em><em>, </em><em>'ignore'}</em>) – If <cite>cs_string</cite> is not a valid string, raise an error or ignore it
@@ -437,11 +436,11 @@ and return <cite>None</cite>.</p></li>
 <li><p><strong>allow_intron</strong> (<em>bool</em>) – Are introns allowed as <code class="docutils literal notranslate"><span class="pre">cs</span></code> operations?</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Tuple of the individual <code class="docutils literal notranslate"><span class="pre">cs</span></code> operations, or <cite>None</cite> if invalid
 <cite>cs_string</cite> and <cite>invalid</cite> is ‘ignore’.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple or None</p>
 </dd>
 </dl>
@@ -462,7 +461,6 @@ and return <cite>None</cite>.</p></li>
 </div>
 </dd></dl>
 
-</section>
 
 
           </div>
@@ -544,7 +542,7 @@ and return <cite>None</cite>.</p></li>
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -561,8 +559,8 @@ and return <cite>None</cite>.</p></li>
       &copy;2019--2023.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
       
       |
       <a href="_sources/alignparse.cs_tag.rst.txt"
