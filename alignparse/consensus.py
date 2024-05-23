@@ -476,8 +476,7 @@ def empirical_accuracy(
         .rename("_ngroups")
         .reset_index()
         # get error rate
-        .groupby(upstream_group_cols)
-        [["_n", "_u", "_ngroups"]]
+        .groupby(upstream_group_cols)[["_n", "_u", "_ngroups"]]
         .apply(
             lambda x: 1
             - _LnL_error_rate(
