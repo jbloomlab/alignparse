@@ -57,15 +57,6 @@ When you add code that uses a new package that is not in the standard python lib
 `See here <https://packaging.python.org/discussions/install-requires-vs-requirements/>`_ for information on how to do this, and how to specify minimal required versions.
 As described in the above link, you should **not** pin exact versions in `install_requires` in `setup.py <setup.py>`_ unless absolutely necessary.
 
-Notebooks on mybinder
------------------------
-The `Jupyter notebooks`_ in notebooks_ can be run interactively on mybinder_ by going to the following link:
-https://mybinder.org/v2/gh/jbloomlab/alignparse/master?filepath=notebooks
-
-In order for this to work, you need to keep the `environment.yml <environment.yml>`_ configuration file up to date with the dependencies for running these notebooks as `described here <https://mybinder.readthedocs.io/en/latest/config_files.html>`_.
-Note that unlike for the `install_requires` in `setup.py <setup.py>`_, you may want to pin exact versions here to get reproducible installations.
-Look into the `pip freeze <https://pip.pypa.io/en/stable/reference/pip_freeze/>`_ and `conda env export <https://packaging.python.org/discussions/install-requires-vs-requirements>`_ commands on how to automatically create such a configuration file.
-
 Testing
 ---------
 

@@ -6,6 +6,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.6.3
+-----
+
+Fixed
++++++
+* Fix bug in handling ``minimap2`` errors ([see this issue](https://github.com/jbloomlab/alignparse/issues/99))
+* Pass formatting with new ``black`` version
+* Pass tests with new ``pandas`` version.
+* Change code linting to ``ruff`` rather than ``flake8``.
+* Test with GitHub Actions rather than Travis CI.
+* Remove ``mybinder`` examples.
+
 0.6.2
 -----
 

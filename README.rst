@@ -8,9 +8,6 @@ alignparse
 .. image:: https://app.travis-ci.com/jbloomlab/alignparse.svg?branch=master
         :target: https://app.travis-ci.com/github/jbloomlab/alignparse
 
-.. image:: https://mybinder.org/badge_logo.svg
-        :target: https://mybinder.org/v2/gh/jbloomlab/alignparse/master?filepath=notebooks
-
 .. image:: https://zenodo.org/badge/194140958.svg
    :target: https://zenodo.org/badge/latestdoi/194140958
 

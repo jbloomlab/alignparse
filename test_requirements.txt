@@ -1,13 +1,5 @@
 pytest
-pydocstyle != 5.0.0  # https://github.com/PyCQA/pydocstyle/issues/434
-flake8
-flake8-docstrings
-flake8-rst-docstrings
-flake8-builtins
-flake8-import-order
-flake8-comprehensions
-flake8-bugbear
-flake8-print
+ruff
 nbval
 black[jupyter]
 dms_variants
