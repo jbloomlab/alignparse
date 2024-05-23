@@ -40,7 +40,7 @@ Formatting
 ++++++++++
 The code is formatted using `Black <https://black.readthedocs.io/en/stable/index.html>`_, which you can install using `pip install "black[jupyter]"`.
 You may also wish to install a Black extension in your editor to, for example, auto-format upon save.
-In any case, please run Black using `black .` before submitting your PR, because the Travis tests will not pass unless the files have been formatted.
+In any case, please run Black using `black .` before submitting your PR, because the tests will not pass unless the files have been formatted.
 Note that this will change files/notebooks that you may be actively editing.
 
 Versions and CHANGELOG
@@ -56,15 +56,6 @@ Adding dependencies
 When you add code that uses a new package that is not in the standard python library, you should add it to the dependencies specified under the `install_requires` option in `setup.py <setup.py>`_.
 `See here <https://packaging.python.org/discussions/install-requires-vs-requirements/>`_ for information on how to do this, and how to specify minimal required versions.
 As described in the above link, you should **not** pin exact versions in `install_requires` in `setup.py <setup.py>`_ unless absolutely necessary.
-
-Notebooks on mybinder
------------------------
-The `Jupyter notebooks`_ in notebooks_ can be run interactively on mybinder_ by going to the following link:
-https://mybinder.org/v2/gh/jbloomlab/alignparse/master?filepath=notebooks
-
-In order for this to work, you need to keep the `environment.yml <environment.yml>`_ configuration file up to date with the dependencies for running these notebooks as `described here <https://mybinder.readthedocs.io/en/latest/config_files.html>`_.
-Note that unlike for the `install_requires` in `setup.py <setup.py>`_, you may want to pin exact versions here to get reproducible installations.
-Look into the `pip freeze <https://pip.pypa.io/en/stable/reference/pip_freeze/>`_ and `conda env export <https://packaging.python.org/discussions/install-requires-vs-requirements>`_ commands on how to automatically create such a configuration file.
 
 Testing
 ---------
@@ -87,11 +78,11 @@ If these are not installed, install them with::
 
     pip install -r test_requirements.txt
 
-Then use flake8_ to `lint the code <https://en.wikipedia.org/wiki/Lint_%28software%29>`_ by running::
+Then use ruff_ to `lint the code <https://en.wikipedia.org/wiki/Lint_%28software%29>`_ by running::
 
-    flake8
+    ruff check .
 
-If you need to change the flake8_ configuration, edit the `.flake8 <.flake8>`_ file.
+If you need to change the ruff_ configuration, edit the `ruff.toml <ruff.toml>`_ file.
 
 Then run the tests with pytest_ by running::
 
@@ -99,17 +90,9 @@ Then run the tests with pytest_ by running::
 
 If you need to change the pytest_ configuration, edit the `pytest.ini <pytest.ini>`_ file.
 
-Automated testing on Travis
-+++++++++++++++++++++++++++
-The aforementioned flake8_ and pytest_ tests will be run automatically by the Travis_ continuous integration system as specified in the `.travis.yml <.travis.yml>`_ file.
-Note that running the Travis_ tests requires you to register the project with Travis_.
-
-If the tests are passing, you will see this on the Travis_ badge on GitHub repo main page.
-
-Slack notifications of test results
+Automated testing with GitHub Actions
 +++++++++++++++++++++++++++++++++++++
-You can configure Travis_ to provide automatic Slack notifications of the test results.
-To do that, follow the `instructions here <https://docs.travis-ci.com/user/notifications/#configuring-slack-notifications>`_.
+The aforementioned ruff_ and pytest_ tests will be run automatically by GitHub Actions using the test in [.github/workflows/test.yml](.github/workflows/test.yml).
 
 
 Building documentation
@@ -133,8 +116,7 @@ Finally, upload to PyPI_ with twine_ as `described here <https://github.com/pypa
 Note that this requires you to have registered the package on PyPI_ if this is the first version of the package there.
 
 .. _pytest: https://docs.pytest.org
-.. _flake8: http://flake8.pycqa.org
-.. _Travis: https://docs.travis-ci.com
+.. _ruff: https://github.com/astral-sh/ruff
 .. _PyPI: https://pypi.org/
 .. _pip: https://pip.pypa.io
 .. _sphinx: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

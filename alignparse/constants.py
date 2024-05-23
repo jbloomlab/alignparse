@@ -7,7 +7,6 @@ Defines constants used by package.
 
 """
 
-
 CBPALETTE = (
     "#999999",
     "#E69F00",

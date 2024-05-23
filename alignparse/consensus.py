@@ -8,7 +8,6 @@ within a barcode.
 
 """
 
-
 import collections
 import io  # noqa: F401
 import itertools
@@ -461,9 +460,11 @@ def empirical_accuracy(
         .assign(
             **{
                 mutation_col: (
-                    lambda x: x[mutation_col].map(lambda s: " ".join(sorted(s.split())))
-                    if sort_mutations
-                    else x[mutation_col]
+                    lambda x: (
+                        x[mutation_col].map(lambda s: " ".join(sorted(s.split())))
+                        if sort_mutations
+                        else x[mutation_col]
+                    )
                 )
             }
         )
@@ -475,7 +476,7 @@ def empirical_accuracy(
         .rename("_ngroups")
         .reset_index()
         # get error rate
-        .groupby(upstream_group_cols)
+        .groupby(upstream_group_cols)[["_n", "_u", "_ngroups"]]
         .apply(
             lambda x: 1
             - _LnL_error_rate(
@@ -696,7 +697,7 @@ def simple_mutconsensus(
     dropped = []
     consensus = []
     for g, g_df in df.groupby(group_cols, observed=True)[mutation_col]:
-        if len(group_cols) == 1:
+        if len(group_cols) == 1 and isinstance(g, str):
             g = [g]
 
         nseqs = len(g_df)

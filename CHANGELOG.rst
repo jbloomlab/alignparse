@@ -6,6 +6,25 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.6.3
+-----
+
+Fixed
++++++
+* Fix bug in handling ``minimap2`` errors ([see this issue](https://github.com/jbloomlab/alignparse/issues/99))
+* Pass formatting with new ``black`` version
+* Pass tests with new ``pandas`` version.
+* Fixed ``simple_mut_consensus`` for newer versions of ``pandas`` when goruping by just one variable.
+
+Changed
++++++++
+* Change code linting to ``ruff`` rather than ``flake8``.
+* Test with GitHub Actions rather than Travis CI.
+* Remove ``mybinder`` examples.
+* Test on Python 3.11 rather than 3.9.
+* Don't allow ``pysam`` version 0.22.1 as it was causing some type of OPENSSL import error.
+* Test with ``minimap2`` version 2.22
+
 0.6.2
 -----
 

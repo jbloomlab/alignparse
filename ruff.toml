@@ -1,0 +1,24 @@
+lint.select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "UP",  # pyupgrade
+]
+line-length = 89
+extend-exclude = [
+    "build",
+    "dist",
+    "docs/_build",
+    ".*",
+]
+lint.ignore = [
+    "D203",
+    "D205",
+    "D212",
+    "D213",
+    "D400",
+    "D415",
+    "D416",
+]
+builtins = [
+    "display",  # builtin of Jupyter notebooks
+]
