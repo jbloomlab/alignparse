@@ -14,9 +14,13 @@ Fixed
 * Fix bug in handling ``minimap2`` errors ([see this issue](https://github.com/jbloomlab/alignparse/issues/99))
 * Pass formatting with new ``black`` version
 * Pass tests with new ``pandas`` version.
+
+Changed
++++++++
 * Change code linting to ``ruff`` rather than ``flake8``.
 * Test with GitHub Actions rather than Travis CI.
 * Remove ``mybinder`` examples.
+* Test on Python 3.11 rather than 3.9.
 
 0.6.2
 -----
