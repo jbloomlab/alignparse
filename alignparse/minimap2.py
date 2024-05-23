@@ -152,7 +152,7 @@ class Mapper:
     m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0
     ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
+    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0635
     cs:Z::6*na*na*nt:49*ga:4 rl:i:0
     >>> print(tag_names)
     ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl']
@@ -168,7 +168,7 @@ class Mapper:
     m54228_181120_212724/4194376/ccs 0 refseq 1 1 63M * 0 0
     ATGCAAAATGATGCATAGTATTAGCATAAATAGGATAGCCATAAGGTTACTGCATAAGAGTAT
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0167
+    NM:i:4 ms:i:111 AS:i:111 nn:i:3 tp:A:P cm:i:7 s1:i:41 s2:i:0 de:f:0.0635
     cs:Z::6*na*na*nt:49*ga:4 rl:i:0 np:i:127
     >>> print(tag_names)  # doctest: +NORMALIZE_WHITESPACE
     ['NM', 'ms', 'AS', 'nn', 'tp', 'cm', 's1', 's2', 'de', 'cs', 'rl', 'np']

@@ -51,7 +51,7 @@ setup(
         "pandas>=0.25.1",
         "pathos>=0.2.4",
         "plotnine>=0.6",
-        "pysam>=0.14",
+        "pysam!=0.22.1",
         "regex>=2.5.33",
         "scipy>=1.2",
         "pyyaml>=5.1.1",
