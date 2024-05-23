@@ -1,0 +1,45 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: build conda environment
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: alignparse
+          environment-file: environment.yml
+          auto-activate-base: false
+          auto-update-conda: true
+          channel-priority: strict
+
+      - name: install package and dependencies
+        # NOTE: must specify the shell so that conda init updates bashrc see:
+        #      https://github.com/conda-incubator/setup-miniconda#IMPORTANT
+        shell: bash -el {0}
+        run: pip install -e . && pip install -r test_requirements.txt
+
+      - name: lint code with ruff
+        shell: bash -el {0}
+        run: ruff check .
+
+      - name: check code format with black
+        shell: bash -el {0}
+        run: black --check .
+
+      - name: test code with `pytest`
+        shell: bash -el {0}
+        run: pytest
