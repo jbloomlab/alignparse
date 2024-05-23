@@ -248,7 +248,7 @@ class Mapper:
             # do the alignment
             with contextlib.ExitStack() as stack:
                 sam = stack.enter_context(open(untagged_samfile, "w"))
-                err = stack.enter_context(tempfile.TemporaryFile(mode="w"))
+                err = stack.enter_context(tempfile.TemporaryFile(mode="w+"))
                 try:
                     _ = subprocess.check_call(cmds, stdout=sam, stderr=err)
                 except Exception as exc:
