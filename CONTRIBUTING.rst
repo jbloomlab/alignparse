@@ -40,7 +40,7 @@ Formatting
 ++++++++++
 The code is formatted using `Black <https://black.readthedocs.io/en/stable/index.html>`_, which you can install using `pip install "black[jupyter]"`.
 You may also wish to install a Black extension in your editor to, for example, auto-format upon save.
-In any case, please run Black using `black .` before submitting your PR, because the Travis tests will not pass unless the files have been formatted.
+In any case, please run Black using `black .` before submitting your PR, because the tests will not pass unless the files have been formatted.
 Note that this will change files/notebooks that you may be actively editing.
 
 Versions and CHANGELOG
@@ -90,17 +90,9 @@ Then run the tests with pytest_ by running::
 
 If you need to change the pytest_ configuration, edit the `pytest.ini <pytest.ini>`_ file.
 
-Automated testing on Travis
-+++++++++++++++++++++++++++
-The aforementioned ruff_ and pytest_ tests will be run automatically by the Travis_ continuous integration system as specified in the `.travis.yml <.travis.yml>`_ file.
-Note that running the Travis_ tests requires you to register the project with Travis_.
-
-If the tests are passing, you will see this on the Travis_ badge on GitHub repo main page.
-
-Slack notifications of test results
+Automated testing with GitHub Actions
 +++++++++++++++++++++++++++++++++++++
-You can configure Travis_ to provide automatic Slack notifications of the test results.
-To do that, follow the `instructions here <https://docs.travis-ci.com/user/notifications/#configuring-slack-notifications>`_.
+The aforementioned ruff_ and pytest_ tests will be run automatically by GitHub Actions using the test in [.github/workflows/test.yml](.github/workflows/test.yml).
 
 
 Building documentation
@@ -125,7 +117,6 @@ Note that this requires you to have registered the package on PyPI_ if this is t
 
 .. _pytest: https://docs.pytest.org
 .. _ruff: https://github.com/astral-sh/ruff
-.. _Travis: https://docs.travis-ci.com
 .. _PyPI: https://pypi.org/
 .. _pip: https://pip.pypa.io
 .. _sphinx: https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html

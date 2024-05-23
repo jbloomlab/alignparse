@@ -1,0 +1,13 @@
+# conda environment for GitHub Actions testing
+
+name: alignparse
+
+# channels to install conda dependencies
+channels:
+  - conda-forge
+  - bioconda
+
+# conda dependencies
+dependencies:
+  - python=3.11
+  - minimap2=2.22
