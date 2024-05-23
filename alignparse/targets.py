@@ -159,7 +159,7 @@ class Target:
                 )
             if not (allow_extra_features or (feature_name in allow_features)):
                 raise ValueError(f"feature {feature_name} not allowed feature")
-            if bio_feature.strand != 1:
+            if bio_feature.location.strand != 1:
                 raise ValueError(
                     f"feature {feature_name} of {self.name} is - "
                     "strand, but only + strand features handled"
