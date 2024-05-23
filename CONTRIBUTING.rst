@@ -78,11 +78,11 @@ If these are not installed, install them with::
 
     pip install -r test_requirements.txt
 
-Then use flake8_ to `lint the code <https://en.wikipedia.org/wiki/Lint_%28software%29>`_ by running::
+Then use ruff_ to `lint the code <https://en.wikipedia.org/wiki/Lint_%28software%29>`_ by running::
 
-    flake8
+    ruff check .
 
-If you need to change the flake8_ configuration, edit the `.flake8 <.flake8>`_ file.
+If you need to change the ruff_ configuration, edit the `ruff.toml <ruff.toml>`_ file.
 
 Then run the tests with pytest_ by running::
 
@@ -92,7 +92,7 @@ If you need to change the pytest_ configuration, edit the `pytest.ini <pytest.in
 
 Automated testing on Travis
 +++++++++++++++++++++++++++
-The aforementioned flake8_ and pytest_ tests will be run automatically by the Travis_ continuous integration system as specified in the `.travis.yml <.travis.yml>`_ file.
+The aforementioned ruff_ and pytest_ tests will be run automatically by the Travis_ continuous integration system as specified in the `.travis.yml <.travis.yml>`_ file.
 Note that running the Travis_ tests requires you to register the project with Travis_.
 
 If the tests are passing, you will see this on the Travis_ badge on GitHub repo main page.
@@ -124,7 +124,7 @@ Finally, upload to PyPI_ with twine_ as `described here <https://github.com/pypa
 Note that this requires you to have registered the package on PyPI_ if this is the first version of the package there.
 
 .. _pytest: https://docs.pytest.org
-.. _flake8: http://flake8.pycqa.org
+.. _ruff: https://github.com/astral-sh/ruff
 .. _Travis: https://docs.travis-ci.com
 .. _PyPI: https://pypi.org/
 .. _pip: https://pip.pypa.io

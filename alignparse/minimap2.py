@@ -227,7 +227,7 @@ class Mapper:
         """
         for fname, f in [("target", targetfile), ("query", queryfile)]:
             if not os.path.isfile(f):
-                raise IOError(f"cannot find `{fname}file` {f}")
+                raise OSError(f"cannot find `{fname}file` {f}")
 
         if os.path.splitext(samfile)[1] != ".sam":
             raise ValueError(f"`samfile` lacks extension '.sam': {samfile}")

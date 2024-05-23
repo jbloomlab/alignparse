@@ -901,7 +901,7 @@ class Targets:
                 if overwrite:
                     os.remove(tup.samfile)
                 else:
-                    raise IOError(f"file {tup.samfile} already exists")
+                    raise OSError(f"file {tup.samfile} already exists")
         _ = map_func(
             self.align, df[queryfile_col], df["samfile"], itertools.repeat(mapper)
         )
@@ -952,7 +952,7 @@ class Targets:
         for f in list(filtered.values()) + list(aligned.values()):
             if os.path.isfile(f):
                 if not overwrite:
-                    raise IOError(f"file {f} already exists.")
+                    raise OSError(f"file {f} already exists.")
                 else:
                     os.remove(f)
 
@@ -1130,7 +1130,7 @@ class Targets:
             }
             filenames = list(filtered.values()) + list(aligned.values())
             if (not overwrite_csv) and any(map(os.path.isfile, filenames)):
-                raise IOError(f"existing file with name in: {filenames}")
+                raise OSError(f"existing file with name in: {filenames}")
         else:
             filtered = {t: [] for t in self.target_names}
             aligned = {t: [] for t in self.target_names}

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # alignparse documentation build configuration file.
 #
 # This file is execfile()d with the current directory set to its
@@ -21,7 +19,7 @@ import os
 import re
 import sys
 
-sys.path.insert(0, "{0}/..".format(os.path.abspath(".")))
+sys.path.insert(0, "{}/..".format(os.path.abspath(".")))
 
 
 # -- General configuration ------------------------------------------------

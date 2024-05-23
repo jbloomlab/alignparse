@@ -74,7 +74,7 @@ class Summary:
         self.name = name
         self.fastqfile = fastqfile
         if not os.path.isfile(fastqfile):
-            raise IOError(f"cannot find `fastqfile` {fastqfile}")
+            raise OSError(f"cannot find `fastqfile` {fastqfile}")
 
         ccs_stats = get_ccs_stats(self.fastqfile)
         self.passes = ccs_stats.passes
@@ -86,7 +86,7 @@ class Summary:
         if reportfile:
             self.reportfile = reportfile
             if not os.path.isfile(reportfile):
-                raise IOError(f"cannot find `reportfile` {reportfile}")
+                raise OSError(f"cannot find `reportfile` {reportfile}")
             self.zmw_stats = report_to_stats(self.reportfile)
             zmw_stats_nccs = self.zmw_stats[
                 self.zmw_stats["status"].str.match("^Success")
@@ -671,7 +671,7 @@ def report_to_stats(reportfile):
         if df is not None:
             return df
 
-    raise IOError(f"Cannot match report in {reportfile}")
+    raise OSError(f"Cannot match report in {reportfile}")
 
 
 def _reportfile_version_check(reportfile, pattern):
