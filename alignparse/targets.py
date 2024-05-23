@@ -8,7 +8,6 @@ alignment targets. Each :class:`Target` has some :class:`Feature` regions.
 
 """
 
-
 import contextlib
 import copy
 import itertools

@@ -8,7 +8,6 @@ within a barcode.
 
 """
 
-
 import collections
 import io  # noqa: F401
 import itertools
@@ -461,9 +460,11 @@ def empirical_accuracy(
         .assign(
             **{
                 mutation_col: (
-                    lambda x: x[mutation_col].map(lambda s: " ".join(sorted(s.split())))
-                    if sort_mutations
-                    else x[mutation_col]
+                    lambda x: (
+                        x[mutation_col].map(lambda s: " ".join(sorted(s.split())))
+                        if sort_mutations
+                        else x[mutation_col]
+                    )
                 )
             }
         )

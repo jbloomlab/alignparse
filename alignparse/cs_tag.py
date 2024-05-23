@@ -11,7 +11,6 @@ short ``cs`` tag format.
 
 """
 
-
 import functools
 
 import numpy

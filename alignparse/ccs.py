@@ -8,7 +8,6 @@ https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md
 
 """
 
-
 import collections
 import io
 import itertools

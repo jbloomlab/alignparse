@@ -1,6 +1,5 @@
 """Setup script for ``alignparse``."""
 
-
 import re
 import sys
 
