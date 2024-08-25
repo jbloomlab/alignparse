@@ -292,7 +292,7 @@ class _LnL_error_rate:
         )
         if not res.success:
             raise RuntimeError(f"optimization failed:\n{res}")
-        return res.x
+        return float(res.x)
 
 
 def empirical_accuracy(
