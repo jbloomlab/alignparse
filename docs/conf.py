@@ -67,7 +67,7 @@ master_doc = "index"
 # General information about the project.
 project = "alignparse"
 copyright = f"2019--{datetime.datetime.now().year}"  # noqa: A001
-author = "`the Bloom lab <https://research.fhcrc.org/bloom/en.html>`_"
+author = "`the Bloom lab <https://jbloomlab.org>`_"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -135,7 +135,7 @@ html_theme_options = {
     "github_user": "jbloomlab",
     "github_repo": "alignparse",
     "github_banner": "true",
-    "travis_button": "true",
+    "travis_button": "false",
     "sidebar_width": "250px",
 }
 
@@ -191,7 +191,7 @@ latex_documents = [
         master_doc,
         "alignparse.tex",
         "alignparse Documentation",
-        "`the Bloom lab <https://research.fhcrc.org/bloom/en.html>`_",
+        "`the Bloom lab <https://jbloomlab.org>`_",
         "manual",
     ),
 ]
