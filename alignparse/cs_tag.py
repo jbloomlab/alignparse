@@ -532,7 +532,7 @@ class Alignment:
             == end - start
         ), f"{feature_cs},{clip5},{clip3}"
 
-        return (feature_cs, clip5, clip3)
+        return (feature_cs, int(clip5), int(clip3))
 
 
 @functools.lru_cache(maxsize=16384)

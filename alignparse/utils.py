@@ -221,7 +221,7 @@ def qvals_to_accuracy(qvals, encoding="numbers"):
     elif encoding != "numbers":
         raise ValueError(f"invalid `encoding`: {encoding}")
 
-    return (1 - 10 ** (qvals / -10)).sum() / len(qvals)
+    return ((1 - 10 ** (qvals / -10)).sum() / len(qvals)).astype(object)
 
 
 def sort_mutations(mut_strs):
