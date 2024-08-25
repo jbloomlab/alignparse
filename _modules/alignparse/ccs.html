@@ -1,26 +1,26 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.ccs &#8212; alignparse 0.6.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+    <title>alignparse.ccs &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css?v=7f9a90b1" />
+    <script src="../../_static/documentation_options.js?v=b8503983"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -42,7 +42,6 @@
 <span class="sd">https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">io</span>
@@ -67,8 +66,10 @@
 <span class="kn">from</span> <span class="nn">alignparse.constants</span> <span class="kn">import</span> <span class="n">CBPALETTE</span>
 
 
-<div class="viewcode-block" id="Summary"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summary">[docs]</a><span class="k">class</span> <span class="nc">Summary</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Summary of a single ``ccs`` run.</span>
+<div class="viewcode-block" id="Summary">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summary">[docs]</a>
+<span class="k">class</span> <span class="nc">Summary</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summary of a single ``ccs`` run.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -106,11 +107,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">fastqfile</span><span class="p">,</span> <span class="n">reportfile</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fastqfile</span> <span class="o">=</span> <span class="n">fastqfile</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fastqfile</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot find `fastqfile` </span><span class="si">{</span><span class="n">fastqfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot find `fastqfile` </span><span class="si">{</span><span class="n">fastqfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">ccs_stats</span> <span class="o">=</span> <span class="n">get_ccs_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fastqfile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">passes</span> <span class="o">=</span> <span class="n">ccs_stats</span><span class="o">.</span><span class="n">passes</span>
@@ -122,7 +123,7 @@
         <span class="k">if</span> <span class="n">reportfile</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reportfile</span> <span class="o">=</span> <span class="n">reportfile</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot find `reportfile` </span><span class="si">{</span><span class="n">reportfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cannot find `reportfile` </span><span class="si">{</span><span class="n">reportfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span> <span class="o">=</span> <span class="n">report_to_stats</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reportfile</span><span class="p">)</span>
             <span class="n">zmw_stats_nccs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">zmw_stats</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^Success&quot;</span><span class="p">)</span>
@@ -139,8 +140,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">reportfile</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="Summaries"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries">[docs]</a><span class="k">class</span> <span class="nc">Summaries</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Summaries of ``ccs`` runs.</span>
+
+<div class="viewcode-block" id="Summaries">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries">[docs]</a>
+<span class="k">class</span> <span class="nc">Summaries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Summaries of ``ccs`` runs.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -169,7 +173,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name_col</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">fastq_col</span><span class="o">=</span><span class="s2">&quot;fastq&quot;</span><span class="p">,</span> <span class="n">report_col</span><span class="o">=</span><span class="s2">&quot;report&quot;</span><span class="p">,</span> <span class="n">ncpus</span><span class="o">=-</span><span class="mi">1</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">name_col</span><span class="p">,</span> <span class="n">fastq_col</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">report_col</span><span class="p">:</span>
             <span class="n">cols</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">report_col</span><span class="p">)</span>
@@ -209,7 +213,9 @@
             <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Summaries.plot_ccs_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.plot_ccs_stats">[docs]</a>    <span class="k">def</span> <span class="nf">plot_ccs_stats</span><span class="p">(</span>
+<div class="viewcode-block" id="Summaries.plot_ccs_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.plot_ccs_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_ccs_stats</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">variable</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -219,7 +225,7 @@
         <span class="n">maxcol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">panelsize</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot histograms of CCS stats for all runs.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot histograms of CCS stats for all runs.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -276,8 +282,11 @@
 
         <span class="k">return</span> <span class="n">p</span></div>
 
-<div class="viewcode-block" id="Summaries.ccs_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.ccs_stats">[docs]</a>    <span class="k">def</span> <span class="nf">ccs_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get CCS stats for all runs.</span>
+
+<div class="viewcode-block" id="Summaries.ccs_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.ccs_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">ccs_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get CCS stats for all runs.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -307,8 +316,11 @@
             <span class="n">name</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">(),</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Summaries.has_stat"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.has_stat">[docs]</a>    <span class="k">def</span> <span class="nf">has_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Do the summaries contain a statistic?</span>
+
+<div class="viewcode-block" id="Summaries.has_stat">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.has_stat">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_stat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Do the summaries contain a statistic?</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -329,8 +341,11 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">variable</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">summaries</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Summaries.plot_zmw_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.plot_zmw_stats">[docs]</a>    <span class="k">def</span> <span class="nf">plot_zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Plot of ZMW stats for all runs.</span>
+
+<div class="viewcode-block" id="Summaries.plot_zmw_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.plot_zmw_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">plot_zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Plot of ZMW stats for all runs.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -365,8 +380,11 @@
 
         <span class="k">return</span> <span class="n">p</span></div>
 
-<div class="viewcode-block" id="Summaries.zmw_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.zmw_stats">[docs]</a>    <span class="k">def</span> <span class="nf">zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">minfailfrac</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">groupsuccess</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get ZMW stats for all runs.</span>
+
+<div class="viewcode-block" id="Summaries.zmw_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.zmw_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">minfailfrac</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">groupsuccess</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get ZMW stats for all runs.</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -440,8 +458,11 @@
 
         <span class="k">return</span> <span class="n">df</span></div>
 
-<div class="viewcode-block" id="Summaries.has_zmw_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.has_zmw_stats">[docs]</a>    <span class="k">def</span> <span class="nf">has_zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Are ZMW stats available?</span>
+
+<div class="viewcode-block" id="Summaries.has_zmw_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.Summaries.has_zmw_stats">[docs]</a>
+    <span class="k">def</span> <span class="nf">has_zmw_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Are ZMW stats available?</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -449,11 +470,15 @@
 <span class="sd">            `True` if all runs have ZMW stats, `False` otherwise.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">zmw_stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">summaries</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">zmw_stats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">summary</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">summaries</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="report_to_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.report_to_stats">[docs]</a><span class="k">def</span> <span class="nf">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Parse ZMW statistics from report file.</span>
+
+<div class="viewcode-block" id="report_to_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.report_to_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">report_to_stats</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse ZMW statistics from report file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -707,11 +732,12 @@
         <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">df</span>
 
-    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot match report in </span><span class="si">{</span><span class="n">reportfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot match report in </span><span class="si">{</span><span class="n">reportfile</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
 
 
 <span class="k">def</span> <span class="nf">_reportfile_version_check</span><span class="p">(</span><span class="n">reportfile</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check reportfile against known version specific patterns</span>
 
 <span class="sd">    Parameters</span>
@@ -734,7 +760,7 @@
 
 
 <span class="k">def</span> <span class="nf">_reportfile_to_dict</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read in reportfile and convert to dictionary. Assumes colon delimited entries.</span>
 
 <span class="sd">    Parameters</span>
@@ -762,7 +788,7 @@
 
 
 <span class="k">def</span> <span class="nf">_reportdict_to_df</span><span class="p">(</span><span class="n">report_dict</span><span class="p">,</span> <span class="n">success_key</span><span class="p">,</span> <span class="n">failure_categories</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the report dictionary (generated by ``_reportfile_to_dict`` to a</span>
 <span class="sd">    pandas DataFrame</span>
 
@@ -802,7 +828,7 @@
 
 
 <span class="k">def</span> <span class="nf">_report_to_stats_v6</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 6.* output.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 6.* output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -837,7 +863,7 @@
 
 
 <span class="k">def</span> <span class="nf">_report_to_stats_v5</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 5.* output.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 5.* output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -872,7 +898,7 @@
 
 
 <span class="k">def</span> <span class="nf">_report_to_stats_v4</span><span class="p">(</span><span class="n">reportfile</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 4.* output.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 4.* output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -904,7 +930,7 @@
 
 
 <span class="k">def</span> <span class="nf">_report_to_stats_v3</span><span class="p">(</span><span class="n">reportfile</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">stat_type</span><span class="o">=</span><span class="s2">&quot;zmw&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 3.* output.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implement :func:`report_to_stats` for ``ccs`` 3.* output.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -930,8 +956,10 @@
         <span class="k">return</span> <span class="kc">None</span>
 
 
-<div class="viewcode-block" id="get_ccs_stats"><a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.get_ccs_stats">[docs]</a><span class="k">def</span> <span class="nf">get_ccs_stats</span><span class="p">(</span><span class="n">fastqfile</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pass_tag</span><span class="o">=</span><span class="s2">&quot;np&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get basic statistics about circular consensus sequences.</span>
+<div class="viewcode-block" id="get_ccs_stats">
+<a class="viewcode-back" href="../../alignparse.ccs.html#alignparse.ccs.get_ccs_stats">[docs]</a>
+<span class="k">def</span> <span class="nf">get_ccs_stats</span><span class="p">(</span><span class="n">fastqfile</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">pass_tag</span><span class="o">=</span><span class="s2">&quot;np&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get basic statistics about circular consensus sequences.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -1051,6 +1079,7 @@
     <span class="p">)</span></div>
 
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">doctest</span>
 
@@ -1061,11 +1090,11 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -1086,18 +1115,6 @@
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -1121,7 +1138,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -1129,8 +1146,8 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -1144,17 +1161,17 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2022.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="../../_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

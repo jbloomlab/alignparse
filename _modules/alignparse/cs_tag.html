@@ -1,26 +1,26 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.cs_tag &#8212; alignparse 0.6.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+    <title>alignparse.cs_tag &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css?v=7f9a90b1" />
+    <script src="../../_static/documentation_options.js?v=b8503983"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -45,7 +45,6 @@
 <span class="sd">short ``cs`` tag format.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-
 
 <span class="kn">import</span> <span class="nn">functools</span>
 
@@ -92,9 +91,11 @@
 <span class="sd">group name is operation.&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="split_cs"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.split_cs">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+<div class="viewcode-block" id="split_cs">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.split_cs">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">split_cs</span><span class="p">(</span><span class="n">cs_string</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">,</span> <span class="n">allow_intron</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split a short ``cs`` tag into its constituent operations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a short ``cs`` tag into its constituent operations.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -141,9 +142,12 @@
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">captures</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="cs_op_type"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_type">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_op_type">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_type">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_op_type</span><span class="p">(</span><span class="n">cs_op</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get type of ``cs`` operation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get type of ``cs`` operation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -185,9 +189,12 @@
         <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">lastgroup</span></div>
 
 
-<div class="viewcode-block" id="cs_op_len_target"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_len_target">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_op_len_target">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_op_len_target">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_op_len_target</span><span class="p">(</span><span class="n">cs_op</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;raise&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get length of valid ``cs`` operation.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get length of valid ``cs`` operation.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -238,9 +245,12 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid `op_type` of </span><span class="si">{</span><span class="n">op_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cs_introns_to_deletions"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_introns_to_deletions">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_introns_to_deletions">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_introns_to_deletions">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_introns_to_deletions</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">targetseq</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert introns to deletions in ``cs`` tag.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert introns to deletions in ``cs`` tag.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -285,8 +295,9 @@
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_cs</span><span class="p">)</span></div>
 
 
+
 <span class="k">def</span> <span class="nf">_ambiguous_to_n</span><span class="p">(</span><span class="n">seq</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert all ambiguous nucleotides to &#39;N&#39;.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert all ambiguous nucleotides to &#39;N&#39;.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -308,8 +319,10 @@
     <span class="k">return</span> <span class="n">regex</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[MmRrWwSsYyKkVvHhDdBb]&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="n">seq</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="Alignment"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment">[docs]</a><span class="k">class</span> <span class="nc">Alignment</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Process a SAM alignment with a ``cs`` tag to extract features.</span>
+<div class="viewcode-block" id="Alignment">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment">[docs]</a>
+<span class="k">class</span> <span class="nc">Alignment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Process a SAM alignment with a ``cs`` tag to extract features.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -346,7 +359,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sam_alignment</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">introns_to_deletions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">target_seqs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">sam_alignment</span><span class="o">.</span><span class="n">is_unmapped</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;`sam_alignment` </span><span class="si">{</span><span class="n">sam_alignment</span><span class="o">.</span><span class="n">query_name</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="s2">&quot;is unmapped&quot;</span>
@@ -397,8 +410,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_sam_alignment</span> <span class="o">=</span> <span class="n">sam_alignment</span>
 
-<div class="viewcode-block" id="Alignment.get_accuracy"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.get_accuracy">[docs]</a>    <span class="k">def</span> <span class="nf">get_accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targetstart</span><span class="p">,</span> <span class="n">targetend</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get accuracy of part of query aligned to a region of the target.</span>
+<div class="viewcode-block" id="Alignment.get_accuracy">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.get_accuracy">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_accuracy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targetstart</span><span class="p">,</span> <span class="n">targetend</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get accuracy of part of query aligned to a region of the target.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -444,8 +459,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">[</span><span class="n">istart</span><span class="p">]</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aligned_query</span><span class="p">[</span><span class="n">iend</span><span class="p">]]</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Alignment.extract_cs"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.extract_cs">[docs]</a>    <span class="k">def</span> <span class="nf">extract_cs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Extract ``cs`` tag corresponding to feature in target.</span>
+
+<div class="viewcode-block" id="Alignment.extract_cs">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.Alignment.extract_cs">[docs]</a>
+    <span class="k">def</span> <span class="nf">extract_cs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract ``cs`` tag corresponding to feature in target.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -502,9 +520,9 @@
             <span class="k">if</span> <span class="n">start_op_start</span> <span class="o">==</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">end</span> <span class="o">&gt;=</span> <span class="n">start_op_end</span><span class="p">:</span>
                 <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s2">&quot;identity&quot;</span><span class="p">:</span>
-                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="n">start_op_end</span> <span class="o">-</span> <span class="n">start</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="n">start_op_end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s2">&quot;deletion&quot;</span><span class="p">:</span>
-                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">start_op</span><span class="p">[</span><span class="n">start</span> <span class="o">-</span> <span class="n">start_op_end</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">feature_cs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">start_op</span><span class="p">[</span><span class="n">start</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_op_end</span><span class="p">:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">start_op_type</span> <span class="o">==</span> <span class="s2">&quot;insertion&quot;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;insertion should not be feature start&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -546,7 +564,7 @@
             <span class="k">assert</span> <span class="n">start_op</span> <span class="o">==</span> <span class="n">end_op</span>
             <span class="n">op_type</span> <span class="o">=</span> <span class="n">cs_op_type</span><span class="p">(</span><span class="n">start_op</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s2">&quot;identity&quot;</span><span class="p">:</span>
-                <span class="n">feature_cs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span> <span class="o">-</span> <span class="n">clip5</span> <span class="o">-</span> <span class="n">clip3</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">feature_cs</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">clip5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">clip3</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s2">&quot;substitution&quot;</span><span class="p">:</span>
                 <span class="n">feature_cs</span> <span class="o">=</span> <span class="n">end_op</span>
             <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="s2">&quot;deletion&quot;</span><span class="p">:</span>
@@ -568,12 +586,16 @@
             <span class="o">==</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
         <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">feature_cs</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">clip5</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">clip3</span><span class="si">}</span><span class="s2">&quot;</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">feature_cs</span><span class="p">,</span> <span class="n">clip5</span><span class="p">,</span> <span class="n">clip3</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="p">(</span><span class="n">feature_cs</span><span class="p">,</span> <span class="n">clip5</span><span class="p">,</span> <span class="n">clip3</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="cs_to_sequence"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_sequence">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_to_sequence">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_sequence">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_to_sequence</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">seq</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a sequence.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a sequence.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -614,9 +636,12 @@
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq_list</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="cs_to_mutation_str"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_mutation_str">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_to_mutation_str">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_mutation_str">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_to_mutation_str</span><span class="p">(</span><span class="n">cs</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a descriptive string of mutations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert ``cs`` tag to a descriptive string of mutations.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -677,9 +702,12 @@
     <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mut_strs_list</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cs_to_nt_mutation_count"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_nt_mutation_count">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_to_nt_mutation_count">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_nt_mutation_count">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_to_nt_mutation_count</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Count the number of nucleotide mutations in ``cs`` tag.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Count the number of nucleotide mutations in ``cs`` tag.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -716,9 +744,12 @@
     <span class="k">return</span> <span class="n">nt_mut_count</span></div>
 
 
-<div class="viewcode-block" id="cs_to_op_mutation_count"><a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_op_mutation_count">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
+
+<div class="viewcode-block" id="cs_to_op_mutation_count">
+<a class="viewcode-back" href="../../alignparse.cs_tag.html#alignparse.cs_tag.cs_to_op_mutation_count">[docs]</a>
+<span class="nd">@functools</span><span class="o">.</span><span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">16384</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">cs_to_op_mutation_count</span><span class="p">(</span><span class="n">cs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Count the number of mutation operations in ``cs`` tag.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Count the number of mutation operations in ``cs`` tag.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -755,6 +786,7 @@
     <span class="k">return</span> <span class="n">op_mut_count</span></div>
 
 
+
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">doctest</span>
 
@@ -765,11 +797,11 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -790,18 +822,6 @@
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -825,7 +845,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -833,8 +853,8 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -848,17 +868,17 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="../../_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

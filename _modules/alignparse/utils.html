@@ -1,26 +1,26 @@
-
 <!DOCTYPE html>
 
-<html>
+<html lang="en" data-content_root="../../">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.utils &#8212; alignparse 0.5.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css" />
-    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
+    <title>alignparse.utils &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css?v=7f9a90b1" />
+    <script src="../../_static/documentation_options.js?v=b8503983"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -40,7 +40,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">re</span>
@@ -52,8 +51,10 @@
 <span class="kn">import</span> <span class="nn">alignparse.consensus</span>
 
 
-<div class="viewcode-block" id="InFrameDeletionsToSubs"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs">[docs]</a><span class="k">class</span> <span class="nc">InFrameDeletionsToSubs</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Convert in-frame codon-length deletions to substitutions.</span>
+<div class="viewcode-block" id="InFrameDeletionsToSubs">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs">[docs]</a>
+<span class="k">class</span> <span class="nc">InFrameDeletionsToSubs</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert in-frame codon-length deletions to substitutions.</span>
 
 <span class="sd">    Also shifts deletions to put them in frame when possible.</span>
 <span class="sd">    Deletions that are not in-frame and codon length are left as</span>
@@ -109,7 +110,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geneseq</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">geneseq</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">geneseq</span><span class="p">)</span><span class="si">}</span><span class="s2"> not a multiple of 3&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geneseq</span> <span class="o">=</span> <span class="n">geneseq</span>
@@ -117,8 +118,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_geneseq_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">geneseq</span><span class="p">)</span>
         <span class="k">assert</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nt_sites</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geneseq_list</span>
 
-<div class="viewcode-block" id="InFrameDeletionsToSubs.shiftable"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.shiftable">[docs]</a>    <span class="k">def</span> <span class="nf">shiftable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Can deletion be shifted in sequence?</span>
+<div class="viewcode-block" id="InFrameDeletionsToSubs.shiftable">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.shiftable">[docs]</a>
+    <span class="k">def</span> <span class="nf">shiftable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Can deletion be shifted in sequence?</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -144,8 +147,11 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">orig</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">shifted</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geneseq</span><span class="p">)</span> <span class="o">-</span> <span class="n">end</span> <span class="o">+</span> <span class="n">start</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">orig</span> <span class="o">==</span> <span class="n">shifted</span></div>
 
-<div class="viewcode-block" id="InFrameDeletionsToSubs.dels_to_subs"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.dels_to_subs">[docs]</a>    <span class="k">def</span> <span class="nf">dels_to_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;str: Copy of ``mut_str`` with in-frame deletions as substitutions&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InFrameDeletionsToSubs.dels_to_subs">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.InFrameDeletionsToSubs.dels_to_subs">[docs]</a>
+    <span class="k">def</span> <span class="nf">dels_to_subs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;str: Copy of ``mut_str`` with in-frame deletions as substitutions&quot;&quot;&quot;</span>
         <span class="n">muts</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">consensus</span><span class="o">.</span><span class="n">process_mut_str</span><span class="p">(</span><span class="n">mut_str</span><span class="p">)</span>
 
         <span class="n">codon_len_deletions</span> <span class="o">=</span> <span class="p">[]</span>
@@ -195,11 +201,15 @@
                         <span class="k">assert</span> <span class="n">mut_str</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">deletion</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
                         <span class="k">break</span>
 
-        <span class="k">return</span> <span class="n">mut_str</span></div></div>
+        <span class="k">return</span> <span class="n">mut_str</span></div>
+</div>
 
 
-<div class="viewcode-block" id="qvals_to_accuracy"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.qvals_to_accuracy">[docs]</a><span class="k">def</span> <span class="nf">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;numbers&quot;</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert set of quality scores into average accuracy.</span>
+
+<div class="viewcode-block" id="qvals_to_accuracy">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.qvals_to_accuracy">[docs]</a>
+<span class="k">def</span> <span class="nf">qvals_to_accuracy</span><span class="p">(</span><span class="n">qvals</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;numbers&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Convert set of quality scores into average accuracy.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -260,8 +270,11 @@
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">qvals</span> <span class="o">/</span> <span class="o">-</span><span class="mi">10</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">qvals</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="sort_mutations"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.sort_mutations">[docs]</a><span class="k">def</span> <span class="nf">sort_mutations</span><span class="p">(</span><span class="n">mut_strs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Sort mutation string by site, and combine multiple mutation strings.</span>
+
+<div class="viewcode-block" id="sort_mutations">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.sort_mutations">[docs]</a>
+<span class="k">def</span> <span class="nf">sort_mutations</span><span class="p">(</span><span class="n">mut_strs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sort mutation string by site, and combine multiple mutation strings.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -303,8 +316,11 @@
     <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mut</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">mut</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">decorated_list</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="merge_dels"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.merge_dels">[docs]</a><span class="k">def</span> <span class="nf">merge_dels</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Merge consecutive deletions</span>
+
+<div class="viewcode-block" id="merge_dels">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.merge_dels">[docs]</a>
+<span class="k">def</span> <span class="nf">merge_dels</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge consecutive deletions</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -364,8 +380,11 @@
         <span class="k">return</span> <span class="n">sort_mutations</span><span class="p">([</span><span class="o">*</span><span class="n">subs</span><span class="p">,</span> <span class="o">*</span><span class="n">deletion_RC</span><span class="p">,</span> <span class="o">*</span><span class="n">insertions</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="MutationRenumber"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber">[docs]</a><span class="k">class</span> <span class="nc">MutationRenumber</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Re-number mutations.</span>
+
+<div class="viewcode-block" id="MutationRenumber">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber">[docs]</a>
+<span class="k">class</span> <span class="nc">MutationRenumber</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-number mutations.</span>
 
 <span class="sd">    Arguments</span>
 <span class="sd">    ----------</span>
@@ -451,7 +470,7 @@
         <span class="n">err_suffix</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">allow_letter_suffixed_numbers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span> <span class="o">=</span> <span class="n">err_suffix</span>
         <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="n">old_num_col</span><span class="p">,</span> <span class="n">new_num_col</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">number_mapping</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -501,8 +520,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">old_to_wt</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="MutationRenumber.renumber_muts"><a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber.renumber_muts">[docs]</a>    <span class="k">def</span> <span class="nf">renumber_muts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">,</span> <span class="n">allow_gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_stop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get re-numbered mutation string.</span>
+<div class="viewcode-block" id="MutationRenumber.renumber_muts">
+<a class="viewcode-back" href="../../alignparse.utils.html#alignparse.utils.MutationRenumber.renumber_muts">[docs]</a>
+    <span class="k">def</span> <span class="nf">renumber_muts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mut_str</span><span class="p">,</span> <span class="n">allow_gaps</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allow_stop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get re-numbered mutation string.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -569,7 +590,9 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;Mutation </span><span class="si">{</span><span class="n">mut</span><span class="si">}</span><span class="s2"> site out of numbering range&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err_suffix</span>
                 <span class="p">)</span>
-        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_muts</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_muts</span><span class="p">)</span></div>
+</div>
+
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -582,11 +605,11 @@
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="../../index.html">
-    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="../../_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -607,18 +630,6 @@
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -642,7 +653,7 @@
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
@@ -650,8 +661,8 @@
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -665,17 +676,17 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2022.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.2.0</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
     </div>
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="../../_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

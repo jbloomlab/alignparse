@@ -1,26 +1,30 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>alignparse documentation &#8212; alignparse 0.6.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>alignparse documentation &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+    <script src="_static/documentation_options.js?v=b8503983"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installation" href="installation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -33,15 +37,15 @@
           <div class="body" role="main">
             
   <section id="alignparse-documentation">
-<h1><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation<a class="headerlink" href="#alignparse-documentation" title="Permalink to this heading">¶</a></h1>
-<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is a Python package written by <a class="reference external" href="https://research.fhcrc.org/bloom/en.html">the Bloom lab</a>.
+<h1><code class="docutils literal notranslate"><span class="pre">alignparse</span></code> documentation<a class="headerlink" href="#alignparse-documentation" title="Link to this heading">¶</a></h1>
+<p><a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> is a Python package written by <a class="reference external" href="https://jbloomlab.org">the Bloom lab</a>.
 It is designed to align long sequencing reads (such as those from PacBio circular consensus sequencing) to <cite>targets</cite>, filter these alignments based on user-provided specifications, and parse out user-defined sequence <cite>features</cite>.</p>
 <p>For each read that passes the user-defined filters, the user can define what information about each feature (e.g. sequence, mutations, and sequencing accuracy) should be retained for further analyses. The <cite>alignparse.consensus</cite> module provides tools for such further analyses, including analyzing mutations identified in sequence features and defining consensus sequences from barcoded sequencing reads.</p>
 <p>The <a class="reference external" href="https://github.com/jbloomlab/alignparse">alignparse source code</a> is freely available on GitHub.</p>
 <p>If you use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> for your work, please cite the references in <a class="reference external" href="https://jbloomlab.github.io/alignparse/acknowledgements.html">Acknowledgements</a>.</p>
 <p>See below for information and examples of how to use this package.</p>
 <section id="contents">
-<h2>Contents<a class="headerlink" href="#contents" title="Permalink to this heading">¶</a></h2>
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -70,11 +74,11 @@ It is designed to align long sequencing reads (such as those from PacBio circula
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="#">
-    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -97,18 +101,6 @@ It is designed to align long sequencing reads (such as those from PacBio circula
 
 
 
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
-
-
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">alignparse documentation</a></li>
@@ -129,7 +121,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -137,7 +129,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -152,11 +144,11 @@ It is designed to align long sequencing reads (such as those from PacBio circula
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/index.rst.txt"
@@ -165,7 +157,7 @@ It is designed to align long sequencing reads (such as those from PacBio circula
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

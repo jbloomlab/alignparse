@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.6.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>Lassa virus glycoprotein PacBio sequencing &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="_static/documentation_options.js?v=b8503983"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -23,8 +24,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -37,14 +39,14 @@
           <div class="body" role="main">
             
   <section id="Lassa-virus-glycoprotein-PacBio-sequencing">
-<h1>Lassa virus glycoprotein PacBio sequencing<a class="headerlink" href="#Lassa-virus-glycoprotein-PacBio-sequencing" title="Permalink to this heading">¶</a></h1>
+<h1>Lassa virus glycoprotein PacBio sequencing<a class="headerlink" href="#Lassa-virus-glycoprotein-PacBio-sequencing" title="Link to this heading">¶</a></h1>
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/">alignparse</a> to process circular consensus sequences that map to multiple different targets. Here, our two targets are a wildtype and a codon optimized sequence for the Lassa virus (LASV) glycoprotein from the Josiah strain. For such targets we do not expect large internal deletions, so we use alignment settings optimized for codon-level mutations as these will be the settings used when analyzing mutant LASV GP sequences
 in later experiments.</p>
 <p>Here we analyze a snippet of the full data set of circular consensus sequences so that the example is small and fast.</p>
 <p>In the other included example notebooks (<a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA deep mutational scanning libraries</a> and <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus sequencing</a>), we align and parse the PacBio reads using the single <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">align_and_parse</a> function. Here we use separate functions to do the aligning and parsing
 steps. This illustrates an additional use case and shows how this package could be used to parse alignments generated elsewhere as long as they have a <a class="reference external" href="https://lh3.github.io/minimap2/minimap2.html#10">cs tag</a> and are in the SAM file format.</p>
 <section id="Set-up-for-analysis">
-<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this heading">¶</a></h2>
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Link to this heading">¶</a></h2>
 <p>Import necessary Python modules:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -101,7 +103,7 @@ steps. This illustrates an additional use case and shows how this package could 
 </div>
 </section>
 <section id="Target-amplicons">
-<h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Permalink to this heading">¶</a></h2>
+<h2>Target amplicons<a class="headerlink" href="#Target-amplicons" title="Link to this heading">¶</a></h2>
 <p>We have performed sequencing of several LASV GP amplicons that include the glycoprotein sequence along with a PacBio index and several other features. Here we analyze reads mapping to two of these amplicons. The amplicons are defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a>. If there are multiple targets, they can all be defined in a single Genbank file (as we did in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus
 sequencing</a> example) or each target can be defined in its own Genbank file (as we’ve done here).</p>
 <p>First, let’s just look at the files:</p>
@@ -450,7 +452,7 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 </div>
 </section>
 <section id="PacBio-CCSs">
-<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this heading">¶</a></h2>
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Link to this heading">¶</a></h2>
 <p>We will align PacBio circular consensus sequences (CCSs) to the target. First, we want to look at the CCSs. A FASTQ file with these CCSs along with an associated report file were generated using the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program (see <a class="reference external" href="https://github.com/PacificBiosciences/ccs">here</a> for details on <code class="docutils literal notranslate"><span class="pre">ccs</span></code>) using commands like the following (generates report file and BAM of CCSs):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ccs --minLength 50 --maxLength 5000 \
     --minPasses 3  --minPredictedAccuracy 0.999 \
@@ -639,14 +641,16 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 </div>
 </section>
 <section id="Align-CCSs-to-target">
-<h2>Align CCSs to target<a class="headerlink" href="#Align-CCSs-to-target" title="Permalink to this heading">¶</a></h2>
+<h2>Align CCSs to target<a class="headerlink" href="#Align-CCSs-to-target" title="Link to this heading">¶</a></h2>
 <p>Now we use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> to align the CCSs to the target.</p>
 <p>First, we create a <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, using the options for codon-level deep mutational scanning (specified by <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+
+<span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -660,7 +664,7 @@ Here are the names of the retained targets: [&#39;LASV_Josiah_WT&#39;]
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Using `minimap2` 2.17-r941 with these options:
+Using `minimap2` 2.22-r1101 with these options:
 -A2 -B4 -O12 -E2 --end-bonus=13 --secondary=no --cs
 </pre></div></div>
 </div>
@@ -761,7 +765,7 @@ First alignment in ./output_files/lasv_pilot_alignments.sam has `cs` tag:
 </div>
 </section>
 <section id="Parse-the-alignments">
-<h2>Parse the alignments<a class="headerlink" href="#Parse-the-alignments" title="Permalink to this heading">¶</a></h2>
+<h2>Parse the alignments<a class="headerlink" href="#Parse-the-alignments" title="Link to this heading">¶</a></h2>
 <p>Now we use <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.parse_alignment">Targets.parse_alignments</a> to parse the SAM files to get the information we specified for return. This function returns a data frame (<code class="docutils literal notranslate"><span class="pre">readstats</span></code>) on the overall parsing stats, plus dicts keyed by the names of each target in <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> giving data frames of the aligned and filtered
 reads. Here we return the <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> reads as dictionaries of data frames.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">aligned</span></code> and <code class="docutils literal notranslate"><span class="pre">filtered</span></code> read information can instead be returned as CSV files containing these data frames by setting the <code class="docutils literal notranslate"><span class="pre">to_csv</span></code> argument to <code class="docutils literal notranslate"><span class="pre">True</span></code>. Note: When using the combined <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets.align_and_parse">Targets.align_and_parse</a> function as in the other example notebooks (<a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA DMS libraries</a> and <a class="reference external" href="https://jbloomlab.github.io/alignparse/flu_virus_seq_example.html">Single-cell virus
@@ -999,7 +1003,7 @@ Parsing PacBio run lasv_pilot
 </div>
 </section>
 <section id="Error-filtering">
-<h2>Error filtering<a class="headerlink" href="#Error-filtering" title="Permalink to this heading">¶</a></h2>
+<h2>Error filtering<a class="headerlink" href="#Error-filtering" title="Link to this heading">¶</a></h2>
 <p>Before looking at the information for the validly aligned (not filtered) reads, it is important to get a sense of the error rate for these sequencing reads.</p>
 <p>These reads do not have random barcodes on the initial viral entry protein plasmids, but we can use the <code class="docutils literal notranslate"><span class="pre">gene_accuracy</span></code> information output from constructing the <code class="docutils literal notranslate"><span class="pre">ccs</span></code>s to examine accuracy.</p>
 <p>We will do this using a similar method to that implemented in the <a class="reference external" href="https://jbloomlab.github.io/alignparse/recA_DMS.html">RecA DMS libraries</a> example notebook. However, here we will plot the graphs for each target.</p>
@@ -1056,7 +1060,7 @@ Parsing PacBio run lasv_pilot
 </div>
 </section>
 <section id="Data-analysis">
-<h2>Data analysis<a class="headerlink" href="#Data-analysis" title="Permalink to this heading">¶</a></h2>
+<h2>Data analysis<a class="headerlink" href="#Data-analysis" title="Link to this heading">¶</a></h2>
 <p>Now we can examine our data in more detail.</p>
 <p>We will only display a few columns so the example renders well in the documentation. First, let’s look at the <code class="docutils literal notranslate"><span class="pre">query_name</span></code>, <code class="docutils literal notranslate"><span class="pre">gene_mutations</span></code>, and <code class="docutils literal notranslate"><span class="pre">index_sequence</span></code> columns for the first few entries in the <code class="docutils literal notranslate"><span class="pre">retained</span></code> data frame for each target:</p>
 <div class="nbinput docutils container">
@@ -1624,11 +1628,11 @@ LASV_Josiah_OPT_GAGACG
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="index.html">
-    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -1649,18 +1653,6 @@ LASV_Josiah_OPT_GAGACG
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -1691,7 +1683,7 @@ LASV_Josiah_OPT_GAGACG
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -1699,7 +1691,7 @@ LASV_Josiah_OPT_GAGACG
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -1714,11 +1706,11 @@ LASV_Josiah_OPT_GAGACG
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/lasv_pilot.nblink.txt"
@@ -1727,7 +1719,7 @@ LASV_Josiah_OPT_GAGACG
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>targets &#8212; alignparse 0.6.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>targets &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+    <script src="_static/documentation_options.js?v=b8503983"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -20,8 +21,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -33,14 +35,14 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-alignparse.targets"></span><section id="targets">
-<h1>targets<a class="headerlink" href="#targets" title="Permalink to this heading">¶</a></h1>
+  <section id="targets">
+<span id="module-alignparse.targets"></span><h1>targets<a class="headerlink" href="#targets" title="Link to this heading">¶</a></h1>
 <p>Defines <a class="reference internal" href="#alignparse.targets.Targets" title="alignparse.targets.Targets"><code class="xref py py-class docutils literal notranslate"><span class="pre">Targets</span></code></a>, which holds <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> objects that define
 alignment targets. Each <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> has some <a class="reference internal" href="#alignparse.targets.Feature" title="alignparse.targets.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> regions.</p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.targets.Feature">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Feature" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Feature" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A sequence feature within a <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> sequence.</p>
 <dl class="field-list simple">
@@ -55,7 +57,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Feature.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.targets.Feature.name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.targets.Feature.name" title="Link to this definition">¶</a></dt>
 <dd><p>Name of feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -66,7 +68,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Feature.seq">
-<span class="sig-name descname"><span class="pre">seq</span></span><a class="headerlink" href="#alignparse.targets.Feature.seq" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">seq</span></span><a class="headerlink" href="#alignparse.targets.Feature.seq" title="Link to this definition">¶</a></dt>
 <dd><p>Sequence of feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -77,7 +79,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Feature.start">
-<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#alignparse.targets.Feature.start" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#alignparse.targets.Feature.start" title="Link to this definition">¶</a></dt>
 <dd><p>Feature start in <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a>, using Python-like 0, … numbering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -88,7 +90,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Feature.end">
-<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#alignparse.targets.Feature.end" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">end</span></span><a class="headerlink" href="#alignparse.targets.Feature.end" title="Link to this definition">¶</a></dt>
 <dd><p>Feature end in <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> using Python-like 0, … numbering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -99,7 +101,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Feature.length">
-<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.targets.Feature.length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.targets.Feature.length" title="Link to this definition">¶</a></dt>
 <dd><p>Length of feature.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -112,7 +114,7 @@ alignment targets. Each <a class="reference internal" href="#alignparse.targets.
 
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.targets.Target">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqrecord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">frozenset({})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">frozenset({})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_extra_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqrecord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">req_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">frozenset({})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">frozenset({})</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_extra_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A single target sequence.</p>
 <dl class="field-list simple">
@@ -128,7 +130,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Target.seq">
-<span class="sig-name descname"><span class="pre">seq</span></span><a class="headerlink" href="#alignparse.targets.Target.seq" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">seq</span></span><a class="headerlink" href="#alignparse.targets.Target.seq" title="Link to this definition">¶</a></dt>
 <dd><p>Full sequence of target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -139,7 +141,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Target.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.targets.Target.name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.targets.Target.name" title="Link to this definition">¶</a></dt>
 <dd><p>Name of target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -150,7 +152,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Target.length">
-<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.targets.Target.length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.targets.Target.length" title="Link to this definition">¶</a></dt>
 <dd><p>Length of sequence.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -161,7 +163,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Target.features">
-<span class="sig-name descname"><span class="pre">features</span></span><a class="headerlink" href="#alignparse.targets.Target.features" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">features</span></span><a class="headerlink" href="#alignparse.targets.Target.features" title="Link to this definition">¶</a></dt>
 <dd><p>List of all features as <a class="reference internal" href="#alignparse.targets.Feature" title="alignparse.targets.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -172,7 +174,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Target.feature_names">
-<span class="sig-name descname"><span class="pre">feature_names</span></span><a class="headerlink" href="#alignparse.targets.Target.feature_names" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">feature_names</span></span><a class="headerlink" href="#alignparse.targets.Target.feature_names" title="Link to this definition">¶</a></dt>
 <dd><p>List of names of all features.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -183,7 +185,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Target.get_feature">
-<span class="sig-name descname"><span class="pre">get_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.get_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.get_feature" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.get_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.get_feature" title="Link to this definition">¶</a></dt>
 <dd><p>Get <a class="reference internal" href="#alignparse.targets.Feature" title="alignparse.targets.Feature"><code class="xref py py-class docutils literal notranslate"><span class="pre">Feature</span></code></a> by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -200,7 +202,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Target.get_name">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqrecord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.get_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.get_name" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seqrecord</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.get_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.get_name" title="Link to this definition">¶</a></dt>
 <dd><p>Get name of target from sequence record.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -217,7 +219,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Target.has_feature">
-<span class="sig-name descname"><span class="pre">has_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.has_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.has_feature" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">has_feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.has_feature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.has_feature" title="Link to this definition">¶</a></dt>
 <dd><p>Check if a feature is defined for this target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -234,7 +236,7 @@ and <cite>features</cite> attributes. Currently only handles + strand features.<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Target.image">
-<span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots_indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'genbank'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.image" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plots_indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'genbank'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Target.image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Target.image" title="Link to this definition">¶</a></dt>
 <dd><p>Get image of the target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -261,7 +263,7 @@ indexing of nucleotide sites?</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.targets.Targets">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_parse_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_extra_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqsfileformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'genbank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_clipped_muts_seqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_feature_parse_specs_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_target_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.targets.</span></span><span class="sig-name descname"><span class="pre">Targets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqsfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_parse_specs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_extra_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seqsfileformat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'genbank'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_clipped_muts_seqs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_feature_parse_specs_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_target_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Collection of <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> sequences.</p>
 <dl class="field-list simple">
@@ -317,7 +319,7 @@ Otherwise pass a list with names of just the sequences of interest.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.targets">
-<span class="sig-name descname"><span class="pre">targets</span></span><a class="headerlink" href="#alignparse.targets.Targets.targets" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">targets</span></span><a class="headerlink" href="#alignparse.targets.Targets.targets" title="Link to this definition">¶</a></dt>
 <dd><p>List of all <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -328,7 +330,7 @@ Otherwise pass a list with names of just the sequences of interest.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.target_names">
-<span class="sig-name descname"><span class="pre">target_names</span></span><a class="headerlink" href="#alignparse.targets.Targets.target_names" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">target_names</span></span><a class="headerlink" href="#alignparse.targets.Targets.target_names" title="Link to this definition">¶</a></dt>
 <dd><p>List of names of all targets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -339,7 +341,7 @@ Otherwise pass a list with names of just the sequences of interest.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.target_seqs">
-<span class="sig-name descname"><span class="pre">target_seqs</span></span><a class="headerlink" href="#alignparse.targets.Targets.target_seqs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">target_seqs</span></span><a class="headerlink" href="#alignparse.targets.Targets.target_seqs" title="Link to this definition">¶</a></dt>
 <dd><p>Keyed by target name, value is sequence as str.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -350,7 +352,7 @@ Otherwise pass a list with names of just the sequences of interest.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.align">
-<span class="sig-name descname"><span class="pre">align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queryfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignmentfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.align" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">align</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queryfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alignmentfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.align"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.align" title="Link to this definition">¶</a></dt>
 <dd><p>Align query sequences to targets.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -367,7 +369,7 @@ this mapper.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.align_and_parse">
-<span class="sig-name descname"><span class="pre">align_and_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryfile_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'queryfile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'primary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_sups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.align_and_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.align_and_parse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">align_and_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mapper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryfile_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'queryfile'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'primary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_sups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.align_and_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.align_and_parse" title="Link to this definition">¶</a></dt>
 <dd><p>Align query sequences and then parse alignments.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -419,7 +421,7 @@ name of each query set (<cite>name_cols</cite>) as well as any <cite>group_cols<
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.feature_parse_specs">
-<span class="sig-name descname"><span class="pre">feature_parse_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returntype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.feature_parse_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.feature_parse_specs" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">feature_parse_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">returntype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.feature_parse_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.feature_parse_specs" title="Link to this definition">¶</a></dt>
 <dd><p>Get the feature parsing specs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -445,7 +447,7 @@ values explicitly filled in.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.features_to_parse">
-<span class="sig-name descname"><span class="pre">features_to_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_or_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feature'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.features_to_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.features_to_parse" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">features_to_parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">targetname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_or_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'feature'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.features_to_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.features_to_parse" title="Link to this definition">¶</a></dt>
 <dd><p>Features to parse for a target.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -466,7 +468,7 @@ values explicitly filled in.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.get_target">
-<span class="sig-name descname"><span class="pre">get_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.get_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.get_target" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.get_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.get_target" title="Link to this definition">¶</a></dt>
 <dd><p>Get <a class="reference internal" href="#alignparse.targets.Target" title="alignparse.targets.Target"><code class="xref py py-class docutils literal notranslate"><span class="pre">Target</span></code></a> by name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -483,7 +485,7 @@ values explicitly filled in.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.parse_alignment">
-<span class="sig-name descname"><span class="pre">parse_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'primary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_sups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.parse_alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.parse_alignment" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">parse_alignment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'primary'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_cs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_sups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.parse_alignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.parse_alignment" title="Link to this definition">¶</a></dt>
 <dd><p>Parse alignment features as specified in <cite>feature_parse_specs</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -563,7 +565,7 @@ there are no aligned query sites.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sharex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sharex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.4</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.plot" title="Link to this definition">¶</a></dt>
 <dd><p>Plot all the targets.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -591,7 +593,7 @@ targets.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.targets.Targets.write_fasta">
-<span class="sig-name descname"><span class="pre">write_fasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastafile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.write_fasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.write_fasta" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">write_fasta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastafile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/targets.html#Targets.write_fasta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.targets.Targets.write_fasta" title="Link to this definition">¶</a></dt>
 <dd><p>Write all targets to a FASTA file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -608,11 +610,11 @@ targets.</p>
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="index.html">
-    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -633,18 +635,6 @@ targets.</p>
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -674,7 +664,7 @@ targets.</p>
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -682,7 +672,7 @@ targets.</p>
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -697,11 +687,11 @@ targets.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/alignparse.targets.rst.txt"
@@ -710,7 +700,7 @@ targets.</p>
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

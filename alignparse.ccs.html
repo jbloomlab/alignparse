@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ccs &#8212; alignparse 0.6.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>ccs &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+    <script src="_static/documentation_options.js?v=b8503983"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -20,8 +21,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -33,14 +35,14 @@
 
           <div class="body" role="main">
             
-  <span class="target" id="module-alignparse.ccs"></span><section id="ccs">
-<h1>ccs<a class="headerlink" href="#ccs" title="Permalink to this heading">¶</a></h1>
+  <section id="ccs">
+<span id="module-alignparse.ccs"></span><h1>ccs<a class="headerlink" href="#ccs" title="Link to this heading">¶</a></h1>
 <p>Tools for inspecting output of the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program:
 <a class="reference external" href="https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md">https://github.com/PacificBiosciences/unanimity/blob/develop/doc/PBCCS.md</a></p>
 </section>
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">Summaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastq_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fastq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'report'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">Summaries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastq_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fastq'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">report_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'report'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Summaries of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> runs.</p>
 <dl class="field-list simple">
@@ -60,7 +62,7 @@ all the FASTQ files to compute read accuracies can take a while.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.summaries">
-<span class="sig-name descname"><span class="pre">summaries</span></span><a class="headerlink" href="#alignparse.ccs.Summaries.summaries" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">summaries</span></span><a class="headerlink" href="#alignparse.ccs.Summaries.summaries" title="Link to this definition">¶</a></dt>
 <dd><p>List of <a class="reference internal" href="#alignparse.ccs.Summary" title="alignparse.ccs.Summary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Summary</span></code></a> objects for each run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -71,7 +73,7 @@ all the FASTQ files to compute read accuracies can take a while.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.ccs_stats">
-<span class="sig-name descname"><span class="pre">ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.ccs_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.ccs_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Get CCS stats for all runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -90,7 +92,7 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.has_stat">
-<span class="sig-name descname"><span class="pre">has_stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_stat" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">has_stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_stat" title="Link to this definition">¶</a></dt>
 <dd><p>Do the summaries contain a statistic?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -108,7 +110,7 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.has_zmw_stats">
-<span class="sig-name descname"><span class="pre">has_zmw_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_zmw_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">has_zmw_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.has_zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.has_zmw_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Are ZMW stats available?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -122,7 +124,7 @@ of <cite>variable</cite> giving variable value for all CCSs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.plot_ccs_stats">
-<span class="sig-name descname"><span class="pre">plot_ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram_stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panelsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variable</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trim_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">histogram_stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'count'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxcol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">panelsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.75</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_ccs_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Plot histograms of CCS stats for all runs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -148,7 +150,7 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.plot_zmw_stats">
-<span class="sig-name descname"><span class="pre">plot_zmw_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_zmw_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot_zmw_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.plot_zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.plot_zmw_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Plot of ZMW stats for all runs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -169,7 +171,7 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="alignparse.ccs.Summaries.zmw_stats">
-<span class="sig-name descname"><span class="pre">zmw_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minfailfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupsuccess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.zmw_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">zmw_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minfailfrac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groupsuccess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summaries.zmw_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summaries.zmw_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Get ZMW stats for all runs.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -195,7 +197,7 @@ data before plotting. Useful if outliers greatly extend scale.</p></li>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">Summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastqfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reportfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summary" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">Summary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastqfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reportfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#Summary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.Summary" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Summary of a single <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
 <dl class="field-list simple">
@@ -212,7 +214,7 @@ None if no such report available.</p></li>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.ccs.Summary.name" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#alignparse.ccs.Summary.name" title="Link to this definition">¶</a></dt>
 <dd><p>Name of <code class="docutils literal notranslate"><span class="pre">ccs</span></code> run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -223,7 +225,7 @@ None if no such report available.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.fastqfile">
-<span class="sig-name descname"><span class="pre">fastqfile</span></span><a class="headerlink" href="#alignparse.ccs.Summary.fastqfile" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">fastqfile</span></span><a class="headerlink" href="#alignparse.ccs.Summary.fastqfile" title="Link to this definition">¶</a></dt>
 <dd><p>FASTQ file with the circular consensus sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -234,7 +236,7 @@ None if no such report available.</p></li>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.reportfile">
-<span class="sig-name descname"><span class="pre">reportfile</span></span><a class="headerlink" href="#alignparse.ccs.Summary.reportfile" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reportfile</span></span><a class="headerlink" href="#alignparse.ccs.Summary.reportfile" title="Link to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">ccs</span></code> report file. Currently handles reports in formats generated
 by <code class="docutils literal notranslate"><span class="pre">ccs</span></code> versions 3.* and 4.0.</p>
 <dl class="field-list simple">
@@ -246,7 +248,7 @@ by <code class="docutils literal notranslate"><span class="pre">ccs</span></code
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.zmw_stats">
-<span class="sig-name descname"><span class="pre">zmw_stats</span></span><a class="headerlink" href="#alignparse.ccs.Summary.zmw_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">zmw_stats</span></span><a class="headerlink" href="#alignparse.ccs.Summary.zmw_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Stats on ZMW extracted from <cite>reportfile</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -257,7 +259,7 @@ by <code class="docutils literal notranslate"><span class="pre">ccs</span></code
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.passes">
-<span class="sig-name descname"><span class="pre">passes</span></span><a class="headerlink" href="#alignparse.ccs.Summary.passes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">passes</span></span><a class="headerlink" href="#alignparse.ccs.Summary.passes" title="Link to this definition">¶</a></dt>
 <dd><p>Lists number of passes for all circular consensus sequences, or
 <cite>None</cite> if this information is not available in a <code class="docutils literal notranslate"><span class="pre">np</span></code> tag
 in <cite>fastqfile</cite>.</p>
@@ -270,7 +272,7 @@ in <cite>fastqfile</cite>.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.accuracy">
-<span class="sig-name descname"><span class="pre">accuracy</span></span><a class="headerlink" href="#alignparse.ccs.Summary.accuracy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">accuracy</span></span><a class="headerlink" href="#alignparse.ccs.Summary.accuracy" title="Link to this definition">¶</a></dt>
 <dd><p>Lists accuracies for all circular consensus sequences. This is the
 average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.</p>
 <dl class="field-list simple">
@@ -282,7 +284,7 @@ average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.<
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="alignparse.ccs.Summary.length">
-<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.ccs.Summary.length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#alignparse.ccs.Summary.length" title="Link to this definition">¶</a></dt>
 <dd><p>Lists lengths for all circular consensus sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -295,7 +297,7 @@ average accuracy across sites computed from Q-values in <cite>fastqfile</cite>.<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="alignparse.ccs.get_ccs_stats">
-<span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">get_ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastqfile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'np'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#get_ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.get_ccs_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">get_ccs_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fastqfile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'np'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#get_ccs_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.get_ccs_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Get basic statistics about circular consensus sequences.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -382,7 +384,7 @@ as <cite>None</cite> if that tag is missing from any read in <cite>fastqfile</ci
 
 <dl class="py function">
 <dt class="sig sig-object py" id="alignparse.ccs.report_to_stats">
-<span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">report_to_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reportfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#report_to_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.report_to_stats" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">alignparse.ccs.</span></span><span class="sig-name descname"><span class="pre">report_to_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reportfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/alignparse/ccs.html#report_to_stats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#alignparse.ccs.report_to_stats" title="Link to this definition">¶</a></dt>
 <dd><p>Parse ZMW statistics from report file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -632,11 +634,11 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="index.html">
-    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -657,18 +659,6 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -698,7 +688,7 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -706,7 +696,7 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -721,11 +711,11 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/alignparse.ccs.rst.txt"
@@ -734,7 +724,7 @@ flag using <code class="docutils literal notranslate"><span class="pre">ccs</spa
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

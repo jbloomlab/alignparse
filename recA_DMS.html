@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" data-content_root="./">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.2 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
-    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css" />
-    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <title>RecA deep mutational scanning libraries &#8212; alignparse 0.6.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
+    <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
+    <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css?v=2aa19091" />
+    <script src="_static/documentation_options.js?v=b8503983"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -23,8 +24,9 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
+
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+  
 
   </head><body>
   
@@ -37,10 +39,10 @@
           <div class="body" role="main">
             
   <section id="RecA-deep-mutational-scanning-libraries">
-<h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Permalink to this heading">¶</a></h1>
+<h1>RecA deep mutational scanning libraries<a class="headerlink" href="#RecA-deep-mutational-scanning-libraries" title="Link to this heading">¶</a></h1>
 <p>This example shows how to use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> to process PacBio circular consensus sequencing of a barcoded library of RecA variants for deep mutational scanning.</p>
 <section id="Set-up-for-analysis">
-<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Permalink to this heading">¶</a></h2>
+<h2>Set up for analysis<a class="headerlink" href="#Set-up-for-analysis" title="Link to this heading">¶</a></h2>
 <p>Import necessary Python modules. We use <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a> for most of the operations, <a class="reference external" href="https://plotnine.readthedocs.io">plotnine</a> for ggplot2-like plotting, and a few functitons from <a class="reference external" href="https://jbloomlab.github.io/dms_variants">dms_variants</a>:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -86,7 +88,7 @@
 </div>
 </section>
 <section id="Target-amplicon">
-<h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Permalink to this heading">¶</a></h2>
+<h2>Target amplicon<a class="headerlink" href="#Target-amplicon" title="Link to this heading">¶</a></h2>
 <p>We have performed sequencing of an amplicon that includes the RecA gene along with barcodes and several other features. The amplicon is defined in <a class="reference external" href="https://www.ncbi.nlm.nih.gov/genbank/samplerecord/">Genbank Flat File format</a>. First, let’s look at that file. Note how it defines the features; this is how they must be defined to be handled by <a class="reference external" href="https://jbloomlab.github.io/alignparse/index.html">alignparse</a>. Note also how there are ambiguous nucleotides in the barcode and variant tag regions:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -311,7 +313,7 @@ RecA_PacBio_amplicon:
 </div>
 </section>
 <section id="PacBio-CCSs">
-<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Permalink to this heading">¶</a></h2>
+<h2>PacBio CCSs<a class="headerlink" href="#PacBio-CCSs" title="Link to this heading">¶</a></h2>
 <p>We will align and parse PacBio circular consensus sequences (CCSs). FASTQ files with these CCSs along with associated report files were generated from the PacBio subreads <code class="docutils literal notranslate"><span class="pre">*.bam</span></code> file using the PacBio <code class="docutils literal notranslate"><span class="pre">ccs</span></code> program, version 4.0.0, (see <a class="reference external" href="https://github.com/PacificBiosciences/ccs">here</a> for details on <code class="docutils literal notranslate"><span class="pre">ccs</span></code>) using a command like the following:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ccs \
     --min-length 50 \
@@ -516,16 +518,16 @@ Name: name, dtype: object
     <tr>
       <th>3</th>
       <td>recA_lib-1</td>
-      <td>Failed -- Min coverage violation</td>
-      <td>1</td>
-      <td>0.006024</td>
+      <td>Failed -- CCS below minimum RQ</td>
+      <td>2</td>
+      <td>0.012048</td>
     </tr>
     <tr>
       <th>4</th>
       <td>recA_lib-1</td>
-      <td>Failed -- CCS below minimum RQ</td>
-      <td>2</td>
-      <td>0.012048</td>
+      <td>Failed -- Min coverage violation</td>
+      <td>1</td>
+      <td>0.006024</td>
     </tr>
     <tr>
       <th>5</th>
@@ -558,14 +560,14 @@ Name: name, dtype: object
     <tr>
       <th>9</th>
       <td>recA_lib-2</td>
-      <td>Failed -- Min coverage violation</td>
+      <td>Failed -- CCS below minimum RQ</td>
       <td>2</td>
       <td>0.012821</td>
     </tr>
     <tr>
       <th>10</th>
       <td>recA_lib-2</td>
-      <td>Failed -- CCS below minimum RQ</td>
+      <td>Failed -- Min coverage violation</td>
       <td>2</td>
       <td>0.012821</td>
     </tr>
@@ -664,7 +666,7 @@ Name: name, dtype: object
 </div>
 </section>
 <section id="Align-and-parse-CCSs">
-<h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Permalink to this heading">¶</a></h2>
+<h2>Align and parse CCSs<a class="headerlink" href="#Align-and-parse-CCSs" title="Link to this heading">¶</a></h2>
 <p>Now we align the CCSs using our <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.targets.html#alignparse.targets.Targets">Targets</a> object, and parse the features from queries that align sufficiently well.</p>
 <p>First, we create an <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.Mapper">alignparse.minimap2.Mapper</a> object to run <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a>, which is used for the alignments. We use <a class="reference external" href="https://github.com/lh3/minimap2">minimap2</a> options that are tailored for codon-level deep mutational scanning experiments like this one (these are specified by
 <a class="reference external" href="https://jbloomlab.github.io/alignparse/alignparse.minimap2.html#alignparse.minimap2.OPTIONS_CODON_DMS">alignparse.minimap2.OPTIONS_CODON_DMS</a>):</p>
@@ -672,7 +674,9 @@ Name: name, dtype: object
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># NBVAL_IGNORE_OUTPUT</span>
+
+<span class="n">mapper</span> <span class="o">=</span> <span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">Mapper</span><span class="p">(</span><span class="n">alignparse</span><span class="o">.</span><span class="n">minimap2</span><span class="o">.</span><span class="n">OPTIONS_CODON_DMS</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span>
     <span class="sa">f</span><span class="s2">&quot;Using `minimap2` </span><span class="si">{</span><span class="n">mapper</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2"> with these options:</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -686,7 +690,7 @@ Name: name, dtype: object
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Using `minimap2` 2.17-r941 with these options:
+Using `minimap2` 2.22-r1101 with these options:
 -A2 -B4 -O12 -E2 --end-bonus=13 --secondary=no --cs
 </pre></div></div>
 </div>
@@ -764,15 +768,15 @@ aggregating results (here we aggregate results by library):</p>
       <th>0</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
-      <td>aligned RecA_PacBio_amplicon</td>
-      <td>123</td>
+      <td>filtered RecA_PacBio_amplicon</td>
+      <td>16</td>
     </tr>
     <tr>
       <th>1</th>
       <td>lib-1</td>
       <td>recA_lib-1</td>
-      <td>filtered RecA_PacBio_amplicon</td>
-      <td>16</td>
+      <td>aligned RecA_PacBio_amplicon</td>
+      <td>123</td>
     </tr>
     <tr>
       <th>2</th>
@@ -785,15 +789,15 @@ aggregating results (here we aggregate results by library):</p>
       <th>3</th>
       <td>lib-2</td>
       <td>recA_lib-2</td>
-      <td>aligned RecA_PacBio_amplicon</td>
-      <td>112</td>
+      <td>filtered RecA_PacBio_amplicon</td>
+      <td>12</td>
     </tr>
     <tr>
       <th>4</th>
       <td>lib-2</td>
       <td>recA_lib-2</td>
-      <td>filtered RecA_PacBio_amplicon</td>
-      <td>12</td>
+      <td>aligned RecA_PacBio_amplicon</td>
+      <td>112</td>
     </tr>
     <tr>
       <th>5</th>
@@ -1252,7 +1256,7 @@ Contents of ./output_files/RecA_align_and_parse:
 </div>
 </section>
 <section id="Per-barcode-consensus-sequences">
-<h2>Per-barcode consensus sequences<a class="headerlink" href="#Per-barcode-consensus-sequences" title="Permalink to this heading">¶</a></h2>
+<h2>Per-barcode consensus sequences<a class="headerlink" href="#Per-barcode-consensus-sequences" title="Link to this heading">¶</a></h2>
 <p>In a deep mutational scanning experiment, we typically want to determine the sequence of the gene variant associated with each barcode. In this section, we do that–and also estimate the empirical accuracy of the sequencing by determining how often two sequences with the same barcode are identical.</p>
 <p>We start with the <code class="docutils literal notranslate"><span class="pre">aligned_df</span></code> data frame generated in the previous subsection. First, we want to plot the distribution of accuracies for the barcodes and genes. Because these span a wide range, it’s most convenient to convert the accuracies into error rates (1 - accuracy), and then plot these error rates on a log scale. In order to do this, we also need to set some floor for the error rates since zero can’t be plotted on a log scale. Compute these “floored” error rates:</p>
 <div class="nbinput nblast docutils container">
@@ -1942,11 +1946,11 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
           
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
 <p class="logo">
   <a href="index.html">
-    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo"/>
+    <img class="logo" src="_static/BloomLogo.jpg" alt="Logo" />
     
     <h1 class="logo logo-name">alignparse</h1>
     
@@ -1967,18 +1971,6 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 
 
 
-
-
-    
-
-<p>
-<a class="badge" href="https://travis-ci.org/jbloomlab/alignparse">
-    <img
-        alt="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-        src="https://secure.travis-ci.org/jbloomlab/alignparse.svg?branch=master"
-    />
-</a>
-</p>
 
 
 <h3>Navigation</h3>
@@ -2009,7 +2001,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
   </ul></li>
 </ul>
 </div>
-<div id="searchbox" style="display: none" role="search">
+<search id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
@@ -2017,7 +2009,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
       <input type="submit" value="Go" />
     </form>
     </div>
-</div>
+</search>
 <script>document.getElementById('searchbox').style.display = "block"</script>
 
 
@@ -2032,11 +2024,11 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2019--2023.
+      &#169;2019--2024.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
       <a href="_sources/recA_DMS.nblink.txt"
@@ -2045,7 +2037,7 @@ When there is just one CCS per barcode, the consensus is just that sequence. 2. 
 
     
     <a href="https://github.com/jbloomlab/alignparse" class="github">
-        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
     </a>
     
 

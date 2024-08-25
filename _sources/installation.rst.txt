@@ -1,7 +1,7 @@
 Installation
 --------------
 
-`alignparse <https://jbloomlab.github.io/alignparse/>`_ requires Python 3.8 or higher and is currently tested on Python 3.9.
+`alignparse <https://jbloomlab.github.io/alignparse/>`_ requires Python 3.8 or higher and is currently tested on Python 3.11.
 A Mac OS X or Linux operating system is also required.
 
 The easiest way to install `alignparse <https://jbloomlab.github.io/alignparse/>`_ is from `PyPI <https://pypi.org/>`_ using `pip <https://pip.pypa.io>`_ with::
