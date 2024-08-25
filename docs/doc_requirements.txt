@@ -1,8 +1,8 @@
-sphinx>=2.0
-sphinx-argparse>=0.2.5
-sphinx_gallery>=0.3.1
-matplotlib>=3.0.2
-nbsphinx>=0.4.2
-nbsphinx-link>=1.2.0
-ipykernel>=5.1.0
-pandoc>=2.7.3
+sphinx
+sphinx-argparse
+sphinx_gallery
+matplotlib
+nbsphinx
+nbsphinx-link
+ipykernel
+pandoc

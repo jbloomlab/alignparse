@@ -10,7 +10,11 @@ Build the documentation
 To build the documentation, you need ensure that you have installed the packages in `doc_requirements.txt <doc_requirements.txt>`_.
 If these packages are not installed, you can install them with::
 
-    pip -r doc_requirements.txt
+    pip install -r doc_requirements.txt
+
+You also may need to install ``pandoc``:
+
+    mamba install pandoc
 
 Then simply type::
 

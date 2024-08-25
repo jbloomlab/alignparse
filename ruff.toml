@@ -9,6 +9,8 @@ extend-exclude = [
     "dist",
     "docs/_build",
     ".*",
+    "notebooks",
+    "tests",
 ]
 lint.ignore = [
     "D203",
