@@ -348,6 +348,8 @@ class MutationRenumber:
     allow_letter_suffixed_numbers : bool
         Allow site numbers in `number_mapping` to have lowercase letter suffixes
         as in ``214a``.
+    allow_arbitrary_numbers: bool
+        Allow site numbers to be arbitrary strings (eg, '65(E2)').
 
     Attributes
     ----------
@@ -403,6 +405,27 @@ class MutationRenumber:
     >>> suffixed_renumberer.renumber_muts('A1C del2to3 ins3GC')
     'A5C del6to6a ins6aGC'
 
+    Use ``allow_arbitrary_numbers``:
+
+    >>> arbitrary_number_mapping = pd.DataFrame({'old': [1, 2, 3],
+    ...                                          'new': ["5(E3)", "6(E2)", "7(E2)a"],
+    ...                                          'wt_nt': ['A', 'C', 'G']})
+    >>> arbitrary_renumberer = MutationRenumber(number_mapping=arbitrary_number_mapping,
+    ...                                         old_num_col='old',
+    ...                                         new_num_col='new',
+    ...                                         wt_nt_col='wt_nt',
+    ...                                         allow_letter_suffixed_numbers=True)
+    Traceback (most recent call last):
+      ...
+    ValueError: `number_mapping` column new not integer suffixed by lower-case letter
+    >>> arbitrary_renumberer = MutationRenumber(number_mapping=arbitrary_number_mapping,
+    ...                                         old_num_col='old',
+    ...                                         new_num_col='new',
+    ...                                         wt_nt_col='wt_nt',
+    ...                                         allow_arbitrary_numbers=True)
+    >>> arbitrary_renumberer.renumber_muts("A1C del2to3 ins3GC")
+    'A5(E3)C del6(E2)to7(E2)a ins7(E2)aGC'
+
     """
 
     def __init__(
@@ -414,6 +437,7 @@ class MutationRenumber:
         *,
         err_suffix="",
         allow_letter_suffixed_numbers=False,
+        allow_arbitrary_numbers=False,
     ):
         """See main class docstring."""
         self._err_suffix = err_suffix
@@ -423,12 +447,14 @@ class MutationRenumber:
                     f"`number_mapping` lacks column {col}" + self._err_suffix
                 )
             if number_mapping[col].dtype != int:
-                if allow_letter_suffixed_numbers:
+                if allow_arbitrary_numbers:
+                    pass
+                elif allow_letter_suffixed_numbers:
                     if not all(
                         re.fullmatch(r"\-?\d+[a-z]*", r) for r in number_mapping[col]
                     ):
                         raise ValueError(
-                            f"`number_mapping` column {col} not integer or integer "
+                            f"`number_mapping` column {col} not integer "
                             "suffixed by lower-case letter" + self._err_suffix
                         )
                 else:
