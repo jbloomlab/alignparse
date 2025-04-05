@@ -426,6 +426,14 @@ class MutationRenumber:
     >>> arbitrary_renumberer.renumber_muts("A1C del2to3 ins3GC")
     'A5(E3)C del6(E2)to7(E2)a ins7(E2)aGC'
 
+    >>> arbitrary_reverse = MutationRenumber(number_mapping=arbitrary_number_mapping,
+    ...                                      old_num_col='new',
+    ...                                      new_num_col='old',
+    ...                                      wt_nt_col='wt_nt',
+    ...                                      allow_arbitrary_numbers=True)
+    >>> arbitrary_reverse.renumber_muts("A5(E3)C del6(E2)to7(E2)a ins7(E2)aGC")
+    'A1C del2to3 ins3GC'
+
     """
 
     def __init__(
@@ -491,6 +499,10 @@ class MutationRenumber:
         else:
             self.old_to_wt = None
 
+        self._site_regex = "|".join(
+            number_mapping[old_num_col].map(lambda s: re.escape(str(s)))
+        )
+
     def renumber_muts(self, mut_str, allow_gaps=False, allow_stop=False):
         """Get re-numbered mutation string.
 
@@ -519,7 +531,8 @@ class MutationRenumber:
                 if allow_stop:
                     chars += r"\*"
                 m = re.fullmatch(
-                    rf"(?P<wt>[{chars}])(?P<site>\-?\d+)(?P<mut>[{chars}])", mut
+                    rf"(?P<wt>[{chars}])(?P<site>{self._site_regex})(?P<mut>[{chars}])",
+                    mut,
                 )
                 if m:
                     site = m.group("site")
@@ -535,7 +548,9 @@ class MutationRenumber:
                     )
                     continue
                 # try to match insertion
-                m = re.fullmatch(rf"ins(?P<site>\-?\d+)(?P<insertion>[{chars}]+)", mut)
+                m = re.fullmatch(
+                    rf"ins(?P<site>{self._site_regex})(?P<insertion>[{chars}]+)", mut
+                )
                 if m:
                     new_muts.append(
                         "ins"
@@ -544,7 +559,10 @@ class MutationRenumber:
                     )
                     continue
                 # try to match deletion
-                m = re.fullmatch(r"del(?P<site1>\-?\d+)to(?P<site2>\-?\d+)", mut)
+                m = re.fullmatch(
+                    rf"del(?P<site1>{self._site_regex})to(?P<site2>{self._site_regex})",
+                    mut,
+                )
                 if m:
                     new_muts.append(
                         "del"
