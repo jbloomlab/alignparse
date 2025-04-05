@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.7.1
+-----
+Fixed
++++++
+* Fix bug in ``allow_arbitrary_numbers`` to ``MutationRenumber`` when the arbitrary str are the old rather than new numbers.
+
 0.7.0
 ------
 Added
