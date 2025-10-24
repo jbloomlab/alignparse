@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>consensus &#8212; alignparse 0.7.0 documentation</title>
+    <title>consensus &#8212; alignparse 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
-    <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="_static/documentation_options.js?v=486e5634"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -151,7 +151,7 @@ sequences in the group is the probability that neither have an error:</p>
 <div class="math notranslate nohighlight">
 \[\Pr\left(u=1 | n=2, \epsilon\right) = \left(1 - \epsilon\right)^2.\]</div>
 <p>The probability of having <span class="math notranslate nohighlight">\(u = 2\)</span> unique sequences is the
-the probability that either one or both have errors:</p>
+probability that either one or both have errors:</p>
 <div class="math notranslate nohighlight">
 \[\Pr\left(u=2 | n=2, \epsilon\right) = 2\left(1 - \epsilon\right)\epsilon
 + \epsilon^2.\]</div>
@@ -168,11 +168,19 @@ of unique sequences in group <span class="math notranslate nohighlight">\(g\)</s
 The overall likelihood <span class="math notranslate nohighlight">\(L\)</span> of the observed numbers of unique
 sequences given the group sizes and error rate is:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}L &amp;=&amp; \Pr\left(\left\{u_g\right\}|\left\{n_g\right\},\epsilon\right) \\
-&amp;=&amp; \prod_g \Pr\left(u_g | n_g, \epsilon\right).\end{split}\]</div>
+\[L = \prod_g \Pr\left(u_g | n_g, \epsilon\right).\]</div>
 <p>To find the maximum likelihood of error rate, we simply use numerical
 optimization to find the value of <span class="math notranslate nohighlight">\(\epsilon\)</span> that maximizes
-<span class="math notranslate nohighlight">\(L\)</span>. In practice, we actually maximize <span class="math notranslate nohighlight">\(\ln\left(L\right)\)</span>.</p>
+<span class="math notranslate nohighlight">\(L\)</span>. In practice, we actually maximize
+<span class="math notranslate nohighlight">\(\ln L = \sum_g \ln \left[ \Pr\left(u_g\mid n_g,\epsilon\right)\right]\)</span>,
+which is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\ln L = \sum_g \begin{cases}
+\ln \binom{n_g}{u_g-1} + \left(n_g - u_g + 1\right) \ln\left(1 - \epsilon\right)
++ \left(u_g - 1\right)\ln \epsilon &amp; \rm{if\;} u_g &lt; n_g, \\
+\left(n_g - 1\right)\ln \epsilon + \ln\left[n_g\left(1 - \epsilon\right)
++ \epsilon \right] &amp; \rm{if\;} u_g = n_g
+\end{cases} \\\end{split}\]</div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

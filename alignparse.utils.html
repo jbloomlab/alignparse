@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>utils &#8212; alignparse 0.7.0 documentation</title>
+    <title>utils &#8212; alignparse 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=877b1dcb" />
     <link rel="stylesheet" type="text/css" href="_static/plot_directive.css?v=7f9a90b1" />
-    <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="_static/documentation_options.js?v=486e5634"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -242,6 +242,15 @@ as in <code class="docutils literal notranslate"><span class="pre">214a</span></
 <span class="gp">... </span>                                        <span class="n">allow_arbitrary_numbers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">arbitrary_renumberer</span><span class="o">.</span><span class="n">renumber_muts</span><span class="p">(</span><span class="s2">&quot;A1C del2to3 ins3GC&quot;</span><span class="p">)</span>
 <span class="go">&#39;A5(E3)C del6(E2)to7(E2)a ins7(E2)aGC&#39;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arbitrary_reverse</span> <span class="o">=</span> <span class="n">MutationRenumber</span><span class="p">(</span><span class="n">number_mapping</span><span class="o">=</span><span class="n">arbitrary_number_mapping</span><span class="p">,</span>
+<span class="gp">... </span>                                     <span class="n">old_num_col</span><span class="o">=</span><span class="s1">&#39;new&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                     <span class="n">new_num_col</span><span class="o">=</span><span class="s1">&#39;old&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                     <span class="n">wt_nt_col</span><span class="o">=</span><span class="s1">&#39;wt_nt&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                                     <span class="n">allow_arbitrary_numbers</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arbitrary_reverse</span><span class="o">.</span><span class="n">renumber_muts</span><span class="p">(</span><span class="s2">&quot;A5(E3)C del6(E2)to7(E2)a ins7(E2)aGC&quot;</span><span class="p">)</span>
+<span class="go">&#39;A1C del2to3 ins3GC&#39;</span>
 </pre></div>
 </div>
 <dl class="py method">

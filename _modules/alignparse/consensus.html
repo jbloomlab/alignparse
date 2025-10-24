@@ -4,12 +4,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>alignparse.consensus &#8212; alignparse 0.7.0 documentation</title>
+    <title>alignparse.consensus &#8212; alignparse 0.8.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css?v=877b1dcb" />
     <link rel="stylesheet" type="text/css" href="../../_static/plot_directive.css?v=7f9a90b1" />
-    <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+    <script src="../../_static/documentation_options.js?v=486e5634"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -298,27 +298,55 @@
 <span class="sd">    &gt;&gt;&gt; round(lnl.maxlik_eps(), 3)</span>
 <span class="sd">    0.25</span>
 
+<span class="sd">    &gt;&gt;&gt; df2 = pd.DataFrame(</span>
+<span class="sd">    ...         [[4, 3, 1],</span>
+<span class="sd">    ...          [5, 2, 2],</span>
+<span class="sd">    ...          [3, 2, 3],</span>
+<span class="sd">    ...          [6, 6, 2],</span>
+<span class="sd">    ...          [4, 1, 1],</span>
+<span class="sd">    ...          ],</span>
+<span class="sd">    ...         columns=[&#39;n&#39;, &#39;u&#39;, &#39;count&#39;],</span>
+<span class="sd">    ...         )</span>
+<span class="sd">    &gt;&gt;&gt; lnl2 = _LnL_error_rate(df2, n_col=&#39;n&#39;, u_col=&#39;u&#39;, count_col=&#39;count&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; round(lnl2.maxlik_eps(), 3)</span>
+<span class="sd">    0.442</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">n_col</span><span class="p">,</span> <span class="n">u_col</span><span class="p">,</span> <span class="n">count_col</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;See main class docstring.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[</span><span class="n">n_col</span><span class="p">,</span> <span class="n">u_col</span><span class="p">,</span> <span class="n">count_col</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="si">=}</span><span class="s2"> for </span><span class="si">{</span><span class="n">col</span><span class="si">=}</span><span class="s2"> not all ints &gt; 0&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">n_col</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">df</span><span class="p">[</span><span class="n">u_col</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n_col</span><span class="si">=}</span><span class="s2"> not &gt;= </span><span class="si">{</span><span class="n">u_col</span><span class="si">=}</span><span class="s2"> for </span><span class="si">{</span><span class="n">df</span><span class="p">[[</span><span class="n">n_col</span><span class="p">,</span><span class="w"> </span><span class="n">u_col</span><span class="p">]]</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
             <span class="n">n</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">n_col</span><span class="p">],</span>
             <span class="n">u</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">u_col</span><span class="p">],</span>
             <span class="n">count</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">count_col</span><span class="p">],</span>
-            <span class="n">binom</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">binom</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">delta_un</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">),</span>
+            <span class="c1"># ln binom(n, k) = gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1)</span>
+            <span class="n">ln_binom</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+                <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gammaln</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">),</span>
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">lnlik</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Log likelihood for error rate `eps`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
-            <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;binom&quot;</span><span class="p">]</span>
-                <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="o">*</span> <span class="n">eps</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-                <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;delta_un&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">eps</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span>
+            <span class="o">*</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">],</span>
+                <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;ln_binom&quot;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;u&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+                <span class="p">),</span>
+                <span class="p">(</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">eps</span><span class="p">)</span>
+                    <span class="o">+</span> <span class="n">numpy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_df</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span> <span class="o">+</span> <span class="n">eps</span><span class="p">)</span>
+                <span class="p">),</span>
             <span class="p">)</span>
         <span class="p">)</span>
 
@@ -370,7 +398,7 @@
 <span class="sd">       \Pr\left(u=1 | n=2, \epsilon\right) = \left(1 - \epsilon\right)^2.</span>
 
 <span class="sd">    The probability of having :math:`u = 2` unique sequences is the</span>
-<span class="sd">    the probability that either one or both have errors:</span>
+<span class="sd">    probability that either one or both have errors:</span>
 
 <span class="sd">    .. math::</span>
 
@@ -396,12 +424,22 @@
 
 <span class="sd">    .. math::</span>
 
-<span class="sd">       L &amp;=&amp; \Pr\left(\left\{u_g\right\}|\left\{n_g\right\},\epsilon\right) \\</span>
-<span class="sd">       &amp;=&amp; \prod_g \Pr\left(u_g | n_g, \epsilon\right).</span>
+<span class="sd">       L = \prod_g \Pr\left(u_g | n_g, \epsilon\right).</span>
 
 <span class="sd">    To find the maximum likelihood of error rate, we simply use numerical</span>
 <span class="sd">    optimization to find the value of :math:`\epsilon` that maximizes</span>
-<span class="sd">    :math:`L`. In practice, we actually maximize :math:`\ln\left(L\right)`.</span>
+<span class="sd">    :math:`L`. In practice, we actually maximize</span>
+<span class="sd">    :math:`\ln L = \sum_g \ln \left[ \Pr\left(u_g\mid n_g,\epsilon\right)\right]`,</span>
+<span class="sd">    which is:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">       \ln L = \sum_g \begin{cases}</span>
+<span class="sd">       \ln \binom{n_g}{u_g-1} + \left(n_g - u_g + 1\right) \ln\left(1 - \epsilon\right)</span>
+<span class="sd">       + \left(u_g - 1\right)\ln \epsilon &amp; \rm{if\;} u_g &lt; n_g, \\</span>
+<span class="sd">       \left(n_g - 1\right)\ln \epsilon + \ln\left[n_g\left(1 - \epsilon\right)</span>
+<span class="sd">       + \epsilon \right] &amp; \rm{if\;} u_g = n_g</span>
+<span class="sd">       \end{cases} \\</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
