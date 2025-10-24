@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on `Keep a Changelog <https://keepachangelog.com>`_.
 
+0.8.0
+-----
+Fixed
++++++
+* The computation of the empirical accuracy by ``alignparse.consensus.empirical_accuracy`` is now done by computing the relevant quantitites in log space which makes it more robust to large numbers. Thanks to @fc-jian for inspiring this via [this issue](https://github.com/jbloomlab/alignparse/issues/106).
+
 0.7.1
 -----
 Fixed
