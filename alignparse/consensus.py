@@ -257,27 +257,55 @@ class _LnL_error_rate:
     >>> round(lnl.maxlik_eps(), 3)
     0.25
 
+    >>> df2 = pd.DataFrame(
+    ...         [[4, 3, 1],
+    ...          [5, 2, 2],
+    ...          [3, 2, 3],
+    ...          [6, 6, 2],
+    ...          [4, 1, 1],
+    ...          ],
+    ...         columns=['n', 'u', 'count'],
+    ...         )
+    >>> lnl2 = _LnL_error_rate(df2, n_col='n', u_col='u', count_col='count')
+    >>> round(lnl2.maxlik_eps(), 3)
+    0.442
+
     """
 
     def __init__(self, df, *, n_col, u_col, count_col):
         """See main class docstring."""
+        for col in [n_col, u_col, count_col]:
+            if not ((df[col] > 0).all() and (df[col] == df[col].astype(int)).all()):
+                raise ValueError(f"{df[col]=} for {col=} not all ints > 0")
+        if not (df[n_col] >= df[u_col]).all():
+            raise ValueError(f"{n_col=} not >= {u_col=} for {df[[n_col, u_col]]=}")
         self._df = df.assign(
             n=lambda x: x[n_col],
             u=lambda x: x[u_col],
             count=lambda x: x[count_col],
-            binom=lambda x: scipy.special.binom(x["n"], x["u"] - 1),
-            delta_un=lambda x: (x["n"] == x["u"]).astype(int),
+            # ln binom(n, k) = gammaln(n + 1) - gammaln(k + 1) - gammaln(n - k + 1)
+            ln_binom=lambda x: (
+                scipy.special.gammaln(x["n"] + 1)
+                - scipy.special.gammaln(x["u"] + 1)
+                - scipy.special.gammaln(x["n"] - x["u"] + 1)
+            ),
         )
 
     def lnlik(self, eps):
         """Log likelihood for error rate `eps`."""
         return sum(
             self._df["count"]
-            * numpy.log(
-                self._df["binom"]
-                * (1 - eps) ** (self._df["n"] - self._df["u"] + 1)
-                * eps ** (self._df["u"] - 1)
-                + self._df["delta_un"] * eps ** self._df["n"]
+            * numpy.where(
+                self._df["n"] != self._df["u"],
+                (
+                    self._df["ln_binom"]
+                    + (self._df["n"] - self._df["u"] + 1) * math.log(1 - eps)
+                    + (self._df["u"] - 1) * math.log(eps)
+                ),
+                (
+                    (self._df["n"] - 1) * math.log(eps)
+                    + numpy.log(self._df["n"] * (1 - eps) + eps)
+                ),
             )
         )
 
@@ -327,7 +355,7 @@ def empirical_accuracy(
        \Pr\left(u=1 | n=2, \epsilon\right) = \left(1 - \epsilon\right)^2.
 
     The probability of having :math:`u = 2` unique sequences is the
-    the probability that either one or both have errors:
+    probability that either one or both have errors:
 
     .. math::
 
@@ -353,12 +381,22 @@ def empirical_accuracy(
 
     .. math::
 
-       L &=& \Pr\left(\left\{u_g\right\}|\left\{n_g\right\},\epsilon\right) \\
-       &=& \prod_g \Pr\left(u_g | n_g, \epsilon\right).
+       L = \prod_g \Pr\left(u_g | n_g, \epsilon\right).
 
     To find the maximum likelihood of error rate, we simply use numerical
     optimization to find the value of :math:`\epsilon` that maximizes
-    :math:`L`. In practice, we actually maximize :math:`\ln\left(L\right)`.
+    :math:`L`. In practice, we actually maximize
+    :math:`\ln L = \sum_g \ln \left[ \Pr\left(u_g\mid n_g,\epsilon\right)\right]`,
+    which is:
+
+    .. math::
+
+       \ln L = \sum_g \begin{cases}
+       \ln \binom{n_g}{u_g-1} + \left(n_g - u_g + 1\right) \ln\left(1 - \epsilon\right)
+       + \left(u_g - 1\right)\ln \epsilon & \rm{if\;} u_g < n_g, \\
+       \left(n_g - 1\right)\ln \epsilon + \ln\left[n_g\left(1 - \epsilon\right)
+       + \epsilon \right] & \rm{if\;} u_g = n_g
+       \end{cases} \\
 
     Parameters
     ----------
