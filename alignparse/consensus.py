@@ -222,6 +222,34 @@ def add_mut_info_cols(
 
     return df.drop(columns=new_cols.values(), errors="ignore").join(mut_info_df)
 
+def _calc_log_binom_coeff(n, k):
+    """Calculate log binomial coefficient using Stirling approximation.
+
+    Parameters
+    ----------
+    n : int
+        Number of trials.
+    k : int
+        Number of successes.
+
+    Returns
+    -------
+    float
+        Log binomial coefficient :math:`\\log\\binom{n}{k}`.
+
+    """
+    val = scipy.special.binom(n, k)
+    if numpy.isfinite(val) and val > 0 and val < numpy.inf:
+        return numpy.log(val)
+    else: # use Stirling approximation
+        return (
+            n * numpy.log(n)
+            - k * numpy.log(k)
+            - (n - k) * numpy.log(n - k)
+            + 0.5 * (
+                numpy.log(n) - numpy.log(k) - numpy.log(n - k) - numpy.log(2 * numpy.pi)
+            )
+        )
 
 class _LnL_error_rate:
     """Log likelihood of sequences per group as function of error rate.
@@ -261,26 +289,37 @@ class _LnL_error_rate:
 
     def __init__(self, df, *, n_col, u_col, count_col):
         """See main class docstring."""
-        self._df = df.assign(
+        _df = df.assign(
             n=lambda x: x[n_col],
             u=lambda x: x[u_col],
             count=lambda x: x[count_col],
-            binom=lambda x: scipy.special.binom(x["n"], x["u"] - 1),
-            delta_un=lambda x: (x["n"] == x["u"]).astype(int),
         )
-
+        self._df_un = _df[['n', 'u', 'count']].query("n == u").assign(
+            binom=lambda x: scipy.special.binom(x["n"], x["u"] - 1)
+        )
+        self._df_other = _df[['n', 'u', 'count']].query("n != u").assign(
+            log_binom=lambda x: [
+                _calc_log_binom_coeff(n, k) for n, k in zip(x["n"], x["u"] - 1)
+            ]
+        )
     def lnlik(self, eps):
         """Log likelihood for error rate `eps`."""
         return sum(
-            self._df["count"]
+            self._df_other["count"]
+            * (
+                self._df_other["log_binom"]
+                + (self._df_other["n"] - self._df_other["u"] + 1) * numpy.log(1 - eps)
+                + (self._df_other["u"] - 1) * numpy.log(eps)
+            )
+        ) + sum(
+            self._df_un["count"]
             * numpy.log(
-                self._df["binom"]
-                * (1 - eps) ** (self._df["n"] - self._df["u"] + 1)
-                * eps ** (self._df["u"] - 1)
-                + self._df["delta_un"] * eps ** self._df["n"]
+                self._df_un["binom"]
+                * (1 - eps) ** (self._df_un["n"] - self._df_un["u"] + 1)
+                * eps ** (self._df_un["u"] - 1)
+                + eps ** self._df_un["n"]
             )
         )
-
     def neg_lnlik(self, eps):
         """Negative log likelihood for error rate `epsilon`."""
         return -self.lnlik(eps)
